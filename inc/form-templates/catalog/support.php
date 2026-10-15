@@ -31,14 +31,14 @@ $screenshots = [
 
 return [
 	[
-		'id'            => 'support-request',
-		'category'      => 'support',
-		'theme'         => 'ocean',
-		'icon'          => 'life-buoy',
-		'title'         => __( 'Support Request', 'sureforms' ),
-		'description'   => __( 'Let customers report an issue and how urgent it is.', 'sureforms' ),
-		'submit_text'   => __( 'Send request', 'sureforms' ),
-		'fields'        => [
+		'id'             => 'support-request',
+		'category'       => 'support',
+		'theme'          => 'ocean',
+		'icon'           => 'life-buoy',
+		'title'          => __( 'Support Request', 'sureforms' ),
+		'description'    => __( 'Let customers report an issue and how urgent it is.', 'sureforms' ),
+		'submit_text'    => __( 'Send request', 'sureforms' ),
+		'fields'         => [
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'topic', __( 'Topic', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Technical issue', 'sureforms' ), __( 'Billing or payment', 'sureforms' ), __( 'Account or login', 'sureforms' ), __( 'Orders and delivery', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose a topic', 'sureforms' ) ] ) ), $no_search ), 50 ),
@@ -61,13 +61,15 @@ return [
 			Catalog::field( 'url', 'link', __( 'Link to a screenshot or page (optional)', 'sureforms' ), false, array_merge( [ 'placeholder' => 'https://' ], $screenshots ) ),
 			$c['consent'],
 		],
-		'confirmation'  => [
+		'confirmation'   => [
 			'heading' => __( 'Request received', 'sureforms' ),
 			'text'    => __( 'Thanks, {form:full-name}. Your reference number is #{entry_id}. We will reply to {form:email} as soon as we can.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Support: {form:subject} ({form:priority}) from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} needs help ({form:priority} priority, request #{entry_id}). Reply to this email to answer them directly.', 'sureforms' ),
-		'autoresponder' => [
+		// With SureForms Pro, the screenshots arrive with the notification.
+		'attach_uploads' => [ 'link' ],
+		'email_subject'  => __( 'Support: {form:subject} ({form:priority}) from {form:full-name}', 'sureforms' ),
+		'email_intro'    => __( '{form:full-name} needs help ({form:priority} priority, request #{entry_id}). Reply to this email to answer them directly.', 'sureforms' ),
+		'autoresponder'  => [
 			'subject' => __( 'We received your request: {form:subject}', 'sureforms' ),
 			'lines'   => [
 				__( 'Thanks for getting in touch. We have logged your request about "{form:subject}" with reference number #{entry_id}.', 'sureforms' ),
@@ -76,14 +78,14 @@ return [
 		],
 	],
 	[
-		'id'            => 'bug-report',
-		'category'      => 'support',
-		'theme'         => 'midnight',
-		'icon'          => 'bug',
-		'title'         => __( 'Bug Report', 'sureforms' ),
-		'description'   => __( 'Collect clear, reproducible bug reports.', 'sureforms' ),
-		'submit_text'   => __( 'Report bug', 'sureforms' ),
-		'fields'        => [
+		'id'             => 'bug-report',
+		'category'       => 'support',
+		'theme'          => 'midnight',
+		'icon'           => 'bug',
+		'title'          => __( 'Bug Report', 'sureforms' ),
+		'description'    => __( 'Collect clear, reproducible bug reports.', 'sureforms' ),
+		'submit_text'    => __( 'Report bug', 'sureforms' ),
+		'fields'         => [
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::field( 'input', 'summary', __( 'Bug Summary', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. The checkout button does nothing on mobile', 'sureforms' ) ] ),
@@ -114,13 +116,15 @@ return [
 			Catalog::field( 'url', 'screenshot', __( 'Link to a screenshot (optional)', 'sureforms' ), false, array_merge( [ 'placeholder' => 'https://' ], $screenshots ) ),
 			$c['consent'],
 		],
-		'confirmation'  => [
+		'confirmation'   => [
 			'heading' => __( 'Thanks for the report', 'sureforms' ),
 			'text'    => __( 'We have logged "{form:summary}" as report #{entry_id}. We will contact you at {form:email} if we need more details.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Bug: {form:summary} ({form:severity})', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} reported a {form:severity} bug (report #{entry_id}). Reply to this email to ask them for more details.', 'sureforms' ),
-		'autoresponder' => [
+		// With SureForms Pro, the screenshots arrive with the notification.
+		'attach_uploads' => [ 'screenshot' ],
+		'email_subject'  => __( 'Bug: {form:summary} ({form:severity})', 'sureforms' ),
+		'email_intro'    => __( '{form:full-name} reported a {form:severity} bug (report #{entry_id}). Reply to this email to ask them for more details.', 'sureforms' ),
+		'autoresponder'  => [
 			'subject' => __( 'We received your bug report: {form:summary}', 'sureforms' ),
 			'lines'   => [
 				__( 'Thanks for helping us improve. We have logged your report "{form:summary}" with reference number #{entry_id}.', 'sureforms' ),

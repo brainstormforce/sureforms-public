@@ -27,7 +27,6 @@ class Field_Mapping {
 	 * Field types allowed inside an address block (editor `allowedBlocks`).
 	 *
 	 * @since x.x.x
-	 * @var array<int, string>
 	 */
 	public const ADDRESS_INNER_TYPES = [ 'input', 'dropdown' ];
 
@@ -35,7 +34,6 @@ class Field_Mapping {
 	 * Field types allowed inside a repeater block (Pro editor `allowedBlocks`).
 	 *
 	 * @since x.x.x
-	 * @var array<int, string>
 	 */
 	public const REPEATER_INNER_TYPES = [ 'input', 'email', 'textarea', 'number', 'url', 'phone', 'date-picker', 'time-picker', 'dropdown' ];
 
@@ -388,7 +386,7 @@ class Field_Mapping {
 						return $inner_content;
 					}
 					if ( '' === $inner_content ) {
-						$inner_content = self::default_address_fields( ! empty( $merged_attributes['required'] ) );
+						$inner_content = self::default_address_fields( ! empty( $merged_attributes['required'] ), Helper::get_string_value( $merged_attributes['slug'] ?? '' ) );
 					}
 
 					$post_content .= self::wrap_inner_blocks( $field_type, $merged_attributes, $inner_content );
@@ -678,22 +676,30 @@ class Field_Mapping {
 	 * Each sub-field carries Pro's `addressComponent` identifier (the layout
 	 * Pro resets to when Google autocomplete is enabled); without Pro it is inert.
 	 *
-	 * @param bool $required Whether the address is required.
+	 * With the address's slug, each sub-field gets a stable slug made from it
+	 * (`delivery-address-city`, …), so conditions, post mappings and `{form:…}`
+	 * tags can name a part of the address before the form is first saved, and
+	 * two addresses in one form never share a sub-field slug. Saving keeps
+	 * these slugs (Helper::process_blocks() only fills in missing or repeated ones).
+	 *
+	 * @param bool   $required Whether the address is required.
+	 * @param string $slug     The address block's slug; '' leaves the sub-field slugs to the save.
 	 * @since x.x.x
 	 * @return string Inner block markup.
 	 */
-	private static function default_address_fields( $required ) {
+	private static function default_address_fields( $required, $slug = '' ) {
 		$sub_fields = [
-			[ 'input', __( 'Address Line 1', 'sureforms' ), 'line1', $required ],
-			[ 'input', __( 'Address Line 2', 'sureforms' ), 'line2', false ],
-			[ 'input', __( 'City', 'sureforms' ), 'city', $required ],
-			[ 'input', __( 'State', 'sureforms' ), 'state', $required ],
-			[ 'input', __( 'Postal Code', 'sureforms' ), 'postal_code', $required ],
-			[ 'dropdown', __( 'Country', 'sureforms' ), 'country', $required ],
+			[ 'input', __( 'Address Line 1', 'sureforms' ), 'line1', $required, 'line-1' ],
+			[ 'input', __( 'Address Line 2', 'sureforms' ), 'line2', false, 'line-2' ],
+			[ 'input', __( 'City', 'sureforms' ), 'city', $required, 'city' ],
+			[ 'input', __( 'State', 'sureforms' ), 'state', $required, 'state' ],
+			[ 'input', __( 'Postal Code', 'sureforms' ), 'postal_code', $required, 'postal-code' ],
+			[ 'dropdown', __( 'Country', 'sureforms' ), 'country', $required, 'country' ],
 		];
+		$slug       = sanitize_title( $slug );
 
 		$content = '';
-		foreach ( $sub_fields as [ $type, $label, $component, $is_required ] ) {
+		foreach ( $sub_fields as [ $type, $label, $component, $is_required, $part ] ) {
 			$attributes = [
 				'block_id'         => self::new_block_id(),
 				'formId'           => 0,
@@ -702,6 +708,9 @@ class Field_Mapping {
 				'fieldWidth'       => 50,
 				'addressComponent' => $component,
 			];
+			if ( '' !== $slug ) {
+				$attributes['slug'] = $slug . '-' . $part;
+			}
 			if ( 'dropdown' === $type ) {
 				$attributes['options'] = self::country_options();
 			}

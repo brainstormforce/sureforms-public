@@ -3,7 +3,6 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
-	useRef,
 	useState,
 } from '@wordpress/element';
 import { Button, Checkbox, Toaster, toast } from '@bsf/force-ui';
@@ -33,6 +32,7 @@ import {
 	createFormFromTemplate,
 	recordEmptySearch,
 	requestTemplate,
+	trackTemplateAction,
 } from '@Utils/form-templates';
 import Header from './Header.js';
 import TemplateStylePanel from './TemplateStylePanel.js';
@@ -40,6 +40,7 @@ import {
 	FeatureChip,
 	IncludedFeatures,
 	PremiumBadge,
+	getCardImage,
 	getFeatures,
 	getLockLabels,
 	getMissingSetup,
@@ -182,151 +183,38 @@ const FormSkeleton = ( { className } ) => (
 	</span>
 );
 
-// The preview page is laid out at this width, then scaled down to fit a card.
-const THUMB_RENDER_WIDTH = 600;
 const THUMB_HEIGHT = 288;
 
 /**
- * Live, scaled-down render of a template's preview page.
+ * Card thumbnail: a picture of the template. Cards never load the live
+ * preview page, which is a full front-end request; only the opened preview
+ * does. A template without a picture, or whose picture doesn't load, shows a
+ * plain form outline.
  *
  * @param {Object} props          Props.
  * @param {Object} props.template Template.
  */
 export const TemplateThumbnail = ( { template } ) => {
-	// A picture that doesn't load falls back to the live preview.
 	const [ imageFailed, setImageFailed ] = useState( false );
-	if ( showsPreviewImage( template ) && ! imageFailed ) {
-		return (
-			<ImageThumbnail
-				template={ template }
-				onError={ () => setImageFailed( true ) }
-			/>
-		);
-	}
-	return <LiveThumbnail template={ template } />;
-};
-
-/**
- * Card thumbnail of a locked template: the picture of its Premium version.
- *
- * @param {Object}   props          Props.
- * @param {Object}   props.template Template.
- * @param {Function} props.onError  Called when the picture doesn't load.
- */
-const ImageThumbnail = ( { template, onError } ) => (
-	<span
-		className="relative block w-full overflow-hidden bg-background-primary"
-		style={ { height: THUMB_HEIGHT } }
-		aria-hidden="true"
-	>
-		<img
-			src={ template.preview_image }
-			alt=""
-			loading="lazy"
-			decoding="async"
-			onError={ onError }
-			className="block w-full h-full object-cover object-top"
-		/>
-	</span>
-);
-
-/**
- * Live thumbnail: the preview page, scaled down.
- *
- * @param {Object} props          Props.
- * @param {Object} props.template Template.
- */
-const LiveThumbnail = ( { template } ) => {
-	const boxRef = useRef( null );
-	const [ scale, setScale ] = useState( 0.35 );
-	// 'loading', 'ready' or 'failed'.
-	const [ status, setStatus ] = useState( 'loading' );
-	const [ isVisible, setIsVisible ] = useState( false );
-
-	useEffect( () => {
-		const box = boxRef.current;
-		if ( ! box || ! window.ResizeObserver ) {
-			return;
-		}
-		const observer = new window.ResizeObserver( ( [ entry ] ) => {
-			if ( entry.contentRect.width ) {
-				setScale( entry.contentRect.width / THUMB_RENDER_WIDTH );
-			}
-		} );
-		observer.observe( box );
-		return () => observer.disconnect();
-	}, [] );
-
-	// Lazy frames only start loading on screen, so the timeout starts there too.
-	useEffect( () => {
-		const box = boxRef.current;
-		if ( ! box || ! window.IntersectionObserver ) {
-			setIsVisible( true );
-			return;
-		}
-		const observer = new window.IntersectionObserver( ( [ entry ] ) => {
-			if ( entry.isIntersecting ) {
-				setIsVisible( true );
-				observer.disconnect();
-			}
-		} );
-		observer.observe( box );
-		return () => observer.disconnect();
-	}, [] );
-
-	useEffect( () => {
-		if ( ! isVisible || 'loading' !== status ) {
-			return;
-		}
-		const timer = setTimeout(
-			() =>
-				setStatus( ( current ) =>
-					'loading' === current ? 'failed' : current
-				),
-			PREVIEW_TIMEOUT
-		);
-		return () => clearTimeout( timer );
-	}, [ isVisible, status ] );
-
+	const image = getCardImage( template );
 	return (
 		<span
-			ref={ boxRef }
 			className="relative block w-full overflow-hidden bg-background-primary"
 			style={ { height: THUMB_HEIGHT } }
 			aria-hidden="true"
 		>
-			{ 'loading' === status && <FormSkeleton /> }
-			{ 'failed' === status && (
-				<span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background-secondary text-text-tertiary">
-					<ImageOff className="size-6" aria-hidden="true" />
-					<span className="text-xs">
-						{ __( 'Preview unavailable', 'sureforms' ) }
-					</span>
-				</span>
+			{ image && ! imageFailed ? (
+				<img
+					src={ image }
+					alt=""
+					loading="lazy"
+					decoding="async"
+					onError={ () => setImageFailed( true ) }
+					className="block w-full h-full object-cover object-top"
+				/>
+			) : (
+				<FormSkeleton />
 			) }
-			<iframe
-				src={ `${ template.preview_url }&srfm_thumb=1` }
-				title={ template.title }
-				loading="lazy"
-				scrolling="no"
-				tabIndex="-1"
-				onLoad={ ( event ) =>
-					setStatus(
-						isPreviewBroken( event.currentTarget )
-							? 'failed'
-							: 'ready'
-					)
-				}
-				className={ cn(
-					'absolute top-0 left-0 border-0 pointer-events-none origin-top-left transition-opacity duration-300 motion-reduce:transition-none',
-					'ready' === status ? 'opacity-100' : 'opacity-0'
-				) }
-				style={ {
-					width: THUMB_RENDER_WIDTH,
-					height: `${ THUMB_HEIGHT / scale }px`,
-					transform: `scale(${ scale })`,
-				} }
-			/>
 		</span>
 	);
 };
@@ -475,6 +363,10 @@ export const TemplatePreview = ( {
 	const [ imageFailed, setImageFailed ] = useState( false );
 	const showImage = showsPreviewImage( template ) && ! imageFailed;
 	const [ dialogNode, setDialogNode ] = useState( null );
+
+	useEffect( () => {
+		trackTemplateAction( 'preview', template.id );
+	}, [ template.id ] );
 	// The card that opened the preview gets focus back on close. Read before
 	// the dialog exists, so there is no node to take ownerDocument from yet.
 	const [ opener ] = useState( () =>
@@ -727,12 +619,35 @@ export const TemplatePreview = ( {
 						size="sm"
 						aria-expanded={ showPanel }
 						aria-controls={ showPanel ? panelId : undefined }
+						aria-label={ __( 'Customize', 'sureforms' ) }
 						icon={ <Palette className="size-4" /> }
 						onClick={ () => setShowPanel( ( open ) => ! open ) }
 					>
-						{ __( 'Customize', 'sureforms' ) }
+						<span className="hidden sm:inline">
+							{ __( 'Customize', 'sureforms' ) }
+						</span>
 					</Button>
 				) }
+				<Button
+					variant="primary"
+					size="sm"
+					className="shrink-0 whitespace-nowrap"
+					loading={ isCreating }
+					disabled={ isCreating }
+					icon={
+						template.is_locked ? (
+							<Lock className="size-4" />
+						) : (
+							<ArrowRight className="size-4" />
+						)
+					}
+					iconPosition={ template.is_locked ? 'left' : 'right' }
+					onClick={ use }
+				>
+					{ template.is_locked
+						? lockLabels.button
+						: __( 'Use this template', 'sureforms' ) }
+				</Button>
 				<Button
 					variant="ghost"
 					size="sm"
@@ -804,7 +719,8 @@ export const TemplatePreview = ( {
 											) }
 											decoding="async"
 											onError={ () => setImageFailed( true ) }
-											className="block w-full h-auto"
+											// At the form's own width (pictures are taken at 522px), centered like the live preview, never stretched.
+											className="block w-full max-w-[570px] h-auto mx-auto px-6 py-10"
 										/>
 									</div>
 									<span className="absolute top-3 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium whitespace-nowrap rounded-full bg-background-inverse/90 text-text-on-color shadow-md">
@@ -994,26 +910,6 @@ export const TemplatePreview = ( {
 							} }
 						/>
 					) }
-					<Button
-						variant="primary"
-						size="md"
-						className="w-full sm:w-auto whitespace-nowrap"
-						loading={ isCreating }
-						disabled={ isCreating }
-						icon={
-							template.is_locked ? (
-								<Lock className="size-4" />
-							) : (
-								<ArrowRight className="size-4" />
-							)
-						}
-						iconPosition={ template.is_locked ? 'left' : 'right' }
-						onClick={ use }
-					>
-						{ template.is_locked
-							? lockLabels.button
-							: __( 'Use this template', 'sureforms' ) }
-					</Button>
 				</div>
 			</div>
 		</div>
@@ -1452,6 +1348,10 @@ const TemplateLibrary = () => {
 	const [ creatingId, setCreatingId ] = useState( '' );
 
 	const closePreview = useCallback( () => setPreviewId( '' ), [] );
+
+	useEffect( () => {
+		trackTemplateAction( 'library_open' );
+	}, [] );
 
 	const isRTL = srfm_admin?.is_rtl;
 	const preview = templates.find( ( t ) => t.id === previewId );

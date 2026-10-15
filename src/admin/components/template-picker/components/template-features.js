@@ -14,6 +14,9 @@ import {
 	ListOrdered,
 	Lock,
 	Mail,
+	MailCheck,
+	MailPlus,
+	MessageSquareText,
 	MessagesSquare,
 	Paperclip,
 	PenTool,
@@ -26,6 +29,7 @@ import {
 	UserPlus,
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
+import { trackTemplateAction } from '@Utils/form-templates';
 
 /**
  * What a template ships with, keyed by the ids in a template's `features` and
@@ -65,6 +69,16 @@ const getFeatureMap = () => ( {
 		label: __( 'Conditional logic', 'sureforms' ),
 		short: __( 'Conditions', 'sureforms' ),
 		Icon: GitBranch,
+	},
+	conditional_confirmations: {
+		label: __( 'Thank-you message per answer', 'sureforms' ),
+		short: __( 'Smart thank-you', 'sureforms' ),
+		Icon: MessageSquareText,
+	},
+	conditional_emails: {
+		label: __( 'Conditional emails', 'sureforms' ),
+		short: __( 'Smart emails', 'sureforms' ),
+		Icon: MailCheck,
 	},
 	user_registration: {
 		label: __( 'User registration', 'sureforms' ),
@@ -115,6 +129,11 @@ const getFeatureMap = () => ( {
 		label: __( 'File upload', 'sureforms' ),
 		short: __( 'File upload', 'sureforms' ),
 		Icon: Paperclip,
+	},
+	email_attachments: {
+		label: __( 'Uploads attached to emails', 'sureforms' ),
+		short: __( 'Attachments', 'sureforms' ),
+		Icon: MailPlus,
 	},
 	autoresponder: {
 		label: __( 'Auto-reply email', 'sureforms' ),
@@ -237,6 +256,18 @@ export const showsPreviewImage = ( template ) =>
 	Boolean( template?.is_locked && template?.preview_image );
 
 /**
+ * Picture shown on a template's library card: its own `thumbnail`, else the
+ * picture of its Premium version. Cards always use a picture, never the live
+ * preview page.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ * @return {string} Image URL, '' when the template has none.
+ */
+export const getCardImage = ( template ) =>
+	template?.thumbnail || template?.preview_image || '';
+
+/**
  * Setup steps a template still needs on this site, e.g. connecting Stripe.
  * Only for templates that can be used: a locked one can't be created yet.
  *
@@ -277,6 +308,9 @@ export const PremiumBadge = ( { template, className } ) => (
  * @param {Object} template Template.
  */
 export const openTemplateUnlock = ( template ) => {
+	if ( template?.id && 'tier' === template.lock_reason ) {
+		trackTemplateAction( 'upgrade_click', template.id );
+	}
 	const url =
 		template?.unlock_url ||
 		window.srfm_admin?.pricing_page_url ||

@@ -688,4 +688,40 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 		$this->assertSame( 'Text Field', $blocks[0]['innerBlocks'][0]['attrs']['label'] );
 		$this->assert_unique_block_ids( $blocks );
 	}
+
+	public function test_default_address_sub_fields_get_slugs_from_the_address() {
+		$blocks = $this->blocks(
+			$this->map(
+				[
+					[
+						'label'     => 'Billing address',
+						'fieldType' => 'address',
+						'slug'      => 'billing-address',
+					],
+					[
+						'label'     => 'Delivery address',
+						'fieldType' => 'address',
+						'slug'      => 'delivery-address',
+					],
+				]
+			)
+		);
+
+		$this->assertSame(
+			[ 'billing-address-line-1', 'billing-address-line-2', 'billing-address-city', 'billing-address-state', 'billing-address-postal-code', 'billing-address-country' ],
+			array_map( static fn( $block ) => $block['attrs']['slug'], $blocks[0]['innerBlocks'] )
+		);
+		$this->assertSame( 'delivery-address-city', $blocks[1]['innerBlocks'][2]['attrs']['slug'] );
+
+		// Saving the form keeps them: they are already unique.
+		$slugs   = [];
+		$updated = false;
+		[ $saved ] = \SRFM\Inc\Helper::process_blocks( $blocks, $slugs, $updated );
+		$this->assertFalse( $updated );
+		$this->assertSame( 'billing-address-postal-code', $saved[0]['innerBlocks'][4]['attrs']['slug'] );
+
+		// Without the address's slug, the save names them, as before.
+		$unnamed = $this->blocks( $this->map( [ [ 'label' => 'Address', 'fieldType' => 'address' ] ] ) );
+		$this->assertArrayNotHasKey( 'slug', $unnamed[0]['innerBlocks'][0]['attrs'] );
+	}
 }

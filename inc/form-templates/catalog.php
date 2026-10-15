@@ -12,6 +12,7 @@
 
 namespace SRFM\Inc\Form_Templates;
 
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -183,6 +184,19 @@ class Catalog {
 	}
 
 	/**
+	 * A thank-you message in the layout of a template's own one (check icon,
+	 * heading, text), for the messages in a template's `confirmations`.
+	 *
+	 * @param string $heading Heading.
+	 * @param string $text    Text.
+	 * @since x.x.x
+	 * @return string HTML.
+	 */
+	public static function thank_you( $heading, $text ) {
+		return Form_Templates::confirmation_message( $heading, $text );
+	}
+
+	/**
 	 * Name, email and consent fields most templates share.
 	 *
 	 * @since x.x.x
@@ -197,18 +211,6 @@ class Catalog {
 			'phone'      => self::field( 'phone', 'phone', __( 'Phone', 'sureforms' ), false, [ 'blockAttributes' => [ 'defaultCountry' => self::site_country() ] ] ),
 			'consent'    => self::field( 'gdpr', 'consent', __( 'I agree to have this website store my submitted information so it can respond to my request.', 'sureforms' ), true ),
 		];
-	}
-
-	/**
-	 * The site's country from its language (en_GB gives gb), used when the
-	 * phone field cannot detect the visitor's country.
-	 *
-	 * @since x.x.x
-	 * @return string Two-letter country code, or empty when the language has none.
-	 */
-	private static function site_country() {
-		$parts = explode( '_', get_locale() );
-		return isset( $parts[1] ) && 2 === strlen( $parts[1] ) ? strtolower( $parts[1] ) : '';
 	}
 
 	/**
@@ -272,5 +274,17 @@ class Catalog {
 				'maxValue' => $max,
 			]
 		);
+	}
+
+	/**
+	 * The site's country from its language (en_GB gives gb), used when the
+	 * phone field cannot detect the visitor's country.
+	 *
+	 * @since x.x.x
+	 * @return string Two-letter country code, or empty when the language has none.
+	 */
+	private static function site_country() {
+		$parts = explode( '_', get_locale() );
+		return isset( $parts[1] ) && 2 === strlen( $parts[1] ) ? strtolower( $parts[1] ) : '';
 	}
 }

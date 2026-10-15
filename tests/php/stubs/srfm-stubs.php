@@ -223,6 +223,17 @@ class Analytics
     {
     }
     /**
+     * Count a step of the template journey that happens in the library.
+     *
+     * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
+     * @param string $template_id Template id, for every action but `library_open`.
+     * @since x.x.x
+     * @return bool Whether the action was counted.
+     */
+    public static function track_form_template_action($action, $template_id = '')
+    {
+    }
+    /**
      * Return total number of forms using instant forms.
      *
      * @since 1.4.0
