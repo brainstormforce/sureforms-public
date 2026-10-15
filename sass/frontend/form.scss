@@ -189,22 +189,31 @@
 		}
 	}
 
-	.srfm-success-box {
-		display: none;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
-		// --srfm-body-input-color is no longer set, so fall back to the Style tab's
-		// text color; otherwise the message takes the theme's color and can
-		// disappear on a dark form background.
+	// Forms made from a template (the class is added while the form has a
+	// template id). --srfm-body-input-color is no longer set, so their
+	// thank-you message follows the Style tab's text color; otherwise it takes
+	// the theme's color and can disappear on the template's dark backgrounds.
+	// Scoped so forms made before templates keep their look.
+	&.srfm-template-form .srfm-success-box {
 		color: var( --srfm-body-input-color, var( --srfm-color-scheme-text ) );
-		min-height: 20vh;
 		h1,
 		h2,
 		h3,
 		h4 {
 			color: inherit;
 		}
+		.srfm-success-box-description {
+			color: var( --srfm-body-input-color, var( --srfm-color-scheme-text ) );
+		}
+	}
+
+	.srfm-success-box {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		color: var( --srfm-body-input-color );
+		min-height: 20vh;
 		p {
 			margin: 0;
 			img {
@@ -224,7 +233,7 @@
 			font-size: 0.9em;
 			font-weight: 400;
 			line-height: 26px;
-			color: var( --srfm-body-input-color, var( --srfm-color-scheme-text ) );
+			color: var( --srfm-body-input-color );
 			display: flex;
 			flex-direction: column;
 			gap: 8px;

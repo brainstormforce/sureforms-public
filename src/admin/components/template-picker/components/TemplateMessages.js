@@ -846,14 +846,22 @@ const SectionHeading = ( { id, label, action } ) => (
  * @param {Object}   props.values   Message values by key.
  * @param {Function} props.setValue Called with ( key, value ).
  * @param {boolean}  props.editable Show the fields to edit the emails.
+ * @param {boolean}  props.held     The visitor email is held back because the
+ *                                  site has no spam protection.
  */
-export const EmailsPanel = ( { template, values, setValue, editable } ) => {
+export const EmailsPanel = ( {
+	template,
+	values,
+	setValue,
+	editable,
+	held = false,
+} ) => {
 	const context = getSampleContext( template.answers );
 	const { fieldProps, insert } = useAnswerInsertion( values, setValue );
 	const defaults = getMessageDefaults( template.messages );
 	const answers = template.answers || [];
 	const autoresponder = template.messages?.autoresponder;
-	const isSent = ! editable || values[ 'autoresponder.enabled' ];
+	const isSent = ! held && ( ! editable || values[ 'autoresponder.enabled' ] );
 	const visitorEmail =
 		answers.find( ( answer ) => 'email' === answer.slug )?.sample ||
 		'visitor@example.com';
@@ -945,7 +953,7 @@ export const EmailsPanel = ( { template, values, setValue, editable } ) => {
 		</>
 	);
 
-	const sendToggle = editable && (
+	const sendToggle = editable && ! held && (
 		<button
 			type="button"
 			role="switch"
@@ -1086,17 +1094,6 @@ export const EmailsPanel = ( { template, values, setValue, editable } ) => {
 									text={ values[ 'autoresponder.lines' ] }
 									context={ context }
 								/>
-								{ false !== autoresponder.summary && (
-									<>
-										<p className="m-0 text-text-primary">
-											{ __(
-												'Here is a copy of what you sent us:',
-												'sureforms'
-											) }
-										</p>
-										<AnswersTable answers={ answers } />
-									</>
-								) }
 								<p className="m-0 text-text-primary">
 									{ __( 'Thanks,', 'sureforms' ) }
 									<br />
@@ -1109,10 +1106,15 @@ export const EmailsPanel = ( { template, values, setValue, editable } ) => {
 									className="size-4 shrink-0 text-icon-secondary"
 									aria-hidden="true"
 								/>
-								{ __(
-									"Visitors won't get an email after submitting this form.",
-									'sureforms'
-								) }
+								{ held
+									? __(
+										'Off until spam protection is on, so bots cannot use this form to send email to anyone. Turn on spam protection to send it.',
+										'sureforms'
+									  )
+									: __(
+										"Visitors won't get an email after submitting this form.",
+										'sureforms'
+									  ) }
 							</p>
 						) }
 					</EmailCard>
