@@ -25,7 +25,11 @@ import {
 	X,
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
-import { createFormFromTemplate, requestTemplate } from '@Utils/form-templates';
+import {
+	createFormFromTemplate,
+	recordEmptySearch,
+	requestTemplate,
+} from '@Utils/form-templates';
 import Header from './Header.js';
 import TemplateStylePanel from './TemplateStylePanel.js';
 import {
@@ -889,7 +893,7 @@ const NO_RESULTS_DELAY = 1500;
  *
  * Requests reach the SureForms team through usage sharing, so they are only
  * sent when the site has it on. Searches with no results are counted the
- * same way, once per search, to show which templates people look for.
+ * same way, once per search, without their text.
  *
  * @param {Object} props          Props.
  * @param {string} props.query    Search text.
@@ -905,7 +909,7 @@ const TemplateRequestCard = ( { query, requests } ) => {
 			return;
 		}
 		const timer = setTimeout( () => {
-			requestTemplate( query, 'search' ).catch( () => {} );
+			recordEmptySearch().catch( () => {} );
 		}, NO_RESULTS_DELAY );
 		return () => clearTimeout( timer );
 	}, [ query, enabled ] );
@@ -913,7 +917,7 @@ const TemplateRequestCard = ( { query, requests } ) => {
 	const send = async () => {
 		setStatus( 'sending' );
 		try {
-			await requestTemplate( query, 'request' );
+			await requestTemplate( query );
 			setStatus( 'sent' );
 		} catch ( error ) {
 			setStatus( 'error' );

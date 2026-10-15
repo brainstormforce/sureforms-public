@@ -53,11 +53,25 @@ export const recordTemplateSwap = ( formId, templateId ) =>
 		data: { form_id: formId, template_id: templateId },
 	} );
 
-export const requestTemplate = ( query, type = 'request' ) =>
+export const requestTemplate = ( query ) =>
 	apiFetch( {
 		path: 'sureforms/v1/form-templates/request',
 		method: 'POST',
-		data: { query, type },
+		data: { query, type: 'request' },
+	} );
+
+/**
+ * Count a search that found no template. Only the count is shared, never
+ * the search text.
+ *
+ * @since x.x.x
+ * @return {Promise<Object>} Response.
+ */
+export const recordEmptySearch = () =>
+	apiFetch( {
+		path: 'sureforms/v1/form-templates/request',
+		method: 'POST',
+		data: { type: 'search' },
 	} );
 
 /**

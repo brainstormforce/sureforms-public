@@ -143,12 +143,14 @@ class Form_Templates {
 				'callback'            => [ $this, 'rest_record_demand' ],
 				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				'args'                => [
+					// What was asked for. Only sent with a `request`.
 					'query' => [
 						'type'              => 'string',
-						'required'          => true,
+						'default'           => '',
 						'sanitize_callback' => 'sanitize_text_field',
 					],
-					// `request` when asked for, `search` for a search with no results.
+					// `request` when asked for, `search` for a search with no results
+					// (counted only, without its text).
 					'type'  => [
 						'type'    => 'string',
 						'enum'    => [ 'request', 'search' ],
@@ -1282,16 +1284,18 @@ class Form_Templates {
 	/**
 	 * POST /form-templates/request
 	 *
-	 * Records a template someone asked for, or searched for without a match.
-	 * Nothing is recorded unless the site shares usage data with SureForms.
+	 * Records a template someone asked for, or counts a search without a
+	 * match (not its text). Nothing is recorded unless the site shares usage
+	 * data with SureForms.
 	 *
 	 * @param WP_REST_Request $request Request.
 	 * @since x.x.x
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_record_demand( $request ) {
-		$query = self::clean_demand_query( $request->get_param( 'query' ) );
-		if ( '' === $query ) {
+		$type  = 'search' === $request->get_param( 'type' ) ? 'search' : 'request';
+		$query = 'search' === $type ? '' : self::clean_demand_query( $request->get_param( 'query' ) );
+		if ( 'request' === $type && '' === $query ) {
 			return new WP_Error( 'srfm_template_request_invalid', __( 'Please describe the template in a few words.', 'sureforms' ), [ 'status' => 400 ] );
 		}
 
@@ -1299,7 +1303,7 @@ class Form_Templates {
 			return new WP_REST_Response( [ 'recorded' => false ] );
 		}
 
-		Analytics::track_form_template_demand( $query, Helper::get_string_value( $request->get_param( 'type' ) ) );
+		Analytics::track_form_template_demand( $query, $type );
 
 		return new WP_REST_Response( [ 'recorded' => true ] );
 	}

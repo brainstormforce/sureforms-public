@@ -508,7 +508,32 @@ class Test_Form_Templates extends TestCase {
 
 		$demand = \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] );
 		$this->assertSame( 2, $demand['request']['gym_membership'] );
-		$this->assertSame( 1, $demand['search']['pet_adoption'] );
+		// A search with no results is only counted, never its text.
+		$this->assertSame( 1, $demand['searches'] );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( $demand ) );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+	}
+
+	public function test_rest_record_demand_counts_an_empty_search_without_text() {
+		$this->login_admin();
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+
+		// What the library sends: no query at all.
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/request' );
+		$request->set_param( 'type', 'search' );
+		$response = rest_do_request( $request );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertTrue( $response->get_data()['recorded'] );
+		$this->assertSame( [ 'searches' => 1 ], \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] ) );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+
+		// A request still needs its text.
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/request' );
+		$this->assertSame( 400, rest_do_request( $request )->get_status() );
 	}
 
 	public function test_template_request_rejects_contact_details() {
