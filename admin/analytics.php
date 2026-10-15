@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Form_Views;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -799,6 +800,7 @@ class Analytics {
 	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
 	 * as the `form_template_usage` event, so template popularity and how often
 	 * templates are swapped inside the editor can be read from the warehouse.
+	 * Nothing is kept or queued unless the site shares usage data.
 	 *
 	 * @param mixed  $template_id Template id (sanitized here).
 	 * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
@@ -806,6 +808,10 @@ class Analytics {
 	 * @return void
 	 */
 	public static function track_form_template_usage( $template_id, $action = 'create' ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return;
+		}
+
 		// The id becomes an option key and an event property key, so clean it here
 		// rather than trusting every caller.
 		$template_id = substr( sanitize_key( Helper::get_string_value( $template_id ) ), 0, 40 );
@@ -846,49 +852,54 @@ class Analytics {
 
 	/**
 	 * Track demand for templates that do not exist yet: what people request
-	 * from the template library, and what they search for without a match.
+	 * from the template library, and how often a search finds nothing.
 	 *
 	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
 	 * as the `form_template_demand` event, so the most wanted templates can be
-	 * read from the warehouse. Callers pass a query already cleaned by
-	 * Form_Templates::clean_demand_query().
+	 * read from the warehouse. Only a request the user sends on purpose carries
+	 * its text (already cleaned by Form_Templates::clean_demand_query()); a
+	 * search with no results is only counted, never its text. Nothing is kept
+	 * or queued unless the site shares usage data.
 	 *
-	 * @param string $query Cleaned search text.
+	 * @param string $query Cleaned request text. Ignored for `search`.
 	 * @param string $type  `request` for an explicit request, `search` for a search with no results.
 	 * @since x.x.x
 	 * @return void
 	 */
 	public static function track_form_template_demand( $query, $type = 'request' ) {
-		$type = 'search' === $type ? 'search' : 'request';
-		// The query becomes an option key and an event property key.
-		$key = substr( str_replace( '-', '_', sanitize_title( Helper::get_string_value( $query ) ) ), 0, 40 );
-		if ( '' === $key ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
 			return;
 		}
 
 		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
 		$demand = is_array( $demand ) ? $demand : [];
 
-		$counts = isset( $demand[ $type ] ) && is_array( $demand[ $type ] ) ? array_map( 'absint', $demand[ $type ] ) : [];
+		if ( 'search' === $type ) {
+			$demand['searches'] = absint( $demand['searches'] ?? 0 ) + 1;
+		} else {
+			// The query becomes an option key and an event property key.
+			$key = substr( str_replace( '-', '_', sanitize_title( Helper::get_string_value( $query ) ) ), 0, 40 );
+			if ( '' === $key ) {
+				return;
+			}
 
-		// Cap distinct keys per type so free text can't grow the option unbounded.
-		if ( isset( $counts[ $key ] ) || count( $counts ) < 30 ) {
-			$counts[ $key ] = absint( $counts[ $key ] ?? 0 ) + 1;
+			$counts = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
+
+			// Cap distinct keys so free text can't grow the option unbounded.
+			if ( isset( $counts[ $key ] ) || count( $counts ) < 30 ) {
+				$counts[ $key ] = absint( $counts[ $key ] ?? 0 ) + 1;
+			}
+			$demand['request'] = $counts;
 		}
-		$demand[ $type ] = $counts;
 		Helper::update_srfm_option( 'form_template_demand', $demand );
 
 		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
-		$searches   = isset( $demand['search'] ) && is_array( $demand['search'] ) ? array_map( 'absint', $demand['search'] ) : [];
 		$properties = [
 			'requests' => (string) array_sum( $requests ),
-			'searches' => (string) array_sum( $searches ),
+			'searches' => (string) absint( $demand['searches'] ?? 0 ),
 		];
 		foreach ( $requests as $id => $count ) {
 			$properties[ 'request_' . $id ] = (string) $count;
-		}
-		foreach ( $searches as $id => $count ) {
-			$properties[ 'search_' . $id ] = (string) $count;
 		}
 
 		// $force = true: cumulative counter, must re-send the latest totals each cycle.

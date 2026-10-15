@@ -201,6 +201,28 @@ class Analytics
     {
     }
     /**
+     * Track forms started from a prebuilt template.
+     *
+     * @param mixed  $template_id Template id (sanitized here).
+     * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_form_template_usage($template_id, $action = 'create')
+    {
+    }
+    /**
+     * Track demand for templates that do not exist yet.
+     *
+     * @param string $query Cleaned request text. Ignored for `search`.
+     * @param string $type  `request` for an explicit request, `search` for a search with no results.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_form_template_demand($query, $type = 'request')
+    {
+    }
+    /**
      * Return total number of forms using instant forms.
      *
      * @since 1.4.0
