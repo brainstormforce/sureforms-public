@@ -379,6 +379,9 @@ const PreviewTabs = ( { tabs, selected, onSelect } ) => {
  * @param {number}   props.top                 Space to leave above, e.g. for the admin bar.
  * @param {boolean}  props.offerSpamProtection Offer to turn on the site-wide honeypot
  *                                             while creating. Off by default.
+ * @param {boolean}  props.spamProtectionOff   The site-wide honeypot is off, so the
+ *                                             visitor email is held back unless it
+ *                                             is turned on while creating.
  * @param {boolean}  props.editMessages        Let the thank-you message and emails be
  *                                             edited before creating. Otherwise they
  *                                             are only shown.
@@ -391,6 +394,7 @@ export const TemplatePreview = ( {
 	presets,
 	top = 0,
 	offerSpamProtection = false,
+	spamProtectionOff = offerSpamProtection,
 	editMessages = false,
 } ) => {
 	const isNarrow = useMediaQuery( NARROW_QUERY );
@@ -500,6 +504,9 @@ export const TemplatePreview = ( {
 
 	const canCustomize = ! template.is_locked;
 	const showSpamOption = offerSpamProtection && ! template.is_locked;
+	// The server only sets up the visitor email while spam protection is on.
+	const holdsVisitorEmail =
+		spamProtectionOff && ! ( showSpamOption && protectFromSpam );
 	const panelId = 'srfm-template-customize-panel';
 
 	const showMessages = hasMessages( template );
@@ -777,6 +784,7 @@ export const TemplatePreview = ( {
 								values={ messageValues }
 								setValue={ setMessage }
 								editable={ canEditMessages }
+								held={ holdsVisitorEmail }
 							/>
 						</div>
 					) }

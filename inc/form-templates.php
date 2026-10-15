@@ -220,7 +220,7 @@ class Form_Templates {
 		 * Each template is an array with `id`, `title`, `description`, `category`,
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
-		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting', 'summary' ]),
+		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
 		 * `steps` (step titles for multi-step forms) and `is_pro`.
 		 *
 		 * A field may carry `pro` (schema keys that replace its own when SureForms Pro
@@ -326,7 +326,6 @@ class Form_Templates {
 				'subject'  => Helper::get_string_value( $autoresponder['subject'] ?? '' ),
 				'greeting' => Helper::get_string_value( $autoresponder['greeting'] ?? __( 'Hi {form:full-name},', 'sureforms' ) ),
 				'lines'    => array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) ),
-				'summary'  => ! isset( $autoresponder['summary'] ) || false !== $autoresponder['summary'],
 			],
 		];
 	}
@@ -897,6 +896,10 @@ class Form_Templates {
 	 * The behaviour metas a template sets: button text, emails and steps.
 	 * Used when creating a form and when a template is applied in the editor.
 	 *
+	 * The confirmation email to the visitor goes to whatever address is typed
+	 * into the form, so it is only set up while the site's spam protection is
+	 * on. Otherwise bots could use the form to send email to anyone.
+	 *
 	 * @param array<string, mixed> $template Template.
 	 * @since x.x.x
 	 * @return array<string, mixed>
@@ -931,7 +934,7 @@ class Form_Templates {
 			$admin['email_bcc']      = '';
 			$notifications           = [ $admin ];
 
-			if ( $has_email && ! empty( $template['autoresponder'] ) && is_array( $template['autoresponder'] ) ) {
+			if ( $has_email && ! empty( $template['autoresponder'] ) && is_array( $template['autoresponder'] ) && self::is_spam_protection_on() ) {
 				$notifications[] = array_merge(
 					$admin,
 					[
@@ -967,6 +970,10 @@ class Form_Templates {
 	/**
 	 * Body of the confirmation email sent to the person who filled in the form.
 	 *
+	 * It never repeats the answers ({all_data}): the address it goes to is
+	 * typed into the form, so echoing free text would let anyone send their
+	 * own text from this site to any address.
+	 *
 	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
 	 * @since x.x.x
 	 * @return string
@@ -976,9 +983,6 @@ class Form_Templates {
 		$body     = '<p>' . esc_html( $greeting ) . '</p>';
 		foreach ( Helper::get_array_value( $autoresponder['lines'] ?? [] ) as $line ) {
 			$body .= '<p>' . esc_html( Helper::get_string_value( $line ) ) . '</p>';
-		}
-		if ( ! isset( $autoresponder['summary'] ) || false !== $autoresponder['summary'] ) {
-			$body .= '<p>' . esc_html__( 'Here is a copy of what you sent us:', 'sureforms' ) . '</p>{all_data}';
 		}
 		return $body . '<p>' . esc_html__( 'Thanks,', 'sureforms' ) . '<br>{site_title}</p>';
 	}
@@ -1183,6 +1187,12 @@ class Form_Templates {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_create_form( $request ) {
+		// Before creating, so the form gets its confirmation email to the
+		// visitor, which is only set up while spam protection is on.
+		if ( rest_sanitize_boolean( $request->get_param( 'enable_spam_protection' ) ) && ! self::is_spam_protection_on() ) {
+			self::enable_spam_protection();
+		}
+
 		$post_id = self::create_form_from_template(
 			Helper::get_string_value( $request->get_param( 'template_id' ) ),
 			self::sanitize_style( $request->get_param( 'style' ) ),
@@ -1191,10 +1201,6 @@ class Form_Templates {
 
 		if ( is_wp_error( $post_id ) ) {
 			return $post_id;
-		}
-
-		if ( rest_sanitize_boolean( $request->get_param( 'enable_spam_protection' ) ) && ! self::is_spam_protection_on() ) {
-			self::enable_spam_protection();
 		}
 
 		return new WP_REST_Response(
@@ -2154,7 +2160,7 @@ class Form_Templates {
 				],
 				'confirmation'  => [
 					'heading' => __( 'You are registered', 'sureforms' ),
-					'text'    => __( 'Thanks for registering. A confirmation is on its way to {form:email}.', 'sureforms' ),
+					'text'    => __( 'Thanks for registering. We will send the event details to {form:email}.', 'sureforms' ),
 				],
 				'email_subject' => __( 'New registration: {form:full-name} ({form:attendees} attending)', 'sureforms' ),
 				'email_intro'   => __( '{form:full-name} has registered for your event. Places requested: {form:attendees}. Reply to this email to reach them directly.', 'sureforms' ),
@@ -2198,7 +2204,7 @@ class Form_Templates {
 				],
 				'confirmation'  => [
 					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'Your RSVP is saved. We have sent a copy to {form:email}.', 'sureforms' ),
+					'text'    => __( 'Your RSVP is saved. Thank you for letting us know.', 'sureforms' ),
 				],
 				'email_subject' => __( 'RSVP: {form:first-name} {form:last-name} – {form:attending}', 'sureforms' ),
 				'email_intro'   => __( '{form:first-name} {form:last-name} replied to your invitation: {form:attending}. Their full RSVP is below. Reply to this email to get in touch with them.', 'sureforms' ),
@@ -2233,7 +2239,7 @@ class Form_Templates {
 				],
 				'confirmation'  => [
 					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'We have received your enrollment for {form:course} and sent a copy to {form:email}. We will be in touch with your place and the next steps.', 'sureforms' ),
+					'text'    => __( 'We have received your enrollment for {form:course}. We will be in touch at {form:email} with your place and the next steps.', 'sureforms' ),
 				],
 				'email_subject' => __( 'New enrollment: {form:first-name} {form:last-name} – {form:course}', 'sureforms' ),
 				'email_intro'   => __( '{form:first-name} {form:last-name} wants to enroll in {form:course} (level: {form:experience}). Reply to this email to confirm their place.', 'sureforms' ),
@@ -2505,7 +2511,7 @@ class Form_Templates {
 				],
 				'confirmation'  => [
 					'heading' => __( 'We have received your complaint', 'sureforms' ),
-					'text'    => __( 'We are sorry for the trouble, {form:full-name}. A copy has been sent to {form:email}, and we will contact you once we have looked into it.', 'sureforms' ),
+					'text'    => __( 'We are sorry for the trouble, {form:full-name}. We will look into it and contact you at {form:email}.', 'sureforms' ),
 				],
 				'email_subject' => __( 'Complaint from {form:full-name}: {form:complaint-type}', 'sureforms' ),
 				'email_intro'   => __( '{form:full-name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),
@@ -2551,7 +2557,6 @@ class Form_Templates {
 						__( 'Thanks for subscribing. We will send our latest news and updates to this address.', 'sureforms' ),
 						__( 'If you did not sign up, you can ignore this email or reply to let us know.', 'sureforms' ),
 					],
-					'summary'  => false,
 				],
 			],
 

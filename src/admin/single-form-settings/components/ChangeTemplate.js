@@ -502,6 +502,9 @@ const ChangeTemplate = () => {
 								isCreating={ busy }
 								presets={ library?.themes }
 								top={ adminBarHeight }
+								spamProtectionOff={
+									false === library?.spam_protection
+								}
 								onUse={ chooseTemplate }
 								onClose={ closePreview }
 							/>

@@ -22,6 +22,7 @@ class Test_Form_Templates extends TestCase {
 		remove_all_filters( 'srfm_form_templates' );
 		remove_all_filters( 'srfm_form_template_message_meta_keys' );
 		$this->reset_template_cache();
+		delete_option( 'srfm_security_settings_options' );
 		wp_set_current_user( 0 );
 		parent::tear_down();
 	}
@@ -30,6 +31,13 @@ class Test_Form_Templates extends TestCase {
 		$property = new ReflectionProperty( Form_Templates::class, 'templates' );
 		$property->setAccessible( true );
 		$property->setValue( null, null );
+	}
+
+	/**
+	 * The visitor confirmation email is only set up while the honeypot is on.
+	 */
+	private function turn_on_spam_protection() {
+		update_option( 'srfm_security_settings_options', [ 'srfm_honeypot' => true ] );
 	}
 
 	private function login_admin() {
@@ -109,6 +117,7 @@ class Test_Form_Templates extends TestCase {
 
 	public function test_create_form_from_template_creates_a_stamped_draft() {
 		$this->login_admin();
+		$this->turn_on_spam_protection();
 
 		$post_id = Form_Templates::create_form_from_template( 'quote-request' );
 
@@ -143,6 +152,8 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'We received your quote request', $reply['subject'] );
 		$this->assertStringContainsString( 'Hi {form:first-name},', $reply['email_body'] );
 		$this->assertStringContainsString( '{site_title}', $reply['email_body'] );
+		// The visitor's copy never repeats their answers: see test_autoresponder_body_never_echoes_answers().
+		$this->assertStringNotContainsString( '{all_data}', $reply['email_body'] );
 	}
 
 	public function test_every_row_is_full_and_email_tags_use_required_fields() {
@@ -223,6 +234,7 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_every_template_is_ready_to_publish() {
+		$this->turn_on_spam_protection();
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
 			$this->assertNotEmpty( $template['submit_text'] ?? '', "Template {$id} has no button text." );
 			$this->assertNotEmpty( $template['email_subject'] ?? '', "Template {$id} has no email subject." );
@@ -299,6 +311,7 @@ class Test_Form_Templates extends TestCase {
 
 	public function test_swap_content_carries_the_template_settings() {
 		$this->login_admin();
+		$this->turn_on_spam_protection();
 
 		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/rsvp' );
 		$request->set_param( 'template_id', 'rsvp' );
@@ -663,6 +676,7 @@ class Test_Form_Templates extends TestCase {
 
 	public function test_created_form_uses_the_messages_edited_in_the_preview() {
 		$this->login_admin();
+		$this->turn_on_spam_protection();
 
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/create' );
 		$request->set_param( 'template_id', 'contact-us' );
@@ -695,6 +709,7 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_visitor_email_can_be_turned_off_in_the_preview() {
+		$this->turn_on_spam_protection();
 		$post_id = Form_Templates::create_form_from_template( 'contact-us', [], [ 'autoresponder' => [ 'enabled' => false ] ] );
 
 		$this->assertCount( 1, get_post_meta( $post_id, '_srfm_email_notification', true ) );
@@ -749,5 +764,72 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( Form_Templates::get_message_meta_keys(), $data['message_meta_keys'] );
 		$this->assertNotEmpty( $data['templates'] );
 		$this->assertArrayHasKey( 'spam_protection', $data );
+	}
+
+	public function test_autoresponder_body_never_echoes_answers() {
+		$this->turn_on_spam_protection();
+
+		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+			foreach ( $emails as $email ) {
+				if ( '{form:email}' !== $email['email_to'] ) {
+					continue;
+				}
+				// The address is typed into the form, so free text echoed back
+				// would let bots send their own text from this site to anyone.
+				$this->assertStringNotContainsString( '{all_data}', $email['email_body'], "Template {$id} echoes the answers to the visitor." );
+				$this->assertStringNotContainsString( '{form:message}', $email['email_body'], "Template {$id} echoes the message to the visitor." );
+			}
+			// The site owner's notification keeps every answer.
+			$this->assertStringEndsWith( '{all_data}', $emails[0]['email_body'] );
+		}
+
+		// A filtered template asking for a summary still gets none.
+		$template                             = Form_Templates::get_template( 'contact-us' );
+		$template['autoresponder']['summary'] = true;
+		$emails                               = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+		$this->assertStringNotContainsString( '{all_data}', $emails[1]['email_body'] );
+	}
+
+	public function test_build_settings_metas_holds_the_visitor_email_without_spam_protection() {
+		delete_option( 'srfm_security_settings_options' );
+
+		$emails = Form_Templates::build_settings_metas( Form_Templates::get_template( 'contact-us' ) )['_srfm_email_notification'];
+		$this->assertCount( 1, $emails, 'Only the site owner is notified.' );
+		$this->assertSame( '{admin_email}', $emails[0]['email_to'] );
+		$this->assertTrue( $emails[0]['status'] );
+
+		$this->turn_on_spam_protection();
+		$this->assertCount( 2, Form_Templates::build_settings_metas( Form_Templates::get_template( 'contact-us' ) )['_srfm_email_notification'] );
+	}
+
+	public function test_rest_create_form_without_spam_protection_has_no_visitor_email() {
+		$this->login_admin();
+		delete_option( 'srfm_security_settings_options' );
+
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/create' );
+		$request->set_param( 'template_id', 'contact-us' );
+		$post_id = ( new Form_Templates() )->rest_create_form( $request )->get_data()['id'];
+
+		$emails = get_post_meta( $post_id, '_srfm_email_notification', true );
+		$this->assertCount( 1, $emails );
+		$this->assertNotSame( '{form:email}', $emails[0]['email_to'] );
+		$this->assertFalse( Form_Templates::is_spam_protection_on() );
+	}
+
+	public function test_rest_create_form_turning_on_spam_protection_keeps_the_visitor_email() {
+		$this->login_admin();
+		delete_option( 'srfm_security_settings_options' );
+
+		// What "Protect this form from spam" (ticked by default) sends.
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/create' );
+		$request->set_param( 'template_id', 'contact-us' );
+		$request->set_param( 'enable_spam_protection', true );
+		$post_id = ( new Form_Templates() )->rest_create_form( $request )->get_data()['id'];
+
+		$emails = get_post_meta( $post_id, '_srfm_email_notification', true );
+		$this->assertCount( 2, $emails );
+		$this->assertSame( '{form:email}', $emails[1]['email_to'] );
+		$this->assertTrue( Form_Templates::is_spam_protection_on() );
 	}
 }
