@@ -10,6 +10,8 @@ export const MultiChoiceComponent = ( {
 	attributes,
 	blockID,
 	setAttributes,
+	openDescription,
+	setOpenDescription,
 } ) => {
 	const {
 		label,
@@ -52,12 +54,31 @@ export const MultiChoiceComponent = ( {
 			<div
 				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${
 					verticalLayout ? ' srfm-vertical-layout' : ''
-				}` }
+				}${ showDescriptions ? ' srfm-descriptions-on' : '' }` }
 			>
 				{ options.map( ( option, key ) => {
 					return (
-						<label key={ key } className="srfm-multi-choice-single">
-							<div className="srfm-block-content-wrap">
+						<label
+							key={ key }
+							className={ `srfm-multi-choice-single${
+								openDescription === key ? ' srfm-editing' : ''
+							}` }
+						>
+							<div
+								className="srfm-block-content-wrap"
+								// Clicking an option in the canvas opens that
+								// same option's description in the inspector,
+								// so the author can click what they see instead
+								// of counting rows. Same gesture as the row's
+								// menu button.
+								onClick={ () => {
+									if ( showDescriptions && setOpenDescription ) {
+										setOpenDescription( key );
+									}
+								} }
+								onKeyDown={ () => {} }
+								role="presentation"
+							>
 								<div className="srfm-option-container">
 									{ optionType === 'icon' && option.icon && (
 										<span className="srfm-option-icon">

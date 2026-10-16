@@ -16,7 +16,6 @@ import {
 	useErrMessage,
 	checkInvalidCharacter,
 	updateSelectedIndicesAfterReorder,
-	OPTION_DESCRIPTION_MAX_LENGTH,
 } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
@@ -41,9 +40,14 @@ import {
 	enhanceDropdownOptions,
 } from '@Components/hooks';
 import { Trash2 } from 'lucide-react';
+import {
+	useOptionDescription,
+	OptionDescriptionToggle,
+	OptionDescriptionControl,
+} from '@Components/option-description';
 
 const Edit = ( props ) => {
-	const { attributes, setAttributes, clientId } = props;
+	const { attributes, setAttributes, clientId, isSelected } = props;
 	const {
 		required,
 		options,
@@ -62,6 +66,9 @@ const Edit = ( props ) => {
 		preselectedOptions = [],
 		dynamicDefaultValue,
 	} = attributes;
+
+	const { openDescription, setOpenDescription, openDescriptionRef } =
+		useOptionDescription( isSelected );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
 	const [ error, setError ] = useState( false );
@@ -253,40 +260,6 @@ const Edit = ( props ) => {
 							} }
 							onChange={ ( value ) => editOption( value, i ) }
 						/>
-						{ showDescriptions && (
-							<div className="srfm-option-description-control">
-								<SRFMTextControl
-									showHeaderControls={ false }
-									value={ option.description || '' }
-									data={ {
-										value: option.description,
-										label: 'optionDescription',
-									} }
-									maxLength={ OPTION_DESCRIPTION_MAX_LENGTH }
-									placeholder={ __(
-										'Description',
-										'sureforms'
-									) }
-									onChange={ ( value ) =>
-										changeOption(
-											{ description: value },
-											i
-										)
-									}
-								/>
-								<span className="srfm-option-description-count">
-									{
-										/* Code units, because that is what the
-										   native maxlength counts: an emoji
-										   stops two characters short of the
-										   cap, and the counter has to say so. */
-										( option.description || '' ).length
-									}
-									/
-									{ OPTION_DESCRIPTION_MAX_LENGTH }
-								</span>
-							</div>
-						) }
 					</div>
 					<div className="srfm-icon-picker">
 						<UAGIconPicker
@@ -298,6 +271,16 @@ const Edit = ( props ) => {
 							addIcon={ parse( svgIcons.custom_plus_icon ) }
 						/>
 					</div>
+					{ showDescriptions && (
+						<OptionDescriptionToggle
+							blockId={ block_id }
+							index={ i }
+							optionLabel={ option.label }
+							description={ option.description }
+							openDescription={ openDescription }
+							setOpenDescription={ setOpenDescription }
+						/>
+					) }
 					<div className="srfm-options-delete">
 						<Trash2
 							style={ {
@@ -348,6 +331,18 @@ const Edit = ( props ) => {
 								changeOption,
 								handleDelete,
 							}
+						) }
+						{ showDescriptions && openDescription === i && (
+							<OptionDescriptionControl
+								blockId={ block_id }
+								index={ i }
+								optionLabel={ option.label }
+								description={ option.description }
+								openDescriptionRef={ openDescriptionRef }
+								onChange={ ( value ) =>
+									changeOption( { description: value }, i )
+								}
+							/>
 						) }
 					</div>
 				) }
