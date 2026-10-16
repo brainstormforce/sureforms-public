@@ -377,7 +377,9 @@ class Test_Form_Templates_Tiers extends TestCase {
 
 		$this->assertCount( 1, $calls );
 		$this->assertSame( 'create', $calls[0]['context'] );
-		$this->assertSame( get_post( $post_id )->post_content, $calls[0]['content'] );
+		// The filter runs before the form exists; the saved blocks then get its ID.
+		$this->assertStringContainsString( '"formId":0', $calls[0]['content'] );
+		$this->assertSame( get_post( $post_id )->post_content, Form_Templates::set_form_id( $calls[0]['content'], $post_id ) );
 		$this->assertContains( 'email', $calls[0]['slugs'] );
 		$this->assertContains( '_srfm_forms_styling', $calls[0]['keys'] );
 		$this->assertSame( 'from-create', get_post_meta( $post_id, '_srfm_test_meta', true ) );

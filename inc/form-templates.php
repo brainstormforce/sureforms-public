@@ -1292,6 +1292,27 @@ class Form_Templates {
 	}
 
 	/**
+	 * Point a template's blocks at the form they belong to.
+	 *
+	 * Blocks are built with `formId: 0`; the block editor fills it in when the
+	 * form is opened there. Until then features that look a form up from its
+	 * blocks, like loading SureForms Pro's Save & Resume styles, can't find it,
+	 * so the template sets it right away.
+	 *
+	 * @param string $content Block markup.
+	 * @param int    $form_id Form ID; 0 leaves the markup as it is.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function set_form_id( $content, $form_id ) {
+		$form_id = absint( $form_id );
+		if ( 0 === $form_id ) {
+			return $content;
+		}
+		return Helper::get_string_value( preg_replace( '/"formId":0(?=[,}\s])/', '"formId":' . $form_id, $content ) );
+	}
+
+	/**
 	 * Post metas for a form created from a template.
 	 *
 	 * Starts from the registered defaults, like a hand-created form, then applies
@@ -1439,6 +1460,19 @@ class Form_Templates {
 			return new WP_Error( 'srfm_template_create_failed', __( 'The form could not be created. Please try again.', 'sureforms' ), [ 'status' => 500 ] );
 		}
 
+		// The new form's ID is only known now, so its blocks get it in a second write.
+		$content = self::set_form_id( $built['content'], $post_id );
+		if ( $content !== $built['content'] ) {
+			wp_update_post(
+				wp_slash(
+					[
+						'ID'           => $post_id,
+						'post_content' => $content,
+					]
+				)
+			);
+		}
+
 		Analytics::track_form_template_usage( $template['id'], 'create' );
 
 		return $post_id;
@@ -1577,14 +1611,14 @@ class Form_Templates {
 			return $locked;
 		}
 
-		$style = self::sanitize_style( $request->get_param( 'style' ) );
-		$built = self::build( $template, $style, 'swap' );
+		$style   = self::sanitize_style( $request->get_param( 'style' ) );
+		$form_id = Helper::get_integer_value( $request->get_param( 'form_id' ) );
+		$built   = self::build( $template, $style, 'swap', $form_id );
 		if ( is_wp_error( $built ) ) {
 			return $built;
 		}
 
 		$style_metas = self::build_style_metas( $template, $style );
-		$form_id     = Helper::get_integer_value( $request->get_param( 'form_id' ) );
 		$has_entries = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
 
 		return new WP_REST_Response(
@@ -1794,7 +1828,7 @@ class Form_Templates {
 		$style = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
 		// A locked template still previews, built with this site's fields, so
 		// the library can show what it offers.
-		$built = self::build( $template, $style, 'preview' );
+		$built = self::build( $template, $style, 'preview', self::get_preview_post_id() );
 		if ( is_wp_error( $built ) ) {
 			wp_die( esc_html( $built->get_error_message() ), '', [ 'response' => 500 ] );
 		}
@@ -2381,14 +2415,16 @@ class Form_Templates {
 	 * @param array<string, mixed> $style    Style from sanitize_style().
 	 * @param string               $context  `create` or `preview` for all the form's metas,
 	 *                                       `swap` for the settings metas and the thank-you message.
+	 * @param int                  $form_id  The form the blocks belong to, when known.
 	 * @since x.x.x
 	 * @return array{content: string, metas: array<string, mixed>}|WP_Error
 	 */
-	private static function build( $template, $style, $context ) {
+	private static function build( $template, $style, $context, $form_id = 0 ) {
 		$content = self::build_content( $template );
 		if ( is_wp_error( $content ) ) {
 			return $content;
 		}
+		$content = self::set_form_id( $content, $form_id );
 
 		if ( 'swap' === $context ) {
 			$metas = array_merge(
@@ -2433,6 +2469,8 @@ class Form_Templates {
 		 * only the template's settings metas (plus `_srfm_form_confirmation`) are
 		 * passed; `create` metas are saved through wp_insert_post() and are
 		 * unslashed on the way; `preview` metas render an in-memory form.
+		 * On `create` the form doesn't exist yet, so `$content`'s blocks still
+		 * have `formId: 0`; they get the new form's ID once it is saved.
 		 *
 		 * @since x.x.x
 		 * @param array<string, mixed>             $metas    Metas, keyed by meta key.
