@@ -108,7 +108,7 @@ return [
 		'theme'         => 'ocean',
 		'icon'          => 'graduation-cap',
 		'title'         => __( 'Knowledge Quiz with Pass or Fail', 'sureforms' ),
-		'description'   => __( 'Five scored questions on staying safe online, with a pass or fail message and the results emailed to each person. Swap in your own questions.', 'sureforms' ),
+		'description'   => __( 'A scored online safety quiz with a pass or fail message and emailed results.', 'sureforms' ),
 		'submit_text'   => __( 'See my score', 'sureforms' ),
 		'features'      => [ 'quiz' ],
 		// The thank-you messages below show the score; the quiz adds nothing to them.
@@ -192,7 +192,7 @@ return [
 		'theme'         => 'sunset',
 		'icon'          => 'gauge',
 		'title'         => __( 'How Ready Is Your Business? Scorecard', 'sureforms' ),
-		'description'   => __( 'A six-question self-assessment that grades a business A to D on growing online, with a next step for each grade. Collects the lead’s email.', 'sureforms' ),
+		'description'   => __( 'A self-assessment that grades businesses A to D and collects the lead’s email.', 'sureforms' ),
 		'submit_text'   => __( 'Get my grade', 'sureforms' ),
 		'features'      => [ 'quiz' ],
 		// Every answer is worth 0 to 3 points; the grade comes from the percentage.
@@ -327,7 +327,7 @@ return [
 		'theme'         => 'mint',
 		'icon'          => 'activity',
 		'title'         => __( 'Employee Pulse Survey', 'sureforms' ),
-		'description'   => __( 'A short check-in on mood, workload and eNPS that never asks for names, with charts in your survey reports.', 'sureforms' ),
+		'description'   => __( 'An anonymous check-in on mood, workload and eNPS, with charts in your reports.', 'sureforms' ),
 		'submit_text'   => __( 'Send my answers', 'sureforms' ),
 		// Survey reports chart the answers for the owner; live results stay off
 		// so colleagues never see each other's answers.
@@ -400,7 +400,7 @@ return [
 		'theme'         => 'ocean',
 		'icon'          => 'compass',
 		'title'         => __( 'Which Plan Is Right for You?', 'sureforms' ),
-		'description'   => __( 'Three quick questions that recommend a plan, with a different thank-you message for each answer.', 'sureforms' ),
+		'description'   => __( 'Three quick questions that recommend a plan, with a message for each answer.', 'sureforms' ),
 		'submit_text'   => __( 'Show my plan', 'sureforms' ),
 		'features'      => [ 'conditional_logic' ],
 		'fields'        => [
@@ -470,7 +470,7 @@ return [
 		'theme'          => 'midnight',
 		'icon'           => 'messages-square',
 		'title'          => __( 'Conversational Lead Qualifier', 'sureforms' ),
-		'description'    => __( 'One question at a time, like a chat, to learn who a lead is and how soon they want to start.', 'sureforms' ),
+		'description'    => __( 'One question at a time, like a chat, to learn who a lead is and when they’ll start.', 'sureforms' ),
 		'submit_text'    => __( 'Send', 'sureforms' ),
 		// One question per screen; the layout has no steps, so no page breaks.
 		'conversational' => [
@@ -517,7 +517,7 @@ return [
 		'theme'         => 'sunset',
 		'icon'          => 'megaphone',
 		'title'         => __( 'Ad Campaign Lead Form', 'sureforms' ),
-		'description'   => __( 'A landing page lead form that records which ad, source and campaign each lead came from.', 'sureforms' ),
+		'description'   => __( 'A lead form that records which ad, source and campaign each lead came from.', 'sureforms' ),
 		'submit_text'   => __( 'Get started', 'sureforms' ),
 		'fields'        => [
 			$c['first_name'],

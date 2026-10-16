@@ -10,7 +10,6 @@ import {
 	ArrowLeft,
 	ArrowRight,
 	Check,
-	Crown,
 	ExternalLink,
 	Eye,
 	FileText,
@@ -37,7 +36,6 @@ import {
 import Header from './Header.js';
 import TemplateStylePanel from './TemplateStylePanel.js';
 import {
-	FeatureChip,
 	IncludedFeatures,
 	PremiumBadge,
 	getCardImage,
@@ -724,7 +722,7 @@ export const TemplatePreview = ( {
 										/>
 									</div>
 									<span className="absolute top-3 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium whitespace-nowrap rounded-full bg-background-inverse/90 text-text-on-color shadow-md">
-										<Crown
+										<Lock
 											className="size-3.5"
 											aria-hidden="true"
 										/>
@@ -1183,7 +1181,7 @@ export const TemplateGrid = ( {
 										: 'bg-background-primary text-text-secondary border-border-subtle hover:text-text-primary',
 								) }
 							>
-								<Crown className="size-3" aria-hidden="true" />
+								<Lock className="size-3" aria-hidden="true" />
 								{ __( 'Premium', 'sureforms' ) }
 							</button>
 						) }
@@ -1224,10 +1222,6 @@ export const TemplateGrid = ( {
 				{ /* Cards are hidden rather than removed, so their live previews
 				load once instead of on every filter or keystroke. */ }
 				{ templates.map( ( template ) => {
-					const features = getFeatures( template.features ).slice(
-						0,
-						3
-					);
 					return (
 						<button
 							key={ template.id }
@@ -1235,8 +1229,8 @@ export const TemplateGrid = ( {
 							hidden={ ! isShown( template ) }
 							onClick={ () => onSelect( template.id ) }
 							aria-describedby={
-								features.length
-									? `srfm-template-features-${ template.id }`
+								template.description
+									? `srfm-template-description-${ template.id }`
 									: undefined
 							}
 							aria-label={
@@ -1302,23 +1296,13 @@ export const TemplateGrid = ( {
 										/>
 									) }
 								</span>
-								{ features.length > 0 && (
-									// One row of chips: a chip that doesn't fit wraps out of
-									// sight whole instead of being cut off. The preview lists all.
-									<span
-										id={ `srfm-template-features-${ template.id }` }
-										className="flex flex-wrap gap-1 h-5 overflow-hidden"
-									>
-										{ features.map( ( feature ) => (
-											<FeatureChip
-												key={ feature.id }
-												label={ feature.short }
-												title={ feature.label }
-												Icon={ feature.Icon }
-											/>
-										) ) }
-									</span>
-								) }
+								{ /* Two lines tall on every card, so the cards line up. The preview lists the features. */ }
+								<span
+									id={ `srfm-template-description-${ template.id }` }
+									className="h-8 text-xs leading-4 text-text-secondary line-clamp-2"
+								>
+									{ template.description }
+								</span>
 							</span>
 						</button>
 					);
