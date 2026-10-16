@@ -273,6 +273,9 @@ class Payments_Settings {
 		// Delete Stripe webhook endpoints for both test and live modes.
 		$this->delete_stripe_webhooks();
 
+		// The next account's dashboard settings may differ.
+		Stripe_Helper::clear_wallet_settings_cache();
+
 		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
 			$settings = Stripe_Helper::get_all_stripe_settings();
@@ -960,6 +963,7 @@ class Payments_Settings {
 
 		// Save settings.
 		Stripe_Helper::update_all_stripe_settings( $settings );
+		Stripe_Helper::clear_wallet_settings_cache();
 
 		$account_name = $this->get_account_name();
 
