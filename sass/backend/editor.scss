@@ -146,6 +146,19 @@ body.post-type-sureforms_form {
 			flex: 1;
 		}
 
+		// Only rendered while the Option Description toggle is on. The counter
+		// is the only cue that the native maxlength has stopped accepting
+		// keystrokes, so it sits right under the field it governs.
+		.srfm-option-description-control {
+			.srfm-option-description-count {
+				display: block;
+				font-size: 11px;
+				line-height: 1.4;
+				color: #6b7280;
+				text-align: right;
+			}
+		}
+
 		.srfm-option-value {
 			width: 75px;
 		}

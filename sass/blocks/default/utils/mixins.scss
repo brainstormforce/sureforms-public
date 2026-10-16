@@ -254,6 +254,9 @@
 		.srfm-option-description {
 			@include srfm-description-styles;
 			margin-top: 0;
+			// The label above gets `word-break: break-word`, this span does not,
+			// so a long unbroken string ran straight out of the option box.
+			overflow-wrap: anywhere;
 		}
 		.srfm-option-icon {
 			display: flex;

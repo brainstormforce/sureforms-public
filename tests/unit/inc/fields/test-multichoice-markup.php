@@ -58,7 +58,7 @@ class Test_Multichoice_Markup extends TestCase {
 				'help'                   => 'Pick one ticket.',
 				'singleSelection'        => true,
 				'optionType'             => 'icon',
-				'showOptionDescriptions' => $enabled,
+				'showDescriptions' => $enabled,
 				'options'                => [
 					[ 'optionTitle' => 'Early Bird', 'description' => '$149 until 1 March', 'icon' => '', 'image' => '' ],
 					[ 'optionTitle' => 'Standard', 'icon' => '', 'image' => '' ],
@@ -130,7 +130,7 @@ class Test_Multichoice_Markup extends TestCase {
 				'block_id'               => 'mc003',
 				'formId'                 => '1',
 				'slug'                   => 'ticket',
-				'showOptionDescriptions' => true,
+				'showDescriptions' => true,
 				'options'                => [
 					[ 'optionTitle' => 'Early Bird', 'description' => '<script>alert(1)</script>', 'icon' => '', 'image' => '' ],
 				],

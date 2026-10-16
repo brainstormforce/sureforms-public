@@ -126,7 +126,7 @@ class Test_Base extends TestCase {
 		// Opted out: the stored description is ignored.
 		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ $option ] ) );
 
-		$this->set_private_property( $this->base, 'show_option_descriptions', true );
+		$this->set_private_property( $this->base, 'show_descriptions', true );
 
 		$this->assertSame( '$149 until 1 March', $this->call_private_method( $this->base, 'get_option_description', [ $option ] ) );
 

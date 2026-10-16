@@ -20,7 +20,7 @@ export const MultiChoiceComponent = ( {
 		singleSelection,
 		verticalLayout,
 		optionType,
-		showOptionDescriptions,
+		showDescriptions,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -74,7 +74,12 @@ export const MultiChoiceComponent = ( {
 											/>
 										</span>
 									) }
-									{ showOptionDescriptions &&
+									{ /* Mirrors the wrapper and span in
+									     Multichoice_Markup::markup(). Tag, class
+									     and placement must stay in sync with the
+									     PHP, and an option without a description
+									     renders the bare <p> it always did. */ }
+									{ showDescriptions &&
 									option.description ? (
 											<div className="srfm-option-text">
 												<p>{ option.optionTitle }</p>

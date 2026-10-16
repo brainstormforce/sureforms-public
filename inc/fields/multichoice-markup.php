@@ -113,17 +113,17 @@ class Multichoice_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
-		$this->single_selection         = $attributes['singleSelection'] ?? false;
-		$this->choice_width             = $attributes['choiceWidth'] ?? '';
-		$this->vertical_layout          = $attributes['verticalLayout'] ?? false;
-		$this->option_type              = ! empty( $attributes['optionType'] ) && in_array( $attributes['optionType'], [ 'icon', 'image' ], true ) ? $attributes['optionType'] : 'icon';
-		$this->type_attr                = $this->single_selection ? 'radio' : 'checkbox';
-		$this->svg_type                 = $this->single_selection ? 'circle' : 'square';
-		$this->name_attr                = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
-		$this->choice_width_attr        = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
-		$this->show_values              = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
-		$this->preselected_options      = $attributes['preselectedOptions'] ?? [];
-		$this->show_option_descriptions = ! empty( $attributes['showOptionDescriptions'] );
+		$this->single_selection    = $attributes['singleSelection'] ?? false;
+		$this->choice_width        = $attributes['choiceWidth'] ?? '';
+		$this->vertical_layout     = $attributes['verticalLayout'] ?? false;
+		$this->option_type         = ! empty( $attributes['optionType'] ) && in_array( $attributes['optionType'], [ 'icon', 'image' ], true ) ? $attributes['optionType'] : 'icon';
+		$this->type_attr           = $this->single_selection ? 'radio' : 'checkbox';
+		$this->svg_type            = $this->single_selection ? 'circle' : 'square';
+		$this->name_attr           = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
+		$this->choice_width_attr   = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
+		$this->show_values         = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
+		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
+		$this->show_descriptions   = ! empty( $attributes['showDescriptions'] );
 		$this->resolve_dynamic_default( $attributes );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
@@ -156,6 +156,15 @@ class Multichoice_Markup extends Base {
 						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<?php
+									/*
+									 * The description is mirrored by the canvas preview in
+									 * src/blocks/multi-choice/components/default.js; tag, class and
+									 * placement must stay in sync with it. It sits outside the
+									 * <label> so the accessible name, the conditional-logic value
+									 * and the URL pre-fill match stay the option title alone.
+									 * Nothing extra is emitted for an option without a description,
+									 * so an existing form renders byte-identical markup.
+									 */
 									$option_description = $this->get_option_description( $option );
 									$description_id     = '' === $option_description ? '' : 'srfm-' . $this->slug . '-' . $this->block_id . '-' . $i . '-description';
 								?>

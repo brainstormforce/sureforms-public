@@ -303,7 +303,7 @@ class Base {
 	 * @var bool
 	 * @since 2.13.0
 	 */
-	protected $show_option_descriptions = false;
+	protected $show_descriptions = false;
 
 	/**
 	 * Stores the minimum number of selections required.
@@ -563,13 +563,11 @@ class Base {
 	 * @return string
 	 */
 	protected function get_option_description( $option ) {
-		if ( empty( $this->show_option_descriptions ) || ! is_array( $option ) ) {
+		if ( empty( $this->show_descriptions ) || ! is_array( $option ) ) {
 			return '';
 		}
 
-		$description = $option['description'] ?? '';
-
-		return is_scalar( $description ) ? trim( (string) $description ) : '';
+		return trim( Helper::get_string_value( $option['description'] ?? '' ) );
 	}
 
 	/**

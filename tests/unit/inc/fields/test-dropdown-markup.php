@@ -55,7 +55,7 @@ class Test_Dropdown_Markup extends TestCase {
 				'formId'                 => '1',
 				'slug'                   => 'delivery',
 				'placeholder'            => 'Select an option',
-				'showOptionDescriptions' => $enabled,
+				'showDescriptions' => $enabled,
 				'options'                => [
 					[ 'label' => 'Express', 'description' => $description, 'icon' => '' ],
 					[ 'label' => 'Standard', 'icon' => '' ],

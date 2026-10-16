@@ -114,7 +114,7 @@ class Dropdown_Markup extends Base {
 
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 
-		$this->show_option_descriptions = ! empty( $attributes['showOptionDescriptions'] );
+		$this->show_descriptions = ! empty( $attributes['showDescriptions'] );
 
 		// Generate unique instance identifier.
 		self::$instance_counter++;

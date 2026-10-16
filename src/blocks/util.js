@@ -195,3 +195,11 @@ export {
 	checkInvalidCharacter,
 	updateSelectedIndicesAfterReorder,
 };
+
+/**
+ * Maximum length of a single option description. Enforced as a native
+ * `maxlength`, which also truncates pastes.
+ *
+ * @since 2.13.0
+ */
+export const OPTION_DESCRIPTION_MAX_LENGTH = 120;

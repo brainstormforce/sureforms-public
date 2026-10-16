@@ -95,7 +95,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"showOptionDescriptions": {
+		"showDescriptions": {
 			"type": "boolean",
 			"default": false
 		},

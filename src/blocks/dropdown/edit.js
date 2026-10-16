@@ -16,6 +16,7 @@ import {
 	useErrMessage,
 	checkInvalidCharacter,
 	updateSelectedIndicesAfterReorder,
+	OPTION_DESCRIPTION_MAX_LENGTH,
 } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
@@ -57,7 +58,7 @@ const Edit = ( props ) => {
 		minValue,
 		maxValue,
 		showValues,
-		showOptionDescriptions,
+		showDescriptions,
 		preselectedOptions = [],
 		dynamicDefaultValue,
 	} = attributes;
@@ -252,19 +253,39 @@ const Edit = ( props ) => {
 							} }
 							onChange={ ( value ) => editOption( value, i ) }
 						/>
-						{ showOptionDescriptions && (
-							<SRFMTextControl
-								showHeaderControls={ false }
-								value={ option.description || '' }
-								data={ {
-									value: option.description,
-									label: 'optionDescription',
-								} }
-								placeholder={ __( 'Description', 'sureforms' ) }
-								onChange={ ( value ) =>
-									changeOption( { description: value }, i )
-								}
-							/>
+						{ showDescriptions && (
+							<div className="srfm-option-description-control">
+								<SRFMTextControl
+									showHeaderControls={ false }
+									value={ option.description || '' }
+									data={ {
+										value: option.description,
+										label: 'optionDescription',
+									} }
+									maxLength={ OPTION_DESCRIPTION_MAX_LENGTH }
+									placeholder={ __(
+										'Description',
+										'sureforms'
+									) }
+									onChange={ ( value ) =>
+										changeOption(
+											{ description: value },
+											i
+										)
+									}
+								/>
+								<span className="srfm-option-description-count">
+									{
+										/* Code units, because that is what the
+										   native maxlength counts: an emoji
+										   stops two characters short of the
+										   cap, and the counter has to say so. */
+										( option.description || '' ).length
+									}
+									/
+									{ OPTION_DESCRIPTION_MAX_LENGTH }
+								</span>
+							</div>
 						) }
 					</div>
 					<div className="srfm-icon-picker">
@@ -522,17 +543,17 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'show-option-descriptions',
+			id: 'show-descriptions',
 			component: (
 				<ToggleControl
-					label={ __( 'Add Option Descriptions', 'sureforms' ) }
+					label={ __( 'Option Description', 'sureforms' ) }
 					help={ __(
-						'Shows a second line under each option. The option label stays the submitted value, so pre-filled links keep working.',
+						'Show a short description under each option. The option label stays the submitted value, so pre-filled links keep working.',
 						'sureforms'
 					) }
-					checked={ showOptionDescriptions }
+					checked={ showDescriptions }
 					onChange={ ( value ) =>
-						setAttributes( { showOptionDescriptions: value } )
+						setAttributes( { showDescriptions: value } )
 					}
 				/>
 			),
