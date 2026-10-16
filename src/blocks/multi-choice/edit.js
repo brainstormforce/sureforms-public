@@ -645,10 +645,6 @@ const Edit = ( props ) => {
 			component: (
 				<ToggleControl
 					label={ __( 'Option Description', 'sureforms' ) }
-					help={ __(
-						'Show a short description under each option.',
-						'sureforms'
-					) }
 					checked={ showDescriptions }
 					onChange={ ( value ) =>
 						setAttributes( { showDescriptions: value } )
