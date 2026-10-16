@@ -1270,7 +1270,7 @@ export const TemplateGrid = ( {
 									</span>
 								</span>
 							</span>
-							<span className="flex flex-col gap-2 px-4 py-3">
+							<span className="flex flex-col gap-1 px-4 py-3">
 								<span className="flex items-center justify-between gap-2">
 									<span className="min-w-0 text-sm font-semibold text-text-primary truncate">
 										{ template.title }
