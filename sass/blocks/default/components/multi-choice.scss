@@ -10,7 +10,7 @@
 				// a second line left its neighbours short. Scoped to wraps that
 				// actually carry a description, so a form without any keeps the
 				// heights it has today.
-				&:has( .srfm-option-description ) .srfm-block-content-wrap {
+				&:has( .srfm-option-description ) .srfm-multi-choice-single .srfm-block-content-wrap {
 					height: 100%;
 				}
 
