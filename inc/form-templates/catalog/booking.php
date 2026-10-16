@@ -10,6 +10,7 @@
  */
 
 use SRFM\Inc\Form_Templates\Catalog;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,8 +20,8 @@ $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
 
 // With SureForms Pro, the appointment date shares its row with a time picker.
-$appointment_date = Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true );
-$appointment_date['pro']['blockAttributes']['fieldWidth'] = 50;
+$appointment_date        = Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true );
+$appointment_date['pro'] = Catalog::attrs( Helper::get_array_value( $appointment_date['pro'] ), [ 'fieldWidth' => 50 ] );
 
 return [
 	[
@@ -140,7 +141,7 @@ return [
 		],
 		'confirmation'  => [
 			'heading' => __( 'You are registered', 'sureforms' ),
-			'text'    => __( 'Thanks for registering. A confirmation is on its way to {form:email}.', 'sureforms' ),
+			'text'    => __( 'Thanks for registering. We will send the event details to {form:email}.', 'sureforms' ),
 		],
 		'email_subject' => __( 'New registration: {form:full-name} ({form:attendees} attending)', 'sureforms' ),
 		'email_intro'   => __( '{form:full-name} has registered for your event. Places requested: {form:attendees}. Reply to this email to reach them directly.', 'sureforms' ),
@@ -184,7 +185,7 @@ return [
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-			'text'    => __( 'Your RSVP is saved. We have sent a copy to {form:email}.', 'sureforms' ),
+			'text'    => __( 'Your RSVP is saved. Thank you for letting us know.', 'sureforms' ),
 		],
 		// With SureForms Pro, guest questions only show for guests who are coming.
 		'conditions'    => [
@@ -224,7 +225,7 @@ return [
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-			'text'    => __( 'We have received your enrollment for {form:course} and sent a copy to {form:email}. We will be in touch with your place and the next steps.', 'sureforms' ),
+			'text'    => __( 'We have received your enrollment for {form:course}. We will be in touch at {form:email} with your place and the next steps.', 'sureforms' ),
 		],
 		'email_subject' => __( 'New enrollment: {form:first-name} {form:last-name} – {form:course}', 'sureforms' ),
 		'email_intro'   => __( '{form:first-name} {form:last-name} wants to enroll in {form:course} (level: {form:experience}). Reply to this email to confirm their place.', 'sureforms' ),

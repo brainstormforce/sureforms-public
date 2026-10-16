@@ -60,13 +60,6 @@ class Form_Templates {
 	public const PREVIEW_QUERY_VAR = 'srfm_template_preview';
 
 	/**
-	 * Post ID of the in-memory form a preview renders. Never written to the database.
-	 *
-	 * @since x.x.x
-	 */
-	private const PREVIEW_POST_ID = 2147483600;
-
-	/**
 	 * Plan tiers a template can require, lowest first.
 	 *
 	 * @since x.x.x
@@ -98,12 +91,29 @@ class Form_Templates {
 	];
 
 	/**
-	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds the PRO_FEATURE_KEYS. A paid
-	 * template declaring any of them is locked (reason `update`) below it.
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds each of the PRO_FEATURE_KEYS.
+	 * Version 1 builds the Starter and Pro keys, version 2 adds the Business
+	 * ones. A paid template declaring a key is locked (reason `update`) while
+	 * the active SureForms Pro reports a lower version.
 	 *
 	 * @since x.x.x
 	 */
-	public const REQUIRED_PRO_TEMPLATE_API = 1;
+	public const PRO_FEATURE_API = [
+		'conditions'       => 1,
+		'confirmations'    => 1,
+		'email_conditions' => 1,
+		'attach_uploads'   => 1,
+		'restrictions'     => 1,
+		'save_resume'      => 1,
+		'survey'           => 1,
+		'conversational'   => 1,
+		'quiz'             => 2,
+		'partial_entries'  => 2,
+		'cpt'              => 2,
+		'registration'     => 2,
+		'entry_limit'      => 2,
+		'pdf'              => 2,
+	];
 
 	/**
 	 * Example result of a calculated field whose formula can't be worked out.
@@ -111,6 +121,13 @@ class Form_Templates {
 	 * @since x.x.x
 	 */
 	public const CALCULATION_FALLBACK = '123.45';
+
+	/**
+	 * Post ID of the in-memory form a preview renders. Never written to the database.
+	 *
+	 * @since x.x.x
+	 */
+	private const PREVIEW_POST_ID = 2147483600;
 
 	/**
 	 * The "Included" feature each Pro template key adds.
@@ -141,6 +158,28 @@ class Form_Templates {
 	 * @since x.x.x
 	 */
 	private const NO_ANSWER_TYPES = [ 'gdpr', 'page-break', 'inline-button', 'upload', 'html', 'signature', 'payment', 'password', 'repeater' ];
+
+	/**
+	 * Hooks whose callbacks print or enqueue assets on the preview page.
+	 *
+	 * @since x.x.x
+	 */
+	private const PREVIEW_ASSET_HOOKS = [ 'wp_enqueue_scripts', 'wp_head', 'wp_print_styles', 'wp_print_scripts', 'wp_body_open', 'wp_footer', 'wp_print_footer_scripts' ];
+
+	/**
+	 * Core styles the preview keeps besides the form's own: block and global
+	 * styles, which give the form the theme's fonts and colors.
+	 *
+	 * @since x.x.x
+	 */
+	private const PREVIEW_CORE_STYLES = [ 'wp-block-library', 'global-styles', 'classic-theme-styles', 'core-block-supports', 'core-block-supports-duotone', 'wp-img-auto-sizes-contain' ];
+
+	/**
+	 * Spam-protection scripts SureForms loads under their providers' handles.
+	 *
+	 * @since x.x.x
+	 */
+	private const PREVIEW_CAPTCHA_SCRIPTS = [ 'google-recaptcha', 'google-recaptcha-invisible', 'hcaptcha' ];
 
 	/**
 	 * Memoised template list, keyed by id.
@@ -223,12 +262,14 @@ class Form_Templates {
 				'callback'            => [ $this, 'rest_record_demand' ],
 				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				'args'                => [
+					// What was asked for. Only sent with a `request`.
 					'query' => [
 						'type'              => 'string',
-						'required'          => true,
+						'default'           => '',
 						'sanitize_callback' => 'sanitize_text_field',
 					],
-					// `request` when asked for, `search` for a search with no results.
+					// `request` when asked for, `search` for a search with no results
+					// (counted only, without its text).
 					'type'  => [
 						'type'    => 'string',
 						'enum'    => [ 'request', 'search' ],
@@ -322,7 +363,7 @@ class Form_Templates {
 		 * Each template is an array with `id`, `title`, `description`, `category`,
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
-		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting', 'summary' ]),
+		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
 		 * `steps` (step titles for multi-step forms), `features` (extra "Included"
 		 * feature ids, such as `calculation`) and the Pro keys in PRO_FEATURE_KEYS.
 		 *
@@ -417,6 +458,8 @@ class Form_Templates {
 				'unlock_url'      => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
 				// Picture of the Premium version, shown instead of the live preview while locked.
 				'preview_image'   => self::get_preview_image_url( $template ),
+				// Picture on the library card, so the grid never loads live previews.
+				'thumbnail'       => self::get_thumbnail_url( $template ),
 				// How many of the Premium version's fields the live preview can't show here.
 				'preview_missing' => '' === $lock_reason ? 0 : self::count_missing_preview_fields( $template, $resolved ),
 				'setup'           => self::get_setup( $template ),
@@ -488,22 +531,18 @@ class Form_Templates {
 	}
 
 	/**
-	 * Whether the active SureForms Pro is too old for a template: older than its
-	 * `min_pro_version`, or without the template builder its Pro keys need.
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds every Pro key a template declares.
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @since x.x.x
-	 * @return bool
+	 * @return int 0 when the template declares no Pro keys.
 	 */
-	private static function needs_pro_update( $template ) {
-		$min_version = Helper::get_string_value( $template['min_pro_version'] ?? '' );
-		$pro_version = defined( 'SRFM_PRO_VER' ) ? Helper::get_string_value( constant( 'SRFM_PRO_VER' ) ) : '';
-		if ( '' !== $min_version && version_compare( $pro_version, $min_version, '<' ) ) {
-			return true;
+	public static function get_required_pro_template_api( $template ) {
+		$required = 0;
+		foreach ( array_keys( array_intersect_key( $template, self::PRO_FEATURE_API ) ) as $key ) {
+			$required = max( $required, self::PRO_FEATURE_API[ $key ] );
 		}
-
-		$pro_keys = array_intersect_key( $template, self::PRO_FEATURE_KEYS );
-		return ! empty( $pro_keys ) && self::get_pro_template_api() < self::REQUIRED_PRO_TEMPLATE_API;
+		return $required;
 	}
 
 	/**
@@ -571,6 +610,26 @@ class Form_Templates {
 	}
 
 	/**
+	 * URL of the picture on a template's library card: its `preview_image`, or
+	 * the plugin's `images/templates/<id>.webp` when there is one.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string Unescaped URL, '' when the template has no picture.
+	 */
+	public static function get_thumbnail_url( $template ) {
+		$image = self::get_preview_image_url( $template );
+		if ( '' !== $image ) {
+			return $image;
+		}
+		$id = sanitize_key( Helper::get_string_value( $template['id'] ?? '' ) );
+		if ( '' === $id || ! file_exists( SRFM_DIR . 'images/templates/' . $id . '.webp' ) ) {
+			return '';
+		}
+		return SRFM_URL . 'images/templates/' . $id . '.webp';
+	}
+
+	/**
 	 * How many fields of a template's Premium version the live preview on this
 	 * site leaves out: fields only added on a higher plan, and fields whose
 	 * block this site doesn't have.
@@ -615,6 +674,1379 @@ class Form_Templates {
 			}
 		}
 		return $setup;
+	}
+
+	/**
+	 * The thank-you message and emails a template sets, for the preview to
+	 * show and edit before the form is created.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	public static function get_messages( $template, $fields ) {
+		$confirmation  = Helper::get_array_value( $template['confirmation'] ?? [] );
+		$autoresponder = ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ? Helper::get_array_value( $template['autoresponder'] ) : null;
+		$result_tags   = self::get_result_tags( $template, $fields );
+
+		// Every text the messages hold, to find the result tags they use.
+		$texts = array_merge(
+			[ $confirmation['heading'] ?? '', $confirmation['text'] ?? '', $template['email_subject'] ?? '', $template['email_intro'] ?? '' ],
+			null === $autoresponder ? [] : array_merge( [ $autoresponder['subject'] ?? '', $autoresponder['greeting'] ?? '' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) )
+		);
+
+		return [
+			// Example values for the SureForms Pro tags (quiz score, payment amount, …)
+			// the messages use or the "Results" chips insert.
+			'tag_samples'   => self::get_tag_samples( implode( "\n", array_map( [ Helper::class, 'get_string_value' ], $texts ) ), $result_tags, $fields, $template ),
+			// Results the messages can include: { tag, label }.
+			'result_tags'   => $result_tags,
+			'confirmation'  => [
+				'heading' => Helper::get_string_value( $confirmation['heading'] ?? '' ),
+				'text'    => Helper::get_string_value( $confirmation['text'] ?? '' ),
+			],
+			'email'         => [
+				'subject' => Helper::get_string_value( $template['email_subject'] ?? '' ),
+				'intro'   => Helper::get_string_value( $template['email_intro'] ?? '' ),
+			],
+			'autoresponder' => null === $autoresponder ? null : [
+				'subject'  => Helper::get_string_value( $autoresponder['subject'] ?? '' ),
+				'greeting' => Helper::get_string_value( $autoresponder['greeting'] ?? __( 'Hi {form:full-name},', 'sureforms' ) ),
+				'lines'    => array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) ),
+			],
+		];
+	}
+
+	/**
+	 * The answers a message can include as `{form:slug}`, each with an example
+	 * value for the preview. Fields without a readable answer (consent, steps,
+	 * buttons, uploads, HTML, signatures, payments, passwords and repeaters) are
+	 * left out; hidden fields stay, as their values (a source page, UTM tags)
+	 * are useful in the site owner's email.
+	 *
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<int, array{slug: string, label: string, required: bool, sample: string}>
+	 */
+	public static function get_answers( $fields ) {
+		$answers = [];
+		foreach ( $fields as $field ) {
+			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
+			if ( in_array( $type, self::NO_ANSWER_TYPES, true ) ) {
+				continue;
+			}
+			$answers[] = [
+				'slug'     => Helper::get_string_value( $field['slug'] ?? '' ),
+				'label'    => Helper::get_string_value( $field['label'] ?? '' ),
+				'required' => ! empty( $field['required'] ),
+				'sample'   => self::calculated_sample( $field, $fields ) ?? self::sample_answer( $field ),
+			];
+		}
+		return $answers;
+	}
+
+	/**
+	 * Results a template's messages can include, from the SureForms Pro
+	 * features it uses: quiz scores, calculated totals, payment details and
+	 * poll results. The library offers them as "Results" chips.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<int, array{tag: string, label: string}>
+	 */
+	public static function get_result_tags( $template, $fields ) {
+		$features = array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $template['features'] ?? [] ) );
+		$tags     = [];
+
+		if ( ! empty( $template['quiz'] ) || in_array( 'quiz', $features, true ) ) {
+			$tags['{quiz_score}']        = __( 'Quiz score', 'sureforms' );
+			$tags['{quiz_percentage}']   = __( 'Quiz percentage', 'sureforms' );
+			$tags['{quiz_pass_fail}']    = __( 'Pass or fail', 'sureforms' );
+			$tags['{quiz_letter_grade}'] = __( 'Letter grade', 'sureforms' );
+			$tags['{quiz_result}']       = __( 'All quiz results', 'sureforms' );
+		}
+		foreach ( $fields as $field ) {
+			$slug = Helper::get_string_value( $field['slug'] ?? '' );
+			if ( '' === $slug ) {
+				continue;
+			}
+			if ( '' !== self::get_formula( $field ) ) {
+				$tags[ '{form:' . $slug . '}' ] = Helper::get_string_value( $field['label'] ?? $slug );
+			}
+			if ( 'payment' === ( $field['fieldType'] ?? '' ) ) {
+				$tags[ '{form-payment:' . $slug . ':amount}' ]   = __( 'Amount paid', 'sureforms' );
+				$tags[ '{form-payment:' . $slug . ':order-id}' ] = __( 'Order ID', 'sureforms' );
+				$tags[ '{form-payment:' . $slug . ':status}' ]   = __( 'Payment status', 'sureforms' );
+			}
+		}
+		if ( ! empty( $template['survey'] ) || in_array( 'survey', $features, true ) ) {
+			$tags['{poll_results}'] = __( 'Poll results', 'sureforms' );
+		}
+
+		$list = [];
+		foreach ( $tags as $tag => $label ) {
+			$list[] = [
+				'tag'   => $tag,
+				'label' => $label,
+			];
+		}
+		return $list;
+	}
+
+	/**
+	 * Example values for the SureForms Pro tags in a text and for the result
+	 * tags, for the message previews. Answers (`{form:slug}`) aren't included:
+	 * they come with get_answers().
+	 *
+	 * @param string                                        $text        Message text.
+	 * @param array<int, array{tag: string, label: string}> $result_tags From get_result_tags().
+	 * @param array<int, array<string, mixed>>              $fields      Fields from resolve_fields().
+	 * @param array<string, mixed>                          $template    Template, for its quiz settings.
+	 * @since x.x.x
+	 * @return array<string, string> Sample by tag, e.g. `{quiz_score}` => '4 / 5'.
+	 */
+	public static function get_tag_samples( $text, $result_tags, $fields, $template = [] ) {
+		preg_match_all( '/\{(?:quiz_[a-z_]+|poll_results|calculation-result|form-payment:[a-z0-9_-]+:[a-z-]+)\}/i', $text, $matches );
+		$tags    = array_merge( $matches[0], array_column( $result_tags, 'tag' ) );
+		$samples = [];
+		foreach ( array_unique( $tags ) as $tag ) {
+			$sample = self::tag_sample( strtolower( $tag ), $fields, $template );
+			if ( null !== $sample ) {
+				$samples[ $tag ] = $sample;
+			}
+		}
+		return $samples;
+	}
+
+	/**
+	 * Example result of a calculated field: its formula worked out from the
+	 * example answers and rounded, as the entry saves it. The field's prefix
+	 * and suffix (a currency symbol, a unit) are only shown on the form, not
+	 * saved, so they are left out. 123.45 when the formula can't be worked out.
+	 *
+	 * @param array<string, mixed>             $field  Field schema.
+	 * @param array<int, array<string, mixed>> $fields All fields, for the answers the formula uses.
+	 * @since x.x.x
+	 * @return string|null Null for a field that isn't calculated.
+	 */
+	public static function calculated_sample( $field, $fields ) {
+		$formula = self::get_formula( $field );
+		if ( '' === $formula ) {
+			return null;
+		}
+
+		/**
+		 * Filters the example result of a calculated field in the template
+		 * library, e.g. so SureForms Pro can work it out with its own calculator.
+		 *
+		 * @since x.x.x
+		 * @param float|null                       $value   Result from the free evaluator, null when it couldn't work it out.
+		 * @param string                           $formula Formula, with `{form:slug}` tags.
+		 * @param array<string, mixed>             $field   Calculated field.
+		 * @param array<int, array<string, mixed>> $fields  All fields.
+		 */
+		$value = apply_filters( 'srfm_form_template_calculation_sample', self::evaluate_formula( $formula, $fields ), $formula, $field, $fields );
+
+		$attributes = Helper::get_array_value( $field['blockAttributes'] ?? [] );
+		if ( ! is_numeric( $value ) ) {
+			return self::CALCULATION_FALLBACK;
+		}
+		$value    = (float) $value;
+		$round    = $field['calculationRound'] ?? $attributes['calculationRound'] ?? null;
+		$decimals = is_numeric( $round ) ? max( 0, min( 6, (int) $round ) ) : ( floor( $value ) === $value ? 0 : 2 );
+
+		return number_format( $value, $decimals );
+	}
+
+	/**
+	 * Work out a formula from the example answers.
+	 *
+	 * @param string                           $formula Formula with `{form:slug}` tags.
+	 * @param array<int, array<string, mixed>> $fields  Fields.
+	 * @param int                              $depth   Calculated fields already being worked out, against loops.
+	 * @since x.x.x
+	 * @return float|null Null when a tag has no number or the arithmetic is invalid.
+	 */
+	public static function evaluate_formula( $formula, $fields, $depth = 0 ) {
+		// The editor saves the tags escaped as %{%form:slug%}%.
+		$formula = str_replace( [ '%{%', '%}%' ], [ '{', '}' ], $formula );
+		$invalid = false;
+
+		$expression = preg_replace_callback(
+			'/\{([^:{}]+):([^{}]+)\}/',
+			static function ( $match ) use ( $fields, $depth, &$invalid ) {
+				$value = 'form' === trim( $match[1] ) ? self::numeric_sample( trim( $match[2] ), $fields, $depth ) : null;
+				if ( null === $value ) {
+					$invalid = true;
+					return '0';
+				}
+				$number = rtrim( rtrim( sprintf( '%.10F', abs( $value ) ), '0' ), '.' );
+				$number = '' === $number ? '0' : $number;
+				// Parenthesized, so a negative answer stays one value next to any operator.
+				return $value < 0 ? '(-' . $number . ')' : $number;
+			},
+			$formula
+		);
+
+		if ( $invalid || ! is_string( $expression ) ) {
+			return null;
+		}
+		return Formula::evaluate( $expression );
+	}
+
+	/**
+	 * Clean up the thank-you message and email text edited in the preview.
+	 *
+	 * @param mixed $raw `messages` from the create request.
+	 * @since x.x.x
+	 * @return array<string, mixed> Only the keys that were sent, as plain text.
+	 */
+	public static function sanitize_messages( $raw ) {
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+		$line  = static fn( $value ) => mb_substr( sanitize_text_field( Helper::get_string_value( $value ) ), 0, 300 );
+		$text  = static fn( $value ) => mb_substr( sanitize_textarea_field( Helper::get_string_value( $value ) ), 0, 2000 );
+		$clean = [];
+
+		if ( isset( $raw['confirmation'] ) && is_array( $raw['confirmation'] ) ) {
+			foreach ( [
+				'heading' => $line,
+				'text'    => $text,
+			] as $key => $sanitize ) {
+				if ( isset( $raw['confirmation'][ $key ] ) && is_string( $raw['confirmation'][ $key ] ) ) {
+					$clean['confirmation'][ $key ] = $sanitize( $raw['confirmation'][ $key ] );
+				}
+			}
+		}
+		if ( isset( $raw['email_subject'] ) && is_string( $raw['email_subject'] ) ) {
+			$clean['email_subject'] = $line( $raw['email_subject'] );
+		}
+		if ( isset( $raw['email_intro'] ) && is_string( $raw['email_intro'] ) ) {
+			$clean['email_intro'] = $text( $raw['email_intro'] );
+		}
+		if ( isset( $raw['autoresponder'] ) && is_array( $raw['autoresponder'] ) ) {
+			$auto = $raw['autoresponder'];
+			if ( isset( $auto['enabled'] ) ) {
+				$clean['autoresponder']['enabled'] = rest_sanitize_boolean( $auto['enabled'] );
+			}
+			foreach ( [ 'subject', 'greeting' ] as $key ) {
+				if ( isset( $auto[ $key ] ) && is_string( $auto[ $key ] ) ) {
+					$clean['autoresponder'][ $key ] = $line( $auto[ $key ] );
+				}
+			}
+			if ( isset( $auto['lines'] ) && is_array( $auto['lines'] ) ) {
+				$clean['autoresponder']['lines'] = array_values( array_filter( array_map( $text, array_slice( $auto['lines'], 0, 10 ) ) ) );
+			}
+		}
+		return $clean;
+	}
+
+	/**
+	 * A template with the thank-you message and email text edited in the preview.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param array<string, mixed> $messages From sanitize_messages().
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	public static function apply_messages( $template, $messages ) {
+		if ( ! empty( $messages['confirmation'] ) ) {
+			$template['confirmation'] = array_merge( Helper::get_array_value( $template['confirmation'] ?? [] ), Helper::get_array_value( $messages['confirmation'] ) );
+		}
+		foreach ( [ 'email_subject', 'email_intro' ] as $key ) {
+			if ( isset( $messages[ $key ] ) && '' !== $messages[ $key ] ) {
+				$template[ $key ] = $messages[ $key ];
+			}
+		}
+		if ( ! empty( $messages['autoresponder'] ) && ! empty( $template['autoresponder'] ) ) {
+			$auto = Helper::get_array_value( $messages['autoresponder'] );
+			if ( isset( $auto['enabled'] ) && ! $auto['enabled'] ) {
+				unset( $template['autoresponder'] );
+			} else {
+				unset( $auto['enabled'] );
+				$template['autoresponder'] = array_merge( Helper::get_array_value( $template['autoresponder'] ), array_filter( $auto ) );
+			}
+		}
+		return $template;
+	}
+
+	/**
+	 * Visual themes a template can use: the form's background and colors.
+	 * Everything maps to the free form styling options, so a
+	 * form created from a template keeps its look and stays editable in the
+	 * Style tab.
+	 *
+	 * @since x.x.x
+	 * @return array<string, array<string, string>>
+	 */
+	public static function get_themes() {
+		return [
+			'ocean'    => [
+				'background' => 'linear-gradient(135deg, #EAF2FF 0%, #F7FAFF 100%)',
+				'primary'    => '#2563EB',
+				'text'       => '#1E293B',
+				'on_primary' => '#FFFFFF',
+				'banner'     => '#1D4ED8',
+			],
+			'midnight' => [
+				'background' => 'linear-gradient(160deg, #0F172A 0%, #1E293B 100%)',
+				'primary'    => '#38BDF8',
+				'text'       => '#E2E8F0',
+				'on_primary' => '#0F172A',
+				'banner'     => '#020617',
+			],
+			'mint'     => [
+				'background' => 'linear-gradient(135deg, #E6FAF1 0%, #F5FFFB 100%)',
+				'primary'    => '#059669',
+				'text'       => '#1F2F2A',
+				'on_primary' => '#FFFFFF',
+				'banner'     => '#047857',
+			],
+			'lavender' => [
+				'background' => 'linear-gradient(135deg, #F0EBFF 0%, #FBF8FF 100%)',
+				'primary'    => '#7C3AED',
+				'text'       => '#27203A',
+				'on_primary' => '#FFFFFF',
+				'banner'     => '#6D28D9',
+			],
+			'sunset'   => [
+				'background' => 'linear-gradient(135deg, #FFEADF 0%, #FFF5F7 100%)',
+				'primary'    => '#E4572E',
+				'text'       => '#33201A',
+				'on_primary' => '#FFFFFF',
+				'banner'     => '#C2410C',
+			],
+			'sand'     => [
+				'background' => 'linear-gradient(135deg, #FFF4D9 0%, #FFFBF1 100%)',
+				'primary'    => '#B45309',
+				'text'       => '#2D2416',
+				'on_primary' => '#FFFFFF',
+				'banner'     => '#92400E',
+			],
+		];
+	}
+
+	/**
+	 * Presets for the preview's style panel: name, background, accent and
+	 * the text colors that go with them, so the preview can restyle itself
+	 * exactly like resolve_theme() does.
+	 *
+	 * @since x.x.x
+	 * @return array<int, array{id:string,background:string,accent:string,text:string,onPrimary:string}>
+	 */
+	public static function get_themes_for_js() {
+		$presets = [];
+		foreach ( self::get_themes() as $id => $theme ) {
+			$presets[] = [
+				'id'         => $id,
+				'background' => $theme['background'],
+				'accent'     => $theme['primary'],
+				'text'       => $theme['text'],
+				'onPrimary'  => $theme['on_primary'],
+			];
+		}
+		return $presets;
+	}
+
+	/**
+	 * Clean up a style chosen in the template preview.
+	 *
+	 * Only known keys survive: a preset from get_themes() and hex colors for
+	 * the background and accent.
+	 *
+	 * @param mixed $raw Style from the request or the preview URL.
+	 * @since x.x.x
+	 * @return array{preset?:string,background?:string,accent?:string}
+	 */
+	public static function sanitize_style( $raw ) {
+		if ( is_string( $raw ) && '' !== $raw ) {
+			$raw = json_decode( $raw, true );
+		}
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+
+		$style  = [];
+		$preset = isset( $raw['preset'] ) && is_string( $raw['preset'] ) ? sanitize_key( $raw['preset'] ) : '';
+		if ( isset( self::get_themes()[ $preset ] ) ) {
+			$style['preset'] = $preset;
+		}
+		foreach ( [ 'background', 'accent' ] as $key ) {
+			$color = isset( $raw[ $key ] ) && is_string( $raw[ $key ] ) ? sanitize_hex_color( $raw[ $key ] ) : '';
+			if ( ! empty( $color ) ) {
+				$style[ $key ] = strtoupper( $color );
+			}
+		}
+
+		return $style;
+	}
+
+	/**
+	 * The look a form gets: the template's theme (or the chosen preset), with
+	 * any background and accent chosen in the preview on top.
+	 *
+	 * Text and button-text colors follow the chosen colors, so the
+	 * result stays readable whatever is picked.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param array<string, mixed> $style    Style from sanitize_style().
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	public static function resolve_theme( $template, $style = [] ) {
+		$themes = self::get_themes();
+		$preset = Helper::get_string_value( $style['preset'] ?? '' );
+		$theme  = $themes[ $preset ] ?? self::get_template_theme( $template );
+
+		if ( ! empty( $style['background'] ) ) {
+			$background          = Helper::get_string_value( $style['background'] );
+			$theme['background'] = 'linear-gradient(135deg, ' . $background . ' 0%, ' . self::mix_with( $background, '#FFFFFF', 0.35 ) . ' 100%)';
+			$theme['text']       = self::is_dark( $background ) ? '#E2E8F0' : '#1E293B';
+		}
+
+		if ( ! empty( $style['accent'] ) ) {
+			$accent              = Helper::get_string_value( $style['accent'] );
+			$theme['primary']    = $accent;
+			$theme['on_primary'] = self::is_dark( $accent ) ? '#FFFFFF' : '#0F172A';
+			$theme['banner']     = self::mix_with( $accent, '#000000', 0.15 );
+		}
+
+		$theme['radius'] = 16;
+
+		return $theme;
+	}
+
+	/**
+	 * Template categories that have at least one template, in display order.
+	 *
+	 * @since x.x.x
+	 * @return array<int, array<string, string>>
+	 */
+	public static function get_categories() {
+		$used = array_flip( array_map( [ Helper::class, 'get_string_value' ], array_column( self::get_templates(), 'category' ) ) );
+
+		return array_values(
+			array_filter(
+				self::all_categories(),
+				static fn( $category ) => isset( $used[ $category['id'] ] )
+			)
+		);
+	}
+
+	/**
+	 * A template's fields as they will be built on a plan: `pro` variants
+	 * applied and `pro_only` fields kept only from their `pro_tier` (Starter
+	 * by default).
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param string|bool          $tier     Plan tier from Helper::get_pro_tier(). `true` is
+	 *                                       read as `business` and `false` as `free`.
+	 * @since x.x.x
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function resolve_fields( $template, $tier ) {
+		if ( is_bool( $tier ) ) {
+			$tier = $tier ? 'business' : 'free';
+		}
+		$rank   = Helper::tier_rank( $tier );
+		$fields = [];
+		foreach ( Helper::get_array_value( $template['fields'] ?? [] ) as $field ) {
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			$with_pro = $rank >= max( 1, Helper::tier_rank( Helper::get_string_value( $field['pro_tier'] ?? 'starter' ) ) );
+			$pro_only = ! empty( $field['pro_only'] ) || ( isset( $field['pro_tier'] ) && empty( $field['pro'] ) );
+			if ( $pro_only && ! $with_pro ) {
+				continue;
+			}
+			if ( $with_pro && ! empty( $field['pro'] ) && is_array( $field['pro'] ) ) {
+				// The Pro field keeps the free field's width and other block attributes.
+				$pro = $field['pro'];
+				if ( isset( $pro['blockAttributes'] ) ) {
+					$pro['blockAttributes'] = array_merge( Helper::get_array_value( $field['blockAttributes'] ?? [] ), Helper::get_array_value( $pro['blockAttributes'] ) );
+				}
+				$field = array_merge( $field, $pro );
+			}
+			unset( $field['pro'], $field['pro_only'], $field['pro_tier'] );
+			$fields[] = $field;
+		}
+		return $fields;
+	}
+
+	/**
+	 * What a template sets up, for the "Included" chips in the library.
+	 *
+	 * Besides the features its fields bring, a template's Pro keys (such as
+	 * `conditions`) count from the plan that builds them, and ids listed in its
+	 * `features` key (such as `calculation`) always count.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @param string                           $tier     Plan the fields were resolved for. Defaults to this site's.
+	 * @since x.x.x
+	 * @return array<int, string>
+	 */
+	public static function get_features( $template, $fields, $tier = '' ) {
+		$by_type = [
+			'page-break'  => 'multi_step',
+			'upload'      => 'file_upload',
+			'date-picker' => 'date_picker',
+			'time-picker' => 'time_picker',
+			'rating'      => 'rating',
+			'nps'         => 'nps',
+			'gdpr'        => 'consent',
+			'signature'   => 'signature',
+			'slider'      => 'slider',
+			'repeater'    => 'repeater',
+			'payment'     => 'payment',
+		];
+		$tier    = '' === $tier ? Helper::get_pro_tier() : $tier;
+
+		$features = [ 'notification' ];
+		if ( ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ) {
+			$features[] = 'autoresponder';
+		}
+		foreach ( $fields as $field ) {
+			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
+			if ( isset( $by_type[ $type ] ) ) {
+				$features[] = $by_type[ $type ];
+			}
+		}
+		foreach ( self::FEATURE_BY_KEY as $key => $feature ) {
+			if ( ! empty( $template[ $key ] ) && Helper::tier_rank( $tier ) >= Helper::tier_rank( self::PRO_FEATURE_KEYS[ $key ] ) ) {
+				$features[] = $feature;
+			}
+		}
+		foreach ( Helper::get_array_value( $template['features'] ?? [] ) as $feature ) {
+			$features[] = sanitize_key( Helper::get_string_value( $feature ) );
+		}
+
+		/**
+		 * Filters what a template sets up, for the "Included" chips in the library.
+		 *
+		 * @since x.x.x
+		 * @param array<int, string>               $features Feature ids, such as `multi_step` or `quiz`.
+		 * @param array<string, mixed>             $template Template.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+		 */
+		$features = apply_filters( 'srfm_form_template_features', $features, $template, $fields );
+
+		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $features ) ) ) ) );
+	}
+
+	/**
+	 * Passes a template field's `blockAttributes` through to its block.
+	 *
+	 * Hooked only while a template is being built.
+	 *
+	 * @param array<string, mixed> $attributes Block attributes from the mapper.
+	 * @param array<string, mixed> $question   Field schema.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	public static function apply_block_attributes( $attributes, $question ) {
+		if ( ! empty( $question['blockAttributes'] ) && is_array( $question['blockAttributes'] ) ) {
+			$attributes = array_merge( $attributes, $question['blockAttributes'] );
+		}
+		return $attributes;
+	}
+
+	/**
+	 * Block markup for a template.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string|WP_Error
+	 */
+	public static function build_content( $template ) {
+		$fields  = self::resolve_fields( $template, Helper::get_pro_tier() );
+		$request = new WP_REST_Request( 'POST' );
+		$request->set_param(
+			'form_data',
+			[
+				'form' => [
+					'formTitle'  => $template['title'] ?? '',
+					'formFields' => $fields,
+				],
+			]
+		);
+
+		add_filter( 'srfm_ai_form_builder_modify_merged_attributes', [ self::class, 'apply_block_attributes' ], 20, 2 );
+		$content = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
+		remove_filter( 'srfm_ai_form_builder_modify_merged_attributes', [ self::class, 'apply_block_attributes' ], 20 );
+
+		if ( is_wp_error( $content ) ) {
+			return $content;
+		}
+
+		/**
+		 * Filters the block markup built from a template, before it is saved,
+		 * previewed or swapped into a form. SureForms Pro uses it to add the block
+		 * attributes its template features need.
+		 *
+		 * @since x.x.x
+		 * @param string                           $content  Block markup.
+		 * @param array<string, mixed>             $template Template.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
+		 */
+		return Helper::get_string_value( apply_filters( 'srfm_form_template_content', Helper::get_string_value( $content ), $template, $fields ) );
+	}
+
+	/**
+	 * Post metas for a form created from a template.
+	 *
+	 * Starts from the registered defaults, like a hand-created form, then applies
+	 * the template's thank-you message and notification subject.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param array<string, mixed> $style    Optional style from sanitize_style().
+	 * @param string               $content  The form's block markup, from build_content(). Built when
+	 *                                       empty and something filters the metas.
+	 * @param string               $context  `create` or `preview`.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	public static function build_metas( $template, $style = [], $content = '', $context = 'create' ) {
+		$metas      = Create_New_Form::get_default_meta_keys();
+		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
+
+		$metas['_srfm_form_confirmation'] = self::confirmation_meta( $template );
+		$metas                            = array_merge( $metas, self::settings_metas( $template ), self::build_style_metas( $template, $style ) );
+
+		$metas['_srfm_compliance']       = $registered['_srfm_compliance']['default'] ?? [];
+		$metas[ self::CREATED_VIA_META ] = 'template';
+		$metas[ self::TEMPLATE_ID_META ] = $template['id'];
+
+		return self::filter_metas( $metas, $template, $content, $context );
+	}
+
+	/**
+	 * The behaviour metas a template sets: button text, emails and steps.
+	 * Used when creating a form and when a template is applied in the editor.
+	 *
+	 * The confirmation email to the visitor goes to whatever address is typed
+	 * into the form, so it is only set up while the site's spam protection is
+	 * on. Otherwise bots could use the form to send email to anyone.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param string               $content  The form's block markup, from build_content(). Built when
+	 *                                       empty and something filters the metas.
+	 * @param string               $context  `swap`, `create` or `preview`.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	public static function build_settings_metas( $template, $content = '', $context = 'swap' ) {
+		return self::filter_metas( self::settings_metas( $template ), $template, $content, $context );
+	}
+
+	/**
+	 * The metas that carry a template's look: form styling, and the banner on
+	 * the form's own page. Used when creating a form and when a template is
+	 * applied to an open form in the editor.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param array<string, mixed> $style    Optional style from sanitize_style().
+	 * @since x.x.x
+	 * @return array{_srfm_forms_styling: array<string, mixed>, _srfm_instant_form_settings: array<string, mixed>, _srfm_single_page_form_title: int}
+	 */
+	public static function build_style_metas( $template, $style = [] ) {
+		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
+		$theme      = self::resolve_theme( $template, $style );
+		$styling    = Helper::get_array_value( $registered['_srfm_forms_styling']['default'] ?? [] );
+		$styling    = array_merge(
+			$styling,
+			[
+				'primary_color'           => $theme['primary'],
+				'text_color'              => $theme['text'],
+				'text_color_on_primary'   => $theme['on_primary'],
+				'field_spacing'           => 'medium',
+				'submit_button_alignment' => 'justify',
+				'bg_type'                 => 'gradient',
+				'gradient_type'           => 'basic',
+				'bg_gradient'             => $theme['background'],
+			]
+		);
+		// The form's own page (Instant Form) reads its own padding and corner
+		// keys, so both get the same values and the form looks alike everywhere.
+		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
+			$styling[ 'form_padding_' . $side ]               = 40;
+			$styling[ 'form_border_radius_' . $side ]         = $theme['radius'];
+			$styling[ 'instant_form_padding_' . $side ]       = 40;
+			$styling[ 'instant_form_border_radius_' . $side ] = $theme['radius'];
+		}
+
+		// The form's own page (Instant Form) shows the form title above the
+		// form, and its banner follows the template's theme.
+		$instant_form = array_merge(
+			Helper::get_array_value( $registered['_srfm_instant_form_settings']['default'] ?? [] ),
+			self::instant_form_style( $theme )
+		);
+
+		return [
+			'_srfm_forms_styling'          => $styling,
+			'_srfm_instant_form_settings'  => $instant_form,
+			'_srfm_single_page_form_title' => 1,
+		];
+	}
+
+	/**
+	 * Create a draft form from a template.
+	 *
+	 * @param string               $template_id Template id.
+	 * @param array<string, mixed> $style       Optional style chosen in the preview (sanitize_style()).
+	 * @param array<string, mixed> $messages    Optional thank-you and email text edited in the preview (sanitize_messages()).
+	 * @since x.x.x
+	 * @return int|WP_Error New form ID.
+	 */
+	public static function create_form_from_template( $template_id, $style = [], $messages = [] ) {
+		$template = self::get_template( $template_id );
+
+		if ( null === $template ) {
+			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
+		}
+
+		$locked = self::locked_error( $template );
+		if ( null !== $locked ) {
+			return $locked;
+		}
+
+		$template = self::apply_messages( $template, self::sanitize_messages( $messages ) );
+		$built    = self::build( $template, self::sanitize_style( $style ), 'create' );
+		if ( is_wp_error( $built ) ) {
+			return $built;
+		}
+
+		// wp_insert_post() unslashes its input, which would strip the backslashes
+		// that escape quotes inside the block JSON (a label like `Say "hi"`) and
+		// in edited message text, so slash everything first.
+		$post_id = wp_insert_post(
+			wp_slash(
+				[
+					'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
+					'post_content' => $built['content'],
+					'post_status'  => 'draft',
+					'post_type'    => SRFM_FORMS_POST_TYPE,
+					'meta_input'   => $built['metas'],
+				]
+			),
+			true
+		);
+
+		if ( is_wp_error( $post_id ) ) {
+			return $post_id;
+		}
+
+		if ( empty( $post_id ) ) {
+			return new WP_Error( 'srfm_template_create_failed', __( 'The form could not be created. Please try again.', 'sureforms' ), [ 'status' => 500 ] );
+		}
+
+		Analytics::track_form_template_usage( $template['id'], 'create' );
+
+		return $post_id;
+	}
+
+	/**
+	 * GET /form-templates
+	 *
+	 * @since x.x.x
+	 * @return WP_REST_Response
+	 */
+	public function rest_list_templates() {
+		return new WP_REST_Response(
+			[
+				'templates'         => self::get_templates_for_js(),
+				'pro_tier'          => Helper::get_pro_tier(),
+				'categories'        => self::get_categories(),
+				'themes'            => self::get_themes_for_js(),
+				'requests'          => self::get_request_settings_for_js(),
+				'spam_protection'   => self::is_spam_protection_on(),
+				// Settings the editor only replaces when the user chooses to.
+				'message_meta_keys' => self::get_message_meta_keys(),
+			]
+		);
+	}
+
+	/**
+	 * The form settings that hold a form's messages: emails, the thank-you
+	 * message, the button text and the step labels.
+	 *
+	 * Applying a template to an open form always replaces its fields and
+	 * design. These keys are only replaced when the user chooses to, so a
+	 * form can take a new look and keep its own emails and messages.
+	 *
+	 * @since x.x.x
+	 * @return array<int, string> Meta keys.
+	 */
+	public static function get_message_meta_keys() {
+		$keys = [
+			'_srfm_submit_button_text',
+			'_srfm_email_notification',
+			'_srfm_form_confirmation',
+			'_srfm_page_break_settings',
+		];
+
+		/**
+		 * Filters the form settings a template swap only replaces when the user
+		 * chooses to also replace the form's emails and messages.
+		 *
+		 * @since x.x.x
+		 * @param array<int, string> $keys Meta keys.
+		 */
+		$filtered = apply_filters( 'srfm_form_template_message_meta_keys', $keys );
+
+		// A broken filter falls back to the defaults: with no keys, a swap the user
+		// asked to keep the form's messages would replace them anyway.
+		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], is_array( $filtered ) ? $filtered : $keys ) ) ) );
+	}
+
+	/**
+	 * Whether the site-wide honeypot is on.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_spam_protection_on() {
+		$options = get_option( 'srfm_security_settings_options' );
+		return is_array( $options ) && ! empty( $options['srfm_honeypot'] );
+	}
+
+	/**
+	 * Turn on the site-wide honeypot, keeping the other security settings.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function enable_spam_protection() {
+		$options                  = get_option( 'srfm_security_settings_options' );
+		$options                  = is_array( $options ) ? $options : [];
+		$options['srfm_honeypot'] = true;
+		update_option( 'srfm_security_settings_options', $options );
+	}
+
+	/**
+	 * POST /form-templates/create
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @since x.x.x
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_create_form( $request ) {
+		// Before creating, so the form gets its confirmation email to the
+		// visitor, which is only set up while spam protection is on.
+		if ( rest_sanitize_boolean( $request->get_param( 'enable_spam_protection' ) ) && ! self::is_spam_protection_on() ) {
+			self::enable_spam_protection();
+		}
+
+		$post_id = self::create_form_from_template(
+			Helper::get_string_value( $request->get_param( 'template_id' ) ),
+			self::sanitize_style( $request->get_param( 'style' ) ),
+			Helper::get_array_value( $request->get_param( 'messages' ) )
+		);
+
+		if ( is_wp_error( $post_id ) ) {
+			return $post_id;
+		}
+
+		return new WP_REST_Response(
+			[
+				'id'       => $post_id,
+				'edit_url' => admin_url( 'post.php?post=' . $post_id . '&action=edit' ),
+			]
+		);
+	}
+
+	/**
+	 * GET /form-templates/<id>
+	 *
+	 * Block markup for swapping a template into an open form. Also says whether
+	 * that form already has entries, because swapping changes the fields that
+	 * existing entries and integrations were recorded against.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @since x.x.x
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_get_template_content( $request ) {
+		$template = self::get_template( Helper::get_string_value( $request->get_param( 'template_id' ) ) );
+
+		if ( null === $template ) {
+			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
+		}
+
+		$locked = self::locked_error( $template );
+		if ( null !== $locked ) {
+			return $locked;
+		}
+
+		$style = self::sanitize_style( $request->get_param( 'style' ) );
+		$built = self::build( $template, $style, 'swap' );
+		if ( is_wp_error( $built ) ) {
+			return $built;
+		}
+
+		$style_metas = self::build_style_metas( $template, $style );
+		$form_id     = Helper::get_integer_value( $request->get_param( 'form_id' ) );
+		$has_entries = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
+
+		return new WP_REST_Response(
+			[
+				'id'           => $template['id'],
+				'title'        => Helper::get_string_value( $template['title'] ?? '' ),
+				'content'      => $built['content'],
+				'has_entries'  => $has_entries,
+				// Applied over the open form's own settings in the editor.
+				'styling'      => self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
+				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
+				// Button text, emails, thank-you message and steps the template sets.
+				// The editor only applies the get_message_meta_keys() ones when the
+				// user chooses to replace the form's messages too.
+				'settings'     => $built['metas'],
+			]
+		);
+	}
+
+	/**
+	 * POST /form-templates/request
+	 *
+	 * Records a template someone asked for, or counts a search without a
+	 * match (not its text). Nothing is recorded unless the site shares usage
+	 * data with SureForms.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @since x.x.x
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_record_demand( $request ) {
+		$type  = 'search' === $request->get_param( 'type' ) ? 'search' : 'request';
+		$query = 'search' === $type ? '' : self::clean_demand_query( $request->get_param( 'query' ) );
+		if ( 'request' === $type && '' === $query ) {
+			return new WP_Error( 'srfm_template_request_invalid', __( 'Please describe the template in a few words.', 'sureforms' ), [ 'status' => 400 ] );
+		}
+
+		if ( ! self::is_usage_sharing_on() ) {
+			return new WP_REST_Response( [ 'recorded' => false ] );
+		}
+
+		Analytics::track_form_template_demand( $query, $type );
+
+		return new WP_REST_Response( [ 'recorded' => true ] );
+	}
+
+	/**
+	 * Clean search text before it is shared as template demand.
+	 *
+	 * Keeps short, plain descriptions only. Text that looks like contact
+	 * details or a link is dropped, as people sometimes paste those into
+	 * search boxes.
+	 *
+	 * @param mixed $query Search text.
+	 * @since x.x.x
+	 * @return string Cleaned text, or '' when it should not be shared.
+	 */
+	public static function clean_demand_query( $query ) {
+		$query = strtolower( trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( Helper::get_string_value( $query ) ) ) ) );
+
+		if ( '' === $query || strlen( $query ) < 2 || strlen( $query ) > 60 ) {
+			return '';
+		}
+
+		// Emails, links and long numbers (phone numbers, IDs).
+		if ( false !== strpos( $query, '@' ) || preg_match( '#https?:|www\.|\.com\b|\d{5,}#', $query ) ) {
+			return '';
+		}
+
+		if ( count( explode( ' ', $query ) ) > 6 ) {
+			return '';
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Whether this site shares usage data with SureForms, which is how
+	 * template requests reach the team.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_usage_sharing_on() {
+		if ( ! apply_filters( 'bsf_usage_tracking_enabled', true ) ) {
+			return false;
+		}
+		return (bool) apply_filters( 'sureforms_tracking_enabled', 'yes' === get_site_option( 'sureforms_usage_optin', false ) );
+	}
+
+	/**
+	 * What the template library needs to offer "Request this template".
+	 *
+	 * @since x.x.x
+	 * @return array{enabled: bool, settings_url: string}
+	 */
+	public static function get_request_settings_for_js() {
+		return [
+			'enabled'      => self::is_usage_sharing_on(),
+			'settings_url' => admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ),
+		];
+	}
+
+	/**
+	 * POST /form-templates/swap
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @since x.x.x
+	 * @return WP_REST_Response
+	 */
+	public function rest_record_swap( $request ) {
+		self::record_swap(
+			Helper::get_integer_value( $request->get_param( 'form_id' ) ),
+			Helper::get_string_value( $request->get_param( 'template_id' ) )
+		);
+
+		return new WP_REST_Response( [ 'success' => true ] );
+	}
+
+	/**
+	 * Record a template swapped into an open form.
+	 *
+	 * The swap itself happens in the editor; this only stamps the form and counts it.
+	 *
+	 * @param int    $form_id     Form ID.
+	 * @param string $template_id Template id.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function record_swap( $form_id, $template_id ) {
+		$template = self::get_template( $template_id );
+		if ( null === $template || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
+			return;
+		}
+		update_post_meta( $form_id, self::TEMPLATE_ID_META, $template['id'] );
+		Analytics::track_form_template_usage( $template['id'], 'swap' );
+	}
+
+	/**
+	 * URL of a template's front-end preview.
+	 *
+	 * @param string $template_id Template id.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function get_preview_url( $template_id ) {
+		return add_query_arg(
+			[
+				self::PREVIEW_QUERY_VAR => rawurlencode( $template_id ),
+				// The preview is a front-end page, which would use the site language;
+				// show it in the admin's language, like the form they will create.
+				'srfm_locale'           => rawurlencode( get_user_locale() ),
+			],
+			home_url( '/' )
+		);
+	}
+
+	/**
+	 * Remove the in-memory preview form from the object cache at the end of the
+	 * request, so a persistent cache (Redis, Memcached) never keeps it.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function forget_preview_form() {
+		if ( null === self::$preview_post_id ) {
+			return;
+		}
+		wp_cache_delete( self::$preview_post_id, 'posts' );
+		wp_cache_delete( self::$preview_post_id, 'post_meta' );
+	}
+
+	/**
+	 * Render a template preview page instead of the requested front-end page.
+	 *
+	 * The page is the site's own front end: the active theme's styles plus the
+	 * real SureForms renderer, so the preview looks exactly like the form will
+	 * once it is embedded. Only users who can create forms see it.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function maybe_render_preview() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview gated by a capability check; it changes nothing.
+		if ( ! isset( $_GET[ self::PREVIEW_QUERY_VAR ] ) ) {
+			return;
+		}
+
+		if ( ! Helper::current_user_can() ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to preview form templates.', 'sureforms' ), '', [ 'response' => 403 ] );
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display language only; checked against installed languages.
+		$locale = isset( $_GET['srfm_locale'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_locale'] ) ) : '';
+		if ( '' !== $locale && determine_locale() !== $locale && ( 'en_US' === $locale || in_array( $locale, get_available_languages(), true ) ) ) {
+			switch_to_locale( $locale );
+			self::$templates = null; // Rebuild the template strings in that language.
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- See above.
+		$template = self::get_template( sanitize_key( wp_unslash( $_GET[ self::PREVIEW_QUERY_VAR ] ) ) );
+		if ( null === $template ) {
+			wp_die( esc_html__( 'That template could not be found.', 'sureforms' ), '', [ 'response' => 404 ] );
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview; the style is sanitized to known keys and hex colors.
+		$style = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
+		// A locked template still previews, built with this site's fields, so
+		// the library can show what it offers.
+		$built = self::build( $template, $style, 'preview' );
+		if ( is_wp_error( $built ) ) {
+			wp_die( esc_html( $built->get_error_message() ), '', [ 'response' => 500 ] );
+		}
+
+		self::seed_preview_form( $template, $built['content'], $built['metas'] );
+
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Standard page-cache opt-out constant.
+		}
+		nocache_headers();
+		show_admin_bar( false );
+		add_action( 'wp_enqueue_scripts', [ Frontend_Assets::class, 'enqueue_scripts_and_styles' ], 20 );
+		add_filter( 'srfm_payment_methods_registry', [ self::class, 'preview_payment_methods' ], 99 );
+		// Print only the form's own scripts and styles, so other plugins'
+		// analytics, pixels, chat widgets and cookie banners don't run here.
+		add_action( 'wp_print_styles', [ self::class, 'filter_preview_assets' ], PHP_INT_MAX );
+		add_action( 'wp_print_scripts', [ self::class, 'filter_preview_assets' ], PHP_INT_MAX );
+		add_action( 'wp_print_footer_scripts', [ self::class, 'filter_preview_assets' ], 9 );
+
+		// Block styles are normally built from the page's main post, which this
+		// preview does not have, so build them from the in-memory form instead.
+		if ( class_exists( '\Spec_Gb_Helper' ) ) {
+			\Spec_Gb_Helper::get_instance()->get_generated_stylesheet( get_post( self::get_preview_post_id() ) );
+		}
+
+		// Render first, so the blocks enqueue the scripts and styles they need
+		// before the head and footer print them.
+		$markup = Helper::get_string_value( Generate_Form_Markup::get_form_markup( self::get_preview_post_id(), false ) );
+		$width  = Helper::get_integer_value( Create_New_Form::get_default_meta_keys()['_srfm_form_container_width'] ?? 650 );
+
+		self::render_preview_document( $markup, $width );
+		exit;
+	}
+
+	/**
+	 * Leave only the preview's own scripts and styles in the queues: SureForms
+	 * and SureForms Pro handles, its spam-protection scripts, the core styles in
+	 * PREVIEW_CORE_STYLES and the active theme's styles. Everything else (another plugin's analytics, pixel,
+	 * chat widget or cookie banner, the theme's scripts) is dropped. The kept
+	 * handles' dependencies (wp-i18n, wp-hooks, ...) still print, since
+	 * WordPress resolves them when it prints the queue.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function filter_preview_assets() {
+		$queues = [
+			'script' => wp_scripts(),
+			'style'  => wp_styles(),
+		];
+		foreach ( $queues as $type => $assets ) {
+			$assets->queue = array_values(
+				array_filter(
+					$assets->queue,
+					static function ( $handle ) use ( $assets, $type ) {
+						$src = isset( $assets->registered[ $handle ] ) ? $assets->registered[ $handle ]->src : '';
+						return self::is_preview_asset( Helper::get_string_value( $handle ), is_string( $src ) ? $src : '', $type );
+					}
+				)
+			);
+		}
+	}
+
+	/**
+	 * Whether the preview page prints a queued script or style.
+	 *
+	 * @param string $handle Handle.
+	 * @param string $src    Source URL, '' for an inline-only handle.
+	 * @param string $type   'script' or 'style'.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_preview_asset( $handle, $src, $type ) {
+		// SureForms and SureForms Pro: srfm-*, sureforms-*, sureforms-pro-*.
+		if ( 1 === preg_match( '/^(srfm|sureforms)[-_]/', $handle ) ) {
+			return true;
+		}
+		$own = [ Helper::get_string_value( SRFM_URL ) ];
+		if ( defined( 'SRFM_PRO_URL' ) ) {
+			$own[] = Helper::get_string_value( constant( 'SRFM_PRO_URL' ) );
+		}
+		foreach ( $own as $url ) {
+			if ( '' !== $src && 0 === strpos( $src, $url ) ) {
+				return true;
+			}
+		}
+		if ( 'style' !== $type ) {
+			// WordPress core scripts (wp-a11y, wp-i18n, ...): SureForms Pro enqueues
+			// some on their own rather than as dependencies, and its field scripts
+			// call them (wp.a11y.speak()).
+			return self::is_core_asset( $src ) || in_array( $handle, self::PREVIEW_CAPTCHA_SCRIPTS, true );
+		}
+		if ( in_array( $handle, self::PREVIEW_CORE_STYLES, true ) ) {
+			return true;
+		}
+		// The theme's styles: the form takes its fonts from the theme.
+		foreach ( array_unique( [ get_stylesheet(), get_template() ] ) as $theme ) {
+			if ( '' !== $theme && 0 === strpos( $handle, $theme . '-' ) ) {
+				return true;
+			}
+		}
+		foreach ( array_unique( [ get_stylesheet_directory_uri(), get_template_directory_uri() ] ) as $url ) {
+			if ( '' !== $src && 0 === strpos( $src, trailingslashit( $url ) ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Remove the callbacks other plugins add to the hooks that build the page's
+	 * head and footer, so code they print directly (a tracking snippet, a
+	 * chat widget) is left out like their queued assets. WordPress core,
+	 * SureForms, SureForms Pro and the active theme keep theirs.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function remove_third_party_hooks() {
+		global $wp_filter;
+
+		$kept = [ ABSPATH . 'wp-includes', Helper::get_string_value( SRFM_DIR ), get_stylesheet_directory(), get_template_directory() ];
+		if ( defined( 'SRFM_PRO_DIR' ) ) {
+			$kept[] = Helper::get_string_value( constant( 'SRFM_PRO_DIR' ) );
+		}
+		$kept = array_map(
+			static function ( $dir ) {
+				$real = realpath( $dir );
+				return trailingslashit( wp_normalize_path( false === $real ? $dir : $real ) );
+			},
+			$kept
+		);
+
+		foreach ( self::PREVIEW_ASSET_HOOKS as $hook ) {
+			if ( ! isset( $wp_filter[ $hook ] ) || ! $wp_filter[ $hook ] instanceof \WP_Hook ) {
+				continue;
+			}
+			foreach ( $wp_filter[ $hook ]->callbacks as $priority => $callbacks ) {
+				foreach ( $callbacks as $callback ) {
+					$file = self::callback_file( $callback['function'] );
+					if ( '' === $file ) {
+						continue; // Unknown origin: keep it.
+					}
+					$is_kept = false;
+					foreach ( $kept as $dir ) {
+						if ( 0 === strpos( $file, $dir ) ) {
+							$is_kept = true;
+							break;
+						}
+					}
+					if ( ! $is_kept ) {
+						remove_action( $hook, $callback['function'], $priority );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Show the Stripe payment field in a template preview even before Stripe is
+	 * connected.
+	 *
+	 * A form leaves out a payment field whose payment method isn't connected, so
+	 * a payment template would preview with no payment step at all. The preview
+	 * is a picture of the form, so it shows the field with a note where the card
+	 * fields will appear; the field takes no payment here (it has no Stripe key,
+	 * and submitting is switched off).
+	 *
+	 * @param mixed $methods Payment methods from `srfm_payment_methods_registry`.
+	 * @since x.x.x
+	 * @return mixed
+	 */
+	public static function preview_payment_methods( $methods ) {
+		if ( ! is_array( $methods ) || ! isset( $methods['stripe'] ) || ! is_array( $methods['stripe'] ) || ! empty( $methods['stripe']['enabled'] ) ) {
+			return $methods;
+		}
+
+		$methods['stripe']['enabled']              = true;
+		$methods['stripe']['place_holder_content'] = '<p class="srfm-template-preview__payment-note">' . esc_html__( 'Connect Stripe to take payments. The card fields appear here once it is connected.', 'sureforms' ) . '</p>';
+		return $methods;
+	}
+
+	/**
+	 * POST /form-templates/track
+	 *
+	 * Counts a step of the template journey in the library: opening it,
+	 * previewing a template, or clicking "Upgrade to unlock". A preview of a
+	 * template this site can't use is also counted as a locked preview.
+	 * Nothing is recorded unless the site shares usage data with SureForms.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @since x.x.x
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_record_action( $request ) {
+		$action      = Helper::get_string_value( $request->get_param( 'action' ) );
+		$template_id = Helper::get_string_value( $request->get_param( 'template_id' ) );
+		$template    = '' !== $template_id ? self::get_template( $template_id ) : null;
+
+		if ( 'library_open' !== $action && ! $template ) {
+			return new WP_Error( 'srfm_template_not_found', __( 'Template not found.', 'sureforms' ), [ 'status' => 404 ] );
+		}
+
+		if ( ! self::is_usage_sharing_on() ) {
+			return new WP_REST_Response( [ 'recorded' => false ] );
+		}
+
+		Analytics::track_form_template_action( $action, 'library_open' === $action ? '' : $template_id );
+		if ( 'preview' === $action && $template && ! self::is_template_available( $template ) ) {
+			Analytics::track_form_template_action( 'locked_preview', $template_id );
+		}
+
+		return new WP_REST_Response( [ 'recorded' => true ] );
+	}
+
+	/**
+	 * Thank-you message in the same layout as the default confirmation. Catalog
+	 * files use it through Catalog::thank_you() for conditional messages.
+	 *
+	 * @param string $heading Heading.
+	 * @param string $text    Body text.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function confirmation_message( $heading, $text ) {
+		// A file URL, not a data: URI: the saved message goes through wp_kses_post(),
+		// which strips the data: scheme and would leave a broken image.
+		$check_icon = SRFM_URL . 'images/check-icon.svg';
+
+		return '<p style="text-align: center;"><img src="' . esc_url( $check_icon ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
+	}
+
+	/**
+	 * Whether the active SureForms Pro is too old for a template: older than its
+	 * `min_pro_version`, or without the template builder its Pro keys need.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function needs_pro_update( $template ) {
+		$min_version = Helper::get_string_value( $template['min_pro_version'] ?? '' );
+		$pro_version = defined( 'SRFM_PRO_VER' ) ? Helper::get_string_value( constant( 'SRFM_PRO_VER' ) ) : '';
+		if ( '' !== $min_version && version_compare( $pro_version, $min_version, '<' ) ) {
+			return true;
+		}
+
+		return self::get_pro_template_api() < self::get_required_pro_template_api( $template );
 	}
 
 	/**
@@ -698,214 +2130,6 @@ class Form_Templates {
 				'reason'   => $reason,
 			]
 		);
-	}
-
-	/**
-	 * The thank-you message and emails a template sets, for the preview to
-	 * show and edit before the form is created.
-	 *
-	 * @param array<string, mixed>             $template Template.
-	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	public static function get_messages( $template, $fields ) {
-		$confirmation  = Helper::get_array_value( $template['confirmation'] ?? [] );
-		$autoresponder = ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ? Helper::get_array_value( $template['autoresponder'] ) : null;
-		$result_tags   = self::get_result_tags( $template, $fields );
-
-		// Every text the messages hold, to find the result tags they use.
-		$texts = array_merge(
-			[ $confirmation['heading'] ?? '', $confirmation['text'] ?? '', $template['email_subject'] ?? '', $template['email_intro'] ?? '' ],
-			null === $autoresponder ? [] : array_merge( [ $autoresponder['subject'] ?? '', $autoresponder['greeting'] ?? '' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) )
-		);
-
-		return [
-			// Example values for the SureForms Pro tags (quiz score, payment amount, …)
-			// the messages use or the "Results" chips insert.
-			'tag_samples'   => self::get_tag_samples( implode( "\n", array_map( [ Helper::class, 'get_string_value' ], $texts ) ), $result_tags, $fields, $template ),
-			// Results the messages can include: { tag, label }.
-			'result_tags'   => $result_tags,
-			'confirmation'  => [
-				'heading' => Helper::get_string_value( $confirmation['heading'] ?? '' ),
-				'text'    => Helper::get_string_value( $confirmation['text'] ?? '' ),
-			],
-			'email'         => [
-				'subject' => Helper::get_string_value( $template['email_subject'] ?? '' ),
-				'intro'   => Helper::get_string_value( $template['email_intro'] ?? '' ),
-			],
-			'autoresponder' => null === $autoresponder ? null : [
-				'subject'  => Helper::get_string_value( $autoresponder['subject'] ?? '' ),
-				'greeting' => Helper::get_string_value( $autoresponder['greeting'] ?? __( 'Hi {form:full-name},', 'sureforms' ) ),
-				'lines'    => array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) ),
-				'summary'  => ! isset( $autoresponder['summary'] ) || false !== $autoresponder['summary'],
-			],
-		];
-	}
-
-	/**
-	 * The answers a message can include as `{form:slug}`, each with an example
-	 * value for the preview. Fields without a readable answer (consent, steps,
-	 * buttons, uploads, HTML, signatures, payments, passwords and repeaters) are
-	 * left out; hidden fields stay, as their values (a source page, UTM tags)
-	 * are useful in the site owner's email.
-	 *
-	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
-	 * @return array<int, array{slug: string, label: string, required: bool, sample: string}>
-	 */
-	public static function get_answers( $fields ) {
-		$answers = [];
-		foreach ( $fields as $field ) {
-			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
-			if ( in_array( $type, self::NO_ANSWER_TYPES, true ) ) {
-				continue;
-			}
-			$answers[] = [
-				'slug'     => Helper::get_string_value( $field['slug'] ?? '' ),
-				'label'    => Helper::get_string_value( $field['label'] ?? '' ),
-				'required' => ! empty( $field['required'] ),
-				'sample'   => self::calculated_sample( $field, $fields ) ?? self::sample_answer( $field ),
-			];
-		}
-		return $answers;
-	}
-
-	/**
-	 * An example answer for a field, taken from its placeholder or first option.
-	 *
-	 * @param array<string, mixed> $field Field schema.
-	 * @since x.x.x
-	 * @return string
-	 */
-	private static function sample_answer( $field ) {
-		// Fields whose placeholder or first option would make a poor example.
-		$by_slug = [
-			'full-name'       => 'Jane Smith',
-			'first-name'      => 'Jane',
-			'last-name'       => 'Smith',
-			'company'         => __( 'Bright Bakery', 'sureforms' ),
-			'organization'    => __( 'Bright Bakery', 'sureforms' ),
-			'subject'         => __( 'Question about my order', 'sureforms' ),
-			'order-number'    => '#10234',
-			'reference'       => '#10234',
-			'product'         => __( 'Oak dining table', 'sureforms' ),
-			'position'        => __( 'Marketing Manager', 'sureforms' ),
-			'summary'         => __( 'The checkout button does nothing', 'sureforms' ),
-			'page'            => __( 'Pricing', 'sureforms' ),
-			'recommend-score' => '9',
-		];
-		$slug    = Helper::get_string_value( $field['slug'] ?? '' );
-		if ( isset( $by_slug[ $slug ] ) ) {
-			return $by_slug[ $slug ];
-		}
-		$type    = Helper::get_string_value( $field['fieldType'] ?? '' );
-		$options = Helper::get_array_value( $field['fieldOptions'] ?? [] );
-		if ( ! empty( $options[0] ) && is_array( $options[0] ) ) {
-			return Helper::get_string_value( $options[0]['optionTitle'] ?? $options[0]['label'] ?? '' );
-		}
-
-		$samples     = [
-			'email'       => 'jane@example.com',
-			'phone'       => '+1 555 010 2030',
-			'url'         => 'https://example.com',
-			'number'      => '2',
-			'date-picker' => '10/14/2026',
-			'rating'      => '5',
-			'nps'         => '9',
-			'textarea'    => __( 'A short message from the visitor.', 'sureforms' ),
-			'checkbox'    => __( 'Yes', 'sureforms' ),
-		];
-		$placeholder = Helper::get_string_value( $field['placeholder'] ?? '' );
-		// Example placeholders ("e.g. 14 October") read as real answers without the prefix.
-		$example = preg_replace( '/^' . preg_quote( __( 'e.g.', 'sureforms' ), '/' ) . '\s*/u', '', $placeholder );
-
-		// A number field's example placeholder ("e.g. 1,200") is a better example than 2.
-		if ( 'number' === $type && is_numeric( str_replace( ',', '', Helper::get_string_value( $example ) ) ) ) {
-			return Helper::get_string_value( $example );
-		}
-		if ( isset( $samples[ $type ] ) && 'textarea' !== $type ) {
-			return $samples[ $type ];
-		}
-		if ( 'input' === $type && '' !== $placeholder && $example !== $placeholder ) {
-			return Helper::get_string_value( $example );
-		}
-
-		return $samples[ $type ] ?? ( '' !== $placeholder ? $placeholder : __( 'Their answer', 'sureforms' ) );
-	}
-
-	/**
-	 * Results a template's messages can include, from the SureForms Pro
-	 * features it uses: quiz scores, calculated totals, payment details and
-	 * poll results. The library offers them as "Results" chips.
-	 *
-	 * @param array<string, mixed>             $template Template.
-	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @since x.x.x
-	 * @return array<int, array{tag: string, label: string}>
-	 */
-	public static function get_result_tags( $template, $fields ) {
-		$features = array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $template['features'] ?? [] ) );
-		$tags     = [];
-
-		if ( ! empty( $template['quiz'] ) || in_array( 'quiz', $features, true ) ) {
-			$tags['{quiz_score}']        = __( 'Quiz score', 'sureforms' );
-			$tags['{quiz_percentage}']   = __( 'Quiz percentage', 'sureforms' );
-			$tags['{quiz_pass_fail}']    = __( 'Pass or fail', 'sureforms' );
-			$tags['{quiz_letter_grade}'] = __( 'Letter grade', 'sureforms' );
-			$tags['{quiz_result}']       = __( 'All quiz results', 'sureforms' );
-		}
-		foreach ( $fields as $field ) {
-			$slug = Helper::get_string_value( $field['slug'] ?? '' );
-			if ( '' === $slug ) {
-				continue;
-			}
-			if ( '' !== self::get_formula( $field ) ) {
-				$tags[ '{form:' . $slug . '}' ] = Helper::get_string_value( $field['label'] ?? $slug );
-			}
-			if ( 'payment' === ( $field['fieldType'] ?? '' ) ) {
-				$tags[ '{form-payment:' . $slug . ':amount}' ]   = __( 'Amount paid', 'sureforms' );
-				$tags[ '{form-payment:' . $slug . ':order-id}' ] = __( 'Order ID', 'sureforms' );
-				$tags[ '{form-payment:' . $slug . ':status}' ]   = __( 'Payment status', 'sureforms' );
-			}
-		}
-		if ( ! empty( $template['survey'] ) || in_array( 'survey', $features, true ) ) {
-			$tags['{poll_results}'] = __( 'Poll results', 'sureforms' );
-		}
-
-		$list = [];
-		foreach ( $tags as $tag => $label ) {
-			$list[] = [
-				'tag'   => $tag,
-				'label' => $label,
-			];
-		}
-		return $list;
-	}
-
-	/**
-	 * Example values for the SureForms Pro tags in a text and for the result
-	 * tags, for the message previews. Answers (`{form:slug}`) aren't included:
-	 * they come with get_answers().
-	 *
-	 * @param string                                        $text        Message text.
-	 * @param array<int, array{tag: string, label: string}> $result_tags From get_result_tags().
-	 * @param array<int, array<string, mixed>>              $fields      Fields from resolve_fields().
-	 * @param array<string, mixed>                          $template    Template, for its quiz settings.
-	 * @since x.x.x
-	 * @return array<string, string> Sample by tag, e.g. `{quiz_score}` => '4 / 5'.
-	 */
-	public static function get_tag_samples( $text, $result_tags, $fields, $template = [] ) {
-		preg_match_all( '/\{(?:quiz_[a-z_]+|poll_results|calculation-result|form-payment:[a-z0-9_-]+:[a-z-]+)\}/i', $text, $matches );
-		$tags    = array_merge( $matches[0], array_column( $result_tags, 'tag' ) );
-		$samples = [];
-		foreach ( array_unique( $tags ) as $tag ) {
-			$sample = self::tag_sample( strtolower( $tag ), $fields, $template );
-			if ( null !== $sample ) {
-				$samples[ $tag ] = $sample;
-			}
-		}
-		return $samples;
 	}
 
 	/**
@@ -1069,82 +2293,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * Example result of a calculated field: its formula worked out from the
-	 * example answers and rounded, as the entry saves it. The field's prefix
-	 * and suffix (a currency symbol, a unit) are only shown on the form, not
-	 * saved, so they are left out. 123.45 when the formula can't be worked out.
-	 *
-	 * @param array<string, mixed>             $field  Field schema.
-	 * @param array<int, array<string, mixed>> $fields All fields, for the answers the formula uses.
-	 * @since x.x.x
-	 * @return string|null Null for a field that isn't calculated.
-	 */
-	public static function calculated_sample( $field, $fields ) {
-		$formula = self::get_formula( $field );
-		if ( '' === $formula ) {
-			return null;
-		}
-
-		/**
-		 * Filters the example result of a calculated field in the template
-		 * library, e.g. so SureForms Pro can work it out with its own calculator.
-		 *
-		 * @since x.x.x
-		 * @param float|null                       $value   Result from the free evaluator, null when it couldn't work it out.
-		 * @param string                           $formula Formula, with `{form:slug}` tags.
-		 * @param array<string, mixed>             $field   Calculated field.
-		 * @param array<int, array<string, mixed>> $fields  All fields.
-		 */
-		$value = apply_filters( 'srfm_form_template_calculation_sample', self::evaluate_formula( $formula, $fields ), $formula, $field, $fields );
-
-		$attributes = Helper::get_array_value( $field['blockAttributes'] ?? [] );
-		if ( ! is_numeric( $value ) ) {
-			return self::CALCULATION_FALLBACK;
-		}
-		$value    = (float) $value;
-		$round    = $field['calculationRound'] ?? $attributes['calculationRound'] ?? null;
-		$decimals = is_numeric( $round ) ? max( 0, min( 6, (int) $round ) ) : ( floor( $value ) === $value ? 0 : 2 );
-
-		return number_format( $value, $decimals );
-	}
-
-	/**
-	 * Work out a formula from the example answers.
-	 *
-	 * @param string                           $formula Formula with `{form:slug}` tags.
-	 * @param array<int, array<string, mixed>> $fields  Fields.
-	 * @param int                              $depth   Calculated fields already being worked out, against loops.
-	 * @since x.x.x
-	 * @return float|null Null when a tag has no number or the arithmetic is invalid.
-	 */
-	public static function evaluate_formula( $formula, $fields, $depth = 0 ) {
-		// The editor saves the tags escaped as %{%form:slug%}%.
-		$formula = str_replace( [ '%{%', '%}%' ], [ '{', '}' ], $formula );
-		$invalid = false;
-
-		$expression = preg_replace_callback(
-			'/\{([^:{}]+):([^{}]+)\}/',
-			static function ( $match ) use ( $fields, $depth, &$invalid ) {
-				$value = 'form' === trim( $match[1] ) ? self::numeric_sample( trim( $match[2] ), $fields, $depth ) : null;
-				if ( null === $value ) {
-					$invalid = true;
-					return '0';
-				}
-				$number = rtrim( rtrim( sprintf( '%.10F', abs( $value ) ), '0' ), '.' );
-				$number = '' === $number ? '0' : $number;
-				// Parenthesized, so a negative answer stays one value next to any operator.
-				return $value < 0 ? '(-' . $number . ')' : $number;
-			},
-			$formula
-		);
-
-		if ( $invalid || ! is_string( $expression ) ) {
-			return null;
-		}
-		return Formula::evaluate( $expression );
-	}
-
-	/**
 	 * A field's example answer as a number, as the calculator reads it: a
 	 * choice's option value, a calculated field's result, or the answer itself.
 	 *
@@ -1177,313 +2325,6 @@ class Form_Templates {
 
 		$answer = str_replace( ',', '', self::sample_answer( $field ) );
 		return is_numeric( $answer ) ? (float) $answer : null;
-	}
-
-	/**
-	 * Clean up the thank-you message and email text edited in the preview.
-	 *
-	 * @param mixed $raw `messages` from the create request.
-	 * @since x.x.x
-	 * @return array<string, mixed> Only the keys that were sent, as plain text.
-	 */
-	public static function sanitize_messages( $raw ) {
-		if ( ! is_array( $raw ) ) {
-			return [];
-		}
-		$line  = static fn( $value ) => mb_substr( sanitize_text_field( Helper::get_string_value( $value ) ), 0, 300 );
-		$text  = static fn( $value ) => mb_substr( sanitize_textarea_field( Helper::get_string_value( $value ) ), 0, 2000 );
-		$clean = [];
-
-		if ( isset( $raw['confirmation'] ) && is_array( $raw['confirmation'] ) ) {
-			foreach ( [
-				'heading' => $line,
-				'text'    => $text,
-			] as $key => $sanitize ) {
-				if ( isset( $raw['confirmation'][ $key ] ) && is_string( $raw['confirmation'][ $key ] ) ) {
-					$clean['confirmation'][ $key ] = $sanitize( $raw['confirmation'][ $key ] );
-				}
-			}
-		}
-		if ( isset( $raw['email_subject'] ) && is_string( $raw['email_subject'] ) ) {
-			$clean['email_subject'] = $line( $raw['email_subject'] );
-		}
-		if ( isset( $raw['email_intro'] ) && is_string( $raw['email_intro'] ) ) {
-			$clean['email_intro'] = $text( $raw['email_intro'] );
-		}
-		if ( isset( $raw['autoresponder'] ) && is_array( $raw['autoresponder'] ) ) {
-			$auto = $raw['autoresponder'];
-			if ( isset( $auto['enabled'] ) ) {
-				$clean['autoresponder']['enabled'] = rest_sanitize_boolean( $auto['enabled'] );
-			}
-			foreach ( [ 'subject', 'greeting' ] as $key ) {
-				if ( isset( $auto[ $key ] ) && is_string( $auto[ $key ] ) ) {
-					$clean['autoresponder'][ $key ] = $line( $auto[ $key ] );
-				}
-			}
-			if ( isset( $auto['lines'] ) && is_array( $auto['lines'] ) ) {
-				$clean['autoresponder']['lines'] = array_values( array_filter( array_map( $text, array_slice( $auto['lines'], 0, 10 ) ) ) );
-			}
-		}
-		return $clean;
-	}
-
-	/**
-	 * A template with the thank-you message and email text edited in the preview.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @param array<string, mixed> $messages From sanitize_messages().
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	public static function apply_messages( $template, $messages ) {
-		if ( ! empty( $messages['confirmation'] ) ) {
-			$template['confirmation'] = array_merge( Helper::get_array_value( $template['confirmation'] ?? [] ), Helper::get_array_value( $messages['confirmation'] ) );
-		}
-		foreach ( [ 'email_subject', 'email_intro' ] as $key ) {
-			if ( isset( $messages[ $key ] ) && '' !== $messages[ $key ] ) {
-				$template[ $key ] = $messages[ $key ];
-			}
-		}
-		if ( ! empty( $messages['autoresponder'] ) && ! empty( $template['autoresponder'] ) ) {
-			$auto = Helper::get_array_value( $messages['autoresponder'] );
-			if ( isset( $auto['enabled'] ) && ! $auto['enabled'] ) {
-				unset( $template['autoresponder'] );
-			} else {
-				unset( $auto['enabled'] );
-				$template['autoresponder'] = array_merge( Helper::get_array_value( $template['autoresponder'] ), array_filter( $auto ) );
-			}
-		}
-		return $template;
-	}
-
-	/**
-	 * Visual themes a template can use: the form's background and colors.
-	 * Everything maps to the free form styling options, so a
-	 * form created from a template keeps its look and stays editable in the
-	 * Style tab.
-	 *
-	 * @since x.x.x
-	 * @return array<string, array<string, string>>
-	 */
-	public static function get_themes() {
-		return [
-			'ocean'    => [
-				'background' => 'linear-gradient(135deg, #EAF2FF 0%, #F7FAFF 100%)',
-				'primary'    => '#2563EB',
-				'text'       => '#1E293B',
-				'on_primary' => '#FFFFFF',
-				'banner'     => '#1D4ED8',
-			],
-			'midnight' => [
-				'background' => 'linear-gradient(160deg, #0F172A 0%, #1E293B 100%)',
-				'primary'    => '#38BDF8',
-				'text'       => '#E2E8F0',
-				'on_primary' => '#0F172A',
-				'banner'     => '#020617',
-			],
-			'mint'     => [
-				'background' => 'linear-gradient(135deg, #E6FAF1 0%, #F5FFFB 100%)',
-				'primary'    => '#059669',
-				'text'       => '#1F2F2A',
-				'on_primary' => '#FFFFFF',
-				'banner'     => '#047857',
-			],
-			'lavender' => [
-				'background' => 'linear-gradient(135deg, #F0EBFF 0%, #FBF8FF 100%)',
-				'primary'    => '#7C3AED',
-				'text'       => '#27203A',
-				'on_primary' => '#FFFFFF',
-				'banner'     => '#6D28D9',
-			],
-			'sunset'   => [
-				'background' => 'linear-gradient(135deg, #FFEADF 0%, #FFF5F7 100%)',
-				'primary'    => '#E4572E',
-				'text'       => '#33201A',
-				'on_primary' => '#FFFFFF',
-				'banner'     => '#C2410C',
-			],
-			'sand'     => [
-				'background' => 'linear-gradient(135deg, #FFF4D9 0%, #FFFBF1 100%)',
-				'primary'    => '#B45309',
-				'text'       => '#2D2416',
-				'on_primary' => '#FFFFFF',
-				'banner'     => '#92400E',
-			],
-		];
-	}
-
-	/**
-	 * A template's theme, falling back to the first one.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
-	 * @return array<string, string>
-	 */
-	private static function get_template_theme( $template ) {
-		$themes = self::get_themes();
-		$key    = Helper::get_string_value( $template['theme'] ?? '' );
-		return $themes[ $key ] ?? $themes['ocean'];
-	}
-
-	/**
-	 * Presets for the preview's style panel: name, background, accent and
-	 * the text colors that go with them, so the preview can restyle itself
-	 * exactly like resolve_theme() does.
-	 *
-	 * @since x.x.x
-	 * @return array<int, array{id:string,background:string,accent:string,text:string,onPrimary:string}>
-	 */
-	public static function get_themes_for_js() {
-		$presets = [];
-		foreach ( self::get_themes() as $id => $theme ) {
-			$presets[] = [
-				'id'         => $id,
-				'background' => $theme['background'],
-				'accent'     => $theme['primary'],
-				'text'       => $theme['text'],
-				'onPrimary'  => $theme['on_primary'],
-			];
-		}
-		return $presets;
-	}
-
-	/**
-	 * Clean up a style chosen in the template preview.
-	 *
-	 * Only known keys survive: a preset from get_themes() and hex colors for
-	 * the background and accent.
-	 *
-	 * @param mixed $raw Style from the request or the preview URL.
-	 * @since x.x.x
-	 * @return array{preset?:string,background?:string,accent?:string}
-	 */
-	public static function sanitize_style( $raw ) {
-		if ( is_string( $raw ) && '' !== $raw ) {
-			$raw = json_decode( $raw, true );
-		}
-		if ( ! is_array( $raw ) ) {
-			return [];
-		}
-
-		$style  = [];
-		$preset = isset( $raw['preset'] ) && is_string( $raw['preset'] ) ? sanitize_key( $raw['preset'] ) : '';
-		if ( isset( self::get_themes()[ $preset ] ) ) {
-			$style['preset'] = $preset;
-		}
-		foreach ( [ 'background', 'accent' ] as $key ) {
-			$color = isset( $raw[ $key ] ) && is_string( $raw[ $key ] ) ? sanitize_hex_color( $raw[ $key ] ) : '';
-			if ( ! empty( $color ) ) {
-				$style[ $key ] = strtoupper( $color );
-			}
-		}
-
-		return $style;
-	}
-
-	/**
-	 * The look a form gets: the template's theme (or the chosen preset), with
-	 * any background and accent chosen in the preview on top.
-	 *
-	 * Text and button-text colors follow the chosen colors, so the
-	 * result stays readable whatever is picked.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @param array<string, mixed> $style    Style from sanitize_style().
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	public static function resolve_theme( $template, $style = [] ) {
-		$themes = self::get_themes();
-		$preset = Helper::get_string_value( $style['preset'] ?? '' );
-		$theme  = isset( $themes[ $preset ] ) ? $themes[ $preset ] : self::get_template_theme( $template );
-
-		if ( ! empty( $style['background'] ) ) {
-			$background          = Helper::get_string_value( $style['background'] );
-			$theme['background'] = 'linear-gradient(135deg, ' . $background . ' 0%, ' . self::mix_with( $background, '#FFFFFF', 0.35 ) . ' 100%)';
-			$theme['text']       = self::is_dark( $background ) ? '#E2E8F0' : '#1E293B';
-		}
-
-		if ( ! empty( $style['accent'] ) ) {
-			$accent              = Helper::get_string_value( $style['accent'] );
-			$theme['primary']    = $accent;
-			$theme['on_primary'] = self::is_dark( $accent ) ? '#FFFFFF' : '#0F172A';
-			$theme['banner']     = self::mix_with( $accent, '#000000', 0.15 );
-		}
-
-		$theme['radius'] = 16;
-
-		return $theme;
-	}
-
-	/**
-	 * Whether a hex color is dark enough to need light text on it.
-	 *
-	 * @param string $hex Hex color.
-	 * @since x.x.x
-	 * @return bool
-	 */
-	private static function is_dark( $hex ) {
-		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
-		$channel       = static function ( $value ) {
-			$value /= 255;
-			return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
-		};
-		$luminance     = 0.2126 * $channel( $r ) + 0.7152 * $channel( $g ) + 0.0722 * $channel( $b );
-
-		// Below this, white text has the better contrast.
-		return $luminance < 0.179;
-	}
-
-	/**
-	 * Mix two hex colors.
-	 *
-	 * @param string $hex    Base color.
-	 * @param string $with   Color mixed in.
-	 * @param float  $amount Share of $with, 0 to 1.
-	 * @since x.x.x
-	 * @return string
-	 */
-	private static function mix_with( $hex, $with, $amount ) {
-		$base = self::hex_to_rgb( $hex );
-		$mix  = self::hex_to_rgb( $with );
-		$out  = '#';
-		foreach ( [ 0, 1, 2 ] as $i ) {
-			$out .= str_pad( dechex( (int) round( $base[ $i ] + ( $mix[ $i ] - $base[ $i ] ) * $amount ) ), 2, '0', STR_PAD_LEFT );
-		}
-		return strtoupper( $out );
-	}
-
-	/**
-	 * Hex color to RGB.
-	 *
-	 * @param string $hex #RGB or #RRGGBB.
-	 * @since x.x.x
-	 * @return array{0:int,1:int,2:int}
-	 */
-	private static function hex_to_rgb( $hex ) {
-		$hex = ltrim( $hex, '#' );
-		if ( 3 === strlen( $hex ) ) {
-			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-		}
-		$hex = str_pad( substr( $hex, 0, 6 ), 6, '0' );
-		return [ (int) hexdec( substr( $hex, 0, 2 ) ), (int) hexdec( substr( $hex, 2, 2 ) ), (int) hexdec( substr( $hex, 4, 2 ) ) ];
-	}
-
-	/**
-	 * Template categories that have at least one template, in display order.
-	 *
-	 * @since x.x.x
-	 * @return array<int, array<string, string>>
-	 */
-	public static function get_categories() {
-		$used = array_flip( array_column( self::get_templates(), 'category' ) );
-
-		return array_values(
-			array_filter(
-				self::all_categories(),
-				static fn( $category ) => isset( $used[ $category['id'] ] )
-			)
-		);
 	}
 
 	/**
@@ -1538,182 +2379,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * A template's fields as they will be built on a plan: `pro` variants
-	 * applied and `pro_only` fields kept only from their `pro_tier` (Starter
-	 * by default).
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @param string|bool          $tier     Plan tier from Helper::get_pro_tier(). `true` is
-	 *                                       read as `business` and `false` as `free`.
-	 * @since x.x.x
-	 * @return array<int, array<string, mixed>>
-	 */
-	public static function resolve_fields( $template, $tier ) {
-		if ( is_bool( $tier ) ) {
-			$tier = $tier ? 'business' : 'free';
-		}
-		$rank   = Helper::tier_rank( $tier );
-		$fields = [];
-		foreach ( Helper::get_array_value( $template['fields'] ?? [] ) as $field ) {
-			if ( ! is_array( $field ) ) {
-				continue;
-			}
-			$with_pro = $rank >= max( 1, Helper::tier_rank( Helper::get_string_value( $field['pro_tier'] ?? 'starter' ) ) );
-			$pro_only = ! empty( $field['pro_only'] ) || ( isset( $field['pro_tier'] ) && empty( $field['pro'] ) );
-			if ( $pro_only && ! $with_pro ) {
-				continue;
-			}
-			if ( $with_pro && ! empty( $field['pro'] ) && is_array( $field['pro'] ) ) {
-				// The Pro field keeps the free field's width and other block attributes.
-				$pro = $field['pro'];
-				if ( isset( $pro['blockAttributes'] ) ) {
-					$pro['blockAttributes'] = array_merge( Helper::get_array_value( $field['blockAttributes'] ?? [] ), Helper::get_array_value( $pro['blockAttributes'] ) );
-				}
-				$field = array_merge( $field, $pro );
-			}
-			unset( $field['pro'], $field['pro_only'], $field['pro_tier'] );
-			$fields[] = $field;
-		}
-		return $fields;
-	}
-
-	/**
-	 * What a template sets up, for the "Included" chips in the library.
-	 *
-	 * Besides the features its fields bring, a template's Pro keys (such as
-	 * `conditions`) count from the plan that builds them, and ids listed in its
-	 * `features` key (such as `calculation`) always count.
-	 *
-	 * @param array<string, mixed>             $template Template.
-	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @param string                           $tier     Plan the fields were resolved for. Defaults to this site's.
-	 * @since x.x.x
-	 * @return array<int, string>
-	 */
-	public static function get_features( $template, $fields, $tier = '' ) {
-		$by_type = [
-			'page-break'  => 'multi_step',
-			'upload'      => 'file_upload',
-			'date-picker' => 'date_picker',
-			'time-picker' => 'time_picker',
-			'rating'      => 'rating',
-			'nps'         => 'nps',
-			'gdpr'        => 'consent',
-			'signature'   => 'signature',
-			'slider'      => 'slider',
-			'repeater'    => 'repeater',
-			'payment'     => 'payment',
-		];
-		$tier    = '' === $tier ? Helper::get_pro_tier() : $tier;
-
-		$features = [ 'notification' ];
-		if ( ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ) {
-			$features[] = 'autoresponder';
-		}
-		foreach ( $fields as $field ) {
-			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
-			if ( isset( $by_type[ $type ] ) ) {
-				$features[] = $by_type[ $type ];
-			}
-		}
-		foreach ( self::FEATURE_BY_KEY as $key => $feature ) {
-			if ( ! empty( $template[ $key ] ) && Helper::tier_rank( $tier ) >= Helper::tier_rank( self::PRO_FEATURE_KEYS[ $key ] ) ) {
-				$features[] = $feature;
-			}
-		}
-		foreach ( Helper::get_array_value( $template['features'] ?? [] ) as $feature ) {
-			$features[] = sanitize_key( Helper::get_string_value( $feature ) );
-		}
-
-		/**
-		 * Filters what a template sets up, for the "Included" chips in the library.
-		 *
-		 * @since x.x.x
-		 * @param array<int, string>               $features Feature ids, such as `multi_step` or `quiz`.
-		 * @param array<string, mixed>             $template Template.
-		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-		 */
-		$features = apply_filters( 'srfm_form_template_features', $features, $template, $fields );
-
-		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $features ) ) ) ) );
-	}
-
-	/**
-	 * Whether the form always collects the visitor's email in the `email` field,
-	 * so replies and confirmation emails have somewhere to go.
-	 *
-	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
-	 * @return bool
-	 */
-	private static function has_required_email( $fields ) {
-		foreach ( $fields as $field ) {
-			if ( 'email' === ( $field['fieldType'] ?? '' ) && 'email' === ( $field['slug'] ?? '' ) && ! empty( $field['required'] ) ) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Passes a template field's `blockAttributes` through to its block.
-	 *
-	 * Hooked only while a template is being built.
-	 *
-	 * @param array<string, mixed> $attributes Block attributes from the mapper.
-	 * @param array<string, mixed> $question   Field schema.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	public static function apply_block_attributes( $attributes, $question ) {
-		if ( ! empty( $question['blockAttributes'] ) && is_array( $question['blockAttributes'] ) ) {
-			$attributes = array_merge( $attributes, $question['blockAttributes'] );
-		}
-		return $attributes;
-	}
-
-	/**
-	 * Block markup for a template.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
-	 * @return string|WP_Error
-	 */
-	public static function build_content( $template ) {
-		$fields  = self::resolve_fields( $template, Helper::get_pro_tier() );
-		$request = new WP_REST_Request( 'POST' );
-		$request->set_param(
-			'form_data',
-			[
-				'form' => [
-					'formTitle'  => $template['title'] ?? '',
-					'formFields' => $fields,
-				],
-			]
-		);
-
-		add_filter( 'srfm_ai_form_builder_modify_merged_attributes', [ self::class, 'apply_block_attributes' ], 20, 2 );
-		$content = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
-		remove_filter( 'srfm_ai_form_builder_modify_merged_attributes', [ self::class, 'apply_block_attributes' ], 20 );
-
-		if ( is_wp_error( $content ) ) {
-			return $content;
-		}
-
-		/**
-		 * Filters the block markup built from a template, before it is saved,
-		 * previewed or swapped into a form. SureForms Pro uses it to add the block
-		 * attributes its template features need.
-		 *
-		 * @since x.x.x
-		 * @param string                           $content  Block markup.
-		 * @param array<string, mixed>             $template Template.
-		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
-		 */
-		return Helper::get_string_value( apply_filters( 'srfm_form_template_content', Helper::get_string_value( $content ), $template, $fields ) );
-	}
-
-	/**
 	 * Build a template's block markup and metas together.
 	 *
 	 * @param array<string, mixed> $template Template.
@@ -1742,49 +2407,6 @@ class Form_Templates {
 			'content' => $content,
 			'metas'   => $metas,
 		];
-	}
-
-	/**
-	 * Post metas for a form created from a template.
-	 *
-	 * Starts from the registered defaults, like a hand-created form, then applies
-	 * the template's thank-you message and notification subject.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @param array<string, mixed> $style    Optional style from sanitize_style().
-	 * @param string               $content  The form's block markup, from build_content(). Built when
-	 *                                       empty and something filters the metas.
-	 * @param string               $context  `create` or `preview`.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	public static function build_metas( $template, $style = [], $content = '', $context = 'create' ) {
-		$metas      = Create_New_Form::get_default_meta_keys();
-		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
-
-		$metas['_srfm_form_confirmation'] = self::confirmation_meta( $template );
-		$metas                            = array_merge( $metas, self::settings_metas( $template ), self::build_style_metas( $template, $style ) );
-
-		$metas['_srfm_compliance']       = $registered['_srfm_compliance']['default'] ?? [];
-		$metas[ self::CREATED_VIA_META ] = 'template';
-		$metas[ self::TEMPLATE_ID_META ] = $template['id'];
-
-		return self::filter_metas( $metas, $template, $content, $context );
-	}
-
-	/**
-	 * The behaviour metas a template sets: button text, emails and steps.
-	 * Used when creating a form and when a template is applied in the editor.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @param string               $content  The form's block markup, from build_content(). Built when
-	 *                                       empty and something filters the metas.
-	 * @param string               $context  `swap`, `create` or `preview`.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	public static function build_settings_metas( $template, $content = '', $context = 'swap' ) {
-		return self::filter_metas( self::settings_metas( $template ), $template, $content, $context );
 	}
 
 	/**
@@ -1884,7 +2506,7 @@ class Form_Templates {
 			$admin['email_bcc']      = '';
 			$notifications           = [ $admin ];
 
-			if ( $has_email && ! empty( $template['autoresponder'] ) && is_array( $template['autoresponder'] ) ) {
+			if ( $has_email && ! empty( $template['autoresponder'] ) && is_array( $template['autoresponder'] ) && self::is_spam_protection_on() ) {
 				$notifications[] = array_merge(
 					$admin,
 					[
@@ -1918,7 +2540,190 @@ class Form_Templates {
 	}
 
 	/**
+	 * File a hook callback is defined in.
+	 *
+	 * @param mixed $callback Callback.
+	 * @since x.x.x
+	 * @return string Normalized real path, '' when it can't be told.
+	 */
+	private static function callback_file( $callback ) {
+		try {
+			if ( is_string( $callback ) && false !== strpos( $callback, '::' ) ) {
+				$callback = explode( '::', $callback, 2 );
+			}
+			if ( is_array( $callback ) && 2 === count( $callback ) && is_string( $callback[1] ) && ( is_object( $callback[0] ) || is_string( $callback[0] ) ) ) {
+				$reflection = new \ReflectionMethod( $callback[0], $callback[1] );
+			} elseif ( $callback instanceof \Closure || is_string( $callback ) ) {
+				$reflection = new \ReflectionFunction( $callback );
+			} elseif ( is_object( $callback ) && method_exists( $callback, '__invoke' ) ) {
+				$reflection = new \ReflectionMethod( $callback, '__invoke' );
+			} else {
+				return '';
+			}
+		} catch ( \ReflectionException $e ) {
+			return '';
+		}
+		$file = $reflection->getFileName();
+		if ( ! is_string( $file ) ) {
+			return ''; // Internal PHP function.
+		}
+		$real = realpath( $file );
+		return wp_normalize_path( false === $real ? $file : $real );
+	}
+
+	/**
+	 * An example answer for a field, taken from its placeholder or first option.
+	 *
+	 * @param array<string, mixed> $field Field schema.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function sample_answer( $field ) {
+		// Fields whose placeholder or first option would make a poor example.
+		$by_slug = [
+			'full-name'       => 'Jane Smith',
+			'first-name'      => 'Jane',
+			'last-name'       => 'Smith',
+			'company'         => __( 'Bright Bakery', 'sureforms' ),
+			'organization'    => __( 'Bright Bakery', 'sureforms' ),
+			'subject'         => __( 'Question about my order', 'sureforms' ),
+			'order-number'    => '#10234',
+			'reference'       => '#10234',
+			'product'         => __( 'Oak dining table', 'sureforms' ),
+			'position'        => __( 'Marketing Manager', 'sureforms' ),
+			'summary'         => __( 'The checkout button does nothing', 'sureforms' ),
+			'page'            => __( 'Pricing', 'sureforms' ),
+			'recommend-score' => '9',
+		];
+		$slug    = Helper::get_string_value( $field['slug'] ?? '' );
+		if ( isset( $by_slug[ $slug ] ) ) {
+			return $by_slug[ $slug ];
+		}
+		$type    = Helper::get_string_value( $field['fieldType'] ?? '' );
+		$options = Helper::get_array_value( $field['fieldOptions'] ?? [] );
+		if ( ! empty( $options[0] ) && is_array( $options[0] ) ) {
+			return Helper::get_string_value( $options[0]['optionTitle'] ?? $options[0]['label'] ?? '' );
+		}
+
+		$samples     = [
+			'email'       => 'jane@example.com',
+			'phone'       => '+1 555 010 2030',
+			'url'         => 'https://example.com',
+			'number'      => '2',
+			'date-picker' => '10/14/2026',
+			'rating'      => '5',
+			'nps'         => '9',
+			'textarea'    => __( 'A short message from the visitor.', 'sureforms' ),
+			'checkbox'    => __( 'Yes', 'sureforms' ),
+		];
+		$placeholder = Helper::get_string_value( $field['placeholder'] ?? '' );
+		// Example placeholders ("e.g. 14 October") read as real answers without the prefix.
+		$example = preg_replace( '/^' . preg_quote( __( 'e.g.', 'sureforms' ), '/' ) . '\s*/u', '', $placeholder );
+
+		// A number field's example placeholder ("e.g. 1,200") is a better example than 2.
+		if ( 'number' === $type && is_numeric( str_replace( ',', '', Helper::get_string_value( $example ) ) ) ) {
+			return Helper::get_string_value( $example );
+		}
+		if ( isset( $samples[ $type ] ) && 'textarea' !== $type ) {
+			return $samples[ $type ];
+		}
+		if ( 'input' === $type && '' !== $placeholder && $example !== $placeholder ) {
+			return Helper::get_string_value( $example );
+		}
+
+		return $samples[ $type ] ?? ( '' !== $placeholder ? $placeholder : __( 'Their answer', 'sureforms' ) );
+	}
+
+	/**
+	 * A template's theme, falling back to the first one.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return array<string, string>
+	 */
+	private static function get_template_theme( $template ) {
+		$themes = self::get_themes();
+		$key    = Helper::get_string_value( $template['theme'] ?? '' );
+		return $themes[ $key ] ?? $themes['ocean'];
+	}
+
+	/**
+	 * Whether a hex color is dark enough to need light text on it.
+	 *
+	 * @param string $hex Hex color.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function is_dark( $hex ) {
+		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
+		$channel       = static function ( $value ) {
+			$value /= 255;
+			return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
+		};
+		$luminance     = 0.2126 * $channel( $r ) + 0.7152 * $channel( $g ) + 0.0722 * $channel( $b );
+
+		// Below this, white text has the better contrast.
+		return $luminance < 0.179;
+	}
+
+	/**
+	 * Mix two hex colors.
+	 *
+	 * @param string $hex    Base color.
+	 * @param string $with   Color mixed in.
+	 * @param float  $amount Share of $with, 0 to 1.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function mix_with( $hex, $with, $amount ) {
+		$base = self::hex_to_rgb( $hex );
+		$mix  = self::hex_to_rgb( $with );
+		$out  = '#';
+		foreach ( [ 0, 1, 2 ] as $i ) {
+			$out .= str_pad( dechex( (int) round( $base[ $i ] + ( $mix[ $i ] - $base[ $i ] ) * $amount ) ), 2, '0', STR_PAD_LEFT );
+		}
+		return strtoupper( $out );
+	}
+
+	/**
+	 * Hex color to RGB.
+	 *
+	 * @param string $hex #RGB or #RRGGBB.
+	 * @since x.x.x
+	 * @return array{0:int,1:int,2:int}
+	 */
+	private static function hex_to_rgb( $hex ) {
+		$hex = ltrim( $hex, '#' );
+		if ( 3 === strlen( $hex ) ) {
+			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+		}
+		$hex = str_pad( substr( $hex, 0, 6 ), 6, '0' );
+		return [ (int) hexdec( substr( $hex, 0, 2 ) ), (int) hexdec( substr( $hex, 2, 2 ) ), (int) hexdec( substr( $hex, 4, 2 ) ) ];
+	}
+
+	/**
+	 * Whether the form always collects the visitor's email in the `email` field,
+	 * so replies and confirmation emails have somewhere to go.
+	 *
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function has_required_email( $fields ) {
+		foreach ( $fields as $field ) {
+			if ( 'email' === ( $field['fieldType'] ?? '' ) && 'email' === ( $field['slug'] ?? '' ) && ! empty( $field['required'] ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Body of the confirmation email sent to the person who filled in the form.
+	 *
+	 * It never repeats the answers ({all_data}): the address it goes to is
+	 * typed into the form, so echoing free text would let anyone send their
+	 * own text from this site to any address.
 	 *
 	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
 	 * @since x.x.x
@@ -1930,60 +2735,7 @@ class Form_Templates {
 		foreach ( Helper::get_array_value( $autoresponder['lines'] ?? [] ) as $line ) {
 			$body .= '<p>' . esc_html( Helper::get_string_value( $line ) ) . '</p>';
 		}
-		if ( ! isset( $autoresponder['summary'] ) || false !== $autoresponder['summary'] ) {
-			$body .= '<p>' . esc_html__( 'Here is a copy of what you sent us:', 'sureforms' ) . '</p>{all_data}';
-		}
 		return $body . '<p>' . esc_html__( 'Thanks,', 'sureforms' ) . '<br>{site_title}</p>';
-	}
-
-	/**
-	 * The metas that carry a template's look: form styling, and the banner on
-	 * the form's own page. Used when creating a form and when a template is
-	 * applied to an open form in the editor.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @param array<string, mixed> $style    Optional style from sanitize_style().
-	 * @since x.x.x
-	 * @return array{_srfm_forms_styling: array<string, mixed>, _srfm_instant_form_settings: array<string, mixed>, _srfm_single_page_form_title: int}
-	 */
-	public static function build_style_metas( $template, $style = [] ) {
-		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
-		$theme      = self::resolve_theme( $template, $style );
-		$styling    = Helper::get_array_value( $registered['_srfm_forms_styling']['default'] ?? [] );
-		$styling    = array_merge(
-			$styling,
-			[
-				'primary_color'           => $theme['primary'],
-				'text_color'              => $theme['text'],
-				'text_color_on_primary'   => $theme['on_primary'],
-				'field_spacing'           => 'medium',
-				'submit_button_alignment' => 'justify',
-				'bg_type'                 => 'gradient',
-				'gradient_type'           => 'basic',
-				'bg_gradient'             => $theme['background'],
-			]
-		);
-		// The form's own page (Instant Form) reads its own padding and corner
-		// keys, so both get the same values and the form looks alike everywhere.
-		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
-			$styling[ 'form_padding_' . $side ]               = 40;
-			$styling[ 'form_border_radius_' . $side ]         = $theme['radius'];
-			$styling[ 'instant_form_padding_' . $side ]       = 40;
-			$styling[ 'instant_form_border_radius_' . $side ] = $theme['radius'];
-		}
-
-		// The form's own page (Instant Form) shows the form title above the
-		// form, and its banner follows the template's theme.
-		$instant_form = array_merge(
-			Helper::get_array_value( $registered['_srfm_instant_form_settings']['default'] ?? [] ),
-			self::instant_form_style( $theme )
-		);
-
-		return [
-			'_srfm_forms_styling'          => $styling,
-			'_srfm_instant_form_settings'  => $instant_form,
-			'_srfm_single_page_form_title' => 1,
-		];
 	}
 
 	/**
@@ -2000,183 +2752,6 @@ class Form_Templates {
 			'cover_type'             => 'color',
 			'cover_color'            => $theme['banner'],
 		];
-	}
-
-	/**
-	 * Create a draft form from a template.
-	 *
-	 * @param string               $template_id Template id.
-	 * @param array<string, mixed> $style       Optional style chosen in the preview (sanitize_style()).
-	 * @param array<string, mixed> $messages    Optional thank-you and email text edited in the preview (sanitize_messages()).
-	 * @since x.x.x
-	 * @return int|WP_Error New form ID.
-	 */
-	public static function create_form_from_template( $template_id, $style = [], $messages = [] ) {
-		$template = self::get_template( $template_id );
-
-		if ( null === $template ) {
-			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
-		}
-
-		$locked = self::locked_error( $template );
-		if ( null !== $locked ) {
-			return $locked;
-		}
-
-		$template = self::apply_messages( $template, self::sanitize_messages( $messages ) );
-		$built    = self::build( $template, self::sanitize_style( $style ), 'create' );
-		if ( is_wp_error( $built ) ) {
-			return $built;
-		}
-
-		// wp_insert_post() unslashes its input, which would strip the backslashes
-		// that escape quotes inside the block JSON (a label like `Say "hi"`) and
-		// in edited message text, so slash everything first.
-		$post_id = wp_insert_post(
-			wp_slash(
-				[
-					'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
-					'post_content' => $built['content'],
-					'post_status'  => 'draft',
-					'post_type'    => SRFM_FORMS_POST_TYPE,
-					'meta_input'   => $built['metas'],
-				]
-			),
-			true
-		);
-
-		if ( is_wp_error( $post_id ) ) {
-			return $post_id;
-		}
-
-		if ( empty( $post_id ) ) {
-			return new WP_Error( 'srfm_template_create_failed', __( 'The form could not be created. Please try again.', 'sureforms' ), [ 'status' => 500 ] );
-		}
-
-		Analytics::track_form_template_usage( $template['id'], 'create' );
-
-		return $post_id;
-	}
-
-	/**
-	 * GET /form-templates
-	 *
-	 * @since x.x.x
-	 * @return WP_REST_Response
-	 */
-	public function rest_list_templates() {
-		return new WP_REST_Response(
-			[
-				'templates'       => self::get_templates_for_js(),
-				'pro_tier'        => Helper::get_pro_tier(),
-				'categories'      => self::get_categories(),
-				'themes'          => self::get_themes_for_js(),
-				'requests'        => self::get_request_settings_for_js(),
-				'spam_protection' => self::is_spam_protection_on(),
-			]
-		);
-	}
-
-	/**
-	 * Whether the site-wide honeypot is on.
-	 *
-	 * @since x.x.x
-	 * @return bool
-	 */
-	public static function is_spam_protection_on() {
-		$options = get_option( 'srfm_security_settings_options' );
-		return is_array( $options ) && ! empty( $options['srfm_honeypot'] );
-	}
-
-	/**
-	 * Turn on the site-wide honeypot, keeping the other security settings.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function enable_spam_protection() {
-		$options                  = get_option( 'srfm_security_settings_options' );
-		$options                  = is_array( $options ) ? $options : [];
-		$options['srfm_honeypot'] = true;
-		update_option( 'srfm_security_settings_options', $options );
-	}
-
-	/**
-	 * POST /form-templates/create
-	 *
-	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function rest_create_form( $request ) {
-		$post_id = self::create_form_from_template(
-			Helper::get_string_value( $request->get_param( 'template_id' ) ),
-			self::sanitize_style( $request->get_param( 'style' ) ),
-			Helper::get_array_value( $request->get_param( 'messages' ) )
-		);
-
-		if ( is_wp_error( $post_id ) ) {
-			return $post_id;
-		}
-
-		if ( rest_sanitize_boolean( $request->get_param( 'enable_spam_protection' ) ) && ! self::is_spam_protection_on() ) {
-			self::enable_spam_protection();
-		}
-
-		return new WP_REST_Response(
-			[
-				'id'       => $post_id,
-				'edit_url' => admin_url( 'post.php?post=' . $post_id . '&action=edit' ),
-			]
-		);
-	}
-
-	/**
-	 * GET /form-templates/<id>
-	 *
-	 * Block markup for swapping a template into an open form. Also says whether
-	 * that form already has entries, because swapping changes the fields that
-	 * existing entries and integrations were recorded against.
-	 *
-	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function rest_get_template_content( $request ) {
-		$template = self::get_template( Helper::get_string_value( $request->get_param( 'template_id' ) ) );
-
-		if ( null === $template ) {
-			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
-		}
-
-		$locked = self::locked_error( $template );
-		if ( null !== $locked ) {
-			return $locked;
-		}
-
-		$style = self::sanitize_style( $request->get_param( 'style' ) );
-		$built = self::build( $template, $style, 'swap' );
-		if ( is_wp_error( $built ) ) {
-			return $built;
-		}
-
-		$style_metas = self::build_style_metas( $template, $style );
-		$form_id     = Helper::get_integer_value( $request->get_param( 'form_id' ) );
-		$has_entries = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
-
-		return new WP_REST_Response(
-			[
-				'id'           => $template['id'],
-				'title'        => Helper::get_string_value( $template['title'] ?? '' ),
-				'content'      => $built['content'],
-				'has_entries'  => $has_entries,
-				// Applied over the open form's own settings in the editor.
-				'styling'      => self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
-				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
-				// Button text, emails, thank-you message and steps the template sets.
-				'settings'     => $built['metas'],
-			]
-		);
 	}
 
 	/**
@@ -2197,175 +2772,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * POST /form-templates/track
-	 *
-	 * Counts a step of the template journey in the library: opening it,
-	 * previewing a template, or clicking "Upgrade to unlock". A preview of a
-	 * template this site can't use is also counted as a locked preview.
-	 * Nothing is recorded unless the site shares usage data with SureForms.
-	 *
-	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function rest_record_action( $request ) {
-		$action      = Helper::get_string_value( $request->get_param( 'action' ) );
-		$template_id = Helper::get_string_value( $request->get_param( 'template_id' ) );
-		$template    = '' !== $template_id ? self::get_template( $template_id ) : null;
-
-		if ( 'library_open' !== $action && ! $template ) {
-			return new WP_Error( 'srfm_template_not_found', __( 'Template not found.', 'sureforms' ), [ 'status' => 404 ] );
-		}
-
-		if ( ! self::is_usage_sharing_on() ) {
-			return new WP_REST_Response( [ 'recorded' => false ] );
-		}
-
-		Analytics::track_form_template_action( $action, 'library_open' === $action ? '' : $template_id );
-		if ( 'preview' === $action && $template && ! self::is_template_available( $template ) ) {
-			Analytics::track_form_template_action( 'locked_preview', $template_id );
-		}
-
-		return new WP_REST_Response( [ 'recorded' => true ] );
-	}
-
-	/**
-	 * POST /form-templates/request
-	 *
-	 * Records a template someone asked for, or searched for without a match.
-	 * Nothing is recorded unless the site shares usage data with SureForms.
-	 *
-	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function rest_record_demand( $request ) {
-		$query = self::clean_demand_query( $request->get_param( 'query' ) );
-		if ( '' === $query ) {
-			return new WP_Error( 'srfm_template_request_invalid', __( 'Please describe the template in a few words.', 'sureforms' ), [ 'status' => 400 ] );
-		}
-
-		if ( ! self::is_usage_sharing_on() ) {
-			return new WP_REST_Response( [ 'recorded' => false ] );
-		}
-
-		Analytics::track_form_template_demand( $query, Helper::get_string_value( $request->get_param( 'type' ) ) );
-
-		return new WP_REST_Response( [ 'recorded' => true ] );
-	}
-
-	/**
-	 * Clean search text before it is shared as template demand.
-	 *
-	 * Keeps short, plain descriptions only. Text that looks like contact
-	 * details or a link is dropped, as people sometimes paste those into
-	 * search boxes.
-	 *
-	 * @param mixed $query Search text.
-	 * @since x.x.x
-	 * @return string Cleaned text, or '' when it should not be shared.
-	 */
-	public static function clean_demand_query( $query ) {
-		$query = strtolower( trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( Helper::get_string_value( $query ) ) ) ) );
-
-		if ( '' === $query || strlen( $query ) < 2 || strlen( $query ) > 60 ) {
-			return '';
-		}
-
-		// Emails, links and long numbers (phone numbers, IDs).
-		if ( false !== strpos( $query, '@' ) || preg_match( '#https?:|www\.|\.com\b|\d{5,}#', $query ) ) {
-			return '';
-		}
-
-		if ( count( explode( ' ', $query ) ) > 6 ) {
-			return '';
-		}
-
-		return $query;
-	}
-
-	/**
-	 * Whether this site shares usage data with SureForms, which is how
-	 * template requests reach the team.
-	 *
-	 * @since x.x.x
-	 * @return bool
-	 */
-	public static function is_usage_sharing_on() {
-		if ( ! apply_filters( 'bsf_usage_tracking_enabled', true ) ) {
-			return false;
-		}
-		return (bool) apply_filters( 'sureforms_tracking_enabled', 'yes' === get_site_option( 'sureforms_usage_optin', false ) );
-	}
-
-	/**
-	 * What the template library needs to offer "Request this template".
-	 *
-	 * @since x.x.x
-	 * @return array{enabled: bool, settings_url: string}
-	 */
-	public static function get_request_settings_for_js() {
-		return [
-			'enabled'      => self::is_usage_sharing_on(),
-			'settings_url' => admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ),
-		];
-	}
-
-	/**
-	 * POST /form-templates/swap
-	 *
-	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
-	 * @return WP_REST_Response
-	 */
-	public function rest_record_swap( $request ) {
-		self::record_swap(
-			Helper::get_integer_value( $request->get_param( 'form_id' ) ),
-			Helper::get_string_value( $request->get_param( 'template_id' ) )
-		);
-
-		return new WP_REST_Response( [ 'success' => true ] );
-	}
-
-	/**
-	 * Record a template swapped into an open form.
-	 *
-	 * The swap itself happens in the editor; this only stamps the form and counts it.
-	 *
-	 * @param int    $form_id     Form ID.
-	 * @param string $template_id Template id.
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function record_swap( $form_id, $template_id ) {
-		$template = self::get_template( $template_id );
-		if ( null === $template || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
-			return;
-		}
-		update_post_meta( $form_id, self::TEMPLATE_ID_META, $template['id'] );
-		Analytics::track_form_template_usage( $template['id'], 'swap' );
-	}
-
-	/**
-	 * URL of a template's front-end preview.
-	 *
-	 * @param string $template_id Template id.
-	 * @since x.x.x
-	 * @return string
-	 */
-	public static function get_preview_url( $template_id ) {
-		return add_query_arg(
-			[
-				self::PREVIEW_QUERY_VAR => rawurlencode( $template_id ),
-				// The preview is a front-end page, which would use the site language;
-				// show it in the admin's language, like the form they will create.
-				'srfm_locale'           => rawurlencode( get_user_locale() ),
-			],
-			home_url( '/' )
-		);
-	}
-
-	/**
 	 * ID of the in-memory preview form. Each request uses its own ID in a range
 	 * real posts don't reach, so previews rendering at the same time never share
 	 * cache entries.
@@ -2378,114 +2784,6 @@ class Form_Templates {
 			self::$preview_post_id = self::PREVIEW_POST_ID - wp_rand( 0, 999999 );
 		}
 		return self::$preview_post_id;
-	}
-
-	/**
-	 * Remove the in-memory preview form from the object cache at the end of the
-	 * request, so a persistent cache (Redis, Memcached) never keeps it.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function forget_preview_form() {
-		if ( null === self::$preview_post_id ) {
-			return;
-		}
-		wp_cache_delete( self::$preview_post_id, 'posts' );
-		wp_cache_delete( self::$preview_post_id, 'post_meta' );
-	}
-
-	/**
-	 * Render a template preview page instead of the requested front-end page.
-	 *
-	 * The page is the site's own front end: the active theme's styles plus the
-	 * real SureForms renderer, so the preview looks exactly like the form will
-	 * once it is embedded. Only users who can create forms see it.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function maybe_render_preview() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview gated by a capability check; it changes nothing.
-		if ( ! isset( $_GET[ self::PREVIEW_QUERY_VAR ] ) ) {
-			return;
-		}
-
-		if ( ! Helper::current_user_can() ) {
-			wp_die( esc_html__( 'Sorry, you are not allowed to preview form templates.', 'sureforms' ), '', [ 'response' => 403 ] );
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display language only; checked against installed languages.
-		$locale = isset( $_GET['srfm_locale'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_locale'] ) ) : '';
-		if ( '' !== $locale && determine_locale() !== $locale && ( 'en_US' === $locale || in_array( $locale, get_available_languages(), true ) ) ) {
-			switch_to_locale( $locale );
-			self::$templates = null; // Rebuild the template strings in that language.
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- See above.
-		$template = self::get_template( sanitize_key( wp_unslash( $_GET[ self::PREVIEW_QUERY_VAR ] ) ) );
-		if ( null === $template ) {
-			wp_die( esc_html__( 'That template could not be found.', 'sureforms' ), '', [ 'response' => 404 ] );
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview; the style is sanitized to known keys and hex colors.
-		$style = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
-		// A locked template still previews, built with this site's fields, so
-		// the library can show what it offers.
-		$built = self::build( $template, $style, 'preview' );
-		if ( is_wp_error( $built ) ) {
-			wp_die( esc_html( $built->get_error_message() ), '', [ 'response' => 500 ] );
-		}
-
-		self::seed_preview_form( $template, $built['content'], $built['metas'] );
-
-		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
-			define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Standard page-cache opt-out constant.
-		}
-		nocache_headers();
-		show_admin_bar( false );
-		add_action( 'wp_enqueue_scripts', [ Frontend_Assets::class, 'enqueue_scripts_and_styles' ], 20 );
-		add_filter( 'srfm_payment_methods_registry', [ self::class, 'preview_payment_methods' ], 99 );
-
-		// Block styles are normally built from the page's main post, which this
-		// preview does not have, so build them from the in-memory form instead.
-		if ( class_exists( '\Spec_Gb_Helper' ) ) {
-			\Spec_Gb_Helper::get_instance()->get_generated_stylesheet( get_post( self::get_preview_post_id() ) );
-		}
-
-		// Render first, so the blocks enqueue the scripts and styles they need
-		// before the head and footer print them.
-		$markup = Helper::get_string_value( Generate_Form_Markup::get_form_markup( self::get_preview_post_id(), false ) );
-		$width  = Helper::get_integer_value( Create_New_Form::get_default_meta_keys()['_srfm_form_container_width'] ?? 650 );
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display flag only.
-		$is_thumbnail = ! empty( $_GET['srfm_thumb'] );
-
-		self::render_preview_document( $markup, $width, $is_thumbnail );
-		exit;
-	}
-
-	/**
-	 * Show the Stripe payment field in a template preview even before Stripe is
-	 * connected.
-	 *
-	 * A form leaves out a payment field whose payment method isn't connected, so
-	 * a payment template would preview with no payment step at all. The preview
-	 * is a picture of the form, so it shows the field with a note where the card
-	 * fields will appear; the field takes no payment here (it has no Stripe key,
-	 * and submitting is switched off).
-	 *
-	 * @param mixed $methods Payment methods from `srfm_payment_methods_registry`.
-	 * @since x.x.x
-	 * @return mixed
-	 */
-	public static function preview_payment_methods( $methods ) {
-		if ( ! is_array( $methods ) || ! isset( $methods['stripe'] ) || ! is_array( $methods['stripe'] ) || ! empty( $methods['stripe']['enabled'] ) ) {
-			return $methods;
-		}
-
-		$methods['stripe']['enabled']              = true;
-		$methods['stripe']['place_holder_content'] = '<p class="srfm-template-preview__payment-note">' . esc_html__( 'Connect Stripe to take payments. The card fields appear here once it is connected.', 'sureforms' ) . '</p>';
-		return $methods;
 	}
 
 	/**
@@ -2541,13 +2839,12 @@ class Form_Templates {
 	 * Submitting is switched off: this is a picture of the form, and the
 	 * in-memory form it renders cannot take entries.
 	 *
-	 * @param string $markup       Rendered form markup.
-	 * @param int    $width        Form container width in px.
-	 * @param bool   $is_thumbnail Whether the page is shown as a scaled-down card thumbnail.
+	 * @param string $markup Rendered form markup.
+	 * @param int    $width  Form container width in px.
 	 * @since x.x.x
 	 * @return void
 	 */
-	private static function render_preview_document( $markup, $width, $is_thumbnail = false ) {
+	private static function render_preview_document( $markup, $width ) {
 		?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -2555,17 +2852,16 @@ class Form_Templates {
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="robots" content="noindex, nofollow">
-		<?php wp_head(); ?>
+		<?php
+		self::remove_third_party_hooks();
+		wp_head();
+		?>
 	<style>
 		html { margin-top: 0 !important; }
 		body.srfm-template-preview { margin: 0; }
 		.srfm-template-preview .srfm-edit-form-btn-wrap { display: none !important; }
 		.srfm-template-preview__payment-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--srfm-color-input-description, #6b7280); }
 		.srfm-template-preview__wrap { box-sizing: border-box; max-width: <?php echo esc_attr( (string) $width ); ?>px; margin: 0 auto; padding: 40px 24px; }
-		<?php if ( $is_thumbnail ) { ?>
-		html, body.srfm-template-preview { overflow: hidden !important; }
-		.srfm-template-preview__wrap { padding: 20px 16px; }
-		<?php } ?>
 	</style>
 </head>
 <body <?php body_class( 'srfm-template-preview' ); ?>>
@@ -2586,27 +2882,13 @@ class Form_Templates {
 			document.addEventListener( 'click', stop, true );
 		}() );
 	</script>
-		<?php wp_footer(); ?>
+		<?php
+		self::remove_third_party_hooks();
+		wp_footer();
+		?>
 </body>
 </html>
 		<?php
-	}
-
-	/**
-	 * Thank-you message in the same layout as the default confirmation. Catalog
-	 * files use it through Catalog::thank_you() for conditional messages.
-	 *
-	 * @param string $heading Heading.
-	 * @param string $text    Body text.
-	 * @since x.x.x
-	 * @return string
-	 */
-	public static function confirmation_message( $heading, $text ) {
-		// A file URL, not a data: URI: the saved message goes through wp_kses_post(),
-		// which strips the data: scheme and would leave a broken image.
-		$check_icon = SRFM_URL . 'images/check-icon.svg';
-
-		return '<p style="text-align: center;"><img src="' . esc_url( $check_icon ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
 	}
 
 	/**
@@ -2617,5 +2899,21 @@ class Form_Templates {
 	 */
 	private static function default_templates() {
 		return Catalog::templates();
+	}
+
+	/**
+	 * Whether an asset is served from WordPress core (wp-includes). Core
+	 * registers its scripts with site-relative paths, so both forms are checked.
+	 *
+	 * @param string $src Source URL.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function is_core_asset( $src ) {
+		if ( '' === $src ) {
+			return false;
+		}
+		$path = Helper::get_string_value( wp_parse_url( includes_url(), PHP_URL_PATH ) );
+		return 0 === strpos( $src, includes_url() ) || ( '' !== $path && 0 === strpos( $src, $path ) );
 	}
 }
