@@ -40,14 +40,9 @@ import {
 	enhanceDropdownOptions,
 } from '@Components/hooks';
 import { Trash2 } from 'lucide-react';
-import {
-	useOptionDescription,
-	OptionDescriptionToggle,
-	OptionDescriptionControl,
-} from '@Components/option-description';
 
 const Edit = ( props ) => {
-	const { attributes, setAttributes, clientId, isSelected } = props;
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		required,
 		options,
@@ -62,13 +57,9 @@ const Edit = ( props ) => {
 		minValue,
 		maxValue,
 		showValues,
-		showDescriptions,
 		preselectedOptions = [],
 		dynamicDefaultValue,
 	} = attributes;
-
-	const { openDescription, setOpenDescription, openDescriptionRef } =
-		useOptionDescription( isSelected );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
 	const [ error, setError ] = useState( false );
@@ -271,16 +262,6 @@ const Edit = ( props ) => {
 							addIcon={ parse( svgIcons.custom_plus_icon ) }
 						/>
 					</div>
-					{ showDescriptions && (
-						<OptionDescriptionToggle
-							blockId={ block_id }
-							index={ i }
-							optionLabel={ option.label }
-							description={ option.description }
-							openDescription={ openDescription }
-							setOpenDescription={ setOpenDescription }
-						/>
-					) }
 					<div className="srfm-options-delete">
 						<Trash2
 							style={ {
@@ -331,18 +312,6 @@ const Edit = ( props ) => {
 								changeOption,
 								handleDelete,
 							}
-						) }
-						{ showDescriptions && openDescription === i && (
-							<OptionDescriptionControl
-								blockId={ block_id }
-								index={ i }
-								optionLabel={ option.label }
-								description={ option.description }
-								openDescriptionRef={ openDescriptionRef }
-								onChange={ ( value ) =>
-									changeOption( { description: value }, i )
-								}
-							/>
 						) }
 					</div>
 				) }
@@ -533,18 +502,6 @@ const Edit = ( props ) => {
 					checked={ showValues }
 					onChange={ ( value ) =>
 						setAttributes( { showValues: value } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'show-descriptions',
-			component: (
-				<ToggleControl
-					label={ __( 'Option Description', 'sureforms' ) }
-					checked={ showDescriptions }
-					onChange={ ( value ) =>
-						setAttributes( { showDescriptions: value } )
 					}
 				/>
 			),

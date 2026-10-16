@@ -116,19 +116,9 @@ function initializeDropdown() {
 				...additionalConfig,
 				render: {
 					option( data, escape ) {
-						// TomSelect copies the <option> dataset onto `data`, so the
-						// description arrives already decoded and must be escaped here
-						// the same way the label is. The selected item below stays
-						// label-only: the description belongs to the choice, not to the
-						// chip that reports it.
-						const description = data.description
-							? `<span class="srfm-option-description">${ escape(
-								data.description
-							  ) }</span>`
-							: '';
 						return `<div>${ data.icon } <span>${ escape(
 							data.text
-						) }</span>${ description }</div>`;
+						) }</span></div>`;
 					},
 					item( item, escape ) {
 						return `<div>${ item.icon } ${ escape(

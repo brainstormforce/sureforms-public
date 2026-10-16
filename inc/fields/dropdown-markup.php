@@ -114,8 +114,6 @@ class Dropdown_Markup extends Base {
 
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 
-		$this->show_descriptions = ! empty( $attributes['showDescriptions'] );
-
 		// Generate unique instance identifier.
 		self::$instance_counter++;
 		$this->unique_slug = $this->slug . '-' . self::$instance_counter;
@@ -163,12 +161,11 @@ class Dropdown_Markup extends Base {
 					<option class="srfm-dropdown-placeholder" value="" disabled <?php echo empty( $this->preselected_options ) ? 'selected' : ''; ?>><?php echo esc_html( $this->placeholder ); ?></option>
 						<?php foreach ( $this->options as $i => $option ) { ?>
 							<?php
-								$icon_svg           = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
-								$escaped_icon_svg   = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
-								$is_preselected     = is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true );
-								$option_description = $this->get_option_description( $option );
+								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
+								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
+								$is_preselected   = is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true );
 							?>
-								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>" <?php echo '' !== $option_description ? 'data-description="' . esc_attr( $option_description ) . '"' : ''; ?> <?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?> <?php echo $is_preselected ? 'selected' : ''; ?>><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
+								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>" <?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?> <?php echo $is_preselected ? 'selected' : ''; ?>><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
 								<?php
 						}
 						?>
