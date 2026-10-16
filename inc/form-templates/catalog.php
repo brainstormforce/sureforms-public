@@ -214,18 +214,6 @@ class Catalog {
 	}
 
 	/**
-	 * The site's country from its language (en_GB gives gb), used when the
-	 * phone field cannot detect the visitor's country.
-	 *
-	 * @since x.x.x
-	 * @return string Two-letter country code, or empty when the language has none.
-	 */
-	private static function site_country() {
-		$parts = explode( '_', get_locale() );
-		return isset( $parts[1] ) && 2 === strlen( $parts[1] ) ? strtolower( $parts[1] ) : '';
-	}
-
-	/**
 	 * A date question: a date picker with SureForms Pro, a text field without it.
 	 *
 	 * @param string $slug     Field slug.
@@ -286,5 +274,17 @@ class Catalog {
 				'maxValue' => $max,
 			]
 		);
+	}
+
+	/**
+	 * The site's country from its language (en_GB gives gb), used when the
+	 * phone field cannot detect the visitor's country.
+	 *
+	 * @since x.x.x
+	 * @return string Two-letter country code, or empty when the language has none.
+	 */
+	private static function site_country() {
+		$parts = explode( '_', get_locale() );
+		return isset( $parts[1] ) && 2 === strlen( $parts[1] ) ? strtolower( $parts[1] ) : '';
 	}
 }

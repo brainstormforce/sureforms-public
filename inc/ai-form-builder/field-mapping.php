@@ -27,7 +27,6 @@ class Field_Mapping {
 	 * Field types allowed inside an address block (editor `allowedBlocks`).
 	 *
 	 * @since x.x.x
-	 * @var array<int, string>
 	 */
 	public const ADDRESS_INNER_TYPES = [ 'input', 'dropdown' ];
 
@@ -35,7 +34,6 @@ class Field_Mapping {
 	 * Field types allowed inside a repeater block (Pro editor `allowedBlocks`).
 	 *
 	 * @since x.x.x
-	 * @var array<int, string>
 	 */
 	public const REPEATER_INNER_TYPES = [ 'input', 'email', 'textarea', 'number', 'url', 'phone', 'date-picker', 'time-picker', 'dropdown' ];
 
@@ -526,7 +524,12 @@ class Field_Mapping {
 			case 'password':
 			case 'repeater':
 				// HTML ships with every Pro tier; password and repeater are Business only.
+				// Without that tier, fall back to a text field like the `default` branch
+				// does, so the question stays in the form instead of being dropped.
 				if ( ! self::has_pro_fields() || ( 'html' !== $field_type && ! self::has_business_fields() ) ) {
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
+
+					$post_content .= self::block_markup( 'input', $merged_attributes );
 					break;
 				}
 

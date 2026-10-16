@@ -340,7 +340,7 @@ return [
 		'attach_uploads' => [ 'evidence' ],
 		'confirmation'   => [
 			'heading' => __( 'We have received your complaint', 'sureforms' ),
-			'text'    => __( 'We are sorry for the trouble, {form:full-name}. A copy has been sent to {form:email}, and we will contact you once we have looked into it.', 'sureforms' ),
+			'text'    => __( 'We are sorry for the trouble, {form:full-name}. We will look into it and contact you at {form:email}.', 'sureforms' ),
 		],
 		'email_subject'  => __( 'Complaint from {form:full-name}: {form:complaint-type}', 'sureforms' ),
 		'email_intro'    => __( '{form:full-name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),

@@ -3,7 +3,6 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
-	useRef,
 	useState,
 } from '@wordpress/element';
 import { Button, Checkbox, Toaster, toast } from '@bsf/force-ui';
@@ -31,6 +30,7 @@ import {
 import { cn } from '@Utils/Helpers';
 import {
 	createFormFromTemplate,
+	recordEmptySearch,
 	requestTemplate,
 	trackTemplateAction,
 } from '@Utils/form-templates';
@@ -40,6 +40,7 @@ import {
 	FeatureChip,
 	IncludedFeatures,
 	PremiumBadge,
+	getCardImage,
 	getFeatures,
 	getLockLabels,
 	getMissingSetup,
@@ -182,151 +183,38 @@ const FormSkeleton = ( { className } ) => (
 	</span>
 );
 
-// The preview page is laid out at this width, then scaled down to fit a card.
-const THUMB_RENDER_WIDTH = 600;
 const THUMB_HEIGHT = 288;
 
 /**
- * Live, scaled-down render of a template's preview page.
+ * Card thumbnail: a picture of the template. Cards never load the live
+ * preview page, which is a full front-end request; only the opened preview
+ * does. A template without a picture, or whose picture doesn't load, shows a
+ * plain form outline.
  *
  * @param {Object} props          Props.
  * @param {Object} props.template Template.
  */
 export const TemplateThumbnail = ( { template } ) => {
-	// A picture that doesn't load falls back to the live preview.
 	const [ imageFailed, setImageFailed ] = useState( false );
-	if ( showsPreviewImage( template ) && ! imageFailed ) {
-		return (
-			<ImageThumbnail
-				template={ template }
-				onError={ () => setImageFailed( true ) }
-			/>
-		);
-	}
-	return <LiveThumbnail template={ template } />;
-};
-
-/**
- * Card thumbnail of a locked template: the picture of its Premium version.
- *
- * @param {Object}   props          Props.
- * @param {Object}   props.template Template.
- * @param {Function} props.onError  Called when the picture doesn't load.
- */
-const ImageThumbnail = ( { template, onError } ) => (
-	<span
-		className="relative block w-full overflow-hidden bg-background-primary"
-		style={ { height: THUMB_HEIGHT } }
-		aria-hidden="true"
-	>
-		<img
-			src={ template.preview_image }
-			alt=""
-			loading="lazy"
-			decoding="async"
-			onError={ onError }
-			className="block w-full h-full object-cover object-top"
-		/>
-	</span>
-);
-
-/**
- * Live thumbnail: the preview page, scaled down.
- *
- * @param {Object} props          Props.
- * @param {Object} props.template Template.
- */
-const LiveThumbnail = ( { template } ) => {
-	const boxRef = useRef( null );
-	const [ scale, setScale ] = useState( 0.35 );
-	// 'loading', 'ready' or 'failed'.
-	const [ status, setStatus ] = useState( 'loading' );
-	const [ isVisible, setIsVisible ] = useState( false );
-
-	useEffect( () => {
-		const box = boxRef.current;
-		if ( ! box || ! window.ResizeObserver ) {
-			return;
-		}
-		const observer = new window.ResizeObserver( ( [ entry ] ) => {
-			if ( entry.contentRect.width ) {
-				setScale( entry.contentRect.width / THUMB_RENDER_WIDTH );
-			}
-		} );
-		observer.observe( box );
-		return () => observer.disconnect();
-	}, [] );
-
-	// Lazy frames only start loading on screen, so the timeout starts there too.
-	useEffect( () => {
-		const box = boxRef.current;
-		if ( ! box || ! window.IntersectionObserver ) {
-			setIsVisible( true );
-			return;
-		}
-		const observer = new window.IntersectionObserver( ( [ entry ] ) => {
-			if ( entry.isIntersecting ) {
-				setIsVisible( true );
-				observer.disconnect();
-			}
-		} );
-		observer.observe( box );
-		return () => observer.disconnect();
-	}, [] );
-
-	useEffect( () => {
-		if ( ! isVisible || 'loading' !== status ) {
-			return;
-		}
-		const timer = setTimeout(
-			() =>
-				setStatus( ( current ) =>
-					'loading' === current ? 'failed' : current
-				),
-			PREVIEW_TIMEOUT
-		);
-		return () => clearTimeout( timer );
-	}, [ isVisible, status ] );
-
+	const image = getCardImage( template );
 	return (
 		<span
-			ref={ boxRef }
 			className="relative block w-full overflow-hidden bg-background-primary"
 			style={ { height: THUMB_HEIGHT } }
 			aria-hidden="true"
 		>
-			{ 'loading' === status && <FormSkeleton /> }
-			{ 'failed' === status && (
-				<span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background-secondary text-text-tertiary">
-					<ImageOff className="size-6" aria-hidden="true" />
-					<span className="text-xs">
-						{ __( 'Preview unavailable', 'sureforms' ) }
-					</span>
-				</span>
+			{ image && ! imageFailed ? (
+				<img
+					src={ image }
+					alt=""
+					loading="lazy"
+					decoding="async"
+					onError={ () => setImageFailed( true ) }
+					className="block w-full h-full object-cover object-top"
+				/>
+			) : (
+				<FormSkeleton />
 			) }
-			<iframe
-				src={ `${ template.preview_url }&srfm_thumb=1` }
-				title={ template.title }
-				loading="lazy"
-				scrolling="no"
-				tabIndex="-1"
-				onLoad={ ( event ) =>
-					setStatus(
-						isPreviewBroken( event.currentTarget )
-							? 'failed'
-							: 'ready'
-					)
-				}
-				className={ cn(
-					'absolute top-0 left-0 border-0 pointer-events-none origin-top-left transition-opacity duration-300 motion-reduce:transition-none',
-					'ready' === status ? 'opacity-100' : 'opacity-0'
-				) }
-				style={ {
-					width: THUMB_RENDER_WIDTH,
-					height: `${ THUMB_HEIGHT / scale }px`,
-					transform: `scale(${ scale })`,
-				} }
-			/>
 		</span>
 	);
 };
@@ -437,6 +325,9 @@ const PreviewTabs = ( { tabs, selected, onSelect } ) => {
  * @param {number}   props.top                 Space to leave above, e.g. for the admin bar.
  * @param {boolean}  props.offerSpamProtection Offer to turn on the site-wide honeypot
  *                                             while creating. Off by default.
+ * @param {boolean}  props.spamProtectionOff   The site-wide honeypot is off, so the
+ *                                             visitor email is held back unless it
+ *                                             is turned on while creating.
  * @param {boolean}  props.editMessages        Let the thank-you message and emails be
  *                                             edited before creating. Otherwise they
  *                                             are only shown.
@@ -449,6 +340,7 @@ export const TemplatePreview = ( {
 	presets,
 	top = 0,
 	offerSpamProtection = false,
+	spamProtectionOff = offerSpamProtection,
 	editMessages = false,
 } ) => {
 	const isNarrow = useMediaQuery( NARROW_QUERY );
@@ -574,6 +466,9 @@ export const TemplatePreview = ( {
 	const showMissingNotice =
 		template.is_locked && ! showImage && template.preview_missing > 0;
 	const showSpamOption = offerSpamProtection && ! template.is_locked;
+	// The server only sets up the visitor email while spam protection is on.
+	const holdsVisitorEmail =
+		spamProtectionOff && ! ( showSpamOption && protectFromSpam );
 	const panelId = 'srfm-template-customize-panel';
 
 	const showMessages = hasMessages( template );
@@ -936,6 +831,7 @@ export const TemplatePreview = ( {
 								values={ messageValues }
 								setValue={ setMessage }
 								editable={ canEditMessages }
+								held={ holdsVisitorEmail }
 							/>
 						</div>
 					) }
@@ -1063,7 +959,7 @@ const NO_RESULTS_DELAY = 1500;
  *
  * Requests reach the SureForms team through usage sharing, so they are only
  * sent when the site has it on. Searches with no results are counted the
- * same way, once per search, to show which templates people look for.
+ * same way, once per search, without their text.
  *
  * @param {Object} props          Props.
  * @param {string} props.query    Search text.
@@ -1079,7 +975,7 @@ const TemplateRequestCard = ( { query, requests } ) => {
 			return;
 		}
 		const timer = setTimeout( () => {
-			requestTemplate( query, 'search' ).catch( () => {} );
+			recordEmptySearch().catch( () => {} );
 		}, NO_RESULTS_DELAY );
 		return () => clearTimeout( timer );
 	}, [ query, enabled ] );
@@ -1087,7 +983,7 @@ const TemplateRequestCard = ( { query, requests } ) => {
 	const send = async () => {
 		setStatus( 'sending' );
 		try {
-			await requestTemplate( query, 'request' );
+			await requestTemplate( query );
 			setStatus( 'sent' );
 		} catch ( error ) {
 			setStatus( 'error' );

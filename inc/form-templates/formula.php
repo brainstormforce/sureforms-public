@@ -115,8 +115,9 @@ class Formula {
 	private function parse_sum() {
 		$value = $this->parse_product();
 		while ( null !== $value && in_array( $this->peek(), [ '+', '-' ], true ) ) {
-			$operator = $this->tokens[ $this->pos++ ];
-			$right    = $this->parse_product();
+			$operator = $this->tokens[ $this->pos ];
+			$this->pos++;
+			$right = $this->parse_product();
 			if ( null === $right ) {
 				return null;
 			}
@@ -134,8 +135,9 @@ class Formula {
 	private function parse_product() {
 		$value = $this->parse_unary();
 		while ( null !== $value && in_array( $this->peek(), [ '*', '/', '%' ], true ) ) {
-			$operator = $this->tokens[ $this->pos++ ];
-			$right    = $this->parse_unary();
+			$operator = $this->tokens[ $this->pos ];
+			$this->pos++;
+			$right = $this->parse_unary();
 			if ( null === $right ) {
 				return null;
 			}
@@ -162,7 +164,8 @@ class Formula {
 		if ( '+' !== $sign && '-' !== $sign ) {
 			return $this->parse_power();
 		}
-		if ( ++$this->depth > self::MAX_DEPTH ) {
+		$this->depth++;
+		if ( $this->depth > self::MAX_DEPTH ) {
 			return null;
 		}
 		$this->pos++;
@@ -206,7 +209,11 @@ class Formula {
 			$this->pos++;
 			return $token;
 		}
-		if ( '(' !== $token || ++$this->depth > self::MAX_DEPTH ) {
+		if ( '(' !== $token ) {
+			return null;
+		}
+		$this->depth++;
+		if ( $this->depth > self::MAX_DEPTH ) {
 			return null;
 		}
 		$this->pos++;

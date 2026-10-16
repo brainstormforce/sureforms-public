@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Form_Views;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -802,6 +803,7 @@ class Analytics {
 	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
 	 * as the `form_template_usage` event, so template popularity and how often
 	 * templates are swapped inside the editor can be read from the warehouse.
+	 * Nothing is kept or queued unless the site shares usage data.
 	 *
 	 * @param mixed  $template_id Template id (sanitized here).
 	 * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
@@ -809,6 +811,10 @@ class Analytics {
 	 * @return void
 	 */
 	public static function track_form_template_usage( $template_id, $action = 'create' ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return;
+		}
+
 		// The id becomes an option key and an event property key, so clean it here
 		// rather than trusting every caller.
 		$template_id = substr( sanitize_key( Helper::get_string_value( $template_id ) ), 0, 40 );
@@ -920,26 +926,6 @@ class Analytics {
 	}
 
 	/**
-	 * A per-template count map stored in the usage totals.
-	 *
-	 * @param array<string, mixed> $usage Stored usage totals.
-	 * @param string               $key   Map key.
-	 * @since x.x.x
-	 * @return array<string, int>
-	 */
-	private static function usage_counts( $usage, $key ) {
-		if ( ! isset( $usage[ $key ] ) || ! is_array( $usage[ $key ] ) ) {
-			return [];
-		}
-
-		$counts = [];
-		foreach ( $usage[ $key ] as $id => $count ) {
-			$counts[ (string) $id ] = Helper::get_integer_value( $count );
-		}
-		return $counts;
-	}
-
-	/**
 	 * Number of forms per template id that have received at least one entry,
 	 * the sign a template form is actually working on the site.
 	 *
@@ -1033,95 +1019,56 @@ class Analytics {
 	}
 
 	/**
-	 * Queue the `form_template_usage` event: the stored creation and swap
-	 * totals plus the forms published right now, per template.
-	 *
-	 * @param array<string, mixed> $usage Stored usage totals.
-	 * @since x.x.x
-	 * @return void
-	 */
-	private static function send_form_template_usage( $usage ) {
-		$counts    = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
-		$published = self::published_template_forms();
-
-		$with_entries = self::template_forms_with_entries();
-		$locked       = self::usage_counts( $usage, 'locked_preview_counts' );
-		$upgrades     = self::usage_counts( $usage, 'upgrade_click_counts' );
-
-		$properties   = [
-			'plan'            => Helper::has_pro() ? 'business' : 'free',
-			'library_opens'   => (string) Helper::get_integer_value( $usage['library_opens'] ?? 0 ),
-			'previews'        => (string) Helper::get_integer_value( $usage['previews'] ?? 0 ),
-			'created'         => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
-			'swaps'           => (string) Helper::get_integer_value( $usage['swaps'] ?? 0 ),
-			'published'       => (string) array_sum( $published ),
-			'with_entries'    => (string) array_sum( $with_entries ),
-			'locked_previews' => (string) Helper::get_integer_value( $usage['locked_previews'] ?? 0 ),
-			'upgrade_clicks'  => (string) Helper::get_integer_value( $usage['upgrade_clicks'] ?? 0 ),
-		];
-		$per_template = [
-			'template_'       => $counts,
-			'published_'      => $published,
-			'with_entries_'   => $with_entries,
-			'locked_preview_' => $locked,
-			'upgrade_'        => $upgrades,
-		];
-		foreach ( $per_template as $prefix => $values ) {
-			foreach ( $values as $id => $count ) {
-				$properties[ $prefix . $id ] = (string) $count;
-			}
-		}
-
-		// $force = true: cumulative counter, must re-send the latest totals each cycle.
-		self::events()->track( 'form_template_usage', (string) array_sum( $counts ), $properties, true );
-	}
-
-	/**
 	 * Track demand for templates that do not exist yet: what people request
-	 * from the template library, and what they search for without a match.
+	 * from the template library, and how often a search finds nothing.
 	 *
 	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
 	 * as the `form_template_demand` event, so the most wanted templates can be
-	 * read from the warehouse. Callers pass a query already cleaned by
-	 * Form_Templates::clean_demand_query().
+	 * read from the warehouse. Only a request the user sends on purpose carries
+	 * its text (already cleaned by Form_Templates::clean_demand_query()); a
+	 * search with no results is only counted, never its text. Nothing is kept
+	 * or queued unless the site shares usage data.
 	 *
-	 * @param string $query Cleaned search text.
+	 * @param string $query Cleaned request text. Ignored for `search`.
 	 * @param string $type  `request` for an explicit request, `search` for a search with no results.
 	 * @since x.x.x
 	 * @return void
 	 */
 	public static function track_form_template_demand( $query, $type = 'request' ) {
-		$type = 'search' === $type ? 'search' : 'request';
-		// The query becomes an option key and an event property key.
-		$key = substr( str_replace( '-', '_', sanitize_title( Helper::get_string_value( $query ) ) ), 0, 40 );
-		if ( '' === $key ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
 			return;
 		}
 
 		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
 		$demand = is_array( $demand ) ? $demand : [];
 
-		$counts = isset( $demand[ $type ] ) && is_array( $demand[ $type ] ) ? array_map( 'absint', $demand[ $type ] ) : [];
+		if ( 'search' === $type ) {
+			$demand['searches'] = absint( $demand['searches'] ?? 0 ) + 1;
+		} else {
+			// The query becomes an option key and an event property key.
+			$key = substr( str_replace( '-', '_', sanitize_title( Helper::get_string_value( $query ) ) ), 0, 40 );
+			if ( '' === $key ) {
+				return;
+			}
 
-		// Cap distinct keys per type so free text can't grow the option unbounded.
-		if ( isset( $counts[ $key ] ) || count( $counts ) < 30 ) {
-			$counts[ $key ] = absint( $counts[ $key ] ?? 0 ) + 1;
+			$counts = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
+
+			// Cap distinct keys so free text can't grow the option unbounded.
+			if ( isset( $counts[ $key ] ) || count( $counts ) < 30 ) {
+				$counts[ $key ] = absint( $counts[ $key ] ?? 0 ) + 1;
+			}
+			$demand['request'] = $counts;
 		}
-		$demand[ $type ] = $counts;
 		Helper::update_srfm_option( 'form_template_demand', $demand );
 
 		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
-		$searches   = isset( $demand['search'] ) && is_array( $demand['search'] ) ? array_map( 'absint', $demand['search'] ) : [];
 		$properties = [
 			'plan'     => Helper::has_pro() ? 'business' : 'free',
 			'requests' => (string) array_sum( $requests ),
-			'searches' => (string) array_sum( $searches ),
+			'searches' => (string) absint( $demand['searches'] ?? 0 ),
 		];
 		foreach ( $requests as $id => $count ) {
 			$properties[ 'request_' . $id ] = (string) $count;
-		}
-		foreach ( $searches as $id => $count ) {
-			$properties[ 'search_' . $id ] = (string) $count;
 		}
 
 		// $force = true: cumulative counter, must re-send the latest totals each cycle.
@@ -1255,6 +1202,70 @@ class Analytics {
 			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
 			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
 		}
+	}
+
+	/**
+	 * A per-template count map stored in the usage totals.
+	 *
+	 * @param array<string, mixed> $usage Stored usage totals.
+	 * @param string               $key   Map key.
+	 * @since x.x.x
+	 * @return array<string, int>
+	 */
+	private static function usage_counts( $usage, $key ) {
+		if ( ! isset( $usage[ $key ] ) || ! is_array( $usage[ $key ] ) ) {
+			return [];
+		}
+
+		$counts = [];
+		foreach ( $usage[ $key ] as $id => $count ) {
+			$counts[ (string) $id ] = Helper::get_integer_value( $count );
+		}
+		return $counts;
+	}
+
+	/**
+	 * Queue the `form_template_usage` event: the stored creation and swap
+	 * totals plus the forms published right now, per template.
+	 *
+	 * @param array<string, mixed> $usage Stored usage totals.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function send_form_template_usage( $usage ) {
+		$counts    = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
+		$published = self::published_template_forms();
+
+		$with_entries = self::template_forms_with_entries();
+		$locked       = self::usage_counts( $usage, 'locked_preview_counts' );
+		$upgrades     = self::usage_counts( $usage, 'upgrade_click_counts' );
+
+		$properties   = [
+			'plan'            => Helper::has_pro() ? 'business' : 'free',
+			'library_opens'   => (string) Helper::get_integer_value( $usage['library_opens'] ?? 0 ),
+			'previews'        => (string) Helper::get_integer_value( $usage['previews'] ?? 0 ),
+			'created'         => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
+			'swaps'           => (string) Helper::get_integer_value( $usage['swaps'] ?? 0 ),
+			'published'       => (string) array_sum( $published ),
+			'with_entries'    => (string) array_sum( $with_entries ),
+			'locked_previews' => (string) Helper::get_integer_value( $usage['locked_previews'] ?? 0 ),
+			'upgrade_clicks'  => (string) Helper::get_integer_value( $usage['upgrade_clicks'] ?? 0 ),
+		];
+		$per_template = [
+			'template_'       => $counts,
+			'published_'      => $published,
+			'with_entries_'   => $with_entries,
+			'locked_preview_' => $locked,
+			'upgrade_'        => $upgrades,
+		];
+		foreach ( $per_template as $prefix => $values ) {
+			foreach ( $values as $id => $count ) {
+				$properties[ $prefix . $id ] = (string) $count;
+			}
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'form_template_usage', (string) array_sum( $counts ), $properties, true );
 	}
 
 	/**

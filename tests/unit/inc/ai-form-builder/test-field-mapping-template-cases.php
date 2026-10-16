@@ -448,7 +448,7 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 		$this->assertSame( 'Medium', $blocks[0]['attrs']['textDefaultValue'] );
 	}
 
-	public function test_pro_fields_are_dropped_without_pro() {
+	public function test_pro_fields_without_pro_are_dropped_or_fall_back_to_input() {
 		$this->tier( false );
 
 		$blocks = $this->blocks(
@@ -479,7 +479,12 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 			)
 		);
 
-		$this->assertSame( [ 'srfm/input' ], array_column( $blocks, 'blockName' ) );
+		// Slider has no text equivalent and is dropped, as before. HTML, password
+		// and repeater fall back to a text field, as they did before the mapper
+		// knew them, so the question isn't lost.
+		$this->assertSame( [ 'srfm/input', 'srfm/input', 'srfm/input', 'srfm/input' ], array_column( $blocks, 'blockName' ) );
+		$this->assertSame( [ 'Intro', 'Password', 'Guests', 'Name' ], array_column( array_column( $blocks, 'attrs' ), 'label' ) );
+		$this->assertSame( [], $blocks[2]['innerBlocks'] );
 	}
 
 	public function test_html_content_is_kses_filtered() {
@@ -517,21 +522,26 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 		$this->assert_unique_block_ids( $blocks );
 	}
 
-	public function test_password_needs_business() {
+	public function test_password_without_business_falls_back_to_input() {
 		$this->tier( true, false );
 
 		$blocks = $this->blocks(
 			$this->map(
 				[
 					[
-						'label'     => 'Password',
-						'fieldType' => 'password',
+						'label'             => 'Password',
+						'fieldType'         => 'password',
+						'required'          => true,
+						'isConfirmPassword' => true,
 					],
 				]
 			)
 		);
 
-		$this->assertSame( [], $blocks );
+		$this->assertSame( [ 'srfm/input' ], array_column( $blocks, 'blockName' ) );
+		$this->assertSame( 'Password', $blocks[0]['attrs']['label'] );
+		$this->assertTrue( $blocks[0]['attrs']['required'] );
+		$this->assertArrayNotHasKey( 'isConfirmPassword', $blocks[0]['attrs'], 'Password-only attributes are not set on the text field.' );
 	}
 
 	public function test_password_attributes() {
@@ -573,7 +583,7 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 		$this->assertArrayNotHasKey( 'confirmLabel', $plain );
 	}
 
-	public function test_repeater_needs_business() {
+	public function test_repeater_without_business_falls_back_to_input() {
 		$this->tier( true, false );
 
 		$blocks = $this->blocks(
@@ -593,7 +603,9 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 			)
 		);
 
-		$this->assertSame( [], $blocks );
+		$this->assertSame( [ 'srfm/input' ], array_column( $blocks, 'blockName' ) );
+		$this->assertSame( 'Guests', $blocks[0]['attrs']['label'] );
+		$this->assertSame( [], $blocks[0]['innerBlocks'], 'The inner fields need the repeater, so they are not added.' );
 	}
 
 	public function test_repeater_with_inner_fields() {
