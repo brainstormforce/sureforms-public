@@ -646,7 +646,7 @@ const Edit = ( props ) => {
 				<ToggleControl
 					label={ __( 'Option Description', 'sureforms' ) }
 					help={ __(
-						'Show a short description under each option. The option title stays the submitted value, so pre-filled links keep working.',
+						'Show a short description under each option.',
 						'sureforms'
 					) }
 					checked={ showDescriptions }
