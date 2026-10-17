@@ -3,7 +3,6 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
-	useRef,
 	useState,
 } from '@wordpress/element';
 import { Button, Checkbox, Toaster, toast } from '@bsf/force-ui';
@@ -17,6 +16,7 @@ import {
 	FileText,
 	ImageOff,
 	Info,
+	LoaderCircle,
 	Lock,
 	Mail,
 	MessageSquarePlus,
@@ -50,12 +50,8 @@ import {
 	showsPreviewImage,
 } from './template-features.js';
 import useFocusTrap from '../use-focus-trap.js';
-import {
-	getFormStyleBlocks,
-	getProbePreset,
-	resolveLook,
-	restyleDocument,
-} from '../template-colors.js';
+import { resolveLook } from '../template-colors.js';
+import usePreviewRestyle from '../use-preview-restyle.js';
 import {
 	EmailsPanel,
 	ThankYouPanel,
@@ -64,65 +60,8 @@ import {
 	hasMessages,
 } from './TemplateMessages.js';
 
-// When a preview can't be restyled in place, wait this long after the last
-// change before rendering it again.
-const RESTYLE_DELAY = 250;
-
-// A preview that hasn't loaded after this long is treated as blocked.
-const PREVIEW_TIMEOUT = 10000;
-
 // Below this width the Customize panel opens as a bottom sheet.
 const NARROW_QUERY = '(max-width: 1023px)';
-
-/**
- * Preview URL for a template with a chosen style.
- *
- * @param {Object} template Template.
- * @param {Object} style    Chosen style.
- * @return {string} URL.
- */
-const styledPreviewUrl = ( template, style ) =>
-	Object.keys( style ).length
-		? `${ template.preview_url }&srfm_style=${ encodeURIComponent(
-			JSON.stringify( style )
-		  ) }`
-		: template.preview_url;
-
-/**
- * Whether a loaded preview frame shows something other than the preview page,
- * e.g. a PHP error, a login screen, or the browser's "refused to connect"
- * page. A frame from another origin can't be read, so it is trusted.
- *
- * @param {HTMLIFrameElement} iframe Frame that fired `load`.
- * @return {boolean} The preview is broken.
- */
-const isPreviewBroken = ( iframe ) => {
-	let sameOrigin = false;
-	try {
-		sameOrigin =
-			new URL( iframe.src, window.location.href ).origin ===
-			window.location.origin;
-	} catch ( error ) {
-		return false;
-	}
-	let doc = null;
-	try {
-		doc = iframe.contentDocument;
-	} catch ( error ) {
-		doc = null;
-	}
-	if ( ! doc ) {
-		// Same-origin pages are readable, so no document means the browser
-		// replaced it with its own error page. Not in a cross-origin isolated
-		// page though (the block editor sends Document-Isolation-Policy):
-		// there even a working same-origin frame can't be read.
-		return sameOrigin && ! window.crossOriginIsolated;
-	}
-	if ( 'about:blank' === doc.location?.href ) {
-		return false;
-	}
-	return ! doc.querySelector( '.srfm-template-preview' );
-};
 
 /**
  * Whether a media query matches, kept up to date.
@@ -360,12 +299,6 @@ export const TemplatePreview = ( {
 	const [ tab, setTab ] = useState( 'form' );
 	// Message text changed from the template's, by key. Kept across tabs.
 	const [ messageEdits, setMessageEdits ] = useState( {} );
-	// The preview is rendered once and restyled in place; it only loads again
-	// when its colors can't be swapped (see restyleDocument()).
-	const [ frameSrc, setFrameSrc ] = useState( template.preview_url );
-	const frameRef = useRef( null );
-	// 'loading', 'ready' or 'failed'.
-	const [ status, setStatus ] = useState( 'loading' );
 	// A locked template's picture that doesn't load falls back to the live preview.
 	const [ imageFailed, setImageFailed ] = useState( false );
 	const showImage = showsPreviewImage( template ) && ! imageFailed;
@@ -399,77 +332,24 @@ export const TemplatePreview = ( {
 		() => resolveLook( {}, template.theme, themePresets ),
 		[ template.theme, themePresets ]
 	);
-	// The form's CSS rendered once more in another preset, to tell which of
-	// it follows the theme. Null while loading, false when it can't be had.
-	const [ probe, setProbe ] = useState( null );
-
+	// Colors only change from the Customize panel, so the preview gets ready
+	// to restyle once it has been open.
+	const [ canRestyle, setCanRestyle ] = useState( false );
 	useEffect( () => {
-		const preset = getProbePreset( renderedLook, themePresets );
-		if ( ! preset ) {
-			setProbe( false );
-			return;
+		if ( showPanel && ! template.is_locked ) {
+			setCanRestyle( true );
 		}
-		let cancelled = false;
-		window
-			.fetch( styledPreviewUrl( template, { preset } ), {
-				credentials: 'same-origin',
-			} )
-			.then( ( response ) => ( response.ok ? response.text() : '' ) )
-			.then( ( html ) => {
-				const doc = new window.DOMParser().parseFromString(
-					html,
-					'text/html'
-				);
-				const blocks = getFormStyleBlocks( doc ).map(
-					( node ) => node.textContent
-				);
-				if ( ! cancelled ) {
-					setProbe( blocks.length ? blocks : false );
-				}
-			} )
-			.catch( () => ! cancelled && setProbe( false ) );
-		return () => {
-			cancelled = true;
-		};
-	}, [ template, renderedLook, themePresets ] );
-
-	useEffect( () => {
-		if ( 'ready' !== status || null === probe ) {
-			return;
-		}
-		let doc = null;
-		try {
-			doc = frameRef.current?.contentDocument;
-		} catch ( error ) {
-			doc = null;
-		}
-		if (
-			frameSrc === template.preview_url &&
-			restyleDocument( doc, renderedLook, look, probe || undefined )
-		) {
-			return;
-		}
-		const timer = setTimeout(
-			() => setFrameSrc( styledPreviewUrl( template, style ) ),
-			RESTYLE_DELAY
-		);
-		return () => clearTimeout( timer );
-	}, [ look, renderedLook, probe, status, frameSrc, template, style ] );
-
-	useEffect( () => {
-		if ( showImage ) {
-			return;
-		}
-		const timer = setTimeout(
-			() =>
-				setStatus( ( current ) =>
-					'loading' === current ? 'failed' : current
-				),
-			PREVIEW_TIMEOUT
-		);
-		return () => clearTimeout( timer );
-	}, [ showImage ] );
-
+	}, [ showPanel, template.is_locked ] );
+	const { frames, shown, status, isUpdating, setFrameNode, onFrameLoad } =
+		usePreviewRestyle( {
+			template,
+			style,
+			look,
+			renderedLook,
+			presets: themePresets,
+			active: ! showImage,
+			canRestyle,
+		} );
 	useEffect( () => {
 		dialogNode?.focus();
 	}, [ dialogNode ] );
@@ -794,29 +674,58 @@ export const TemplatePreview = ( {
 									</span>
 								</>
 							) }
-							{ ! showImage && (
-								<iframe
-									ref={ frameRef }
-									src={ frameSrc }
-									title={ sprintf(
-										/* translators: %s: template name. */
-										__( 'Preview of the %s form', 'sureforms' ),
-										template.title
-									) }
-									onLoad={ ( event ) =>
-										setStatus(
-											isPreviewBroken( event.currentTarget )
-												? 'failed'
-												: 'ready'
+							{ ! showImage &&
+								frames.map(
+									( src, index ) =>
+										!! src && (
+											<iframe
+												// One element per slot, so the shown frame stays
+												// while the other one renders a change.
+												key={ index }
+												ref={ setFrameNode( index ) }
+												src={ src }
+												title={ sprintf(
+													/* translators: %s: template name. */
+													__(
+														'Preview of the %s form',
+														'sureforms'
+													),
+													template.title
+												) }
+												aria-hidden={ index !== shown }
+												tabIndex={ index === shown ? 0 : -1 }
+												onLoad={ ( event ) =>
+													onFrameLoad( index, event )
+												}
+												className={ cn(
+													'absolute inset-0 size-full border border-solid border-border-subtle rounded-lg bg-background-primary shadow-sm transition-opacity duration-200 motion-reduce:transition-none',
+													index === shown &&
+														'ready' === status
+														? 'opacity-100 z-10'
+														: 'opacity-0 z-0 pointer-events-none'
+												) }
+											/>
 										)
-									}
+								) }
+							{ ! showImage && 'ready' === status && (
+								<span
+									role="status"
 									className={ cn(
-										'absolute inset-0 size-full border border-solid border-border-subtle rounded-lg bg-background-primary shadow-sm transition-opacity duration-200 motion-reduce:transition-none',
-										'ready' === status
-											? 'opacity-100 z-10'
-											: 'opacity-0 z-0 pointer-events-none'
+										'absolute top-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium whitespace-nowrap rounded-full bg-background-inverse/90 text-text-on-color shadow-md',
+										'transition-opacity duration-200 motion-reduce:transition-none',
+										isUpdating ? 'opacity-100' : 'opacity-0'
 									) }
-								/>
+								>
+									{ isUpdating && (
+										<>
+											<LoaderCircle
+												className="size-3.5 animate-spin motion-reduce:animate-none"
+												aria-hidden="true"
+											/>
+											{ __( 'Updating preview…', 'sureforms' ) }
+										</>
+									) }
+								</span>
 							) }
 							{ ! showImage && 'loading' === status && (
 								<FormSkeleton className="z-20 rounded-lg border border-solid border-border-subtle shadow-sm" />

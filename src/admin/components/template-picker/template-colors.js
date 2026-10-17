@@ -217,6 +217,10 @@ const tokenize = ( declaration, from ) =>
  * from a render of the same form in another preset (`probe`). A value that
  * merely equals a theme color, like a fixed white, is left alone.
  *
+ * Scripts that read the colors when the page loaded run again afterwards:
+ * SureForms' dark-background handling sets a class and a menu color for a
+ * dark form, and they have to follow it from light to dark and back.
+ *
  * @since x.x.x
  * @param {Document} doc   Preview document.
  * @param {Object}   from  Look the page was rendered with, from resolveLook().
@@ -228,7 +232,14 @@ const tokenize = ( declaration, from ) =>
  */
 export const restyleDocument = ( doc, from, to, probe ) => {
 	const blocks = getFormStyleBlocks( doc );
-	if ( ! blocks.length || ! Array.isArray( probe ) ) {
+	// Without it the page would keep a dark form's menu colors on a light one.
+	const normalize =
+		doc?.defaultView?.srfm?.normalizeCSSVariablesForDarkBackground;
+	if (
+		! blocks.length ||
+		! Array.isArray( probe ) ||
+		'function' !== typeof normalize
+	) {
 		return false;
 	}
 
@@ -274,5 +285,8 @@ export const restyleDocument = ( doc, from, to, probe ) => {
 			node.textContent = css;
 		}
 	}
+	doc.querySelectorAll( '.srfm-form-container' ).forEach( ( container ) =>
+		normalize( container )
+	);
 	return true;
 };
