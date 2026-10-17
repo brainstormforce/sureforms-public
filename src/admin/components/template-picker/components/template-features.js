@@ -37,137 +37,111 @@ import { trackTemplateAction } from '@Utils/form-templates';
  * since almost every template sends a notification.
  *
  * @since x.x.x
- * @return {Object<string, {label: string, short: string, Icon: Function}>} Features by id.
+ * @return {Object<string, {label: string, Icon: Function}>} Features by id.
  */
 const getFeatureMap = () => ( {
 	quiz: {
 		label: __( 'Quiz scoring', 'sureforms' ),
-		short: __( 'Quiz', 'sureforms' ),
 		Icon: GraduationCap,
 	},
 	calculation: {
 		label: __( 'Calculations', 'sureforms' ),
-		short: __( 'Calculator', 'sureforms' ),
 		Icon: Calculator,
 	},
 	payment: {
 		label: __( 'Payments', 'sureforms' ),
-		short: __( 'Payment', 'sureforms' ),
 		Icon: CreditCard,
 	},
 	conversational: {
 		label: __( 'Conversational form', 'sureforms' ),
-		short: __( 'Conversational', 'sureforms' ),
 		Icon: MessagesSquare,
 	},
 	survey: {
 		label: __( 'Survey reports', 'sureforms' ),
-		short: __( 'Survey', 'sureforms' ),
 		Icon: ChartColumn,
 	},
 	conditional_logic: {
 		label: __( 'Conditional logic', 'sureforms' ),
-		short: __( 'Conditions', 'sureforms' ),
 		Icon: GitBranch,
 	},
 	conditional_confirmations: {
 		label: __( 'Thank-you message per answer', 'sureforms' ),
-		short: __( 'Smart thank-you', 'sureforms' ),
 		Icon: MessageSquareText,
 	},
 	conditional_emails: {
 		label: __( 'Conditional emails', 'sureforms' ),
-		short: __( 'Smart emails', 'sureforms' ),
 		Icon: MailCheck,
 	},
 	user_registration: {
 		label: __( 'User registration', 'sureforms' ),
-		short: __( 'Registration', 'sureforms' ),
 		Icon: UserPlus,
 	},
 	post_submission: {
 		label: __( 'Creates a post', 'sureforms' ),
-		short: __( 'Post', 'sureforms' ),
 		Icon: FilePlus,
 	},
 	signature: {
 		label: __( 'Signature', 'sureforms' ),
-		short: __( 'Signature', 'sureforms' ),
 		Icon: PenTool,
 	},
 	pdf: {
 		label: __( 'PDF copy', 'sureforms' ),
-		short: __( 'PDF', 'sureforms' ),
 		Icon: FileText,
 	},
 	save_resume: {
 		label: __( 'Save and resume', 'sureforms' ),
-		short: __( 'Save & resume', 'sureforms' ),
 		Icon: Save,
 	},
 	partial_entries: {
 		label: __( 'Partial entries', 'sureforms' ),
-		short: __( 'Partial entries', 'sureforms' ),
 		Icon: History,
 	},
 	repeater: {
 		label: __( 'Repeatable fields', 'sureforms' ),
-		short: __( 'Repeater', 'sureforms' ),
 		Icon: Repeat,
 	},
 	slider: {
 		label: __( 'Slider', 'sureforms' ),
-		short: __( 'Slider', 'sureforms' ),
 		Icon: SlidersHorizontal,
 	},
 	multi_step: {
 		label: __( 'Multi-step', 'sureforms' ),
-		short: __( 'Multi-step', 'sureforms' ),
 		Icon: ListOrdered,
 	},
 	file_upload: {
 		label: __( 'File upload', 'sureforms' ),
-		short: __( 'File upload', 'sureforms' ),
 		Icon: Paperclip,
 	},
 	email_attachments: {
 		label: __( 'Uploads attached to emails', 'sureforms' ),
-		short: __( 'Attachments', 'sureforms' ),
 		Icon: MailPlus,
 	},
 	autoresponder: {
 		label: __( 'Auto-reply email', 'sureforms' ),
-		short: __( 'Auto-reply', 'sureforms' ),
 		Icon: Reply,
 	},
 	nps: {
 		label: __( 'NPS score', 'sureforms' ),
-		short: __( 'NPS', 'sureforms' ),
 		Icon: Gauge,
 	},
 	rating: {
 		label: __( 'Rating', 'sureforms' ),
-		short: __( 'Rating', 'sureforms' ),
 		Icon: Star,
 	},
 	date_picker: {
 		label: __( 'Date picker', 'sureforms' ),
-		short: __( 'Date', 'sureforms' ),
 		Icon: CalendarDays,
 	},
 	time_picker: {
 		label: __( 'Time picker', 'sureforms' ),
-		short: __( 'Time', 'sureforms' ),
 		Icon: Clock,
 	},
 	consent: {
 		label: __( 'Consent checkbox', 'sureforms' ),
-		short: __( 'Consent', 'sureforms' ),
 		Icon: ShieldCheck,
 	},
 	notification: {
 		label: __( 'Email notification', 'sureforms' ),
-		short: __( 'Notification', 'sureforms' ),
 		Icon: Mail,
 	},
 } );
@@ -179,7 +153,7 @@ let featureMap = null;
  *
  * @since x.x.x
  * @param {string[]} ids Feature ids.
- * @return {Array<{id: string, label: string, short: string, Icon: Function}>} Features.
+ * @return {Array<{id: string, label: string, Icon: Function}>} Features.
  */
 export const getFeatures = ( ids ) => {
 	if ( ! Array.isArray( ids ) || ! ids.length ) {

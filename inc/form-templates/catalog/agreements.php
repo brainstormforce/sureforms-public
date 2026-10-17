@@ -75,7 +75,7 @@ return [
 		'theme'         => 'ocean',
 		'icon'          => 'file-signature',
 		'title'         => __( 'Service Agreement', 'sureforms' ),
-		'description'   => __( 'Show your terms, then collect the client’s details and signature. Starter wording to replace with your own.', 'sureforms' ),
+		'description'   => __( 'Your terms plus the client’s details and signature. Replace the sample terms.', 'sureforms' ),
 		'submit_text'   => __( 'Sign agreement', 'sureforms' ),
 		'fields'        => [
 			$terms(
@@ -121,7 +121,7 @@ return [
 		'theme'         => 'sand',
 		'icon'          => 'shield-check',
 		'title'         => __( 'Activity Liability Waiver', 'sureforms' ),
-		'description'   => __( 'A signed waiver with emergency contacts. A parent or guardian signs too when the participant is under 18.', 'sureforms' ),
+		'description'   => __( 'A signed waiver with emergency contacts, and a guardian signature for minors.', 'sureforms' ),
 		'submit_text'   => __( 'Sign waiver', 'sureforms' ),
 		'fields'        => [
 			$terms(
@@ -187,7 +187,7 @@ return [
 		'theme'         => 'lavender',
 		'icon'          => 'camera',
 		'title'         => __( 'Photo & Media Release', 'sureforms' ),
-		'description'   => __( 'Get signed permission to use someone’s photos and video, and where you may use them.', 'sureforms' ),
+		'description'   => __( 'Signed permission to use someone’s photos and video, and where to use them.', 'sureforms' ),
 		'submit_text'   => __( 'Sign release', 'sureforms' ),
 		'fields'        => [
 			$terms(

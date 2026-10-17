@@ -181,7 +181,7 @@ return [
 		'icon'          => 'store',
 		'requires'      => 'business',
 		'title'         => __( 'Business Directory Listing', 'sureforms' ),
-		'description'   => __( 'Let businesses add themselves to your directory, with their logo and address, for you to approve.', 'sureforms' ),
+		'description'   => __( 'Businesses submit a directory listing with their logo, for you to approve.', 'sureforms' ),
 		'submit_text'   => __( 'Submit my listing', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( Catalog::field( 'input', 'business-name', __( 'Business Name', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
@@ -272,7 +272,7 @@ return [
 		'icon'          => 'package',
 		'requires'      => 'business',
 		'title'         => __( 'Bulk / Catering Order', 'sureforms' ),
-		'description'   => __( 'Take large or catering orders with as many items as the customer needs, for delivery or pickup.', 'sureforms' ),
+		'description'   => __( 'Large or catering orders with any number of items, for delivery or pickup.', 'sureforms' ),
 		'submit_text'   => __( 'Send my order', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
@@ -355,7 +355,7 @@ return [
 		'icon'            => 'house',
 		'requires'        => 'pro',
 		'title'           => __( 'Rental Application', 'sureforms' ),
-		'description'     => __( 'A step-by-step tenant application with income, references, ID documents and a signature. Applicants can save and finish later.', 'sureforms' ),
+		'description'     => __( 'A step-by-step tenant application with references, ID and a signature.', 'sureforms' ),
 		'submit_text'     => __( 'Submit application', 'sureforms' ),
 		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Work and income', 'sureforms' ), __( 'References', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
 		'fields'          => [
@@ -464,7 +464,7 @@ return [
 		'icon'            => 'graduation-cap',
 		'requires'        => 'pro',
 		'title'           => __( 'Scholarship Application', 'sureforms' ),
-		'description'     => __( 'A step-by-step scholarship or grant application with an essay, transcript and signature. Applicants can save and finish later.', 'sureforms' ),
+		'description'     => __( 'A step-by-step scholarship application with essay, transcript and signature.', 'sureforms' ),
 		'submit_text'     => __( 'Submit application', 'sureforms' ),
 		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Your studies', 'sureforms' ), __( 'Your essay', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
 		'fields'          => [
