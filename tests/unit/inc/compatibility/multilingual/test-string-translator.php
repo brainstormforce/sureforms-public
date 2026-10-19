@@ -472,6 +472,28 @@ class Test_String_Translator extends TestCase {
 		remove_all_filters( 'srfm_multilingual_provider' );
 	}
 
+	public function test_translate_form_content_translates_block_json_default_label() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		// No "label" attribute: the field renders its block.json default ("Phone Number").
+		$content = '<!-- wp:srfm/phone {"block_id":"phdef1"} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4244, $content );
+
+		$this->assertStringContainsString( '"label":"DE:Phone Number"', $out );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
 	public function test_translate_form_content_noops_when_provider_inactive() {
 		// Replace stub with an inactive provider.
 		remove_filter( 'srfm_multilingual_provider', $this->filter, 10 );

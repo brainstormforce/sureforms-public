@@ -463,13 +463,10 @@ class String_Collector {
 
 			if ( $has_attributes ) {
 				foreach ( $attribute_map[ $block_name ] as $attribute_key ) {
-					if ( ! isset( $attrs[ $attribute_key ] ) || ! is_string( $attrs[ $attribute_key ] ) ) {
-						continue;
-					}
 					$this->register_form_string(
 						$form_id,
 						String_Translator::block_attribute_name( $block_id, $attribute_key ),
-						$attrs[ $attribute_key ],
+						String_Translator::block_attribute_value( $block_name, $attrs, $attribute_key ),
 						$field_group . ': ' . $this->attribute_label( $attribute_key )
 					);
 				}
