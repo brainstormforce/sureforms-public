@@ -549,6 +549,29 @@ class Test_String_Translator extends TestCase {
 		$this->assertSame( [], $blocks );
 	}
 
+	public function test_block_attribute_value_prefers_saved_string() {
+		$this->assertSame(
+			'Phone Number:',
+			String_Translator::block_attribute_value( 'srfm/phone', [ 'label' => 'Phone Number:' ], 'label' )
+		);
+	}
+
+	public function test_block_attribute_value_falls_back_to_block_json_default() {
+		$this->assertSame( 'Phone Number', String_Translator::block_attribute_value( 'srfm/phone', [], 'label' ) );
+		$this->assertSame( 'Confirm Email', String_Translator::block_attribute_value( 'srfm/email', [], 'confirmLabel' ) );
+	}
+
+	public function test_block_attribute_value_keeps_explicitly_saved_empty_or_non_string() {
+		// A label the site owner deliberately cleared must not be replaced by the default.
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/phone', [ 'label' => '' ], 'label' ) );
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/phone', [ 'label' => [ 'x' ] ], 'label' ) );
+	}
+
+	public function test_block_attribute_value_returns_empty_without_a_string_default() {
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/not-registered', [], 'label' ) );
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/phone', [], 'help' ) );
+	}
+
 	public function test_translatable_block_attributes_filter_extends_and_falls_back() {
 		// Filter can add a Pro block to the map.
 		add_filter(
