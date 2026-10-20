@@ -1,11 +1,21 @@
 import { useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { Topbar, Button } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 import Breadcrumbs from './Breadcrumbs';
 import ICONS from './icons';
 import { useEffect } from '@wordpress/element';
 
-const Header = () => {
+/**
+ * Top bar of the Add New Form screens.
+ *
+ * @param {Object}  props                 Props.
+ * @param {*}       props.actions         Extra controls before the close button, e.g. the
+ *                                        template library's "Start from scratch".
+ * @param {boolean} props.hideLogoOnPhone Leave the logo out on phones, to make room
+ *                                        for a search in `actions`.
+ */
+const Header = ( { actions, hideLogoOnPhone = false } ) => {
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
 	}
@@ -25,7 +35,12 @@ const Header = () => {
 	return (
 		<div>
 			<Topbar className="fixed inset-x-0 top-0 z-[1] py-0 px-0 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
-				<Topbar.Left className="gap-3 pl-5">
+				<Topbar.Left
+					className={ cn(
+						'gap-3 pl-5 max-[620px]:pl-3 min-w-0 shrink-0',
+						hideLogoOnPhone && 'max-[620px]:hidden'
+					) }
+				>
 					<Topbar.Item>
 						<Button
 							variant="ghost"
@@ -42,8 +57,13 @@ const Header = () => {
 						<Breadcrumbs />
 					</Topbar.Item>
 				</Topbar.Left>
-				<Topbar.Right>
-					<Topbar.Item className="p-5">
+				<Topbar.Right className="min-w-0 flex-1 justify-end gap-2">
+					{ actions && (
+						<Topbar.Item className="min-w-0 flex-1 justify-end">
+							{ actions }
+						</Topbar.Item>
+					) }
+					<Topbar.Item className="p-5 ps-2 max-[620px]:pe-3">
 						<Button
 							variant="ghost"
 							className="p-1 hover:bg-background-secondary rounded-sm transition-colors [box-shadow:none] focus:[box-shadow:none]"
