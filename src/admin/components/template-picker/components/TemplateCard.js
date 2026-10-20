@@ -1,4 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
+import { useRef, useState } from '@wordpress/element';
 import { Button, Tooltip } from '@bsf/force-ui';
 import { Crown, ExternalLink } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
@@ -124,9 +125,9 @@ export const getMiniRows = ( fields ) => {
 };
 
 /**
- * The card's picture: the template's first fields drawn as a small form on
- * its page colour, in the colors the form starts with. Decorative; the
- * card's text names the template.
+ * The template's first fields drawn as a small form on its page colour, in
+ * the colors the form starts with: the card's picture when the template has
+ * no screenshot.
  *
  * @param {Object} props          Props.
  * @param {Object} props.template Template.
@@ -149,6 +150,40 @@ const MiniForm = ( { template, look } ) => (
 		) ) }
 	</span>
 );
+
+/**
+ * The card's picture: a screenshot of the template's preview, the white form
+ * on its page color, cropped to the tile from the top. A template without
+ * one (added through `srfm_form_templates`) gets its first fields drawn
+ * instead. Decorative; the card's text names the template.
+ *
+ * @param {Object} props          Props.
+ * @param {Object} props.template Template.
+ * @param {Object} props.look     The template's look, from resolveLook().
+ */
+export const CardPicture = ( { template, look } ) => {
+	const [ failed, setFailed ] = useState( false );
+	if ( ! template.thumbnail ) {
+		return <MiniForm template={ template } look={ look } />;
+	}
+	if ( failed ) {
+		return null;
+	}
+	return (
+		<img
+			src={ template.thumbnail }
+			alt=""
+			loading="lazy"
+			decoding="async"
+			// Twice the tile's size at its widest; the tile's fixed height
+			// keeps the grid from shifting while it loads.
+			width="760"
+			height="520"
+			onError={ () => setFailed( true ) }
+			className="absolute inset-0 size-full object-cover object-top"
+		/>
+	);
+};
 
 /**
  * Gradient crown on a Premium template, naming its plan.
@@ -219,8 +254,8 @@ const CardBody = ( { template } ) => (
 );
 
 /**
- * A template in the library: its first fields drawn as a small form, with
- * its name and description.
+ * A template in the library: a picture of its form, with its name and
+ * description.
  *
  * A template this site can use is one button that opens the preview. A
  * locked one isn't: hovering or focusing it shows its plan and a "See plans"
@@ -240,20 +275,31 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 		presets || window.srfm_admin?.form_template_themes
 	);
 	const tileStyle = { backgroundColor: look.page };
+	const panelRef = useRef( null );
+	const hiddenTap = useRef( false );
 
 	if ( template.is_locked ) {
 		const plan = getPlanName( template.requires );
 		const needsUpdate = 'update' === template.lock_reason;
 		return (
-			<div hidden={ hidden } className={ cn( cardClass, hidden && 'hidden' ) }>
+			<div
+				hidden={ hidden }
+				className={ cn(
+					cardClass,
+					// Lets mobile Safari show the panel on a tap, as on hover.
+					'[@media(hover:none)]:cursor-pointer',
+					hidden && 'hidden'
+				) }
+			>
 				<span className={ tileClass } style={ tileStyle }>
-					<MiniForm template={ template } look={ look } />
+					<CardPicture template={ template } look={ look } />
 					<TileShade />
 					<span
 						className={ cn(
 							'absolute inset-0 z-[6] flex flex-col items-center justify-center gap-3 p-[22px] text-center bg-[#FFF3EE] rounded-t-[9px]',
-							'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none'
+							'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-[220ms] ease-out motion-reduce:transition-none'
 						) }
+						ref={ panelRef }
 					>
 						<span className="inline-flex items-center gap-1.5 py-1 px-[11px] text-[11px] leading-4 font-bold uppercase tracking-[.02em] text-[#A8320A] bg-white border border-solid border-[#FAD0B8] rounded-full">
 							<Crown className="size-[13px]" aria-hidden="true" />
@@ -290,9 +336,24 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 							size="md"
 							icon={ <ExternalLink aria-hidden="true" /> }
 							iconPosition="right"
-							onClick={ () => openTemplateUnlock( template ) }
+							onPointerDown={ ( event ) => {
+								// A touch screen has no hover: the tap that lands on the
+								// still hidden button only shows the panel.
+								hiddenTap.current =
+									'touch' === event.pointerType &&
+									Number( window.getComputedStyle( panelRef.current ).opacity ) < 0.5;
+							} }
+							onClick={ ( event ) => {
+								if ( hiddenTap.current ) {
+									hiddenTap.current = false;
+									// Focused, the panel stays open for the next tap.
+									event.currentTarget.focus();
+									return;
+								}
+								openTemplateUnlock( template );
+							} }
 							aria-describedby={ `srfm-template-title-${ template.id } srfm-template-plan-${ template.id }` }
-							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
+							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] bg-[#D54407] hover:bg-[#B83A06] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
 						>
 							{ needsUpdate
 								? getLockLabels( template ).button
@@ -332,7 +393,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 			) }
 		>
 			<span className={ cn( tileClass, 'w-full group/tile' ) } style={ tileStyle }>
-				<MiniForm template={ template } look={ look } />
+				<CardPicture template={ template } look={ look } />
 				<TileShade />
 				<span
 					className={ cn(

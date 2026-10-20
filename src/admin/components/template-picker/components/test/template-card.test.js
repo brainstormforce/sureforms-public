@@ -8,7 +8,11 @@ jest.mock( '@Utils/form-templates', () => ( { trackTemplateAction: () => {} } ),
 	virtual: true,
 } );
 
-import { getMiniRows } from '../TemplateCard';
+import { createElement, createRoot } from '@wordpress/element';
+// React's own act(): react-dom/test-utils' is deprecated in React 18.3.
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { act } from 'react';
+import { CardPicture, getMiniRows } from '../TemplateCard';
 
 const field = ( l, w = 'full' ) => ( { t: 'input', l, p: '', o: [], w } );
 
@@ -40,5 +44,55 @@ describe( 'getMiniRows', () => {
 		);
 		expect( rows ).toHaveLength( 4 );
 		expect( getMiniRows( [] ) ).toEqual( [] );
+	} );
+} );
+
+global.IS_REACT_ACT_ENVIRONMENT = true;
+// The plugin's build provides React to JSX; the tests do it here.
+global.React = { createElement };
+
+const renderToStaticMarkup = ( element ) => {
+	const container = document.createElement( 'div' );
+	const root = createRoot( container );
+	act( () => root.render( element ) );
+	const html = container.innerHTML;
+	act( () => root.unmount() );
+	return html;
+};
+
+describe( 'CardPicture', () => {
+	const look = { primary: '#2563EB', onPrimary: '#FFFFFF' };
+
+	it( 'shows the screenshot, lazily and as decoration', () => {
+		const html = renderToStaticMarkup(
+			createElement( CardPicture, {
+				template: {
+					title: 'Contact Us',
+					thumbnail: 'https://example.com/contact-us.webp',
+					card_fields: [],
+				},
+				look,
+			} )
+		);
+		expect( html ).toContain( 'src="https://example.com/contact-us.webp"' );
+		expect( html ).toContain( 'alt=""' );
+		expect( html ).toContain( 'loading="lazy"' );
+		expect( html ).toContain( 'object-top' );
+	} );
+
+	it( 'draws the form when the template has no screenshot', () => {
+		const html = renderToStaticMarkup(
+			createElement( CardPicture, {
+				template: {
+					title: 'Added',
+					thumbnail: '',
+					card_fields: [ field( 'Your name' ) ],
+				},
+				look,
+			} )
+		);
+		expect( html ).not.toContain( '<img' );
+		expect( html ).toContain( 'Your name' );
+		expect( html ).toContain( 'aria-hidden="true"' );
 	} );
 } );
