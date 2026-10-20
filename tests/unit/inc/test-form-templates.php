@@ -1033,7 +1033,7 @@ class Test_Form_Templates extends TestCase {
 			$calculated = in_array( 'calculation', $template['features'] ?? [], true );
 			if ( $items[ $id ]['preview_missing'] > 0 || $calculated ) {
 				$this->assertNotSame( '', $image, "Template {$id}: the free preview can't show it, so it needs a preview image." );
-				$this->assertSame( SRFM_URL . 'images/templates/' . $image, $items[ $id ]['preview_image'] );
+				$this->assertSame( SRFM_URL . 'images/templates/' . $image . '?ver=' . SRFM_VER, $items[ $id ]['preview_image'] );
 			}
 		}
 	}
@@ -1449,8 +1449,8 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_get_preview_image_url_from_a_catalog_file_or_a_full_url() {
-		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quiz.webp' ] ) );
-		$this->assertSame( SRFM_URL . 'images/templates/quizzes/score.png', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quizzes/score.png' ] ) );
+		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp?ver=' . SRFM_VER, Form_Templates::get_preview_image_url( [ 'preview_image' => 'quiz.webp' ] ) );
+		$this->assertSame( SRFM_URL . 'images/templates/quizzes/score.png?ver=' . SRFM_VER, Form_Templates::get_preview_image_url( [ 'preview_image' => 'quizzes/score.png' ] ) );
 		$this->assertSame( 'https://cdn.example.com/q.webp', Form_Templates::get_preview_image_url( [ 'preview_image' => ' https://cdn.example.com/q.webp ' ] ) );
 
 		// Nothing outside images/templates/, and only image files.
@@ -1705,7 +1705,7 @@ class Test_Form_Templates extends TestCase {
 		remove_all_filters( 'srfm_pro_tier' );
 
 		$this->assertTrue( $item['is_locked'] );
-		$this->assertSame( SRFM_URL . 'images/templates/premium.webp', $item['preview_image'] );
+		$this->assertSame( SRFM_URL . 'images/templates/premium.webp?ver=' . SRFM_VER, $item['preview_image'] );
 		$this->assertSame( 1, $item['preview_missing'] );
 		$this->assertSame( [ 'stripe' ], array_column( $item['setup'], 'id' ) );
 		// The messages describe the Premium version, so its answers include the Business field.

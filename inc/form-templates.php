@@ -682,7 +682,8 @@ class Form_Templates {
 		if ( false !== strpos( $image, '..' ) || ! preg_match( '#^[a-z0-9][a-z0-9/_.-]*\.(webp|png|jpe?g|avif)$#i', $image ) ) {
 			return '';
 		}
-		return SRFM_URL . 'images/templates/' . ltrim( $image, '/' );
+		// Versioned, so a plugin update replaces cached pictures.
+		return add_query_arg( 'ver', SRFM_VER, SRFM_URL . 'images/templates/' . ltrim( $image, '/' ) );
 	}
 
 	/**
@@ -703,7 +704,7 @@ class Form_Templates {
 		if ( '' === $id || ! file_exists( SRFM_DIR . 'images/templates/' . $id . '.webp' ) ) {
 			return '';
 		}
-		return SRFM_URL . 'images/templates/' . $id . '.webp';
+		return add_query_arg( 'ver', SRFM_VER, SRFM_URL . 'images/templates/' . $id . '.webp' );
 	}
 
 	/**

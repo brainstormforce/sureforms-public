@@ -98,7 +98,7 @@ class Test_Form_Templates_UI extends TestCase {
 
 	public function test_preview_image_is_exposed_as_plugin_url() {
 		$item = $this->template_for_js( [ 'preview_image' => 'quiz.webp' ] );
-		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp', $item['preview_image'] );
+		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp?ver=' . SRFM_VER, $item['preview_image'] );
 	}
 
 	public function test_preview_image_rejects_paths_leaving_the_folder() {
@@ -534,7 +534,7 @@ class Test_Form_Templates_UI extends TestCase {
 	public function test_every_catalog_template_has_a_card_picture_within_budget() {
 		foreach ( Form_Templates::get_templates_for_js() as $item ) {
 			$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $item['thumbnail'], "Template {$item['id']}: no card picture." );
-			$path = SRFM_DIR . substr( $item['thumbnail'], strlen( SRFM_URL ) );
+			$path = SRFM_DIR . substr( strtok( $item['thumbnail'], '?' ), strlen( SRFM_URL ) );
 			$this->assertFileExists( $path, "Template {$item['id']}: card picture missing." );
 			$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$item['id']}: card picture is 60 KB or more." );
 			// A card with a picture doesn't draw the form.
@@ -545,11 +545,11 @@ class Test_Form_Templates_UI extends TestCase {
 	public function test_card_picture_of_a_free_template_is_its_own_file() {
 		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
 
-		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp', $items['contact-us']['thumbnail'] );
+		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp?ver=' . SRFM_VER, $items['contact-us']['thumbnail'] );
 		// A free template's preview stays live: it has no Premium picture.
 		$this->assertSame( '', $items['contact-us']['preview_image'] );
 		// A Premium template's card and locked preview show the same picture.
-		$this->assertSame( SRFM_URL . 'images/templates/loan-emi-calculator.webp', $items['loan-emi-calculator']['preview_image'] );
+		$this->assertSame( SRFM_URL . 'images/templates/loan-emi-calculator.webp?ver=' . SRFM_VER, $items['loan-emi-calculator']['preview_image'] );
 		$this->assertSame( $items['loan-emi-calculator']['preview_image'], $items['loan-emi-calculator']['thumbnail'] );
 	}
 
