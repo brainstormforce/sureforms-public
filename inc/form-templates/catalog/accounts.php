@@ -78,7 +78,7 @@ return [
 		'icon'          => 'user-plus',
 		'requires'      => 'business',
 		'title'         => __( 'Member Registration', 'sureforms' ),
-		'description'   => __( 'Let visitors create their own account with a password and sign them in straight away.', 'sureforms' ),
+		'description'   => __( 'Let visitors create their own account with a password.', 'sureforms' ),
 		'submit_text'   => __( 'Create my account', 'sureforms' ),
 		'fields'        => [
 			$c['first_name'],
@@ -124,7 +124,7 @@ return [
 		'icon'          => 'pen-line',
 		'requires'      => 'business',
 		'title'         => __( 'Guest Post Submission', 'sureforms' ),
-		'description'   => __( 'Accept guest articles that arrive as posts waiting for your review.', 'sureforms' ),
+		'description'   => __( 'Accept guest post submissions for your review.', 'sureforms' ),
 		'submit_text'   => __( 'Submit my post', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your Name', 'sureforms' ) ] ), 50 ),
@@ -181,7 +181,7 @@ return [
 		'icon'          => 'store',
 		'requires'      => 'business',
 		'title'         => __( 'Business Directory Listing', 'sureforms' ),
-		'description'   => __( 'Businesses submit a directory listing with their logo, for you to approve.', 'sureforms' ),
+		'description'   => __( 'Businesses submit a directory listing with their logo for approval.', 'sureforms' ),
 		'submit_text'   => __( 'Submit my listing', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( Catalog::field( 'input', 'business-name', __( 'Business Name', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
@@ -271,8 +271,8 @@ return [
 		'theme'         => 'sand',
 		'icon'          => 'package',
 		'requires'      => 'business',
-		'title'         => __( 'Bulk / Catering Order', 'sureforms' ),
-		'description'   => __( 'Large or catering orders with any number of items, for delivery or pickup.', 'sureforms' ),
+		'title'         => __( 'Catering Orders', 'sureforms' ),
+		'description'   => __( 'Capture catering orders of any size, available for delivery or pickup.', 'sureforms' ),
 		'submit_text'   => __( 'Send my order', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
@@ -355,7 +355,7 @@ return [
 		'icon'            => 'house',
 		'requires'        => 'pro',
 		'title'           => __( 'Rental Application', 'sureforms' ),
-		'description'     => __( 'A step-by-step tenant application with references, ID and a signature.', 'sureforms' ),
+		'description'     => __( 'A step-by-step rental application with references, ID, and signature.', 'sureforms' ),
 		'submit_text'     => __( 'Submit application', 'sureforms' ),
 		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Work and income', 'sureforms' ), __( 'References', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
 		'fields'          => [
@@ -464,7 +464,7 @@ return [
 		'icon'            => 'graduation-cap',
 		'requires'        => 'pro',
 		'title'           => __( 'Scholarship Application', 'sureforms' ),
-		'description'     => __( 'A step-by-step scholarship application with essay, transcript and signature.', 'sureforms' ),
+		'description'     => __( 'Capture students\' essays, transcripts, and signatures for scholarship applications.', 'sureforms' ),
 		'submit_text'     => __( 'Submit application', 'sureforms' ),
 		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Your studies', 'sureforms' ), __( 'Your essay', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
 		'fields'          => [
