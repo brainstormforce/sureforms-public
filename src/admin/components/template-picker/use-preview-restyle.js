@@ -8,6 +8,7 @@ import {
 import {
 	getFormStyleBlocks,
 	getProbePreset,
+	resolveLook,
 	restyleDocument,
 } from './template-colors.js';
 
@@ -140,8 +141,8 @@ const usePreviewRestyle = ( {
 	const [ frames, setFrames ] = useState( [ template.preview_url, '' ] );
 	const [ shown, setShown ] = useState( 0 );
 	const [ status, setStatus ] = useState( 'loading' );
-	// The form's CSS rendered in another preset: null until it's needed and
-	// while it loads, false when it can't be had.
+	// The form rendered in another preset, { blocks, look }: null until it's
+	// needed and while it loads, false when it can't be had.
 	const [ probe, setProbe ] = useState( null );
 	// Whether the first render's page can be read; null until it loads.
 	const [ readable, setReadable ] = useState( null );
@@ -186,7 +187,14 @@ const usePreviewRestyle = ( {
 					( node ) => node.textContent
 				);
 				if ( ! cancelled ) {
-					setProbe( blocks.length ? blocks : false );
+					setProbe(
+						blocks.length
+							? {
+								blocks,
+								look: resolveLook( { preset }, preset, presets ),
+							  }
+							: false
+					);
 				}
 			} )
 			.catch( () => {

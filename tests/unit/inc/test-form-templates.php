@@ -410,31 +410,93 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
-	public function test_every_theme_has_a_banner_color() {
+	public function test_every_theme_has_a_page_color() {
 		foreach ( Form_Templates::get_themes() as $key => $theme ) {
-			$this->assertMatchesRegularExpression( '/^#[0-9A-F]{6}$/', $theme['banner'], "Theme {$key} has no banner color." );
+			$this->assertMatchesRegularExpression( '/^#[0-9A-F]{6}$/', $theme['page'], "Theme {$key} has no page color." );
+			$this->assertFalse( Form_Templates::is_dark( $theme['page'] ), "Theme {$key} needs a light page." );
 		}
 	}
 
 	public function test_build_style_metas_reach_the_created_form() {
 		$this->login_admin();
 
-		$post_id = Form_Templates::create_form_from_template( 'quote-request' );
+		$post_id = Form_Templates::create_form_from_template( 'contact-us' );
 		$styling = get_post_meta( $post_id, '_srfm_forms_styling', true );
-		$theme   = Form_Templates::get_themes()['midnight'];
+		$theme   = Form_Templates::get_themes()['ocean'];
 
-		$this->assertSame( 'gradient', $styling['bg_type'] );
-		$this->assertSame( $theme['background'], $styling['bg_gradient'] );
+		// A white form card on the theme's page color.
+		$this->assertSame( 'color', $styling['bg_type'] );
+		$this->assertSame( '#FFFFFF', $styling['bg_color'] );
 		$this->assertSame( $theme['primary'], $styling['primary_color'] );
 		$this->assertSame( $theme['text'], $styling['text_color'] );
-		$this->assertEquals( 40, $styling['form_padding_top'] );
-		$this->assertEquals( 16, $styling['form_border_radius_left'] );
+		$this->assertEquals( 28, $styling['form_padding_top'] );
+		$this->assertEquals( 10, $styling['form_border_radius_left'] );
 		$this->assertStringNotContainsString( 'wp:srfm/advanced-heading', get_post( $post_id )->post_content );
 
 		// No heading block, so the form page shows the title itself.
 		$instant_form = get_post_meta( $post_id, '_srfm_instant_form_settings', true );
 		$this->assertTrue( $instant_form['single_page_form_title'] );
-		$this->assertSame( $theme['banner'], $instant_form['cover_color'] );
+		// The page color fills the form's page, behind the white form.
+		$this->assertSame( 'color', $instant_form['cover_type'] );
+		$this->assertSame( $theme['page'], $instant_form['cover_color'] );
+		$this->assertTrue( $instant_form['use_banner_as_page_background'] );
+	}
+
+	/**
+	 * A template on a dark theme starts as a light form on a light page;
+	 * the dark look is only what the Midnight preset gives.
+	 */
+	public function test_dark_theme_templates_start_light() {
+		$this->login_admin();
+
+		$template = Form_Templates::get_template( 'quote-request' );
+		$this->assertSame( 'midnight', $template['theme'] );
+		$midnight = Form_Templates::get_themes()['midnight'];
+
+		$post_id      = Form_Templates::create_form_from_template( 'quote-request' );
+		$styling      = get_post_meta( $post_id, '_srfm_forms_styling', true );
+		$instant_form = get_post_meta( $post_id, '_srfm_instant_form_settings', true );
+
+		$this->assertSame( '#FFFFFF', $styling['bg_color'] );
+		$this->assertSame( $midnight['default']['primary'], $styling['primary_color'] );
+		$this->assertSame( $midnight['default']['text'], $styling['text_color'] );
+		$this->assertSame( $midnight['page'], $instant_form['cover_color'] );
+
+		$dark = Form_Templates::resolve_theme( $template, [ 'preset' => 'midnight' ] );
+		$this->assertSame( $midnight['background'], $dark['background'] );
+		$this->assertSame( $midnight['primary'], $dark['primary'] );
+		$this->assertArrayNotHasKey( 'default', $dark );
+	}
+
+	/**
+	 * Every look a template starts with is a white form on a light page, with
+	 * an accent white button text stays readable on (WCAG AA, 4.5:1).
+	 */
+	public function test_every_template_starts_as_a_white_form_with_a_readable_accent() {
+		$luminance = static function ( $hex ) {
+			$channels = array_map(
+				static function ( $pair ) {
+					$c = hexdec( $pair ) / 255;
+					return $c <= 0.03928 ? $c / 12.92 : ( ( $c + 0.055 ) / 1.055 ) ** 2.4;
+				},
+				str_split( ltrim( $hex, '#' ), 2 )
+			);
+			return 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
+		};
+		$contrast  = static function ( $a, $b ) use ( $luminance ) {
+			$values = [ $luminance( $a ), $luminance( $b ) ];
+			return ( max( $values ) + 0.05 ) / ( min( $values ) + 0.05 );
+		};
+
+		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			$theme = Form_Templates::resolve_theme( $template );
+			$this->assertSame( '#FFFFFF', $theme['background'], $id );
+			$this->assertMatchesRegularExpression( '/^#[0-9A-F]{6}$/', $theme['page'], $id );
+			$this->assertGreaterThan( 1.1, $contrast( $theme['page'], '#FFFFFF' ), "{$id}: the page must show around the white form." );
+			$this->assertGreaterThanOrEqual( 4.5, $contrast( $theme['primary'], '#FFFFFF' ), "{$id}: accent on white." );
+			$this->assertGreaterThanOrEqual( 4.5, $contrast( $theme['primary'], $theme['on_primary'] ), "{$id}: button text." );
+			$this->assertGreaterThanOrEqual( 4.5, $contrast( $theme['text'], '#FFFFFF' ), "{$id}: text." );
+		}
 	}
 
 	public function test_unknown_template_is_a_404() {
@@ -532,18 +594,35 @@ class Test_Form_Templates extends TestCase {
 		$theme = Form_Templates::resolve_theme( Form_Templates::get_template( 'event-registration' ), $style );
 
 		$this->assertSame( '#DB2777', $data['styling']['primary_color'] );
-		$this->assertSame( $theme['background'], $data['styling']['bg_gradient'] );
+		$this->assertSame( 'color', $data['styling']['bg_type'] );
+		$this->assertSame( $theme['background'], $data['styling']['bg_color'] );
 		$this->assertStringNotContainsString( 'wp:srfm/advanced-heading', $data['content'] );
 
 		// Only the keys a template owns, so the form's other page settings stay.
 		$this->assertSame(
 			[
-				'single_page_form_title' => true,
-				'cover_type'             => 'color',
-				'cover_color'            => $theme['banner'],
+				'single_page_form_title'        => true,
+				'cover_type'                    => 'color',
+				'cover_color'                   => $theme['page'],
+				'use_banner_as_page_background' => true,
 			],
 			$data['instant_form']
 		);
+	}
+
+	/**
+	 * A white form's background equals the registered default, and still goes
+	 * to the editor, so a form that had a gradient or image doesn't keep it.
+	 */
+	public function test_rest_get_template_content_always_sends_the_background() {
+		$this->login_admin();
+
+		$response = rest_do_request( new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/contact-us' ) );
+		$this->assertSame( 200, $response->get_status() );
+
+		$styling = $response->get_data()['styling'];
+		$this->assertSame( 'color', $styling['bg_type'] );
+		$this->assertSame( '#FFFFFF', $styling['bg_color'] );
 	}
 
 	public function test_clean_demand_query_keeps_short_descriptions_only() {
@@ -722,7 +801,7 @@ class Test_Form_Templates extends TestCase {
 		$dark = Form_Templates::resolve_theme( $template, [ 'background' => '#0F172A', 'accent' => '#FACC15' ] );
 		$this->assertSame( '#E2E8F0', $dark['text'], 'Light text on a dark background.' );
 		$this->assertSame( '#0F172A', $dark['on_primary'], 'Dark button text on a yellow accent.' );
-		$this->assertStringStartsWith( 'linear-gradient(135deg, #0F172A 0%', $dark['background'] );
+		$this->assertSame( '#0F172A', $dark['background'] );
 
 		$light = Form_Templates::resolve_theme( $template, [ 'background' => '#FFFFFF', 'accent' => '#1D4ED8' ] );
 		$this->assertSame( '#1E293B', $light['text'] );
@@ -737,7 +816,8 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertSame( $midnight['background'], $theme['background'] );
 		$this->assertSame( $midnight['primary'], $theme['primary'] );
-		$this->assertSame( 16, $theme['radius'] );
+		$this->assertSame( $midnight['page'], $theme['page'] );
+		$this->assertSame( 10, $theme['radius'] );
 	}
 
 	/**
@@ -770,13 +850,14 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertSame( '#DB2777', $styling['primary_color'] );
 		$this->assertSame( $theme['on_primary'], $styling['text_color_on_primary'] );
-		$this->assertSame( $theme['background'], $styling['bg_gradient'] );
-		$this->assertEquals( 16, $styling['form_border_radius_top'] );
+		$this->assertSame( '#FFF7ED', $styling['bg_color'] );
+		$this->assertSame( $theme['background'], $styling['bg_color'] );
+		$this->assertEquals( 10, $styling['form_border_radius_top'] );
 		// The form's own page uses its own corner keys; they must match.
-		$this->assertEquals( 16, $styling['instant_form_border_radius_top'] );
-		$this->assertEquals( 40, $styling['instant_form_padding_left'] );
+		$this->assertEquals( 10, $styling['instant_form_border_radius_top'] );
+		$this->assertEquals( 28, $styling['instant_form_padding_left'] );
 		$this->assertStringNotContainsString( 'wp:srfm/advanced-heading', get_post( $post_id )->post_content );
-		$this->assertSame( $theme['banner'], get_post_meta( $post_id, '_srfm_instant_form_settings', true )['cover_color'] );
+		$this->assertSame( $theme['page'], get_post_meta( $post_id, '_srfm_instant_form_settings', true )['cover_color'] );
 	}
 
 	public function test_get_themes_for_js_lists_every_preset() {
@@ -792,11 +873,32 @@ class Test_Form_Templates extends TestCase {
 			$this->assertSame( $theme['primary'], $preset['accent'], $preset['id'] );
 			$this->assertSame( $theme['text'], $preset['text'], $preset['id'] );
 			$this->assertSame( $theme['on_primary'], $preset['onPrimary'], $preset['id'] );
+			$this->assertSame( $theme['page'], $preset['page'], $preset['id'] );
 			// The preview restyles itself by swapping these values in the
 			// form's CSS, so no two of them may be the same color.
 			$colors = [ $theme['primary'], $theme['text'], $theme['on_primary'] ];
 			$this->assertSame( $colors, array_unique( $colors ), $preset['id'] );
 		}
+
+		// A template on a dark preset starts with the preset's light default.
+		$presets = array_column( Form_Templates::get_themes_for_js(), null, 'id' );
+		$light   = Form_Templates::resolve_theme( Form_Templates::get_template( 'quote-request' ) );
+		$this->assertSame( $light['background'], $presets['midnight']['default']['background'] );
+		$this->assertSame( $light['primary'], $presets['midnight']['default']['accent'] );
+		$this->assertSame( $light['text'], $presets['midnight']['default']['text'] );
+		$this->assertSame( $light['on_primary'], $presets['midnight']['default']['onPrimary'] );
+		$this->assertArrayNotHasKey( 'default', $presets['ocean'] );
+	}
+
+	/**
+	 * The preview restyles in place by rendering the form once more in a
+	 * preset that differs in every color. Midnight is that preset for every
+	 * light look, so its own colors must all differ.
+	 */
+	public function test_midnight_preset_colors_are_all_different() {
+		$midnight = Form_Templates::get_themes()['midnight'];
+		$colors   = [ $midnight['background'], $midnight['primary'], $midnight['text'], $midnight['on_primary'] ];
+		$this->assertSame( $colors, array_unique( $colors ) );
 	}
 
 	public function test_get_messages_and_answers_reach_the_library() {
@@ -2260,9 +2362,10 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertSame( [ '_srfm_forms_styling', '_srfm_instant_form_settings', '_srfm_single_page_form_title' ], array_keys( $metas ) );
 		$this->assertSame( $theme['primary'], $metas['_srfm_forms_styling']['primary_color'] );
-		$this->assertSame( $theme['background'], $metas['_srfm_forms_styling']['bg_gradient'] );
+		$this->assertSame( $theme['background'], $metas['_srfm_forms_styling']['bg_color'] );
 		$this->assertSame( $theme['radius'], $metas['_srfm_forms_styling']['instant_form_border_radius_right'] );
-		$this->assertSame( $theme['banner'], $metas['_srfm_instant_form_settings']['cover_color'] );
+		$this->assertSame( $theme['page'], $metas['_srfm_instant_form_settings']['cover_color'] );
+		$this->assertTrue( $metas['_srfm_instant_form_settings']['use_banner_as_page_background'] );
 	}
 
 	public function test_is_spam_protection_on_reads_the_honeypot_setting() {

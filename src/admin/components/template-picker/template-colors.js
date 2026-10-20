@@ -50,53 +50,26 @@ export const isDark = ( hex ) => {
 };
 
 /**
- * Mix two hex colors.
- *
- * @param {string} hex    Base color.
- * @param {string} with_  Color mixed in.
- * @param {number} amount Share of `with_`, 0 to 1.
- * @return {string} Hex color.
- */
-const mix = ( hex, with_, amount ) => {
-	const rgb = ( color ) =>
-		[ 1, 3, 5 ].map( ( i ) => parseInt( color.slice( i, i + 2 ), 16 ) );
-	const [ a, b ] = [ rgb( hex ), rgb( with_ ) ];
-	return (
-		'#' +
-		a
-			.map( ( c, i ) =>
-				Math.round( c + ( ( b[ i ] - c ) * amount ) )
-					.toString( 16 )
-					.padStart( 2, '0' )
-			)
-			.join( '' )
-	);
-};
-
-/**
  * The look a form gets with a chosen style, like
- * Form_Templates::resolve_theme(): background, primary color and text color.
+ * Form_Templates::resolve_theme(): the page behind the form, its background,
+ * primary color and text colors. With no preset chosen it is the template's
+ * own look, where a dark theme starts light (its `default`).
  *
  * @since x.x.x
  * @param {Object} style   { preset?, background?, accent? }.
  * @param {string} theme   The template's own preset id.
- * @param {Array}  presets Presets: { id, background, accent, text, onPrimary }.
- * @return {{background: string, primary: string, text: string, onPrimary: string}} Look.
+ * @param {Array}  presets Presets: { id, page, background, accent, text, onPrimary, default? }.
+ * @return {{page: string, background: string, primary: string, text: string, onPrimary: string}} Look.
  */
 export const resolveLook = ( style, theme, presets ) => {
 	const list = presets || [];
-	const preset = list.find( ( p ) => p.id === ( style.preset || theme ) ) ||
-		list.find( ( p ) => p.id === theme ) ||
+	const chosen = style.preset && list.find( ( p ) => p.id === style.preset );
+	const own = list.find( ( p ) => p.id === theme ) ||
 		list[ 0 ] || { background: '#FFFFFF', accent: '#2563EB' };
+	const preset = chosen || { ...own, ...( own.default || {} ) };
 	const hasBackground =
 		!! style.background && /^#[0-9a-f]{6}$/i.test( style.background );
-	const background = hasBackground
-		? `linear-gradient(135deg, ${ style.background } 0%, ${ mix(
-			style.background,
-			'#FFFFFF',
-			0.35
-		  ).toUpperCase() } 100%)`
-		: preset.background;
+	const background = hasBackground ? style.background : preset.background;
 	const primary = style.accent || preset.accent;
 	// A preset keeps its own text colors; a chosen color gets readable ones.
 	const text =
@@ -111,7 +84,13 @@ export const resolveLook = ( style, theme, presets ) => {
 			: isDark( firstHex( primary ) )
 				? '#FFFFFF'
 				: '#0F172A';
-	return { background, primary, text, onPrimary };
+	return {
+		page: preset.page || '#F3F4F6',
+		background,
+		primary,
+		text,
+		onPrimary,
+	};
 };
 
 const escapeRegExp = ( value ) =>
@@ -138,7 +117,8 @@ export const getFormStyleBlocks = ( doc ) =>
 
 /**
  * A preset that differs from a look in every color, to render the same form
- * once more and see which of its CSS follows the theme.
+ * once more and see which of its CSS follows the theme. Its own colors all
+ * differ too, so each one in its CSS can only be one thing.
  *
  * @since x.x.x
  * @param {Object} look    Look from resolveLook().
@@ -148,10 +128,13 @@ export const getFormStyleBlocks = ( doc ) =>
 export const getProbePreset = ( look, presets ) => {
 	const probe = ( presets || [] ).find( ( preset ) => {
 		const other = resolveLook( { preset: preset.id }, preset.id, presets );
-		return KEYS.every(
-			( key ) =>
-				String( other[ key ] ).toUpperCase() !==
-				String( look[ key ] ).toUpperCase()
+		const colors = KEYS.map( ( key ) => String( other[ key ] ).toUpperCase() );
+		return (
+			new Set( colors ).size === KEYS.length &&
+			KEYS.every(
+				( key, index ) =>
+					colors[ index ] !== String( look[ key ] ).toUpperCase()
+			)
 		);
 	} );
 	return probe ? probe.id : '';
@@ -187,11 +170,10 @@ const keyDeclarations = ( declarations ) => {
  * Swap a look's colors in one CSS declaration for tokens.
  *
  * @param {string} declaration CSS declaration.
- * @param {Object} from        Look it was rendered with.
+ * @param {Object} from        Look it was rendered with; its colors all differ.
  * @return {string} Declaration with tokens.
  */
 const tokenize = ( declaration, from ) =>
-	// The background goes first: its gradient can hold the other colors.
 	KEYS.reduce( ( text, key ) => {
 		const value = String( from[ key ] || '' );
 		if ( ! value ) {
@@ -199,14 +181,40 @@ const tokenize = ( declaration, from ) =>
 		}
 		// A color may carry an alpha suffix (#RRGGBBAA, used by Pro).
 		const pattern = new RegExp(
-			escapeRegExp( value ) +
-				( 'background' === key
-					? ''
-					: '(?=(?:[0-9a-f]{2})?(?![0-9a-f]))' ),
+			escapeRegExp( value ) + '(?=(?:[0-9a-f]{2})?(?![0-9a-f]))',
 			'gi'
 		);
 		return text.replace( pattern, `__srfm_${ key }__` );
 	}, declaration );
+
+/**
+ * A declaration split where its property starts: what comes before it (the
+ * end of a selector, a comment) and the property with its value.
+ *
+ * @param {string} declaration CSS declaration.
+ * @return {[string, string]} [ before, property and value ].
+ */
+const splitDeclaration = ( declaration ) => {
+	const at = Math.max(
+		declaration.lastIndexOf( '{' ) + 1,
+		declaration.lastIndexOf( '}' ) + 1,
+		declaration.lastIndexOf( '*/' ) + 2
+	);
+	return [ declaration.slice( 0, at ), declaration.slice( at ) ];
+};
+
+/**
+ * Put a look's colors in for the tokens.
+ *
+ * @param {string} text CSS with tokens.
+ * @param {Object} look Look.
+ * @return {string} CSS.
+ */
+const fill = ( text, look ) =>
+	KEYS.reduce(
+		( css, key ) => css.split( `__srfm_${ key }__` ).join( look[ key ] ),
+		text
+	);
 
 /**
  * Restyle a rendered preview in place. The form's colors are written as
@@ -215,18 +223,23 @@ const tokenize = ( declaration, from ) =>
  *
  * Only declarations that follow the theme are touched: the ones that differ
  * from a render of the same form in another preset (`probe`). A value that
- * merely equals a theme color, like a fixed white, is left alone.
+ * merely equals a theme color, like a fixed white, is left alone. The tokens
+ * are found in the other render, whose colors all differ, so a page whose
+ * look repeats a color (a white form with white button text) is still read
+ * right; the declaration must come back exactly when filled with `from`.
  *
  * Scripts that read the colors when the page loaded run again afterwards:
  * SureForms' dark-background handling sets a class and a menu color for a
  * dark form, and they have to follow it from light to dark and back.
  *
  * @since x.x.x
- * @param {Document} doc   Preview document.
- * @param {Object}   from  Look the page was rendered with, from resolveLook().
- * @param {Object}   to    Look to show, from resolveLook().
- * @param {string[]} probe The form's style blocks rendered in another preset
- *                         (getProbePreset()), in page order.
+ * @param {Document} doc          Preview document.
+ * @param {Object}   from         Look the page was rendered with, from resolveLook().
+ * @param {Object}   to           Look to show, from resolveLook().
+ * @param {Object}   probe        The same form rendered in another preset
+ *                                (getProbePreset()).
+ * @param {string[]} probe.blocks Its style blocks, in page order.
+ * @param {Object}   probe.look   Its look, from resolveLook().
  * @return {boolean} Whether the page was restyled. False when its theme
  *                   colors can't all be swapped, so it has to be rendered again.
  */
@@ -237,7 +250,8 @@ export const restyleDocument = ( doc, from, to, probe ) => {
 		doc?.defaultView?.srfm?.normalizeCSSVariablesForDarkBackground;
 	if (
 		! blocks.length ||
-		! Array.isArray( probe ) ||
+		! Array.isArray( probe?.blocks ) ||
+		! probe.look ||
 		'function' !== typeof normalize
 	) {
 		return false;
@@ -248,7 +262,9 @@ export const restyleDocument = ( doc, from, to, probe ) => {
 			// Scripts on the page may add to the block after it loads, so the
 			// two renders are matched by property, not by position.
 			const other = new Map(
-				keyDeclarations( String( probe[ index ] ?? '' ).split( ';' ) )
+				keyDeclarations(
+					String( probe.blocks[ index ] ?? '' ).split( ';' )
+				)
 			);
 			if ( ! other.has( '--srfm-color-scheme-primary#1' ) ) {
 				return false;
@@ -265,9 +281,20 @@ export const restyleDocument = ( doc, from, to, probe ) => {
 					source.push( declaration );
 					continue;
 				}
-				const tokens = tokenize( declaration, from );
-				// Follows the theme, but not as a plain color we know.
-				if ( ! tokens.includes( '__srfm_' ) ) {
+				// The other render's selector carries another form id, so only
+				// its property and value are used.
+				const tokens =
+					splitDeclaration( declaration )[ 0 ] +
+					tokenize(
+						splitDeclaration( other.get( key ) )[ 1 ],
+						probe.look
+					);
+				// Follows the theme, but not only as the colors we know.
+				if (
+					! tokens.includes( '__srfm_' ) ||
+					fill( tokens, from ).toLowerCase() !==
+						declaration.toLowerCase()
+				) {
 					return false;
 				}
 				source.push( tokens );
@@ -277,10 +304,7 @@ export const restyleDocument = ( doc, from, to, probe ) => {
 	}
 
 	for ( const node of blocks ) {
-		let css = restyleSources.get( node );
-		for ( const key of KEYS ) {
-			css = css.split( `__srfm_${ key }__` ).join( to[ key ] );
-		}
+		const css = fill( restyleSources.get( node ), to );
 		if ( css !== node.textContent ) {
 			node.textContent = css;
 		}

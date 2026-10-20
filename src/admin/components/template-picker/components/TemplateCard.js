@@ -7,16 +7,7 @@ import {
 	isPremiumTemplate,
 	openTemplateUnlock,
 } from './template-features.js';
-
-// Tile colour per catalog theme. Midnight gets a light slate: the drawn form stays light.
-const TILE_COLORS = {
-	ocean: '#E3EBFB',
-	mint: '#DEF2E8',
-	lavender: '#EAE5FA',
-	sunset: '#FAE6DD',
-	sand: '#F8EED6',
-	midnight: '#E4E8EF',
-};
+import { resolveLook } from '../template-colors.js';
 
 // Rows the tile has room for before the form runs off its bottom edge.
 const MAX_ROWS = 4;
@@ -45,8 +36,11 @@ const boxClass =
  *
  * @param {Object} props       Props.
  * @param {Object} props.field Card field from the payload: `t`, `l`, `p`, `o`, `w`.
+ * @param {Object} props.look  The template's look, from resolveLook().
  */
-const MiniField = ( { field } ) => {
+const MiniField = ( { field, look } ) => {
+	// Filled like the real form's selected option and button.
+	const filled = { backgroundColor: look.primary, borderColor: look.primary, color: look.onPrimary };
 	if ( CONSENT_TYPES.includes( field.t ) ) {
 		return (
 			<span className="flex-1 min-w-0 flex gap-1.5 text-[8px] leading-[1.3] text-[#6B7280]">
@@ -73,9 +67,10 @@ const MiniField = ( { field } ) => {
 						className={ cn(
 							'flex-1 min-w-0 h-6 px-1 flex items-center justify-center text-[9px] border border-solid rounded truncate',
 							0 === index
-								? 'bg-[#D54407] border-[#D54407] text-white font-semibold'
+								? 'font-semibold'
 								: 'border-[#E5E7EB] text-[#374151]'
 						) }
+						style={ 0 === index ? filled : undefined }
 					>
 						<span className="truncate">{ option }</span>
 					</span>
@@ -84,7 +79,10 @@ const MiniField = ( { field } ) => {
 		);
 	} else if ( 'inline-button' === field.t ) {
 		control = (
-			<span className="flex items-center justify-center h-[22px] px-[7px] text-[9px] font-semibold text-white bg-[#D54407] rounded-[3px] truncate">
+			<span
+				className="flex items-center justify-center h-[22px] px-[7px] text-[9px] font-semibold rounded-[3px] truncate"
+				style={ filled }
+			>
 				{ field.l }
 			</span>
 		);
@@ -127,12 +125,14 @@ export const getMiniRows = ( fields ) => {
 
 /**
  * The card's picture: the template's first fields drawn as a small form on
- * its theme colour. Decorative; the card's text names the template.
+ * its page colour, in the colors the form starts with. Decorative; the
+ * card's text names the template.
  *
  * @param {Object} props          Props.
  * @param {Object} props.template Template.
+ * @param {Object} props.look     The template's look, from resolveLook().
  */
-const MiniForm = ( { template } ) => (
+const MiniForm = ( { template, look } ) => (
 	<span
 		className="absolute start-6 end-6 top-[22px] flex flex-col gap-[9px] p-3.5 text-start leading-[1.45] bg-white border border-b-0 border-solid border-[#E5E7EB] rounded-t-lg"
 		aria-hidden="true"
@@ -143,7 +143,7 @@ const MiniForm = ( { template } ) => (
 		{ getMiniRows( template.card_fields || [] ).map( ( row, index ) => (
 			<span key={ index } className="flex gap-2">
 				{ row.map( ( field, fieldIndex ) => (
-					<MiniField key={ fieldIndex } field={ field } />
+					<MiniField key={ fieldIndex } field={ field } look={ look } />
 				) ) }
 			</span>
 		) ) }
@@ -228,13 +228,18 @@ const CardBody = ( { template } ) => (
  *
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
+ * @param {Array}    props.presets  Style presets; defaults to the admin page's.
  * @param {boolean}  props.hidden   Filtered out.
  * @param {Function} props.onSelect Open the template's preview.
  */
-const TemplateCard = ( { template, hidden, onSelect } ) => {
-	const tileStyle = {
-		backgroundColor: TILE_COLORS[ template.theme ] || TILE_COLORS.ocean,
-	};
+const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
+	// The look the form starts with: the tile is its page, the drawing its form.
+	const look = resolveLook(
+		{},
+		template.theme,
+		presets || window.srfm_admin?.form_template_themes
+	);
+	const tileStyle = { backgroundColor: look.page };
 
 	if ( template.is_locked ) {
 		const plan = getPlanName( template.requires );
@@ -242,7 +247,7 @@ const TemplateCard = ( { template, hidden, onSelect } ) => {
 		return (
 			<div hidden={ hidden } className={ cn( cardClass, hidden && 'hidden' ) }>
 				<span className={ tileClass } style={ tileStyle }>
-					<MiniForm template={ template } />
+					<MiniForm template={ template } look={ look } />
 					<TileShade />
 					<span
 						className={ cn(
@@ -327,7 +332,7 @@ const TemplateCard = ( { template, hidden, onSelect } ) => {
 			) }
 		>
 			<span className={ cn( tileClass, 'w-full group/tile' ) } style={ tileStyle }>
-				<MiniForm template={ template } />
+				<MiniForm template={ template } look={ look } />
 				<TileShade />
 				<span
 					className={ cn(

@@ -6,6 +6,7 @@
  */
 
 use SRFM\Inc\Compatibility\Multilingual\String_Translator;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Helper;
 
@@ -114,6 +115,17 @@ if ( $use_banner_as_page_background ) {
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php } ?>
 			}
+			<?php
+			// The title is white, for a dark banner; a light one (a form
+			// template's page color) gets dark text instead.
+			if ( 'image' !== $cover_type && is_string( $cover_color ) && preg_match( '/^#[0-9a-f]{6}$/i', $cover_color ) && ! Form_Templates::is_dark( $cover_color ) ) {
+				?>
+				html body.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-single-banner-title {
+					color: #1E293B;
+				}
+				<?php
+			}
+			?>
 			<?php
 		} else {
 			?>
