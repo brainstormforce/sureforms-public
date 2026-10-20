@@ -1,7 +1,8 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useRef } from '@wordpress/element';
+import { createInterpolateElement, useRef } from '@wordpress/element';
 import {
 	AlertTriangle,
+	Check,
 	CornerUpLeft,
 	MailX,
 	Plus,
@@ -578,13 +579,19 @@ const ResetLink = ( { onReset } ) => (
 /**
  * Card holding the fields that edit one message.
  *
- * @param {Object} props          Props.
- * @param {string} props.title    Heading.
- * @param {*}      props.action   Shown beside the heading, e.g. a reset link.
- * @param {*}      props.children Fields.
+ * @param {Object} props           Props.
+ * @param {string} props.title     Heading.
+ * @param {*}      props.action    Shown beside the heading, e.g. a reset link.
+ * @param {string} props.className Extra classes.
+ * @param {*}      props.children  Fields.
  */
-const EditCard = ( { title, action, children } ) => (
-	<div className="flex flex-col gap-4 p-4 sm:p-5 rounded-lg bg-background-primary border border-solid border-border-subtle">
+const EditCard = ( { title, action, className, children } ) => (
+	<div
+		className={ cn(
+			'flex flex-col gap-4 p-4 sm:p-5 rounded-xl bg-background-primary border border-solid border-border-subtle shadow-[0_1px_2px_rgba(17,24,39,.04)]',
+			className
+		) }
+	>
 		<div className="flex items-center justify-between gap-3 min-h-5">
 			<span className="text-sm font-semibold text-text-primary">
 				{ title }
@@ -607,21 +614,16 @@ const AnswersTable = ( { answers } ) => {
 	const more = list.length - shown.length;
 	return (
 		<div className="flex flex-col gap-1.5">
-			<dl className="m-0 grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] rounded-md border border-solid border-border-subtle overflow-hidden text-[13px]">
-				{ shown.map( ( answer, index ) => (
+			<dl className="m-0 flex flex-col text-[13px]">
+				{ shown.map( ( answer ) => (
 					<div
 						key={ answer.slug }
-						className={ cn(
-							'contents',
-							index % 2
-								? '[&>*]:bg-background-primary'
-								: '[&>*]:bg-background-secondary'
-						) }
+						className="flex gap-2.5 py-[7px] border-0 border-t border-solid border-border-subtle"
 					>
-						<dt className="m-0 px-3 py-2 font-medium text-text-secondary break-words">
+						<dt className="m-0 basis-[38%] shrink-0 font-semibold text-text-primary break-words">
 							{ answer.label }
 						</dt>
-						<dd className="m-0 px-3 py-2 text-text-primary break-words whitespace-pre-line">
+						<dd className="m-0 min-w-0 text-text-secondary break-words whitespace-pre-line">
 							{ answer.sample || '—' }
 						</dd>
 					</div>
@@ -663,35 +665,6 @@ const Paragraphs = ( { text, context } ) =>
 	) );
 
 /**
- * Green check from the default confirmation message.
- */
-const ConfirmationCheck = () => (
-	<svg
-		width="28"
-		height="28"
-		viewBox="0 0 28 28"
-		fill="none"
-		aria-hidden="true"
-		className="mx-auto"
-	>
-		<path
-			d="M25.6654 12.9281V14.0015C25.6639 16.5173 24.8493 18.9653 23.3429 20.9803C21.8366 22.9953 19.7192 24.4694 17.3066 25.1827C14.894 25.896 12.3155 25.8104 9.95558 24.9385C7.59566 24.0666 5.58079 22.4553 4.21149 20.3447C2.84218 18.2342 2.19179 15.7375 2.35732 13.2272C2.52285 10.7168 3.49544 8.32718 5.13002 6.41472C6.76461 4.50226 8.97361 3.16942 11.4276 2.61497C13.8816 2.06053 16.449 2.3142 18.747 3.33814"
-			stroke="#1A973D"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-		<path
-			d="M25.6667 4.66797L14 16.3463L10.5 12.8463"
-			stroke="#1A973D"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-	</svg>
-);
-
-/**
  * The "Thank-you page" tab: the message shown after submitting, as the
  * visitor will see it, and (when editable) the fields to change it.
  *
@@ -700,7 +673,7 @@ const ConfirmationCheck = () => (
  * @param {Object}   props.template Template.
  * @param {Object}   props.values   Message values by key.
  * @param {Function} props.setValue Called with ( key, value ).
- * @param {Object}   props.look     From resolveLook(): background and text color.
+ * @param {Object}   props.look     From resolveLook(): the form's colors.
  * @param {boolean}  props.editable Show the fields to edit the message.
  * @param {string}   props.device   'desktop' or 'mobile'.
  */
@@ -719,43 +692,43 @@ export const ThankYouPanel = ( {
 	const isChanged = keys.some( ( key ) => values[ key ] !== defaults[ key ] );
 
 	return (
-		<div className="flex flex-col gap-5 w-full max-w-[760px] mx-auto">
+		<div className="flex flex-col items-center gap-6 w-full">
+			{ /* The form card after submitting: its colors, padding and
+			corners, with the message centred under a check in its accent. */ }
 			<section
 				className={ cn(
-					'mx-auto w-full p-4 sm:p-8 rounded-lg bg-background-primary border border-solid border-border-subtle shadow-sm transition-[max-width] duration-300 motion-reduce:transition-none',
-					'mobile' === device ? 'max-w-[390px]' : 'max-w-[760px]'
+					'flex flex-col items-center gap-[18px] w-full p-7 rounded-[10px] text-center transition-[max-width] duration-300 motion-reduce:transition-none',
+					'mobile' === device ? 'max-w-[375px]' : 'max-w-[460px]'
 				) }
+				style={ { background: look.background, color: look.text } }
 				aria-label={ __( 'Thank-you page preview', 'sureforms' ) }
 			>
-				{ /* The form's container: its background, 40px padding and
-				16px radius, with the form's text color. */ }
-				<div
-					className="flex flex-col items-center gap-2 px-6 py-10 sm:p-10 rounded-2xl text-center"
-					style={ { background: look.background, color: look.text } }
+				<span
+					className="flex items-center justify-center size-[52px] rounded-full"
+					style={ { background: look.primary, color: look.onPrimary } }
+					aria-hidden="true"
 				>
-					<ConfirmationCheck />
-					<h2
-						className="m-0 mt-3 text-2xl font-bold leading-tight break-words"
-						style={ { color: look.text } }
-					>
-						{ renderWithSamples(
-							values[ 'confirmation.heading' ],
-							context
-						) }
-					</h2>
-					<p
-						className="m-0 text-[15px] leading-relaxed whitespace-pre-line break-words"
-						style={ { color: look.text } }
-					>
-						{ renderWithSamples(
-							values[ 'confirmation.text' ],
-							context
-						) }
-					</p>
-				</div>
+					<Check className="size-[26px]" strokeWidth={ 2.4 } />
+				</span>
+				<h2
+					className="m-0 text-xl leading-tight font-semibold break-words"
+					style={ { color: look.text } }
+				>
+					{ renderWithSamples(
+						values[ 'confirmation.heading' ],
+						context
+					) }
+				</h2>
+				<p
+					className="m-0 text-sm leading-relaxed whitespace-pre-line break-words"
+					style={ { color: look.text } }
+				>
+					{ renderWithSamples( values[ 'confirmation.text' ], context ) }
+				</p>
 			</section>
 			{ editable && (
 				<EditCard
+					className="w-full max-w-[640px]"
 					title={ __( 'Thank-you message', 'sureforms' ) }
 					action={
 						isChanged && (
@@ -801,88 +774,93 @@ export const ThankYouPanel = ( {
 };
 
 /**
- * One email: the fields to edit it on top (when given), then the email as a
- * simple mail client shows it, so each change is visible right below.
+ * One email as a compact card: who it is from and to, the fields to edit it
+ * (when given), then the email itself with sample answers, so each change is
+ * visible right below.
  *
  * @param {Object} props          Props.
- * @param {string} props.title    What the email is.
- * @param {*}      props.action   Shown beside the title, e.g. a toggle.
- * @param {*}      props.fields   Edit fields, shown above the preview.
- * @param {Array}  props.rows     Header rows: { label, value, strong }.
+ * @param {string} props.id       Id of the card's heading.
+ * @param {Object} props.look     From resolveLook(): the accent for the sender's avatar.
+ * @param {string} props.from     Sender name.
+ * @param {string} props.to       Who gets it.
+ * @param {string} props.note     Line under the sender, e.g. "Sent automatically".
+ * @param {*}      props.action   Shown at the end of the header, e.g. a toggle.
+ * @param {*}      props.fields   Edit fields, shown above the email.
+ * @param {*}      props.reset    Reset link for the fields.
+ * @param {string} props.tag      What the email is, e.g. "Auto-reply".
+ * @param {*}      props.subject  Subject, with sample answers.
  * @param {*}      props.children Body.
  */
-const EmailCard = ( { title, action, fields, rows, children } ) => (
-	<div className="flex flex-col rounded-lg bg-background-primary border border-solid border-border-subtle shadow-sm overflow-hidden">
-		<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 sm:px-5 py-3 border-0 border-b border-solid border-border-subtle">
-			<span className="text-sm font-semibold text-text-primary">
-				{ title }
+const EmailCard = ( {
+	id,
+	look,
+	from,
+	to,
+	note,
+	action,
+	fields,
+	reset,
+	tag,
+	subject,
+	children,
+} ) => (
+	<article
+		className="flex flex-col rounded-xl bg-background-primary border border-solid border-border-subtle shadow-[0_1px_2px_rgba(17,24,39,.04)] overflow-hidden"
+		aria-labelledby={ id }
+	>
+		<header className="flex flex-wrap items-center gap-x-2.5 gap-y-2 px-4 sm:px-[18px] py-3.5 bg-[#FAFAFB] border-0 border-b border-solid border-border-subtle">
+			<span
+				className="flex items-center justify-center size-8 shrink-0 rounded-full text-[13px] font-bold uppercase"
+				style={ { background: look.primary, color: look.onPrimary } }
+				aria-hidden="true"
+			>
+				{ ( from || 'S' ).trim().charAt( 0 ) }
+			</span>
+			<span
+				id={ id }
+				className="flex-1 min-w-0 text-xs leading-normal text-text-tertiary break-words"
+			>
+				{ createInterpolateElement(
+					sprintf(
+						/* translators: 1: sender, e.g. the site title, 2: recipient, e.g. an email address. */
+						__( '<b>%1$s</b> to %2$s', 'sureforms' ),
+						from,
+						to
+					),
+					{ b: <b className="font-semibold text-text-primary" /> }
+				) }
+				<br />
+				{ note }
 			</span>
 			{ action }
-		</div>
+		</header>
 		{ fields && (
-			<div className="flex flex-col gap-4 px-4 sm:px-5 py-4 border-0 border-b border-solid border-border-subtle">
+			<div className="flex flex-col gap-4 px-4 sm:px-[18px] py-4 border-0 border-b border-solid border-border-subtle">
+				{ reset && <div className="flex justify-end -mb-2">{ reset }</div> }
 				{ fields }
 			</div>
 		) }
-		<div className={ cn( 'flex flex-col', fields && 'p-3 sm:p-4 bg-background-secondary' ) }>
-			{ fields && (
-				<span className="px-1 pb-2 text-[11px] font-semibold uppercase tracking-wide text-text-tertiary">
-					{ __( 'Preview with sample answers', 'sureforms' ) }
+		<div className="flex flex-col gap-2 px-4 sm:px-[18px] pt-4 pb-[18px] text-sm leading-relaxed text-text-primary">
+			<div className="flex flex-wrap items-center gap-2">
+				<span className="inline-block px-2 py-0.5 text-[11px] font-semibold rounded-full bg-background-tertiary text-text-tertiary">
+					{ tag }
 				</span>
+				{ fields && (
+					<span className="text-[11px] text-text-tertiary">
+						{ __( 'Preview with sample answers', 'sureforms' ) }
+					</span>
+				) }
+			</div>
+			{ subject && (
+				<h4 className="m-0 text-base leading-snug font-semibold text-text-primary break-words">
+					{ subject }
+				</h4>
 			) }
-			<div
-				className={ cn(
-					'flex flex-col bg-background-primary',
-					fields && 'rounded-md border border-solid border-border-subtle'
-				) }
-			>
-				{ rows && (
-					<dl className="m-0 flex flex-col gap-1 px-4 sm:px-5 py-3 text-[13px] border-0 border-b border-solid border-border-subtle">
-						{ rows.map( ( row ) => (
-							<div key={ row.label } className="flex gap-3 min-w-0">
-								<dt className="m-0 w-14 shrink-0 text-text-tertiary">
-									{ row.label }
-								</dt>
-								<dd
-									className={ cn(
-										'm-0 min-w-0 break-words',
-										row.strong
-											? 'font-semibold text-text-primary'
-											: 'text-text-secondary'
-									) }
-								>
-									{ row.value }
-								</dd>
-							</div>
-						) ) }
-					</dl>
-				) }
-				<div className="flex flex-col gap-3 px-4 sm:px-5 py-4 text-sm leading-relaxed text-text-primary">
-					{ children }
-				</div>
+			<div className="flex flex-col gap-3 text-[13.5px] leading-relaxed">
+				{ children }
 			</div>
 		</div>
-	</div>
-);
-
-/**
- * Section heading with an optional reset link.
- *
- * @param {Object} props        Props.
- * @param {string} props.id     Element id.
- * @param {string} props.label  Heading.
- * @param {*}      props.action Shown at the end, e.g. a reset link.
- */
-const SectionHeading = ( { id, label, action } ) => (
-	<div className="flex items-center justify-between gap-3 min-h-5">
-		<h3
-			id={ id }
-			className="m-0 text-xs font-semibold uppercase tracking-wide text-text-tertiary"
-		>
-			{ label }
-		</h3>
-		{ action }
-	</div>
+	</article>
 );
 
 /**
@@ -895,6 +873,7 @@ const SectionHeading = ( { id, label, action } ) => (
  * @param {Object}   props.template Template.
  * @param {Object}   props.values   Message values by key.
  * @param {Function} props.setValue Called with ( key, value ).
+ * @param {Object}   props.look     From resolveLook(): the form's colors.
  * @param {boolean}  props.editable Show the fields to edit the emails.
  * @param {boolean}  props.held     The visitor email is held back because the
  *                                  site has no spam protection.
@@ -903,6 +882,7 @@ export const EmailsPanel = ( {
 	template,
 	values,
 	setValue,
+	look,
 	editable,
 	held = false,
 } ) => {
@@ -1035,142 +1015,94 @@ export const EmailsPanel = ( {
 	);
 
 	return (
-		<div className="flex flex-col gap-6 w-full max-w-[760px] mx-auto">
-			<section
-				className="flex flex-col gap-2"
-				aria-labelledby="srfm-template-email-owner"
+		<div className="flex flex-col gap-4 w-full max-w-[640px] mx-auto">
+			<EmailCard
+				id="srfm-template-email-owner"
+				look={ look }
+				from={ context.siteTitle }
+				to={ context.adminEmail }
+				note={ __( 'New entry received', 'sureforms' ) }
+				fields={ ownerFields }
+				reset={
+					editable &&
+					isChanged( ownerKeys ) && (
+						<ResetLink onReset={ () => reset( ownerKeys ) } />
+					)
+				}
+				tag={ __( 'Email notification', 'sureforms' ) }
+				subject={ renderWithSamples( values.email_subject, context ) }
 			>
-				<SectionHeading
-					id="srfm-template-email-owner"
-					label={ __( 'To you (site owner)', 'sureforms' ) }
-					action={
+				<Paragraphs text={ values.email_intro } context={ context } />
+				<AnswersTable answers={ answers } />
+				{ autoresponder && (
+					<p className="m-0 flex items-center gap-1.5 text-xs text-text-tertiary">
+						<CornerUpLeft className="size-3.5" aria-hidden="true" />
+						{ __( 'Reply goes straight to the visitor', 'sureforms' ) }
+					</p>
+				) }
+			</EmailCard>
+
+			{ autoresponder && (
+				<EmailCard
+					id="srfm-template-email-visitor"
+					look={ look }
+					from={ context.siteTitle }
+					to={ visitorEmail }
+					note={ __( 'Sent automatically', 'sureforms' ) }
+					action={ sendToggle }
+					fields={ visitorFields }
+					reset={
 						editable &&
-						isChanged( ownerKeys ) && (
-							<ResetLink onReset={ () => reset( ownerKeys ) } />
+						isSent &&
+						isChanged( visitorKeys ) && (
+							<ResetLink onReset={ () => reset( visitorKeys ) } />
 						)
 					}
-				/>
-				<EmailCard
-					title={ __( 'New submission notification', 'sureforms' ) }
-					fields={ ownerFields }
-					rows={ [
-						{
-							label: __( 'From', 'sureforms' ),
-							value: context.siteTitle,
-						},
-						{
-							label: __( 'To', 'sureforms' ),
-							value: context.adminEmail,
-						},
-						{
-							label: __( 'Subject', 'sureforms' ),
-							value: renderWithSamples(
-								values.email_subject,
-								context
-							),
-							strong: true,
-						},
-					] }
+					tag={ __( 'Auto-reply', 'sureforms' ) }
+					subject={
+						isSent &&
+						renderWithSamples(
+							values[ 'autoresponder.subject' ],
+							context
+						)
+					}
 				>
-					<Paragraphs text={ values.email_intro } context={ context } />
-					<AnswersTable answers={ answers } />
-					{ autoresponder && (
-						<p className="m-0 flex items-center gap-1.5 text-xs text-text-tertiary">
-							<CornerUpLeft
-								className="size-3.5"
+					{ isSent ? (
+						<>
+							<p className="m-0 text-text-primary">
+								{ renderWithSamples(
+									values[ 'autoresponder.greeting' ],
+									context
+								) }
+							</p>
+							<Paragraphs
+								text={ values[ 'autoresponder.lines' ] }
+								context={ context }
+							/>
+							<p className="m-0 text-text-primary">
+								{ __( 'Thanks,', 'sureforms' ) }
+								<br />
+								{ context.siteTitle }
+							</p>
+						</>
+					) : (
+						<p className="m-0 flex items-center gap-2 text-text-secondary">
+							<MailX
+								className="size-4 shrink-0 text-icon-secondary"
 								aria-hidden="true"
 							/>
-							{ __(
-								'Reply goes straight to the visitor',
-								'sureforms'
-							) }
+							{ held
+								? __(
+									'Off until spam protection is on, so bots cannot use this form to send email to anyone. Turn on spam protection to send it.',
+									'sureforms'
+								  )
+								: __(
+									"Visitors won't get an email after submitting this form.",
+									'sureforms'
+								  ) }
 						</p>
 					) }
 				</EmailCard>
-			</section>
-
-			{ autoresponder && (
-				<section
-					className="flex flex-col gap-2"
-					aria-labelledby="srfm-template-email-visitor"
-				>
-					<SectionHeading
-						id="srfm-template-email-visitor"
-						label={ __( 'To the visitor', 'sureforms' ) }
-						action={
-							editable &&
-							isSent &&
-							isChanged( visitorKeys ) && (
-								<ResetLink
-									onReset={ () => reset( visitorKeys ) }
-								/>
-							)
-						}
-					/>
-					<EmailCard
-						title={ __( 'Confirmation email', 'sureforms' ) }
-						action={ sendToggle }
-						fields={ visitorFields }
-						rows={
-							isSent
-								? [
-									{
-										label: __( 'From', 'sureforms' ),
-										value: context.siteTitle,
-									},
-									{
-										label: __( 'To', 'sureforms' ),
-										value: visitorEmail,
-									},
-									{
-										label: __( 'Subject', 'sureforms' ),
-										value: renderWithSamples(
-											values[ 'autoresponder.subject' ],
-											context
-										),
-										strong: true,
-									},
-								  ]
-								: null
-						}
-					>
-						{ isSent ? (
-							<>
-								<p className="m-0 text-text-primary">
-									{ renderWithSamples(
-										values[ 'autoresponder.greeting' ],
-										context
-									) }
-								</p>
-								<Paragraphs
-									text={ values[ 'autoresponder.lines' ] }
-									context={ context }
-								/>
-								<p className="m-0 text-text-primary">
-									{ __( 'Thanks,', 'sureforms' ) }
-									<br />
-									{ context.siteTitle }
-								</p>
-							</>
-						) : (
-							<p className="m-0 flex items-center gap-2 text-text-secondary">
-								<MailX
-									className="size-4 shrink-0 text-icon-secondary"
-									aria-hidden="true"
-								/>
-								{ held
-									? __(
-										'Off until spam protection is on, so bots cannot use this form to send email to anyone. Turn on spam protection to send it.',
-										'sureforms'
-									  )
-									: __(
-										"Visitors won't get an email after submitting this form.",
-										'sureforms'
-									  ) }
-							</p>
-						) }
-					</EmailCard>
-				</section>
 			) }
 		</div>
 	);
