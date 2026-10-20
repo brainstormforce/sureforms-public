@@ -1580,6 +1580,8 @@ class Form_Templates {
 			return $post_id;
 		}
 
+		Form_Start::record_created( $post_id, $request->get_param( 'start_choice' ), 'template' );
+
 		return new WP_REST_Response(
 			[
 				'id'       => $post_id,

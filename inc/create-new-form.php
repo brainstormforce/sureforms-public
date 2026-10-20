@@ -189,6 +189,7 @@ class Create_New_Form {
 		$edited     = ! empty( $form_info_obj->ai_starter_edited );
 
 		Analytics::track_ai_starter_usage( $starter_id, $edited );
+		Form_Start::record_created( $post_id, $form_info_obj->start_choice ?? '', 'ai' );
 
 		return new WP_REST_Response(
 			[

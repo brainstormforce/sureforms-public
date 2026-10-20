@@ -16,6 +16,7 @@ import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 import useOpenTemplateLibrary from '../use-open-template-library.js';
+import { getStartChoice, trackStartStep } from '@Utils/form-start';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -26,6 +27,7 @@ const AiFormBuilder = () => {
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 
 	const handleFormCreationError = ( errorMessage ) => {
+		trackStartStep( 'ai_error' );
 		setFormCreationErr(
 			errorMessage ||
 				__( 'Something went wrong. Please try again.', 'sureforms' )
@@ -99,6 +101,7 @@ const AiFormBuilder = () => {
 			form_type: formType,
 		};
 
+		trackStartStep( 'ai_generate' );
 		setIsBuildingForm( true );
 		setPercentBuild( 50 );
 		setMessage( __( 'Generating fields', 'sureforms' ) );
@@ -226,6 +229,7 @@ const AiFormBuilder = () => {
 			{
 				ai_starter: starterInfo?.starterId || '',
 				ai_starter_edited: Boolean( starterInfo?.starterEdited ),
+				start_choice: getStartChoice(),
 			}
 		);
 	};
@@ -246,7 +250,7 @@ const AiFormBuilder = () => {
 
 		if ( response?.success ) {
 			window.location.href =
-				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form`;
+				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&view=ai`;
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
@@ -323,7 +327,7 @@ const AiFormBuilder = () => {
 					onclick={ () => {
 						window.location.href =
 							srfm_admin.site_url +
-							'/wp-admin/admin.php?page=add-new-form';
+							'/wp-admin/admin.php?page=add-new-form&view=ai';
 					} }
 				/>
 			);
@@ -377,7 +381,7 @@ const AiFormBuilder = () => {
 					onclick={ () => {
 						window.location.href =
 							srfm_admin.site_url +
-							'/wp-admin/admin.php?page=add-new-form';
+							'/wp-admin/admin.php?page=add-new-form&view=ai';
 					} }
 				/>
 			);
@@ -443,6 +447,14 @@ const AiFormBuilder = () => {
 
 	// Null when no limit applies, or none of the limit states matches.
 	const limitPopup = isAiLimited ? getLimitReachedPopup() : null;
+
+	// Count the limit popup once per visit as a step of the AI path.
+	const showsLimitPopup = Boolean( limitPopup );
+	useEffect( () => {
+		if ( showsLimitPopup ) {
+			trackStartStep( 'ai_limit' );
+		}
+	}, [ showsLimitPopup ] );
 
 	// shows while the form is being built. The error popup is intentionally
 	// rendered only at the bottom of the component (outer return) — when

@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useLocation } from 'react-router-dom';
 import { Breadcrumb } from '@bsf/force-ui';
 import { ChevronRight } from 'lucide-react';
+import { getAddNewFormScreen } from '@Utils/form-start';
 
 const Breadcrumbs = () => {
 	function useQuery() {
@@ -10,7 +11,11 @@ const Breadcrumbs = () => {
 
 	const query = useQuery();
 	const page = query.get( 'page' );
-	const isTemplates = query.get( 'view' ) === 'templates';
+	const screen = getAddNewFormScreen( query );
+	const subPage = {
+		templates: __( 'Templates', 'sureforms' ),
+		ai: __( 'Generate with AI', 'sureforms' ),
+	}[ screen ];
 
 	return (
 		<Breadcrumb>
@@ -27,25 +32,23 @@ const Breadcrumbs = () => {
 				{ page === 'add-new-form' && (
 					<Breadcrumb.Item>
 						<ChevronRight color="#bdc1c7" className="size-3" />
-						<Breadcrumb.Link
-							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form` }
-						>
-							{ isTemplates ? (
-								__( 'Add New Form', 'sureforms' )
-							) : (
-								<Breadcrumb.Page>
-									{ __( 'Generate with AI', 'sureforms' ) }
-								</Breadcrumb.Page>
-							) }
-						</Breadcrumb.Link>
+						{ subPage ? (
+							<Breadcrumb.Link
+								href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form` }
+							>
+								{ __( 'Add New Form', 'sureforms' ) }
+							</Breadcrumb.Link>
+						) : (
+							<Breadcrumb.Page>
+								{ __( 'Add New Form', 'sureforms' ) }
+							</Breadcrumb.Page>
+						) }
 					</Breadcrumb.Item>
 				) }
-				{ page === 'add-new-form' && isTemplates && (
+				{ page === 'add-new-form' && subPage && (
 					<Breadcrumb.Item>
 						<ChevronRight color="#bdc1c7" className="size-3" />
-						<Breadcrumb.Page>
-							{ __( 'Templates', 'sureforms' ) }
-						</Breadcrumb.Page>
+						<Breadcrumb.Page>{ subPage }</Breadcrumb.Page>
 					</Breadcrumb.Item>
 				) }
 			</Breadcrumb.List>
