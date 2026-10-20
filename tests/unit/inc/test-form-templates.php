@@ -784,6 +784,21 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( array_keys( Form_Templates::get_themes() ), $ids );
 	}
 
+	public function test_get_themes_for_js_carry_the_colors_the_server_resolves() {
+		$template = Form_Templates::get_template( 'contact-us' );
+		foreach ( Form_Templates::get_themes_for_js() as $preset ) {
+			$theme = Form_Templates::resolve_theme( $template, [ 'preset' => $preset['id'] ] );
+			$this->assertSame( $theme['background'], $preset['background'], $preset['id'] );
+			$this->assertSame( $theme['primary'], $preset['accent'], $preset['id'] );
+			$this->assertSame( $theme['text'], $preset['text'], $preset['id'] );
+			$this->assertSame( $theme['on_primary'], $preset['onPrimary'], $preset['id'] );
+			// The preview restyles itself by swapping these values in the
+			// form's CSS, so no two of them may be the same color.
+			$colors = [ $theme['primary'], $theme['text'], $theme['on_primary'] ];
+			$this->assertSame( $colors, array_unique( $colors ), $preset['id'] );
+		}
+	}
+
 	public function test_get_messages_and_answers_reach_the_library() {
 		$templates = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
 

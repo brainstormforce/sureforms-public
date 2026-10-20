@@ -1083,10 +1083,12 @@ class Form_Templates {
 	}
 
 	/**
-	 * Presets for the preview's style panel: name, background and accent.
+	 * Presets for the preview's style panel: name, background, accent and
+	 * the text colors that go with them, so the preview can restyle itself
+	 * exactly like resolve_theme() does.
 	 *
 	 * @since x.x.x
-	 * @return array<int, array{id:string,background:string,accent:string}>
+	 * @return array<int, array{id:string,background:string,accent:string,text:string,onPrimary:string}>
 	 */
 	public static function get_themes_for_js() {
 		$presets = [];
@@ -1095,6 +1097,8 @@ class Form_Templates {
 				'id'         => $id,
 				'background' => $theme['background'],
 				'accent'     => $theme['primary'],
+				'text'       => $theme['text'],
+				'onPrimary'  => $theme['on_primary'],
 			];
 		}
 		return $presets;
