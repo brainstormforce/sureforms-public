@@ -69,7 +69,7 @@ import {
 	TemplateSearch,
 	canGenerateWithAi,
 	useInView,
-} from './TemplateFilters.js';
+} from './LibraryControls.js';
 import useFocusTrap from '../use-focus-trap.js';
 import { resolveLook } from '../template-colors.js';
 import {
