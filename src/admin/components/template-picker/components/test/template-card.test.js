@@ -8,7 +8,7 @@ jest.mock( '@Utils/form-templates', () => ( { trackTemplateAction: () => {} } ),
 	virtual: true,
 } );
 
-import { getMiniRows } from '../TemplateCard';
+import { getMiniRows, getPreviewLabel, getUnlockLabel } from '../TemplateCard';
 
 const field = ( l, w = 'full' ) => ( { t: 'input', l, p: '', o: [], w } );
 
@@ -40,5 +40,29 @@ describe( 'getMiniRows', () => {
 		);
 		expect( rows ).toHaveLength( 4 );
 		expect( getMiniRows( [] ) ).toEqual( [] );
+	} );
+} );
+
+describe( 'getPreviewLabel', () => {
+	it( 'names Premium templates as Premium', () => {
+		expect(
+			getPreviewLabel( { title: 'Quote', requires: 'business' } )
+		).toBe( 'Preview the Quote template (Premium)' );
+		expect( getPreviewLabel( { title: 'Contact', requires: 'free' } ) ).toBe(
+			'Preview the Contact template'
+		);
+	} );
+} );
+
+describe( 'getUnlockLabel', () => {
+	it( 'says where a locked card leads', () => {
+		expect(
+			getUnlockLabel( { title: 'Quote', lock_reason: 'tier' } )
+		).toBe( 'See plans for the Quote template (Premium, opens in a new tab)' );
+		expect(
+			getUnlockLabel( { title: 'Quote', lock_reason: 'update' } )
+		).toBe(
+			'Update SureForms Pro to use the Quote template (opens in a new tab)'
+		);
 	} );
 } );
