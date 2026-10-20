@@ -393,6 +393,200 @@ class Test_Form_Templates_UI extends TestCase {
 		$this->assertContains( 'source-page', array_column( $item['answers'], 'slug' ) );
 	}
 
+	public function test_card_fields_have_the_compact_shape() {
+		foreach ( Form_Templates::get_templates_for_js() as $item ) {
+			$this->assertNotEmpty( $item['card_fields'], "Template {$item['id']}: nothing to draw on its card." );
+			$this->assertLessThanOrEqual( 8, count( $item['card_fields'] ) );
+			foreach ( $item['card_fields'] as $field ) {
+				$this->assertSame( [ 't', 'l', 'p', 'o', 'w' ], array_keys( $field ), "Template {$item['id']}." );
+				$this->assertIsString( $field['l'] );
+				$this->assertIsString( $field['p'] );
+				$this->assertContains( $field['w'], [ 'half', 'full' ] );
+				$this->assertLessThanOrEqual( 3, count( $field['o'] ) );
+			}
+		}
+	}
+
+	public function test_card_fields_skip_hidden_fields_and_steps() {
+		$card = Form_Templates::get_card_fields(
+			[
+				[
+					'fieldType'       => 'input',
+					'slug'            => 'first',
+					'label'           => 'First <b>Name</b>',
+					'placeholder'     => 'Jane',
+					'blockAttributes' => [ 'fieldWidth' => 50 ],
+				],
+				[
+					'fieldType' => 'hidden',
+					'slug'      => 'source',
+					'label'     => 'Source',
+				],
+				[
+					'fieldType' => 'page-break',
+					'slug'      => 'step',
+					'label'     => 'Step two',
+				],
+				[
+					'fieldType'    => 'dropdown',
+					'slug'         => 'plan',
+					'label'        => 'Plan',
+					'fieldOptions' => [ [ 'label' => 'Basic' ], [ 'label' => 'Plus' ], [ 'label' => 'Max' ], [ 'label' => 'Team' ] ],
+				],
+				[
+					'fieldType'    => 'multi-choice',
+					'slug'         => 'size',
+					'label'        => 'Size',
+					'fieldOptions' => [ [ 'optionTitle' => 'Small' ], [ 'optionTitle' => 'Large' ] ],
+				],
+			]
+		);
+
+		$this->assertSame( [ 'input', 'dropdown', 'multi-choice' ], array_column( $card, 't' ) );
+		$this->assertSame(
+			[
+				't' => 'input',
+				'l' => 'First Name',
+				'p' => 'Jane',
+				'o' => [],
+				'w' => 'half',
+			],
+			$card[0]
+		);
+		// A dropdown without a placeholder shows its first option, and at most three.
+		$this->assertSame( 'Basic', $card[1]['p'] );
+		$this->assertSame( [ 'Basic', 'Plus', 'Max' ], $card[1]['o'] );
+		$this->assertSame( 'full', $card[1]['w'] );
+		$this->assertSame( [ 'Small', 'Large' ], $card[2]['o'] );
+
+		$many = array_fill(
+			0,
+			12,
+			[
+				'fieldType' => 'input',
+				'label'     => 'X',
+			]
+		);
+		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
+	}
+
+	public function test_library_cards_draw_no_hidden_fields_or_steps() {
+		add_filter( 'srfm_pro_tier', static fn() => 'business' );
+		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
+
+		foreach ( [ 'contact-us', 'quote-request' ] as $id ) {
+			$types = array_column( $items[ $id ]['card_fields'], 't' );
+			$this->assertNotContains( 'hidden', $types, $id );
+			$this->assertNotContains( 'page-break', $types, $id );
+		}
+		$this->assertSame( 'First Name', $items['contact-us']['card_fields'][0]['l'] );
+	}
+
+	public function test_card_fields_show_a_locked_template_as_its_premium_version() {
+		$keys = [
+			'requires' => 'business',
+			'fields'   => [
+				[
+					'fieldType' => 'upload',
+					'slug'      => 'files',
+					'label'     => 'Files',
+					'pro_only'  => true,
+				],
+				[
+					'fieldType' => 'input',
+					'slug'      => 'name',
+					'label'     => 'Name',
+				],
+			],
+		];
+
+		$locked = $this->template_for_js( $keys );
+		$this->assertTrue( $locked['is_locked'] );
+		$this->assertSame( [ 'Files', 'Name' ], array_column( $locked['card_fields'], 'l' ) );
+		// The field list for search stays this site's build.
+		$this->assertSame( [ 'Name' ], $locked['fields'] );
+	}
+
+	public function test_card_fields_show_an_unlocked_template_as_this_sites_build() {
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		$unlocked = $this->template_for_js(
+			[
+				'fields' => [
+					[
+						'fieldType' => 'upload',
+						'slug'      => 'files',
+						'label'     => 'Files',
+						'pro_only'  => true,
+					],
+					[
+						'fieldType' => 'input',
+						'slug'      => 'name',
+						'label'     => 'Name',
+					],
+				],
+			]
+		);
+		$this->assertFalse( $unlocked['is_locked'] );
+		$this->assertSame( [ 'Name' ], array_column( $unlocked['card_fields'], 'l' ) );
+	}
+
+	public function test_library_no_longer_sends_a_card_picture() {
+		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
+		$this->assertArrayNotHasKey( 'thumbnail', $items['contact-us'] );
+		// The locked preview keeps its Premium picture; a free template's preview stays live.
+		$this->assertSame( '', $items['contact-us']['preview_image'] );
+		$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $items['loan-emi-calculator']['preview_image'] );
+	}
+
+	public function test_pro_keys_show_as_features_from_their_plan() {
+		$template = [
+			'confirmations'    => [ [ 'message' => 'x', 'rules' => [] ] ],
+			'email_conditions' => [ [ 'rules' => [] ] ],
+			'attach_uploads'   => [ 'cv' ],
+		];
+		$expected = [ 'conditional_confirmations', 'conditional_emails', 'email_attachments' ];
+
+		$this->assertEmpty( array_intersect( $expected, Form_Templates::get_features( $template, [], 'free' ) ) );
+		foreach ( $expected as $feature ) {
+			$this->assertContains( $feature, Form_Templates::get_features( $template, [], 'starter' ) );
+		}
+
+		// Free sites see them as what Premium adds.
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		$item = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => 'customer-feedback' ] );
+		$this->assertContains( 'conditional_confirmations', reset( $item )['pro_features'] );
+		remove_all_filters( 'srfm_pro_tier' );
+	}
+
+	public function test_payment_amount_sample_uses_the_store_currency() {
+		$fields = [
+			[
+				'fieldType'   => 'payment',
+				'slug'        => 'pay',
+				'amountType'  => 'fixed',
+				'fixedAmount' => 25,
+				// Ignored: the block charges in the payment settings currency.
+				'currency'    => 'USD',
+			],
+		];
+		$before = \SRFM\Inc\Payments\Payment_Helper::get_global_setting( 'currency', 'USD' );
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', 'EUR' );
+		$samples = Form_Templates::get_tag_samples( '{form-payment:pay:amount}', [], $fields );
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', $before );
+
+		$this->assertSame( '€25.00', $samples['{form-payment:pay:amount}'] );
+	}
+
+	public function test_catalog_thank_you_matches_the_template_message() {
+		$message = \SRFM\Inc\Form_Templates\Catalog::thank_you( 'Thanks, "Jane"', 'We will reply <soon>.' );
+
+		$this->assertSame( Form_Templates::confirmation_message( 'Thanks, "Jane"', 'We will reply <soon>.' ), $message );
+		$this->assertStringContainsString( 'images/check-icon.svg', $message );
+		$this->assertStringContainsString( '&lt;soon&gt;', $message );
+		// Saved through wp_kses_post(), which must keep the icon.
+		$this->assertStringContainsString( 'images/check-icon.svg', wp_kses_post( $message ) );
+	}
+
 	/**
 	 * Form type of catalog templates on each plan.
 	 *
@@ -491,54 +685,5 @@ class Test_Form_Templates_UI extends TestCase {
 		$property = new ReflectionProperty( Form_Templates::class, 'templates' );
 		$property->setAccessible( true );
 		$property->setValue( null, null );
-	}
-
-	public function test_pro_keys_show_as_features_from_their_plan() {
-		$template = [
-			'confirmations'    => [ [ 'message' => 'x', 'rules' => [] ] ],
-			'email_conditions' => [ [ 'rules' => [] ] ],
-			'attach_uploads'   => [ 'cv' ],
-		];
-		$expected = [ 'conditional_confirmations', 'conditional_emails', 'email_attachments' ];
-
-		$this->assertEmpty( array_intersect( $expected, Form_Templates::get_features( $template, [], 'free' ) ) );
-		foreach ( $expected as $feature ) {
-			$this->assertContains( $feature, Form_Templates::get_features( $template, [], 'starter' ) );
-		}
-
-		// Free sites see them as what Premium adds.
-		add_filter( 'srfm_pro_tier', static fn() => 'free' );
-		$item = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => 'customer-feedback' ] );
-		$this->assertContains( 'conditional_confirmations', reset( $item )['pro_features'] );
-		remove_all_filters( 'srfm_pro_tier' );
-	}
-
-	public function test_payment_amount_sample_uses_the_store_currency() {
-		$fields = [
-			[
-				'fieldType'   => 'payment',
-				'slug'        => 'pay',
-				'amountType'  => 'fixed',
-				'fixedAmount' => 25,
-				// Ignored: the block charges in the payment settings currency.
-				'currency'    => 'USD',
-			],
-		];
-		$before = \SRFM\Inc\Payments\Payment_Helper::get_global_setting( 'currency', 'USD' );
-		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', 'EUR' );
-		$samples = Form_Templates::get_tag_samples( '{form-payment:pay:amount}', [], $fields );
-		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', $before );
-
-		$this->assertSame( '€25.00', $samples['{form-payment:pay:amount}'] );
-	}
-
-	public function test_catalog_thank_you_matches_the_template_message() {
-		$message = \SRFM\Inc\Form_Templates\Catalog::thank_you( 'Thanks, "Jane"', 'We will reply <soon>.' );
-
-		$this->assertSame( Form_Templates::confirmation_message( 'Thanks, "Jane"', 'We will reply <soon>.' ), $message );
-		$this->assertStringContainsString( 'images/check-icon.svg', $message );
-		$this->assertStringContainsString( '&lt;soon&gt;', $message );
-		// Saved through wp_kses_post(), which must keep the icon.
-		$this->assertStringContainsString( 'images/check-icon.svg', wp_kses_post( $message ) );
 	}
 }
