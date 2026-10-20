@@ -46,7 +46,7 @@ return [
 					__( 'Preferred Time', 'sureforms' ),
 					true,
 					array_merge(
-						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ),
+						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true ),
 						[
 							'pro' => [
 								'fieldType'       => 'time-picker',
@@ -165,7 +165,7 @@ return [
 			$c['first_name'],
 			$c['last_name'],
 			$c['email'],
-			Catalog::attrs( Catalog::field( 'multi-choice', 'attending', __( 'Will you attend?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Yes, I will be there', 'sureforms' ), __( 'Sorry, I can\'t make it', 'sureforms' ) ], true, [ 'circle-check', 'circle-xmark' ] ) ), [ 'choiceWidth' => 50 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'attending', __( 'Will you attend?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Yes, I will be there', 'sureforms' ), __( 'Sorry, I can\'t make it', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 50 ] ),
 			Catalog::width(
 				Catalog::number_field(
 					'guests',
@@ -218,8 +218,8 @@ return [
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'course', __( 'Course', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'Beginner workshop', 'sureforms' ), __( 'Weekly class', 'sureforms' ), __( 'Weekend intensive', 'sureforms' ), __( 'Private lesson', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a course', 'sureforms' ) ] ) ), $no_search ), 50 ),
 			Catalog::width( Catalog::date_field( 'start-date', __( 'Preferred Start Date', 'sureforms' ), false, true ), 50 ),
-			Catalog::field( 'multi-choice', 'experience', __( 'Experience Level', 'sureforms' ), true, Catalog::choice_options( [ __( 'New to this', 'sureforms' ), __( 'Some experience', 'sureforms' ), __( 'Experienced', 'sureforms' ) ], true, [ 'seedling', 'arrow-trend-up', 'award' ] ) ),
-			Catalog::field( 'multi-choice', 'schedule', __( 'Times That Suit You', 'sureforms' ), false, array_merge( Catalog::choice_options( [ __( 'Weekday mornings', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ) ], false, [ 'sun', 'moon', 'calendar-week' ] ), [ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ] ) ),
+			Catalog::field( 'multi-choice', 'experience', __( 'Experience Level', 'sureforms' ), true, Catalog::choice_options( [ __( 'New to this', 'sureforms' ), __( 'Some experience', 'sureforms' ), __( 'Experienced', 'sureforms' ) ], true ) ),
+			Catalog::field( 'multi-choice', 'schedule', __( 'Times That Suit You', 'sureforms' ), false, array_merge( Catalog::choice_options( [ __( 'Weekday mornings', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ) ], false ), [ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ] ) ),
 			Catalog::attrs( Catalog::field( 'textarea', 'goals', __( 'Goals or Anything We Should Know', 'sureforms' ), false, [ 'placeholder' => __( 'What you hope to learn, access needs, questions…', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$c['consent'],
 		],

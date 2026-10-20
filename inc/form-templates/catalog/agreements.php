@@ -211,7 +211,7 @@ return [
 					'usage',
 					__( 'Where may we use your photos and video?', 'sureforms' ),
 					true,
-					Catalog::choice_options( [ __( 'Our website', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Print and ads', 'sureforms' ) ], false, [ 'globe', 'share-nodes', 'newspaper' ] )
+					Catalog::choice_options( [ __( 'Our website', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Print and ads', 'sureforms' ) ], false )
 				),
 				[ 'choiceWidth' => 33.33 ]
 			),

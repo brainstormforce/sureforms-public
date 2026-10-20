@@ -226,8 +226,7 @@ return [
 							[ $label_with_price( __( 'Basic', 'sureforms' ), $per_month( $money( 9 ) ) ), 9 ],
 							[ $label_with_price( __( 'Plus', 'sureforms' ), $per_month( $money( 19 ) ) ), 19 ],
 							[ $label_with_price( __( 'Premium', 'sureforms' ), $per_month( $money( 39 ) ) ), 39 ],
-						],
-						[ 'seedling', 'star', 'crown' ]
+						]
 					)
 				),
 				[ 'choiceWidth' => 33.33 ]
@@ -293,8 +292,7 @@ return [
 						[
 							[ $label_with_price( __( 'General admission', 'sureforms' ), $money( 25 ) ), 25 ],
 							[ $label_with_price( __( 'VIP', 'sureforms' ), $money( 60 ) ), 60 ],
-						],
-						[ 'ticket', 'crown' ]
+						]
 					)
 				),
 				[ 'choiceWidth' => 50 ]
@@ -359,8 +357,7 @@ return [
 							[ $label_with_price( __( 'Morning', 'sureforms' ), $money( 40 ) ), 40 ],
 							[ $label_with_price( __( 'Evening', 'sureforms' ), $money( 40 ) ), 40 ],
 							[ $label_with_price( __( 'Full day', 'sureforms' ), $money( 70 ) ), 70 ],
-						],
-						[ 'sun', 'moon', 'calendar-day' ]
+						]
 					)
 				),
 				[ 'choiceWidth' => 33.33 ]

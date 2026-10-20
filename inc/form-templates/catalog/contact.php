@@ -187,7 +187,7 @@ return [
 				),
 				[ 'rows' => 4 ]
 			),
-			Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true, [ 'video', 'phone', 'handshake' ] ) ),
+			Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true ) ),
 			Catalog::width( Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), false, true ) + [ 'pro_only' => true ], 50 ),
 			Catalog::width(
 				Catalog::field(
