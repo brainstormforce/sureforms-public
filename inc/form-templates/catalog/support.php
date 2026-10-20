@@ -36,7 +36,7 @@ return [
 		'theme'          => 'ocean',
 		'icon'           => 'life-buoy',
 		'title'          => __( 'Support Request', 'sureforms' ),
-		'description'    => __( 'Let customers report an issue and how urgent it is.', 'sureforms' ),
+		'description'    => __( 'Let customers report issues by urgency.', 'sureforms' ),
 		'submit_text'    => __( 'Send request', 'sureforms' ),
 		'fields'         => [
 			Catalog::width( $c['name'], 50 ),

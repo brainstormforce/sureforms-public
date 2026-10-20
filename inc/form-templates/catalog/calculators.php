@@ -198,7 +198,7 @@ return [
 		'requires'      => 'business',
 		'features'      => [ 'calculation' ],
 		'title'         => __( 'Loan Repayment Calculator', 'sureforms' ),
-		'description'   => __( 'Work out the monthly repayment and total interest of a loan, and email the breakdown.', 'sureforms' ),
+		'description'   => __( 'Calculate the monthly repayment and total interest on a loan.', 'sureforms' ),
 		'submit_text'   => __( 'Email me the breakdown', 'sureforms' ),
 		'fields'        => [
 			Catalog::width(
@@ -291,7 +291,7 @@ return [
 		'requires'      => 'business',
 		'features'      => [ 'calculation' ],
 		'title'         => __( 'BMI Calculator', 'sureforms' ),
-		'description'   => __( 'Let visitors check their body mass index and ask for a plan toward their goal.', 'sureforms' ),
+		'description'   => __( 'Calculate BMI and request a personalized plan instantly.', 'sureforms' ),
 		'submit_text'   => __( 'Send me a plan', 'sureforms' ),
 		'fields'        => [
 			Catalog::width(
@@ -468,7 +468,7 @@ return [
 		'requires'      => 'business',
 		'features'      => [ 'calculation' ],
 		'title'         => __( 'Shipping Cost Estimator', 'sureforms' ),
-		'description'   => __( 'Estimate shipping from destination, weight and speed, and follow up with a booking.', 'sureforms' ),
+		'description'   => __( 'Estimate shipping by destination, weight, and speed, then follow up with a booking.', 'sureforms' ),
 		'submit_text'   => __( 'Request a booking', 'sureforms' ),
 		'fields'        => [
 			Catalog::width(

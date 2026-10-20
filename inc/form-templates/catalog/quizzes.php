@@ -108,7 +108,7 @@ return [
 		'theme'         => 'ocean',
 		'icon'          => 'graduation-cap',
 		'title'         => __( 'Knowledge Quiz with Pass or Fail', 'sureforms' ),
-		'description'   => __( 'A scored online safety quiz with a pass or fail message and emailed results.', 'sureforms' ),
+		'description'   => __( 'A scored online safety quiz with a pass-or-fail message.', 'sureforms' ),
 		'submit_text'   => __( 'See my score', 'sureforms' ),
 		'features'      => [ 'quiz' ],
 		// The thank-you messages below show the score; the quiz adds nothing to them.
@@ -191,7 +191,7 @@ return [
 		'requires'      => 'business',
 		'theme'         => 'sunset',
 		'icon'          => 'gauge',
-		'title'         => __( 'How Ready Is Your Business? Scorecard', 'sureforms' ),
+		'title'         => __( 'Business Readiness Estimator', 'sureforms' ),
 		'description'   => __( 'A self-assessment that grades businesses A to D and collects the lead’s email.', 'sureforms' ),
 		'submit_text'   => __( 'Get my grade', 'sureforms' ),
 		'features'      => [ 'quiz' ],
@@ -290,7 +290,7 @@ return [
 		'theme'         => 'lavender',
 		'icon'          => 'chart-column',
 		'title'         => __( 'Quick Poll with Live Results', 'sureforms' ),
-		'description'   => __( 'A one-question poll that shows everyone the results after they vote.', 'sureforms' ),
+		'description'   => __( 'A one-question poll that shows everyone the results after voting.', 'sureforms' ),
 		'submit_text'   => __( 'Vote', 'sureforms' ),
 		// Live results replace the thank-you message with the results chart, so
 		// voters see how everyone answered. The poll has no free-text question:
@@ -327,7 +327,7 @@ return [
 		'theme'         => 'mint',
 		'icon'          => 'activity',
 		'title'         => __( 'Employee Pulse Survey', 'sureforms' ),
-		'description'   => __( 'An anonymous check-in on mood, workload and eNPS, with charts in your reports.', 'sureforms' ),
+		'description'   => __( 'An anonymous check-in on employee mood, workload, and NPS, with charts in your reports.', 'sureforms' ),
 		'submit_text'   => __( 'Send my answers', 'sureforms' ),
 		// Survey reports chart the answers for the owner; live results stay off
 		// so colleagues never see each other's answers.
@@ -399,7 +399,7 @@ return [
 		'requires'      => 'starter',
 		'theme'         => 'ocean',
 		'icon'          => 'compass',
-		'title'         => __( 'Which Plan Is Right for You?', 'sureforms' ),
+		'title'         => __( 'Choose the Right Plan', 'sureforms' ),
 		'description'   => __( 'Three quick questions that recommend a plan, with a message for each answer.', 'sureforms' ),
 		'submit_text'   => __( 'Show my plan', 'sureforms' ),
 		'features'      => [ 'conditional_logic' ],
@@ -470,7 +470,7 @@ return [
 		'theme'          => 'midnight',
 		'icon'           => 'messages-square',
 		'title'          => __( 'Conversational Lead Qualifier', 'sureforms' ),
-		'description'    => __( 'One question at a time, like a chat, to learn who a lead is and when they’ll start.', 'sureforms' ),
+		'description'    => __( 'Ask one question at a time to learn more about lead quality and stage.', 'sureforms' ),
 		'submit_text'    => __( 'Send', 'sureforms' ),
 		// One question per screen; the layout has no steps, so no page breaks.
 		'conversational' => [
@@ -517,7 +517,7 @@ return [
 		'theme'         => 'sunset',
 		'icon'          => 'megaphone',
 		'title'         => __( 'Ad Campaign Lead Form', 'sureforms' ),
-		'description'   => __( 'A lead form that records which ad, source and campaign each lead came from.', 'sureforms' ),
+		'description'   => __( 'A lead form that records which ad, source, and campaign each lead came from.', 'sureforms' ),
 		'submit_text'   => __( 'Get started', 'sureforms' ),
 		'fields'        => [
 			$c['first_name'],

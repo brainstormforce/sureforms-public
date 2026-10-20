@@ -99,7 +99,7 @@ return [
 		'icon'          => 'hand-heart',
 		'setup'         => $setup,
 		'title'         => __( 'Donation Form', 'sureforms' ),
-		'description'   => __( 'Accept one-time or monthly donations by card, with a note for a dedication.', 'sureforms' ),
+		'description'   => __( 'Accept one-time or monthly donations from supporters.', 'sureforms' ),
 		'submit_text'   => __( 'Donate now', 'sureforms' ),
 		'fields'        => [
 			$c['first_name'],
@@ -164,7 +164,7 @@ return [
 		'icon'          => 'calendar-check',
 		'setup'         => $setup,
 		'title'         => __( 'Booking Deposit', 'sureforms' ),
-		'description'   => __( 'Take a deposit when clients book, so the slots you hold are paid for.', 'sureforms' ),
+		'description'   => __( 'Take a deposit when clients book so you get paid for the slots you hold.', 'sureforms' ),
 		'submit_text'   => __( 'Pay deposit and book', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
@@ -209,7 +209,7 @@ return [
 		'icon'          => 'crown',
 		'setup'         => $setup,
 		'title'         => __( 'Membership Signup', 'sureforms' ),
-		'description'   => __( 'Sign members up to a monthly plan and bill them automatically until they cancel.', 'sureforms' ),
+		'description'   => __( 'Sign members up for a monthly recurring plan until they cancel.', 'sureforms' ),
 		'submit_text'   => __( 'Start my membership', 'sureforms' ),
 		'fields'        => [
 			$c['first_name'],
@@ -277,7 +277,7 @@ return [
 		'features'        => [ 'calculation' ],
 		'setup'           => $setup,
 		'title'           => __( 'Event Ticket Order', 'sureforms' ),
-		'description'     => __( 'Sell tickets: buyers pick a ticket type and quantity, see the total and pay.', 'sureforms' ),
+		'description'     => __( 'Buyers select a ticket type and quantity before paying.', 'sureforms' ),
 		'submit_text'     => __( 'Buy tickets', 'sureforms' ),
 		'fields'          => [
 			$c['first_name'],
@@ -341,7 +341,7 @@ return [
 		'features'        => [ 'calculation' ],
 		'setup'           => $setup,
 		'title'           => __( 'Paid Class Registration', 'sureforms' ),
-		'description'     => __( 'Register people for a paid class or workshop and take payment for every seat.', 'sureforms' ),
+		'description'     => __( 'Register people for a paid class or a workshop.', 'sureforms' ),
 		'submit_text'     => __( 'Register and pay', 'sureforms' ),
 		'fields'          => [
 			$c['first_name'],

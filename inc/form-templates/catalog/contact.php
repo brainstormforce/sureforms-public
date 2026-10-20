@@ -131,7 +131,7 @@ return [
 		'theme'         => 'mint',
 		'icon'          => 'phone-call',
 		'title'         => __( 'Callback Request', 'sureforms' ),
-		'description'   => __( 'Let visitors ask for a phone call at a time that suits them.', 'sureforms' ),
+		'description'   => __( 'Let visitors request a phone call at their preferred time.', 'sureforms' ),
 		'submit_text'   => __( 'Request a call', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
