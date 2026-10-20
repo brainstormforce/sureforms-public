@@ -175,12 +175,15 @@ export const CardPicture = ( { template, look } ) => {
 			alt=""
 			loading="lazy"
 			decoding="async"
-			// Twice the tile's size at its widest; the tile's fixed height
+			// Twice the tile's width at its widest; the tile's fixed height
 			// keeps the grid from shifting while it loads.
 			width="760"
 			height="520"
 			onError={ () => setFailed( true ) }
-			className="absolute inset-0 size-full object-cover object-top"
+			// Full width from the top, never zoomed: a short form (a one-line
+			// sign-up) ends on the tile's tint instead of being blown up to
+			// fill it.
+			className="absolute inset-x-0 top-0 w-full h-auto"
 		/>
 	);
 };

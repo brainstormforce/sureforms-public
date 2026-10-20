@@ -77,7 +77,9 @@ describe( 'CardPicture', () => {
 		expect( html ).toContain( 'src="https://example.com/contact-us.webp"' );
 		expect( html ).toContain( 'alt=""' );
 		expect( html ).toContain( 'loading="lazy"' );
-		expect( html ).toContain( 'object-top' );
+		// Fitted to the width from the top, never zoomed to fill the tile.
+		expect( html ).toContain( 'top-0 w-full h-auto' );
+		expect( html ).not.toContain( 'object-cover' );
 	} );
 
 	it( 'draws the form when the template has no screenshot', () => {
