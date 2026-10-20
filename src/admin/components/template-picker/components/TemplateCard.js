@@ -220,13 +220,33 @@ export const getPreviewLabel = ( template ) =>
 		  );
 
 /**
+ * Accessible name of a locked card, which opens the pricing page, or the
+ * update screen when only a newer SureForms Pro is missing.
+ *
+ * @param {Object} template Template.
+ * @return {string} Label.
+ */
+export const getUnlockLabel = ( template ) =>
+	'update' === template.lock_reason
+		? sprintf(
+			/* translators: %s: template name. */
+			__( 'Update SureForms Pro to use the %s template (opens in a new tab)', 'sureforms' ),
+			template.title
+		  )
+		: sprintf(
+			/* translators: %s: template name. */
+			__( 'See plans for the %s template (Premium, opens in a new tab)', 'sureforms' ),
+			template.title
+		  );
+
+/**
  * A template in the library: its first fields drawn as a small form, with
  * its name and description.
  *
  * A template this site can use is one button that opens the preview. A
- * locked one opens the preview too, through a button stretched under the
- * whole card; hovering or focusing it shows "Premium" and a "See plans"
- * button beside it in the DOM, so the two never nest.
+ * locked one is one button that opens the pricing page (or the update
+ * screen); Premium templates aren't previewed before they're bought.
+ * Hovering or focusing it shows "Premium" and "See plans".
  *
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
@@ -241,73 +261,63 @@ const TemplateCard = ( { template, hidden, onSelect } ) => {
 	if ( template.is_locked ) {
 		const needsUpdate = 'update' === template.lock_reason;
 		return (
-			<div hidden={ hidden } className={ cn( cardClass, hidden && 'hidden' ) }>
-				<button
-					type="button"
-					onClick={ () => onSelect( template.id ) }
-					aria-label={ getPreviewLabel( template ) }
-					aria-describedby={
-						template.description
-							? `srfm-template-description-${ template.id }`
-							: undefined
-					}
-					className="absolute inset-0 w-full p-0 m-0 bg-transparent border-0 rounded-[10px] cursor-pointer focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DC4809]"
-				/>
-				{ /* Clicks fall through the tile to the button under it; only the crown and "See plans" take them. */ }
-				<span
-					className={ cn( tileClass, 'pointer-events-none' ) }
-					style={ tileStyle }
-				>
+			<button
+				type="button"
+				hidden={ hidden }
+				onClick={ () => openTemplateUnlock( template ) }
+				aria-label={ getUnlockLabel( template ) }
+				aria-describedby={
+					template.description
+						? `srfm-template-description-${ template.id }`
+						: undefined
+				}
+				className={ cn(
+					cardClass,
+					'w-full p-0 m-0 text-start cursor-pointer font-[inherit]',
+					'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DC4809]',
+					hidden && 'hidden'
+				) }
+			>
+				<span className={ tileClass } style={ tileStyle }>
 					<MiniForm template={ template } />
 					<TileShade />
 					<span
 						className={ cn(
-							'absolute inset-0 z-[6] flex flex-col items-center justify-center gap-3 p-[22px] text-center bg-[#FFF3EE] rounded-t-[9px] pointer-events-none',
-							'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none'
+							'absolute inset-0 z-[6] flex flex-col items-center justify-center gap-3 p-[22px] text-center bg-[#FFF3EE] rounded-t-[9px]',
+							'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none'
 						) }
+						aria-hidden="true"
 					>
 						<span className="inline-flex items-center gap-1.5 py-1 px-[11px] text-[11px] leading-4 font-bold uppercase tracking-[.02em] text-[#A8320A] bg-white border border-solid border-[#FAD0B8] rounded-full">
-							<Crown className="size-[13px]" aria-hidden="true" />
+							<Crown className="size-[13px]" />
 							{ __( 'Premium', 'sureforms' ) }
 						</span>
-						<span
-							className="text-[15px] leading-[1.3] font-bold text-[#5C2410]"
-							aria-hidden="true"
-						>
+						<span className="text-[15px] leading-[1.3] font-bold text-[#5C2410]">
 							{ template.title }
 						</span>
-						<span
-							id={ `srfm-template-plan-${ template.id }` }
-							className="max-w-[250px] text-[12.5px] leading-[1.5] text-[#8A5438]"
-						>
-							{ needsUpdate && getLockLabels( template ).notice }
-							{ ! needsUpdate &&
-								__( 'Available with SureForms Premium.', 'sureforms' ) }
+						<span className="max-w-[250px] text-[12.5px] leading-[1.5] text-[#8A5438]">
+							{ needsUpdate
+								? getLockLabels( template ).notice
+								: __( 'Available with SureForms Premium.', 'sureforms' ) }
 						</span>
+						{ /* A label inside the card's button, not a second control. */ }
 						<Button
+							tag="span"
 							variant="primary"
 							size="md"
-							icon={ <ExternalLink aria-hidden="true" /> }
+							icon={ <ExternalLink /> }
 							iconPosition="right"
-							onClick={ () => openTemplateUnlock( template ) }
-							aria-describedby={ `srfm-template-title-${ template.id } srfm-template-plan-${ template.id }` }
-							// Clickable by pointer only once hovered, and only where hover is
-							// real: a tap opens the preview (which has its own upgrade
-							// button), never the pricing page. The keyboard still reaches it.
-							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px] pointer-events-none [@media(hover:hover)]:group-hover:pointer-events-auto"
+							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
 						>
 							{ needsUpdate
 								? getLockLabels( template ).button
 								: __( 'See plans', 'sureforms' ) }
-							<span className="sr-only">
-								{ __( '(opens in a new tab)', 'sureforms' ) }
-							</span>
 						</Button>
 					</span>
 					<PremiumCrown />
 				</span>
 				<CardBody template={ template } />
-			</div>
+			</button>
 		);
 	}
 
