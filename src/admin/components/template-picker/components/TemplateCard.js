@@ -16,19 +16,6 @@ const MAX_ROWS = 4;
 const CHOICE_TYPES = [ 'multi-choice', 'rating', 'nps' ];
 const CONSENT_TYPES = [ 'gdpr', 'checkbox' ];
 
-/**
- * Name of a paid plan, as SureForms sells it.
- *
- * @param {string} tier `starter`, `pro` or `business`.
- * @return {string} Plan name.
- */
-const getPlanName = ( tier ) =>
-	( {
-		starter: __( 'Starter', 'sureforms' ),
-		pro: __( 'Pro', 'sureforms' ),
-		business: __( 'Business', 'sureforms' ),
-	} )[ tier ] || __( 'Premium', 'sureforms' );
-
 const boxClass =
 	'flex items-center px-[7px] text-[9px] text-[#9CA3AF] border border-solid border-[#E5E7EB] rounded-[3px] truncate';
 
@@ -189,17 +176,11 @@ export const CardPicture = ( { template, look } ) => {
 };
 
 /**
- * Gradient crown on a Premium template, naming its plan.
- *
- * @param {Object} props          Props.
- * @param {Object} props.template Template.
+ * Gradient crown on a Premium template.
  */
-const PremiumCrown = ( { template } ) => {
-	const label = sprintf(
-		/* translators: %s: plan name, e.g. "Business". */
-		__( 'Premium: %s plan', 'sureforms' ),
-		getPlanName( template.requires )
-	);
+const PremiumCrown = () => {
+	// Users only ever see "Premium", whichever plan the template needs.
+	const label = __( 'Premium', 'sureforms' );
 	return (
 		<Tooltip
 			content={ label }
@@ -261,7 +242,7 @@ const CardBody = ( { template } ) => (
  * description.
  *
  * A template this site can use is one button that opens the preview. A
- * locked one isn't: hovering or focusing it shows its plan and a "See plans"
+ * locked one isn't: hovering or focusing it shows "Premium" and a "See plans"
  * button, which is its only control.
  *
  * @param {Object}   props          Props.
@@ -282,7 +263,6 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 	const hiddenTap = useRef( false );
 
 	if ( template.is_locked ) {
-		const plan = getPlanName( template.requires );
 		const needsUpdate = 'update' === template.lock_reason;
 		return (
 			<div
@@ -306,7 +286,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 					>
 						<span className="inline-flex items-center gap-1.5 py-1 px-[11px] text-[11px] leading-4 font-bold uppercase tracking-[.02em] text-[#A8320A] bg-white border border-solid border-[#FAD0B8] rounded-full">
 							<Crown className="size-[13px]" aria-hidden="true" />
-							{ plan }
+							{ __( 'Premium', 'sureforms' ) }
 						</span>
 						<span
 							className="text-[15px] leading-[1.3] font-bold text-[#5C2410]"
@@ -320,19 +300,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 						>
 							{ needsUpdate && getLockLabels( template ).notice }
 							{ ! needsUpdate &&
-								'business' === template.requires &&
-								sprintf(
-									/* translators: %s: plan name, e.g. "Business". */
-									__( 'Part of the SureForms %s plan.', 'sureforms' ),
-									plan
-								) }
-							{ ! needsUpdate &&
-								'business' !== template.requires &&
-								sprintf(
-									/* translators: %s: plan name, e.g. "Starter". */
-									__( 'Part of SureForms %s and higher plans.', 'sureforms' ),
-									plan
-								) }
+								__( 'Available with SureForms Premium.', 'sureforms' ) }
 						</span>
 						<Button
 							variant="primary"
@@ -366,7 +334,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 							</span>
 						</Button>
 					</span>
-					<PremiumCrown template={ template } />
+					<PremiumCrown />
 				</span>
 				<CardBody template={ template } />
 			</div>
@@ -409,7 +377,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 						{ __( 'Use this template', 'sureforms' ) }
 					</span>
 				</span>
-				{ isPremiumTemplate( template ) && <PremiumCrown template={ template } /> }
+				{ isPremiumTemplate( template ) && <PremiumCrown /> }
 			</span>
 			<CardBody template={ template } />
 		</button>
