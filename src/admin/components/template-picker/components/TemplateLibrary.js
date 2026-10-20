@@ -1231,7 +1231,7 @@ const TemplateLibrary = () => {
 	const openAiBuilder = useCallback(
 		( prompt = '' ) =>
 			navigate( {
-				search: `?page=add-new-form${
+				search: `?page=add-new-form&view=ai${
 					prompt ? `&srfm_ai_prompt=${ encodeURIComponent( prompt ) }` : ''
 				}`,
 			} ),
