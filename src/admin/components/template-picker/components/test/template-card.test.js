@@ -8,7 +8,7 @@ jest.mock( '@Utils/form-templates', () => ( { trackTemplateAction: () => {} } ),
 	virtual: true,
 } );
 
-import { getMiniRows } from '../TemplateCard';
+import { getMiniRows, getPreviewLabel } from '../TemplateCard';
 
 const field = ( l, w = 'full' ) => ( { t: 'input', l, p: '', o: [], w } );
 
@@ -40,5 +40,16 @@ describe( 'getMiniRows', () => {
 		);
 		expect( rows ).toHaveLength( 4 );
 		expect( getMiniRows( [] ) ).toEqual( [] );
+	} );
+} );
+
+describe( 'getPreviewLabel', () => {
+	it( 'names Premium templates as Premium', () => {
+		expect(
+			getPreviewLabel( { title: 'Quote', requires: 'business' } )
+		).toBe( 'Preview the Quote template (Premium)' );
+		expect( getPreviewLabel( { title: 'Contact', requires: 'free' } ) ).toBe(
+			'Preview the Contact template'
+		);
 	} );
 } );

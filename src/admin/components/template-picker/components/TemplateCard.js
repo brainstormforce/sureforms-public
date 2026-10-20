@@ -154,7 +154,7 @@ const PremiumCrown = () => {
 			tooltipPortalId="srfm-dashboard-container-tooltip"
 			className="z-[999999]"
 		>
-			<span className="absolute top-2.5 end-2.5 z-[7] flex items-center justify-center size-6 rounded-full text-white bg-[linear-gradient(135deg,#7C3AED_0%,#DB2777_100%)] cursor-help">
+			<span className="absolute top-2.5 end-2.5 z-[7] pointer-events-auto flex items-center justify-center size-6 rounded-full text-white bg-[linear-gradient(135deg,#7C3AED_0%,#DB2777_100%)] cursor-help">
 				<Crown className="size-[13px]" aria-hidden="true" />
 				<span className="sr-only">{ label }</span>
 			</span>
@@ -200,12 +200,33 @@ const CardBody = ( { template } ) => (
 );
 
 /**
+ * Accessible name of the button that opens a template's preview. The button's
+ * label replaces the crown's hidden text, so Premium is named here.
+ *
+ * @param {Object} template Template.
+ * @return {string} Label.
+ */
+export const getPreviewLabel = ( template ) =>
+	isPremiumTemplate( template )
+		? sprintf(
+			/* translators: %s: template name. */
+			__( 'Preview the %s template (Premium)', 'sureforms' ),
+			template.title
+		  )
+		: sprintf(
+			/* translators: %s: template name. */
+			__( 'Preview the %s template', 'sureforms' ),
+			template.title
+		  );
+
+/**
  * A template in the library: its first fields drawn as a small form, with
  * its name and description.
  *
  * A template this site can use is one button that opens the preview. A
- * locked one isn't: hovering or focusing it shows "Premium" and a "See plans"
- * button, which is its only control.
+ * locked one opens the preview too, through a button stretched under the
+ * whole card; hovering or focusing it shows "Premium" and a "See plans"
+ * button beside it in the DOM, so the two never nest.
  *
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
@@ -221,12 +242,27 @@ const TemplateCard = ( { template, hidden, onSelect } ) => {
 		const needsUpdate = 'update' === template.lock_reason;
 		return (
 			<div hidden={ hidden } className={ cn( cardClass, hidden && 'hidden' ) }>
-				<span className={ tileClass } style={ tileStyle }>
+				<button
+					type="button"
+					onClick={ () => onSelect( template.id ) }
+					aria-label={ getPreviewLabel( template ) }
+					aria-describedby={
+						template.description
+							? `srfm-template-description-${ template.id }`
+							: undefined
+					}
+					className="absolute inset-0 w-full p-0 m-0 bg-transparent border-0 rounded-[10px] cursor-pointer focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DC4809]"
+				/>
+				{ /* Clicks fall through the tile to the button under it; only the crown and "See plans" take them. */ }
+				<span
+					className={ cn( tileClass, 'pointer-events-none' ) }
+					style={ tileStyle }
+				>
 					<MiniForm template={ template } />
 					<TileShade />
 					<span
 						className={ cn(
-							'absolute inset-0 z-[6] flex flex-col items-center justify-center gap-3 p-[22px] text-center bg-[#FFF3EE] rounded-t-[9px]',
+							'absolute inset-0 z-[6] flex flex-col items-center justify-center gap-3 p-[22px] text-center bg-[#FFF3EE] rounded-t-[9px] pointer-events-none',
 							'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none'
 						) }
 					>
@@ -255,7 +291,10 @@ const TemplateCard = ( { template, hidden, onSelect } ) => {
 							iconPosition="right"
 							onClick={ () => openTemplateUnlock( template ) }
 							aria-describedby={ `srfm-template-title-${ template.id } srfm-template-plan-${ template.id }` }
-							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
+							// Clickable by pointer only once hovered, and only where hover is
+							// real: a tap opens the preview (which has its own upgrade
+							// button), never the pricing page. The keyboard still reaches it.
+							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px] pointer-events-none [@media(hover:hover)]:group-hover:pointer-events-auto"
 						>
 							{ needsUpdate
 								? getLockLabels( template ).button
@@ -277,11 +316,7 @@ const TemplateCard = ( { template, hidden, onSelect } ) => {
 			type="button"
 			hidden={ hidden }
 			onClick={ () => onSelect( template.id ) }
-			aria-label={ sprintf(
-				/* translators: %s: template name. */
-				__( 'Preview the %s template', 'sureforms' ),
-				template.title
-			) }
+			aria-label={ getPreviewLabel( template ) }
 			aria-describedby={
 				template.description
 					? `srfm-template-description-${ template.id }`

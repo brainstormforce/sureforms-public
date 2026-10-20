@@ -2494,4 +2494,75 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringNotContainsString( '"formId":0', $data['content'] );
 		$this->assertStringContainsString( '"formId":42', $data['content'] );
 	}
+
+	public function test_get_card_fields() {
+		$card = Form_Templates::get_card_fields(
+			[
+				[
+					'fieldType'       => 'input',
+					'slug'            => 'first',
+					'label'           => 'First <b>Name</b>',
+					'placeholder'     => 'Jane',
+					'blockAttributes' => [ 'fieldWidth' => 50 ],
+				],
+				[
+					'fieldType' => 'hidden',
+					'slug'      => 'source',
+					'label'     => 'Source',
+				],
+				[
+					'fieldType' => 'page-break',
+					'slug'      => 'step',
+					'label'     => 'Step two',
+				],
+				[
+					'fieldType'    => 'dropdown',
+					'slug'         => 'plan',
+					'label'        => 'Plan',
+					'fieldOptions' => [ [ 'label' => 'Basic' ], [ 'label' => 'Plus' ], [ 'label' => 'Max' ], [ 'label' => 'Team' ] ],
+				],
+				[
+					'fieldType'    => 'multi-choice',
+					'slug'         => 'size',
+					'label'        => 'Size',
+					'fieldOptions' => [ [ 'optionTitle' => 'Small' ], [ 'optionTitle' => 'Large' ] ],
+				],
+				[
+					'fieldType'  => 'date-picker',
+					'slug'       => 'day',
+					'label'      => 'Day',
+					'dateFormat' => 'mm/dd/yyyy',
+				],
+			]
+		);
+
+		$this->assertSame( [ 'input', 'dropdown', 'multi-choice', 'date-picker' ], array_column( $card, 't' ) );
+		$this->assertSame(
+			[
+				't' => 'input',
+				'l' => 'First Name',
+				'p' => 'Jane',
+				'o' => [],
+				'w' => 'half',
+			],
+			$card[0]
+		);
+		// A dropdown without a placeholder shows its first option, and at most three.
+		$this->assertSame( 'Basic', $card[1]['p'] );
+		$this->assertSame( [ 'Basic', 'Plus', 'Max' ], $card[1]['o'] );
+		$this->assertSame( 'full', $card[1]['w'] );
+		$this->assertSame( [ 'Small', 'Large' ], $card[2]['o'] );
+		// A date without a placeholder shows its format.
+		$this->assertSame( 'mm/dd/yyyy', $card[3]['p'] );
+
+		$many = array_fill(
+			0,
+			12,
+			[
+				'fieldType' => 'input',
+				'label'     => 'X',
+			]
+		);
+		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
+	}
 }
