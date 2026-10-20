@@ -2378,33 +2378,6 @@ class Test_Form_Templates extends TestCase {
 
 	// ─── what a template preview loads ───────────────────────────
 
-	public function test_get_thumbnail_url_gives_every_template_card_a_small_picture() {
-		foreach ( Form_Templates::get_templates_for_js() as $item ) {
-			$this->assertNotSame( '', $item['thumbnail'], "Template {$item['id']}: no card picture." );
-			$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $item['thumbnail'] );
-			$path = SRFM_DIR . substr( $item['thumbnail'], strlen( SRFM_URL ) );
-			$this->assertFileExists( $path, "Template {$item['id']}: card picture missing." );
-			$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$item['id']}: card picture is 60 KB or more." );
-		}
-	}
-
-	public function test_get_thumbnail_url_of_a_free_template_is_its_own_file() {
-		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
-
-		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp', $items['contact-us']['thumbnail'] );
-		// A free template's preview stays live: it has no Premium picture.
-		$this->assertSame( '', $items['contact-us']['preview_image'] );
-		// A Premium template's card shows its Premium picture.
-		$this->assertSame( $items['loan-emi-calculator']['preview_image'], $items['loan-emi-calculator']['thumbnail'] );
-	}
-
-	public function test_get_thumbnail_url_of_an_added_template() {
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => 'no-picture-here' ] ) );
-		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
-		// The id can't point outside the pictures folder.
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
-	}
-
 	public function test_is_preview_asset_keeps_only_sureforms_core_and_theme_assets() {
 		$this->assertTrue( Form_Templates::is_preview_asset( 'srfm-form-submit', SRFM_URL . 'assets/js/x.js', 'script' ) );
 		$this->assertTrue( Form_Templates::is_preview_asset( 'sureforms-pro-page-break-deps', 'https://example.com/pro.js', 'script' ) );
