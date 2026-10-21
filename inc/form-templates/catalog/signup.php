@@ -137,10 +137,10 @@ return [
 		'submit_text'    => __( 'Submit application', 'sureforms' ),
 		'steps'          => [ __( 'About you', 'sureforms' ), __( 'Your experience', 'sureforms' ) ],
 		'fields'         => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'position', __( 'Position Applied For', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Marketing Manager', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'position', __( 'Position applied for', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Marketing Manager', 'sureforms' ) ] ), 50 ),
 			Catalog::step( 'experience-step', __( 'Your experience', 'sureforms' ) ),
 			Catalog::field(
 				'url',
@@ -160,26 +160,29 @@ return [
 					],
 				]
 			),
-			Catalog::width( Catalog::field( 'url', 'linkedin', __( 'LinkedIn Profile', 'sureforms' ), false, [ 'placeholder' => 'https://linkedin.com/in/' ] ), 50 ),
-			Catalog::width( Catalog::field( 'url', 'portfolio', __( 'Portfolio or Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
-			Catalog::width( Catalog::attrs( Catalog::number_field( 'years-experience', __( 'Years of Relevant Experience', 'sureforms' ), false, 0, 50, [ 'placeholder' => __( 'e.g. 3', 'sureforms' ) ] ), [ 'suffix' => __( 'years', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'start-date', __( 'When Could You Start?', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Immediately', 'sureforms' ), __( 'Within a month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later than that', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] ) ), $no_search ), 50 ),
+			Catalog::width( Catalog::field( 'url', 'linkedin', __( 'LinkedIn profile', 'sureforms' ), false, [ 'placeholder' => 'https://linkedin.com/in/' ] ), 50 ),
+			Catalog::width( Catalog::field( 'url', 'portfolio', __( 'Portfolio or website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
+			Catalog::width( Catalog::attrs( Catalog::number_field( 'years-experience', __( 'Years of relevant experience', 'sureforms' ), false, 0, 50, [ 'placeholder' => __( 'e.g. 3', 'sureforms' ) ] ), [ 'suffix' => __( 'years', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'start-date', __( 'When could you start?', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Immediately', 'sureforms' ), __( 'Within a month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later than that', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] ) ), $no_search ), 50 ),
 			Catalog::attrs( Catalog::field( 'textarea', 'cover-letter', __( 'Why are you a good fit for this role?', 'sureforms' ), true, [ 'helpText' => __( 'A few sentences about your relevant experience is plenty.', 'sureforms' ) ] ), [ 'rows' => 6 ] ),
+			// Tells the employer which channels bring applicants.
+			Catalog::attrs( Catalog::field( 'dropdown', 'how-heard', __( 'How did you hear about this role?', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Job board', 'sureforms' ), __( 'LinkedIn', 'sureforms' ), __( 'Our website', 'sureforms' ), __( 'Referral', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Other', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] ) ), $no_search ),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my application details so they can be used to assess my application.', 'sureforms' ) ] ),
 		],
 		'confirmation'   => [
 			'heading' => __( 'Your application for {form:position} is in', 'sureforms' ),
-			'text'    => __( 'Thanks, {form:full-name}. We will review it and contact you at {form:email} if your experience is a good match.', 'sureforms' ),
+			'text'    => __( 'Thanks, {form:name}. We will review it and contact you at {form:email} if your experience is a good match.', 'sureforms' ),
 		],
 		// With SureForms Pro, the CV arrives with the notification, and (Pro plan)
 		// applicants can save the form and finish it later.
 		'attach_uploads' => [ 'cv' ],
 		'save_resume'    => true,
-		'email_subject'  => __( 'Application for {form:position} from {form:full-name}', 'sureforms' ),
-		'email_intro'    => __( '{form:full-name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
+		'email_subject'  => __( 'Application for {form:position} from {form:name}', 'sureforms' ),
+		'email_intro'    => __( '{form:name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
 		'autoresponder'  => [
-			'subject' => __( 'We received your application for {form:position}', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'We received your application for {form:position}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thank you for applying for the {form:position} role at {site_title}.', 'sureforms' ),
 				__( 'Our team reviews every application. If your experience is a good match, we will contact you about next steps.', 'sureforms' ),
 			],
