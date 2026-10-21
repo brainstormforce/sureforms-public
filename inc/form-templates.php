@@ -448,7 +448,8 @@ class Form_Templates {
 				'form_type'       => self::get_form_type( $template, $message_fields ),
 				'fields'          => $fields,
 				// The first fields, drawn as a small form on a card that has no picture.
-				'card_fields'     => '' === $thumbnail ? self::get_card_fields( $message_fields ) : [],
+				// Drawn when there's no picture, or the picture doesn't load.
+				'card_fields'     => self::get_card_fields( $message_fields ),
 				'features'        => $features,
 				// What the template gains with a higher SureForms Pro plan.
 				'pro_features'    => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),
@@ -2794,6 +2795,24 @@ class Form_Templates {
 		$themes = self::get_themes();
 		$key    = Helper::get_string_value( $template['theme'] ?? '' );
 		return $themes[ $key ] ?? $themes['ocean'];
+	}
+
+	/**
+	 * Text color for the Instant Form banner title, which is white. A form made
+	 * from a template has a light page color behind the title, so it gets dark
+	 * text; other forms keep theirs.
+	 *
+	 * @param int   $form_id     Form ID.
+	 * @param mixed $cover_type  Banner type, `color` or `image`.
+	 * @param mixed $cover_color Banner color.
+	 * @since x.x.x
+	 * @return string Hex color, or '' to keep the white title.
+	 */
+	public static function get_banner_title_color( $form_id, $cover_type, $cover_color ) {
+		if ( 'image' === $cover_type || ! is_string( $cover_color ) || ! preg_match( '/^#[0-9a-f]{6}$/i', $cover_color ) || self::is_dark( $cover_color ) ) {
+			return '';
+		}
+		return '' !== get_post_meta( $form_id, self::TEMPLATE_ID_META, true ) ? '#1E293B' : '';
 	}
 
 	/**

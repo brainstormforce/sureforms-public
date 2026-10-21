@@ -409,69 +409,6 @@ class Test_Form_Templates_UI extends TestCase {
 		}
 	}
 
-	public function test_card_fields_skip_hidden_fields_and_steps() {
-		$card = Form_Templates::get_card_fields(
-			[
-				[
-					'fieldType'       => 'input',
-					'slug'            => 'first',
-					'label'           => 'First <b>Name</b>',
-					'placeholder'     => 'Jane',
-					'blockAttributes' => [ 'fieldWidth' => 50 ],
-				],
-				[
-					'fieldType' => 'hidden',
-					'slug'      => 'source',
-					'label'     => 'Source',
-				],
-				[
-					'fieldType' => 'page-break',
-					'slug'      => 'step',
-					'label'     => 'Step two',
-				],
-				[
-					'fieldType'    => 'dropdown',
-					'slug'         => 'plan',
-					'label'        => 'Plan',
-					'fieldOptions' => [ [ 'label' => 'Basic' ], [ 'label' => 'Plus' ], [ 'label' => 'Max' ], [ 'label' => 'Team' ] ],
-				],
-				[
-					'fieldType'    => 'multi-choice',
-					'slug'         => 'size',
-					'label'        => 'Size',
-					'fieldOptions' => [ [ 'optionTitle' => 'Small' ], [ 'optionTitle' => 'Large' ] ],
-				],
-			]
-		);
-
-		$this->assertSame( [ 'input', 'dropdown', 'multi-choice' ], array_column( $card, 't' ) );
-		$this->assertSame(
-			[
-				't' => 'input',
-				'l' => 'First Name',
-				'p' => 'Jane',
-				'o' => [],
-				'w' => 'half',
-			],
-			$card[0]
-		);
-		// A dropdown without a placeholder shows its first option, and at most three.
-		$this->assertSame( 'Basic', $card[1]['p'] );
-		$this->assertSame( [ 'Basic', 'Plus', 'Max' ], $card[1]['o'] );
-		$this->assertSame( 'full', $card[1]['w'] );
-		$this->assertSame( [ 'Small', 'Large' ], $card[2]['o'] );
-
-		$many = array_fill(
-			0,
-			12,
-			[
-				'fieldType' => 'input',
-				'label'     => 'X',
-			]
-		);
-		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
-	}
-
 	public function test_library_cards_draw_no_hidden_fields_or_steps() {
 		$cards = [];
 		foreach ( [ 'contact-us', 'quote-request' ] as $id ) {
@@ -537,8 +474,8 @@ class Test_Form_Templates_UI extends TestCase {
 			$path = SRFM_DIR . substr( strtok( $item['thumbnail'], '?' ), strlen( SRFM_URL ) );
 			$this->assertFileExists( $path, "Template {$item['id']}: card picture missing." );
 			$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$item['id']}: card picture is 60 KB or more." );
-			// A card with a picture doesn't draw the form.
-			$this->assertSame( [], $item['card_fields'], "Template {$item['id']}." );
+			// The form is drawn instead if the picture doesn't load.
+			$this->assertNotEmpty( $item['card_fields'], "Template {$item['id']}: nothing to draw if its picture fails." );
 		}
 	}
 
@@ -551,13 +488,6 @@ class Test_Form_Templates_UI extends TestCase {
 		// A Premium template's card and locked preview show the same picture.
 		$this->assertSame( SRFM_URL . 'images/templates/loan-emi-calculator.webp?ver=' . SRFM_VER, $items['loan-emi-calculator']['preview_image'] );
 		$this->assertSame( $items['loan-emi-calculator']['preview_image'], $items['loan-emi-calculator']['thumbnail'] );
-	}
-
-	public function test_card_picture_of_an_added_template() {
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => 'no-picture-here' ] ) );
-		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
-		// The id can't point outside the pictures folder.
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
 	}
 
 	public function test_an_added_template_without_a_picture_is_drawn() {

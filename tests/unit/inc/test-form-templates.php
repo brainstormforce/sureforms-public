@@ -2612,4 +2612,137 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringNotContainsString( '"formId":0', $data['content'] );
 		$this->assertStringContainsString( '"formId":42', $data['content'] );
 	}
+
+	public function test_get_card_fields() {
+		$card = Form_Templates::get_card_fields(
+			[
+				[
+					'fieldType'       => 'input',
+					'slug'            => 'first',
+					'label'           => 'First <b>Name</b>',
+					'placeholder'     => 'Jane',
+					'blockAttributes' => [ 'fieldWidth' => 50 ],
+				],
+				[
+					'fieldType' => 'hidden',
+					'slug'      => 'source',
+					'label'     => 'Source',
+				],
+				[
+					'fieldType' => 'page-break',
+					'slug'      => 'step',
+					'label'     => 'Step two',
+				],
+				[
+					'fieldType'    => 'dropdown',
+					'slug'         => 'plan',
+					'label'        => 'Plan',
+					'fieldOptions' => [ [ 'label' => 'Basic' ], [ 'label' => 'Plus' ], [ 'label' => 'Max' ], [ 'label' => 'Team' ] ],
+				],
+				[
+					'fieldType'    => 'multi-choice',
+					'slug'         => 'size',
+					'label'        => 'Size',
+					'fieldOptions' => [ [ 'optionTitle' => 'Small' ], [ 'optionTitle' => 'Large' ] ],
+				],
+				[
+					'fieldType'  => 'date-picker',
+					'slug'       => 'day',
+					'label'      => 'Day',
+					'dateFormat' => 'mm/dd/yyyy',
+				],
+			]
+		);
+
+		$this->assertSame( [ 'input', 'dropdown', 'multi-choice', 'date-picker' ], array_column( $card, 't' ) );
+		$this->assertSame(
+			[
+				't' => 'input',
+				'l' => 'First Name',
+				'p' => 'Jane',
+				'o' => [],
+				'w' => 'half',
+			],
+			$card[0]
+		);
+		// A dropdown without a placeholder shows its first option, and at most three.
+		$this->assertSame( 'Basic', $card[1]['p'] );
+		$this->assertSame( [ 'Basic', 'Plus', 'Max' ], $card[1]['o'] );
+		$this->assertSame( 'full', $card[1]['w'] );
+		$this->assertSame( [ 'Small', 'Large' ], $card[2]['o'] );
+		// A date without a placeholder shows its format.
+		$this->assertSame( 'mm/dd/yyyy', $card[3]['p'] );
+
+		$many = array_fill(
+			0,
+			12,
+			[
+				'fieldType' => 'input',
+				'label'     => 'X',
+			]
+		);
+		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
+	}
+
+	public function test_get_form_type() {
+		$input = [
+			'fieldType' => 'input',
+			'label'     => 'Name',
+		];
+		$step  = [
+			'fieldType' => 'page-break',
+			'label'     => 'Step two',
+		];
+
+		$this->assertSame( 'single', Form_Templates::get_form_type( [], [] ) );
+		$this->assertSame( 'single', Form_Templates::get_form_type( [], [ $input ] ) );
+		$this->assertSame( 'multistep', Form_Templates::get_form_type( [], [ $input, $step, $input ] ) );
+		// Conversational wins over steps; an empty conversational key doesn't count.
+		$this->assertSame( 'conversational', Form_Templates::get_form_type( [ 'conversational' => [ 'start_button' => 'Go' ] ], [ $input, $step ] ) );
+		$this->assertSame( 'multistep', Form_Templates::get_form_type( [ 'conversational' => [] ], [ $step ] ) );
+	}
+
+	public function test_is_dark() {
+		$this->assertTrue( Form_Templates::is_dark( '#111C44' ) );
+		$this->assertTrue( Form_Templates::is_dark( '#000000' ) );
+		$this->assertFalse( Form_Templates::is_dark( '#E3EBFB' ) );
+		$this->assertFalse( Form_Templates::is_dark( '#FFFFFF' ) );
+		// Either side of the 0.179 luminance threshold.
+		$this->assertTrue( Form_Templates::is_dark( '#757575' ) );
+		$this->assertFalse( Form_Templates::is_dark( '#767676' ) );
+	}
+
+	public function test_get_banner_title_color() {
+		$form_id = wp_insert_post(
+			[
+				'post_title'  => 'Banner title test',
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
+
+		// Not made from a template: the title stays white.
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', '#F3F4F6' ) );
+
+		update_post_meta( $form_id, Form_Templates::TEMPLATE_ID_META, 'contact-us' );
+		$this->assertSame( '#1E293B', Form_Templates::get_banner_title_color( $form_id, 'color', '#F3F4F6' ) );
+		// A dark banner, an image banner or a color that isn't plain hex keep it white.
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', '#111C44' ) );
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'image', '#F3F4F6' ) );
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', 'linear-gradient(#fff, #eee)' ) );
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', null ) );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	public function test_get_thumbnail_url() {
+		// A catalog template: its own picture in the plugin, versioned so a new release isn't cached.
+		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'contact-us' ] ) );
+		// An added template: its own preview_image, or none.
+		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
+		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => 'no-picture-here' ] ) );
+		$this->assertSame( '', Form_Templates::get_thumbnail_url( [] ) );
+		// The id can't point outside the pictures folder.
+		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
+	}
 }

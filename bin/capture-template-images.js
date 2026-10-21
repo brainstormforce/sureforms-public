@@ -31,6 +31,12 @@
  *   --only=<ids>   Comma-separated template ids to capture.
  *   --out=<dir>    Output folder. Default images/templates.
  *
+ * The pictures ship to every site, so nothing in them comes from the capture
+ * machine or site: the browser runs as en-US in New York (a phone field that
+ * detects the visitor's country shows +1, the plugin's own fallback), the
+ * admin-only Stripe test-mode notice is hidden, and the "Connect Stripe" note
+ * is drawn as the card fields a connected site shows.
+ *
  * Needs Google Chrome (Playwright's `chrome` channel) and `cwebp`
  * (brew install webp). Theme fonts come from the site's active theme; the
  * shipped pictures use Twenty Twenty-Five.
@@ -110,6 +116,9 @@ const toWebp = ( png, webp ) => {
 		deviceScaleFactor: 2,
 		ignoreHTTPSErrors: true,
 		reducedMotion: 'reduce',
+		// The phone field detects the country from the time zone, then the language.
+		locale: 'en-US',
+		timezoneId: 'America/New_York',
 	} );
 	const page = await context.newPage();
 
@@ -144,12 +153,21 @@ const toWebp = ( png, webp ) => {
 			await page.goto( template.preview_url, { waitUntil: 'networkidle' } );
 			await page.addStyleTag( {
 				content: `html, body.srfm-template-preview { background: ${ pageColor( template.theme, themes ) } !important; }
-					*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }`,
+					*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }
+					.srfm-test-mode-notice { display: none !important; }`,
 			} );
 			await page.evaluate( async () => {
 				// Runs in the preview page, which has no node refs to go by.
 				// eslint-disable-next-line @wordpress/no-global-active-element
 				document.activeElement?.blur?.();
+				// Stripe's card fields, as a site that has connected Stripe shows them.
+				document
+					.querySelectorAll( '.srfm-template-preview__payment-note' )
+					.forEach( ( note ) => {
+						const muted = 'color: #9CA3AF; font-size: 15px;';
+						note.innerHTML = `<span style="${ muted }">Card number</span><span style="${ muted } margin-inline-start: auto;">MM / YY</span><span style="${ muted }">CVC</span>`;
+						note.style.cssText += 'display: flex; gap: 24px; align-items: center; margin: 0;';
+					} );
 				await document.fonts.ready;
 				await Promise.all(
 					Array.from( document.images )

@@ -234,7 +234,20 @@ const usePreviewRestyle = ( {
 			setWaiting( false );
 			return;
 		}
-		if ( frames[ shown ] === url || frames[ hidden ] === url ) {
+		if ( frames[ shown ] === url ) {
+			// Back to the style on screen: drop a render for an earlier choice.
+			if ( null !== loadingSlot ) {
+				setFrames( ( current ) => withFrame( current, hidden, '' ) );
+				setLoadingSlot( null );
+			}
+			setWaiting( false );
+			return;
+		}
+		if ( frames[ hidden ] === url ) {
+			// Already rendered behind the page: swap back to it once loaded.
+			if ( null === loadingSlot ) {
+				setShown( hidden );
+			}
 			setWaiting( false );
 			return;
 		}
@@ -261,6 +274,7 @@ const usePreviewRestyle = ( {
 		frames,
 		shown,
 		hidden,
+		loadingSlot,
 	] );
 
 	useEffect( () => {
@@ -304,10 +318,13 @@ const usePreviewRestyle = ( {
 			setLoadingSlot( ( current ) =>
 				current === index ? null : current
 			);
-			setShown( index );
+			// A render for a style no longer chosen stays behind the page.
+			if ( index === shown || frames[ index ] === url ) {
+				setShown( index );
+			}
 			setStatus( 'ready' );
 		},
-		[ frames, template.preview_url ]
+		[ frames, template.preview_url, shown, url ]
 	);
 
 	return {

@@ -54,13 +54,13 @@ $payment = static function ( $slug, $label, $schema ) {
  * A choice whose options carry a price: the label shows it, the option value
  * is the amount the payment field or the calculation uses.
  */
-$priced_options = static function ( $options, $icons = [] ) {
+$priced_options = static function ( $options ) {
 	$list = [];
-	foreach ( $options as $index => $option ) {
+	foreach ( $options as $option ) {
 		$list[] = [
 			'optionTitle' => $option[0],
 			'value'       => (string) $option[1],
-			'icon'        => $icons[ $index ] ?? '',
+			'icon'        => '',
 		];
 	}
 	return [

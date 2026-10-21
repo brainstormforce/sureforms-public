@@ -63,7 +63,12 @@ const Header = ( { actions, hideLogoOnPhone = false } ) => {
 							{ actions }
 						</Topbar.Item>
 					) }
-					<Topbar.Item className="p-5 ps-2 max-[620px]:pe-3">
+					<Topbar.Item
+						className={ cn(
+							'p-5 max-[620px]:pe-3',
+							actions && 'ps-2'
+						) }
+					>
 						<Button
 							variant="ghost"
 							className="p-1 hover:bg-background-secondary rounded-sm transition-colors [box-shadow:none] focus:[box-shadow:none]"

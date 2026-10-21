@@ -38,7 +38,7 @@ return [
 				array_merge(
 					Catalog::choice_options( $satisfaction, true ),
 					[
-						// One option per row, so the five faces read as a scale.
+						// One option per row, so the five answers read as a scale.
 						'blockAttributes' => [
 							'verticalLayout' => false,
 							'choiceWidth'    => 100,
