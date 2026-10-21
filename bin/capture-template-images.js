@@ -35,7 +35,9 @@
  * machine or site: the browser runs as en-US in New York (a phone field that
  * detects the visitor's country shows +1, the plugin's own fallback), the
  * admin-only Stripe test-mode notice is hidden, and the "Connect Stripe" note
- * is drawn as the card fields a connected site shows.
+ * is drawn as the card fields a connected site shows. A conversational
+ * template (welcome screen, one question per screen) is drawn as its welcome
+ * card with the first question under it.
  *
  * Needs Google Chrome (Playwright's `chrome` channel) and `cwebp`
  * (brew install webp). Theme fonts come from the site's active theme; the
@@ -189,29 +191,43 @@ const toWebp = ( png, webp ) => {
 
 			const png = path.join( tmp, `${ template.id }.png` );
 			if ( conversational ) {
-				// The welcome screen sits mid-page; crop around it at the card's
-				// proportions (the card shows a picture from its top).
-				const welcome = await page.evaluate( () => {
-					const content = document.querySelector( '.srfm-cf-content' );
-					const rect = content?.getBoundingClientRect();
-					return rect ? { top: rect.top + window.scrollY, center: rect.left + ( rect.width / 2 ) } : null;
+				// Drawn like the other cards: the welcome screen as a white card
+				// on the page color, with the first question as a second card
+				// under it, so the picture says "one question at a time".
+				await page.addStyleTag( {
+					content: `html, body, .srfm-cf-inner-ctn { background: ${ pageColor( template.theme, themes ) } !important; }
+						.srfm-cf-inner-ctn { justify-content: flex-start !important; align-items: center !important; padding-top: ${ SIDE }px !important; }
+						.srfm-cf-progress-bar-ctn, .srfm-error-message { display: none !important; }`,
 				} );
-				if ( ! welcome ) {
+				const box = await page.evaluate( ( formWidth ) => {
+					const content = document.querySelector( '.srfm-cf-content' );
+					const blocks = document.querySelectorAll( '.srfm-cf-block' );
+					if ( ! content || ! blocks.length ) {
+						return null;
+					}
+					const [ welcome, first ] = blocks;
+					const card = `box-sizing: border-box; width: ${ formWidth }px; background: #fff; border-radius: 12px;`;
+					content.style.cssText += `; width: ${ formWidth }px; max-width: ${ formWidth }px; padding: 0; background: none;`;
+					welcome.style.cssText += `; ${ card } padding: 40px; text-align: center;`;
+					if ( first ) {
+						first.classList.add( 'srfm-active' );
+						first.style.cssText += `; display: block; opacity: 1; visibility: visible; transform: none; position: static; margin-top: 16px; ${ card } padding: 32px 40px;`;
+						welcome.after( first );
+					}
+					// Runs in the preview page, which has no node refs to go by.
+					// eslint-disable-next-line @wordpress/no-global-active-element
+					document.activeElement?.blur?.();
+					const rect = content.getBoundingClientRect();
+					return { left: rect.left + window.scrollX, top: rect.top + window.scrollY, bottom: rect.bottom + window.scrollY };
+				}, FORM_WIDTH );
+				if ( ! box ) {
 					throw new Error( 'no conversational welcome screen on the preview page' );
 				}
-				const width = FORM_WIDTH + ( 2 * SIDE );
-				const height = Math.round( width * 520 / 760 );
-				// What the welcome screen shows (heading, message, button), centred in the crop.
-				const shown = await page.evaluate( () => {
-					const rects = Array.from( document.querySelectorAll( '.srfm-cf-content *' ) )
-						.filter( ( el ) => el.offsetParent && el.innerText?.trim() )
-						.map( ( el ) => el.getBoundingClientRect() );
-					return rects.length ? { top: Math.min( ...rects.map( ( r ) => r.top ) ) + window.scrollY, bottom: Math.max( ...rects.map( ( r ) => r.bottom ) ) + window.scrollY } : null;
-				} );
-				const middle = shown ? ( shown.top + shown.bottom ) / 2 : welcome.top + ( height / 2 );
+				await page.waitForTimeout( 300 );
 				await page.screenshot( {
 					path: png,
-					clip: { x: Math.round( welcome.center - ( width / 2 ) ), y: Math.max( 0, Math.round( middle - ( height / 2 ) ) ), width, height },
+					fullPage: true,
+					clip: { x: box.left - SIDE, y: Math.max( 0, box.top - SIDE ), width: FORM_WIDTH + ( 2 * SIDE ), height: Math.ceil( box.bottom - box.top + ( 2 * SIDE ) ) },
 				} );
 				const { quality, bytes } = toWebp( png, path.join( OUT, `${ template.id }.webp` ) );
 				console.log( `${ template.id }: ${ Math.round( bytes / 1024 ) } KB (q${ quality }, conversational)` );
