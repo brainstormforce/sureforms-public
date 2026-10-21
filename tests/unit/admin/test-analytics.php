@@ -2150,4 +2150,140 @@ class Test_Analytics extends TestCase {
 		delete_transient( 'srfm_email_delivery_state_checked' );
 		\SRFM\Inc\Email_Delivery\Status::reset();
 	}
+
+	/**
+	 * A form tagged with a start screen choice, cleaned up by tearDown().
+	 *
+	 * @param string $status Post status.
+	 * @param string $choice Start screen choice.
+	 * @return int Form ID.
+	 */
+	private function start_screen_form( $status, $choice ) {
+		$post_id = wp_insert_post(
+			[
+				'post_title'  => 'Start screen form',
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => $status,
+			]
+		);
+		update_post_meta( $post_id, '_srfm_test_post', 1 );
+		update_post_meta( $post_id, \SRFM\Inc\Form_Start::START_CHOICE_META, $choice );
+		return $post_id;
+	}
+
+	public function test_track_form_start_action() {
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+
+		// Called directly, not through the REST route: it checks the opt-in itself.
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		$this->assertFalse( Analytics::track_form_start_action( 'view' ) );
+		$this->assertEmpty( get_option( Analytics::FORM_START_FUNNEL_OPTION, [] ) );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$this->assertTrue( Analytics::track_form_start_action( 'choose', 'template', '2' ) );
+		$this->assertFalse( Analytics::track_form_start_action( 'choose' ), 'A choose without a choice.' );
+		$this->assertFalse( Analytics::track_form_start_action( 'delete_everything', 'ai' ) );
+		$funnel = get_option( Analytics::FORM_START_FUNNEL_OPTION, [] );
+		$this->assertSame( 1, $funnel['choice_template_pos_2'] );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+	}
+
+	public function test_track_form_start_created() {
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		Analytics::track_form_start_created( 'template', 'template' );
+		Analytics::track_form_start_created( 'template', 'scratch' );
+		Analytics::track_form_start_created( '', 'ai' );
+
+		$funnel = get_option( Analytics::FORM_START_FUNNEL_OPTION, [] );
+		$this->assertSame( 2, $funnel['created_template'] );
+		$this->assertSame( 1, $funnel['switch_template_to_scratch'] );
+		$this->assertArrayNotHasKey( 'created_ai', $funnel, 'No choice, nothing to count.' );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+	}
+
+	/**
+	 * A site that used the start screen while usage sharing was off has no
+	 * stored totals; its forms still get counted once sharing is on.
+	 */
+	public function test_refresh_form_start_funnel() {
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$funnel_event = static function () {
+			foreach ( Analytics::events()->flush_pending() as $event ) {
+				if ( 'form_start_funnel' === ( $event['event_name'] ?? '' ) ) {
+					return $event;
+				}
+			}
+			return null;
+		};
+
+		$before = Analytics::form_start_outcomes();
+		Analytics::events()->flush_pending();
+		Analytics::refresh_form_start_funnel();
+		if ( 0 === array_sum( array_map( 'array_sum', $before ) ) ) {
+			$this->assertNull( $funnel_event(), 'No totals and no tagged forms: nothing to send.' );
+		}
+
+		$this->start_screen_form( 'publish', 'ai' );
+		Analytics::refresh_form_start_funnel();
+		$event = $funnel_event();
+		$this->assertNotNull( $event, 'Tagged forms are sent although no totals were stored.' );
+		$this->assertSame( (string) ( $before['ai']['published'] + 1 ), $event['properties']['published_ai'] );
+		$this->assertSame( SRFM_VER, $event['properties']['plugin_version'] );
+		$this->assertSame( '1', $event['properties']['recovered'], 'Rebuilt from the forms, without views or choices.' );
+		$this->assertArrayNotHasKey( 'views', $event['properties'] );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		Analytics::refresh_form_start_funnel();
+		$this->assertNull( $funnel_event(), 'Nothing is sent with usage sharing off.' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+	}
+
+	public function test_form_start_outcomes() {
+		global $wpdb;
+		$entries = \SRFM\Inc\Database\Tables\Entries::get_instance()->get_tablename();
+		$before  = Analytics::form_start_outcomes();
+
+		$live    = $this->start_screen_form( 'publish', 'scratch' );
+		$private = $this->start_screen_form( 'private', 'scratch' );
+		$trashed = $this->start_screen_form( 'publish', 'scratch' );
+		foreach ( [ [ $live, 'unread' ], [ $private, 'unread' ], [ $trashed, 'trash' ] ] as $entry ) {
+			\SRFM\Inc\Database\Tables\Entries::add(
+				[
+					'form_id'   => $entry[0],
+					'user_id'   => 0,
+					'status'    => $entry[1],
+					'form_data' => [ 'name' => 'Jane' ],
+				]
+			);
+		}
+
+		$after = Analytics::form_start_outcomes();
+		$this->assertSame( 2, $after['scratch']['published'] - $before['scratch']['published'] );
+		$this->assertSame( 0, $after['scratch']['draft'] - $before['scratch']['draft'], 'A private form is neither a draft nor published.' );
+		// Only the published form with a live entry: not the private form (in
+		// neither draft nor published) and not a form whose only entry is trashed.
+		$this->assertSame( 1, $after['scratch']['with_entries'] - $before['scratch']['with_entries'] );
+
+		// Without the entries table, forms are still counted and nothing breaks.
+		$present = new ReflectionProperty( \SRFM\Inc\Database\Register::class, 'entries_table_present' );
+		$present->setAccessible( true );
+		$was = $present->getValue();
+		$present->setValue( null, false );
+		$missing = Analytics::form_start_outcomes();
+		$present->setValue( null, $was );
+		$this->assertSame( $after['scratch']['published'], $missing['scratch']['published'] );
+		$this->assertSame( 0, $missing['scratch']['with_entries'] );
+
+		foreach ( [ $live, $private, $trashed ] as $form_id ) {
+			$wpdb->delete( $entries, [ 'form_id' => $form_id ] );
+		}
+	}
 }

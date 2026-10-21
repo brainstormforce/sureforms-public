@@ -14,6 +14,11 @@ import {
 	recordEmptySearch,
 	trackTemplateAction,
 } from '@Utils/form-templates';
+import {
+	clearStartChoice,
+	getStartChoice,
+	trackStartStep,
+} from '@Utils/form-start';
 import Header from './Header.js';
 import TemplateCard from './TemplateCard.js';
 import TemplatePreview from './TemplatePreview.js';
@@ -393,6 +398,7 @@ const TemplateLibrary = () => {
 
 	useEffect( () => {
 		trackTemplateAction( 'library_open' );
+		trackStartStep( 'template_open' );
 	}, [] );
 
 	const isRTL = srfm_admin?.is_rtl;
@@ -413,9 +419,10 @@ const TemplateLibrary = () => {
 			const response = await createFormFromTemplate(
 				template.id,
 				style,
-				options
+				{ ...options, startChoice: getStartChoice() }
 			);
 			if ( response?.edit_url ) {
+				clearStartChoice();
 				window.location.href = response.edit_url;
 				return;
 			}

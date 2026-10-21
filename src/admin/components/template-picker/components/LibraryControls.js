@@ -8,6 +8,7 @@ import {
 import { Button, ButtonGroup, Input, Select, Text } from '@bsf/force-ui';
 import { ChevronDown, Plus, Search, Sparkles, X } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
+import { getScratchUrl } from '@Utils/form-start';
 
 /**
  * Whether AI form generation can run now. Out of generations, or an error
@@ -21,14 +22,8 @@ export const canGenerateWithAi = () => {
 	return ! ( 0 === usage?.remaining || Boolean( usage?.code ) );
 };
 
-/**
- * URL of a new, empty form.
- *
- * @since x.x.x
- * @return {string} URL.
- */
-export const getScratchUrl = () =>
-	`${ window.srfm_admin?.site_url || '' }/wp-admin/post-new.php?post_type=sureforms_form`;
+// A blank form tagged with the start screen choice in play, as everywhere else.
+export { getScratchUrl };
 
 // Brand focus ring shown only for keyboard focus.
 const FOCUS_RING =

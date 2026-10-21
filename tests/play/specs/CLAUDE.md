@@ -306,8 +306,9 @@ await page.evaluate(() => {
 
 Server returns `wp_send_json_error` → `.srfm-success-box` must NOT appear.
 
-## Generate with AI screen (`admin.php?page=add-new-form`)
+## Generate with AI screen (`admin.php?page=add-new-form&view=ai`)
 
+- `admin.php?page=add-new-form` alone opens the "How do you want to start?" screen. Open the AI screen with `&view=ai` (also skipped to by `access_key`, `srfm_ai_dashboard_prompt` and `form_type`).
 - The AI middleware can't verify local/CI domains, so the screen boots behind a limit/"Domain Verification Failed" popup. Before `page.goto`, use `page.addInitScript` to intercept the `srfm_admin` assignment and force `srfm_ai_usage_details` to `{ type: 'registered', remaining: 5 }`. See `ai-form-builder.spec.js`.
 - Stub `generate-form` with `page.route( /sureforms(\/|%2F)v1(\/|%2F)generate-form/ )`, then assert on `route.request().postDataJSON()`. Never call the real AI.
 - Generate uses `aria-disabled`, not `disabled`. Playwright treats it as not actionable, so an intentional click on the empty state needs `{ force: true }`.
