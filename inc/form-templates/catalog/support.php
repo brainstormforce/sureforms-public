@@ -87,7 +87,7 @@ return [
 		'description'    => __( 'Collect clear, reproducible bug reports.', 'sureforms' ),
 		'submit_text'    => __( 'Report bug', 'sureforms' ),
 		'fields'         => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::field( 'input', 'summary', __( 'Bug Summary', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. The checkout button does nothing on mobile', 'sureforms' ) ] ),
 			Catalog::field(
@@ -114,7 +114,7 @@ return [
 			Catalog::field( 'url', 'page-url', __( 'Page Where It Happened', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ),
 			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'browser', __( 'Browser', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ 'Chrome', 'Safari', 'Firefox', 'Edge', __( 'Other', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose a browser', 'sureforms' ) ] ) ), $no_search ), 50 ),
 			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'device', __( 'Device', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Desktop or laptop', 'sureforms' ), __( 'Phone', 'sureforms' ), __( 'Tablet', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose a device', 'sureforms' ) ] ) ), $no_search ), 50 ),
-			Catalog::field( 'url', 'screenshot', __( 'Link to a screenshot (optional)', 'sureforms' ), false, array_merge( [ 'placeholder' => 'https://' ], $screenshots ) ),
+			Catalog::field( 'url', 'screenshot', __( 'Link to a screenshot', 'sureforms' ), false, array_merge( [ 'placeholder' => 'https://' ], $screenshots ) ),
 			$c['consent'],
 		],
 		'confirmation'   => [
@@ -124,10 +124,11 @@ return [
 		// With SureForms Pro, the screenshots arrive with the notification.
 		'attach_uploads' => [ 'screenshot' ],
 		'email_subject'  => __( 'Bug: {form:summary} ({form:severity})', 'sureforms' ),
-		'email_intro'    => __( '{form:full-name} reported a {form:severity} bug (report #{entry_id}). Reply to this email to ask them for more details.', 'sureforms' ),
+		'email_intro'    => __( '{form:name} reported a {form:severity} bug (report #{entry_id}). Reply to this email to ask them for more details.', 'sureforms' ),
 		'autoresponder'  => [
-			'subject' => __( 'We received your bug report: {form:summary}', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'We received your bug report: {form:summary}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thanks for helping us improve. We have logged your report "{form:summary}" with reference number #{entry_id}.', 'sureforms' ),
 				__( 'We will look into it and get back to you if we need more details.', 'sureforms' ),
 			],
