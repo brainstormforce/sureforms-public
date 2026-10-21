@@ -175,7 +175,11 @@ const save = ( id, png ) => {
 	const free = path.join( OUT, `${ id }.webp` );
 	const target = 'pro' === PLAN ? path.join( OUT, `${ id }-pro.webp` ) : free;
 	const result = toWebp( png, target );
-	if ( 'pro' === PLAN && fs.existsSync( free ) && looksTheSame( free, target ) ) {
+	if ( 'pro' === PLAN && ! fs.existsSync( free ) ) {
+		// The plugin only shows a Pro picture next to a free one.
+		fs.rmSync( target );
+		console.log( `${ id }: no free picture to go with it, no Pro picture kept (run --plan=free first)` );
+	} else if ( 'pro' === PLAN && looksTheSame( free, target ) ) {
 		fs.rmSync( target );
 		console.log( `${ id }: same as the free picture, no Pro picture kept` );
 	}

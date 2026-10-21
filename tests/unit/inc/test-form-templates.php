@@ -2744,9 +2744,9 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( '', Form_Templates::get_thumbnail_url( [] ) );
 		// The id can't point outside the pictures folder.
 		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
-		// A free template that SureForms Pro builds differently has a Pro picture, for paid plans only.
+		// A free template that SureForms Premium builds differently has a Pro picture, shown on Premium sites.
 		$this->assertFileExists( SRFM_DIR . 'images/templates/complaint-pro.webp' );
-		$this->assertSame( SRFM_URL . 'images/templates/complaint-pro.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'complaint' ], 'starter' ) );
+		$this->assertSame( SRFM_URL . 'images/templates/complaint-pro.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'complaint' ], 'business' ) );
 		$this->assertSame( SRFM_URL . 'images/templates/complaint.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'complaint' ], 'free' ) );
 		// Pro doesn't change Contact Us, so every plan sees the one picture.
 		$this->assertFileDoesNotExist( SRFM_DIR . 'images/templates/contact-us-pro.webp' );
