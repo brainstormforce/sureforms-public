@@ -21,13 +21,13 @@ class Test_Form_Templates_Enhancements extends TestCase {
 	 * @var array<string, string>
 	 */
 	private const FREE_FIELDS = [
-		'contact-us'           => 'first-name:input last-name:input email:email phone:phone subject:input message:textarea consent:gdpr',
-		'quote-request'        => 'first-name:input last-name:input email:email phone:phone company:input service:dropdown budget:dropdown timeline:dropdown project-details:textarea consent:gdpr',
+		'contact-us'           => 'name:input email:email phone:phone subject:input message:textarea consent:gdpr',
+		'quote-request'        => 'name:input email:email phone:phone company:input service:dropdown budget:dropdown timeline:dropdown project-details:textarea consent:gdpr',
 		'consultation-request' => 'first-name:input last-name:input email:email phone:phone company:input website:url goals:textarea meeting-type:multi-choice how-heard:dropdown consent:gdpr',
-		'product-inquiry'      => 'full-name:input email:email product:input quantity:number question:textarea consent:gdpr',
+		'product-inquiry'      => 'name:input email:email phone:phone topic:multi-choice product:input quantity:number question:textarea consent:gdpr',
 		'partnership-inquiry'  => 'full-name:input email:email company:input job-title:input website:url partnership-type:dropdown proposal:textarea consent:gdpr',
-		'appointment-request'  => 'full-name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice notes:textarea consent:gdpr',
-		'event-registration'   => 'full-name:input email:email phone:phone attendees:number organization:input dietary:multi-choice questions:textarea event-updates:checkbox consent:gdpr',
+		'appointment-request'  => 'name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice meeting-type:multi-choice notes:textarea consent:gdpr',
+		'event-registration'   => 'name:input email:email phone:phone attendees:number organization:input questions:textarea event-updates:checkbox consent:gdpr',
 		'rsvp'                 => 'first-name:input last-name:input email:email attending:multi-choice guests:number dietary:input message:textarea consent:gdpr',
 		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea full-name:input email:email',
 		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email',
@@ -97,11 +97,15 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		$this->assertTrue( $appointment['preferred-time']['required'] );
 		$this->assertSame( '09:00', $appointment['preferred-time']['minTime'] );
 		$this->assertSame( '18:00', $appointment['preferred-time']['maxTime'] );
-		// Date and time share a row with Pro; each fills its own row without it.
+		// Date and time share a row with Pro, under a full-width service. Without
+		// it the date sits beside the service.
+		$this->assertEquals( 100, $appointment['service']['blockAttributes']['fieldWidth'] );
 		$this->assertEquals( 50, $appointment['preferred-date']['blockAttributes']['fieldWidth'] );
 		$this->assertEquals( 50, $appointment['preferred-time']['blockAttributes']['fieldWidth'] );
 		$this->assertTrue( $appointment['preferred-date']['blockAttributes']['disablePastDates'] );
-		$this->assertArrayNotHasKey( 'fieldWidth', $this->fields( 'appointment-request', 'free' )['preferred-date']['blockAttributes'] ?? [] );
+		$free = $this->fields( 'appointment-request', 'free' );
+		$this->assertEquals( 50, $free['service']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $free['preferred-date']['blockAttributes']['fieldWidth'] );
 
 		$consultation = $this->fields( 'consultation-request', 'starter' );
 		$this->assertSame( 'time-picker', $consultation['preferred-time']['fieldType'] );

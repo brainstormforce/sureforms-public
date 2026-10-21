@@ -74,9 +74,9 @@ class Test_Catalog extends TestCase {
 	public function test_attrs_set_the_width_of_the_pro_appointment_date() {
 		$date = $this->field( $this->catalog_template( 'appointment-request' ), 'preferred-date' );
 
-		// Free: a text field on its own row. Pro: a future-only date picker sharing the row with a time.
+		// Free: a text field beside the service. Pro: a future-only date picker sharing the row with a time.
 		$this->assertSame( 'input', $date['fieldType'] );
-		$this->assertArrayNotHasKey( 'blockAttributes', $date );
+		$this->assertSame( [ 'fieldWidth' => 50 ], $date['blockAttributes'] );
 		$this->assertSame( 'date-picker', $date['pro']['fieldType'] );
 		$this->assertSame(
 			[

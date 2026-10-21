@@ -207,7 +207,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertCount( 2, $notifications );
 
 		$admin = $notifications[0];
-		$this->assertSame( 'Quote request: {form:service} from {form:first-name} {form:last-name}', $admin['subject'] );
+		$this->assertSame( 'Quote request: {form:service} from {form:name}', $admin['subject'] );
 		$this->assertStringContainsString( '{form:service}', $admin['email_body'] );
 		$this->assertStringEndsWith( '{all_data}', $admin['email_body'] );
 		$this->assertSame( '{form:email}', $admin['email_reply_to'] );
@@ -218,7 +218,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( '{form:email}', $reply['email_to'] );
 		$this->assertTrue( $reply['status'] );
 		$this->assertSame( 'We received your quote request', $reply['subject'] );
-		$this->assertStringContainsString( 'Hi {form:first-name},', $reply['email_body'] );
+		$this->assertStringContainsString( 'Hi {form:name},', $reply['email_body'] );
 		$this->assertStringContainsString( '{site_title}', $reply['email_body'] );
 		// The visitor's copy never repeats their answers: see test_autoresponder_body_never_echoes_answers().
 		$this->assertStringNotContainsString( '{all_data}', $reply['email_body'] );
@@ -905,9 +905,9 @@ class Test_Form_Templates extends TestCase {
 		$templates = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
 
 		$contact = $templates['contact-us'];
-		$this->assertSame( 'Thanks, {form:first-name}!', $contact['messages']['confirmation']['heading'] );
-		$this->assertSame( 'Hi {form:first-name},', $contact['messages']['autoresponder']['greeting'] );
-		$this->assertSame( [ 'slug' => 'first-name', 'label' => 'First Name', 'required' => true, 'sample' => 'Jane' ], $contact['answers'][0] );
+		$this->assertSame( 'Thanks, {form:name}!', $contact['messages']['confirmation']['heading'] );
+		$this->assertSame( 'Hi {form:name},', $contact['messages']['autoresponder']['greeting'] );
+		$this->assertSame( [ 'slug' => 'name', 'label' => 'Name', 'required' => true, 'sample' => 'Jane Smith' ], $contact['answers'][0] );
 
 		// No required email, so nothing is sent to the visitor.
 		$this->assertNull( $templates['callback-request']['messages']['autoresponder'] );
@@ -2345,7 +2345,7 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertSame( 'template', $metas[ Form_Templates::CREATED_VIA_META ] );
 		$this->assertSame( 'contact-us', $metas[ Form_Templates::TEMPLATE_ID_META ] );
-		$this->assertStringContainsString( 'Thanks, {form:first-name}!', $metas['_srfm_form_confirmation'][0]['message'] );
+		$this->assertStringContainsString( 'Thanks, {form:name}!', $metas['_srfm_form_confirmation'][0]['message'] );
 		$this->assertSame( 'Send message', $metas['_srfm_submit_button_text'] );
 		$this->assertCount( 2, $metas['_srfm_email_notification'] );
 		$this->assertSame( 1, $metas['_srfm_single_page_form_title'] );
