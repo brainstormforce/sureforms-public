@@ -2378,33 +2378,6 @@ class Test_Form_Templates extends TestCase {
 
 	// ─── what a template preview loads ───────────────────────────
 
-	public function test_get_thumbnail_url_gives_every_template_card_a_small_picture() {
-		foreach ( Form_Templates::get_templates_for_js() as $item ) {
-			$this->assertNotSame( '', $item['thumbnail'], "Template {$item['id']}: no card picture." );
-			$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $item['thumbnail'] );
-			$path = SRFM_DIR . substr( $item['thumbnail'], strlen( SRFM_URL ) );
-			$this->assertFileExists( $path, "Template {$item['id']}: card picture missing." );
-			$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$item['id']}: card picture is 60 KB or more." );
-		}
-	}
-
-	public function test_get_thumbnail_url_of_a_free_template_is_its_own_file() {
-		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
-
-		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp', $items['contact-us']['thumbnail'] );
-		// A free template's preview stays live: it has no Premium picture.
-		$this->assertSame( '', $items['contact-us']['preview_image'] );
-		// A Premium template's card shows its Premium picture.
-		$this->assertSame( $items['loan-emi-calculator']['preview_image'], $items['loan-emi-calculator']['thumbnail'] );
-	}
-
-	public function test_get_thumbnail_url_of_an_added_template() {
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => 'no-picture-here' ] ) );
-		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
-		// The id can't point outside the pictures folder.
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
-	}
-
 	public function test_is_preview_asset_keeps_only_sureforms_core_and_theme_assets() {
 		$this->assertTrue( Form_Templates::is_preview_asset( 'srfm-form-submit', SRFM_URL . 'assets/js/x.js', 'script' ) );
 		$this->assertTrue( Form_Templates::is_preview_asset( 'sureforms-pro-page-break-deps', 'https://example.com/pro.js', 'script' ) );
@@ -2520,5 +2493,76 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertStringNotContainsString( '"formId":0', $data['content'] );
 		$this->assertStringContainsString( '"formId":42', $data['content'] );
+	}
+
+	public function test_get_card_fields() {
+		$card = Form_Templates::get_card_fields(
+			[
+				[
+					'fieldType'       => 'input',
+					'slug'            => 'first',
+					'label'           => 'First <b>Name</b>',
+					'placeholder'     => 'Jane',
+					'blockAttributes' => [ 'fieldWidth' => 50 ],
+				],
+				[
+					'fieldType' => 'hidden',
+					'slug'      => 'source',
+					'label'     => 'Source',
+				],
+				[
+					'fieldType' => 'page-break',
+					'slug'      => 'step',
+					'label'     => 'Step two',
+				],
+				[
+					'fieldType'    => 'dropdown',
+					'slug'         => 'plan',
+					'label'        => 'Plan',
+					'fieldOptions' => [ [ 'label' => 'Basic' ], [ 'label' => 'Plus' ], [ 'label' => 'Max' ], [ 'label' => 'Team' ] ],
+				],
+				[
+					'fieldType'    => 'multi-choice',
+					'slug'         => 'size',
+					'label'        => 'Size',
+					'fieldOptions' => [ [ 'optionTitle' => 'Small' ], [ 'optionTitle' => 'Large' ] ],
+				],
+				[
+					'fieldType'  => 'date-picker',
+					'slug'       => 'day',
+					'label'      => 'Day',
+					'dateFormat' => 'mm/dd/yyyy',
+				],
+			]
+		);
+
+		$this->assertSame( [ 'input', 'dropdown', 'multi-choice', 'date-picker' ], array_column( $card, 't' ) );
+		$this->assertSame(
+			[
+				't' => 'input',
+				'l' => 'First Name',
+				'p' => 'Jane',
+				'o' => [],
+				'w' => 'half',
+			],
+			$card[0]
+		);
+		// A dropdown without a placeholder shows its first option, and at most three.
+		$this->assertSame( 'Basic', $card[1]['p'] );
+		$this->assertSame( [ 'Basic', 'Plus', 'Max' ], $card[1]['o'] );
+		$this->assertSame( 'full', $card[1]['w'] );
+		$this->assertSame( [ 'Small', 'Large' ], $card[2]['o'] );
+		// A date without a placeholder shows its format.
+		$this->assertSame( 'mm/dd/yyyy', $card[3]['p'] );
+
+		$many = array_fill(
+			0,
+			12,
+			[
+				'fieldType' => 'input',
+				'label'     => 'X',
+			]
+		);
+		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
 	}
 }

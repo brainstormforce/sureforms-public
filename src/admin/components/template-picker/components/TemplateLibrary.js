@@ -11,7 +11,6 @@ import {
 	ArrowRight,
 	Check,
 	ExternalLink,
-	Eye,
 	FileText,
 	ImageOff,
 	Info,
@@ -40,10 +39,10 @@ import {
 } from '@Utils/form-start';
 import Header from './Header.js';
 import TemplateStylePanel from './TemplateStylePanel.js';
+import TemplateCard from './TemplateCard.js';
 import {
 	IncludedFeatures,
 	PremiumBadge,
-	getCardImage,
 	getFeatures,
 	getLockLabels,
 	getMissingSetup,
@@ -185,42 +184,6 @@ const FormSkeleton = ( { className } ) => (
 		<span className="block h-9 w-1/3 mt-2 rounded-md bg-background-tertiary" />
 	</span>
 );
-
-const THUMB_HEIGHT = 288;
-
-/**
- * Card thumbnail: a picture of the template. Cards never load the live
- * preview page, which is a full front-end request; only the opened preview
- * does. A template without a picture, or whose picture doesn't load, shows a
- * plain form outline.
- *
- * @param {Object} props          Props.
- * @param {Object} props.template Template.
- */
-export const TemplateThumbnail = ( { template } ) => {
-	const [ imageFailed, setImageFailed ] = useState( false );
-	const image = getCardImage( template );
-	return (
-		<span
-			className="relative block w-full overflow-hidden bg-background-primary"
-			style={ { height: THUMB_HEIGHT } }
-			aria-hidden="true"
-		>
-			{ image && ! imageFailed ? (
-				<img
-					src={ image }
-					alt=""
-					loading="lazy"
-					decoding="async"
-					onError={ () => setImageFailed( true ) }
-					className="block w-full h-full object-cover object-top"
-				/>
-			) : (
-				<FormSkeleton />
-			) }
-		</span>
-	);
-};
 
 /**
  * Bottom sheet holding the Customize panel on narrow screens.
@@ -1227,78 +1190,14 @@ export const TemplateGrid = ( {
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
 				{ /* Cards are hidden rather than removed, so their live previews
 				load once instead of on every filter or keystroke. */ }
-				{ templates.map( ( template ) => {
-					return (
-						<button
-							key={ template.id }
-							type="button"
-							hidden={ ! isShown( template ) }
-							onClick={ () => onSelect( template.id ) }
-							aria-describedby={
-								template.description
-									? `srfm-template-description-${ template.id }`
-									: undefined
-							}
-							aria-label={
-								template.is_locked
-									? sprintf(
-										/* translators: %s: template name. */
-										__(
-											'Preview the %s template (Premium)',
-											'sureforms'
-										),
-										template.title
-									  )
-									: sprintf(
-										/* translators: %s: template name. */
-										__( 'Preview the %s template', 'sureforms' ),
-										template.title
-									  )
-							}
-							className={ cn(
-								'group flex flex-col p-0 text-left bg-background-primary border border-solid border-border-subtle rounded-lg overflow-hidden shadow-sm cursor-pointer',
-								// No lift on hover: moving the card re-draws its text and picture a little off while it moves.
-								'transition-[box-shadow,border-color] duration-200 ease-out hover:shadow-lg hover:border-border-interactive',
-								'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-interactive',
-								'motion-reduce:transition-none',
-								! isShown( template ) && 'hidden'
-							) }
-						>
-							<span className="relative block w-full border-0 border-b border-solid border-border-subtle">
-								<TemplateThumbnail template={ template } />
-								<span className="absolute inset-0 flex items-center justify-center bg-background-primary/0 group-hover:bg-background-primary/40 group-focus-visible:bg-background-primary/40 transition-colors motion-reduce:transition-none">
-									<span className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-button-primary text-text-on-color shadow-md opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:translate-y-0 transition-[opacity,transform] duration-200 motion-reduce:transition-none">
-										<Eye
-											className="size-3.5"
-											aria-hidden="true"
-										/>
-										{ __( 'Preview', 'sureforms' ) }
-									</span>
-								</span>
-							</span>
-							<span className="flex flex-col gap-1 px-4 py-3">
-								<span className="flex items-center justify-between gap-2">
-									<span className="min-w-0 text-sm font-semibold text-text-primary truncate">
-										{ template.title }
-									</span>
-									{ template.is_locked && (
-										<PremiumBadge
-											template={ template }
-											className="shrink-0"
-										/>
-									) }
-								</span>
-								{ /* Two lines tall on every card, so the cards line up. The preview lists the features. */ }
-								<span
-									id={ `srfm-template-description-${ template.id }` }
-									className="h-8 text-xs leading-4 text-text-secondary line-clamp-2"
-								>
-									{ template.description }
-								</span>
-							</span>
-						</button>
-					);
-				} ) }
+				{ templates.map( ( template ) => (
+					<TemplateCard
+						key={ template.id }
+						template={ template }
+						hidden={ ! isShown( template ) }
+						onSelect={ onSelect }
+					/>
+				) ) }
 			</div>
 		</div>
 	);

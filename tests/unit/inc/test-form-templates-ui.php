@@ -393,6 +393,88 @@ class Test_Form_Templates_UI extends TestCase {
 		$this->assertContains( 'source-page', array_column( $item['answers'], 'slug' ) );
 	}
 
+	public function test_card_fields_have_the_compact_shape() {
+		foreach ( Form_Templates::get_templates_for_js() as $item ) {
+			$this->assertNotEmpty( $item['card_fields'], "Template {$item['id']}: nothing to draw on its card." );
+			$this->assertLessThanOrEqual( 8, count( $item['card_fields'] ) );
+			foreach ( $item['card_fields'] as $field ) {
+				$this->assertSame( [ 't', 'l', 'p', 'o', 'w' ], array_keys( $field ), "Template {$item['id']}." );
+				$this->assertIsString( $field['l'] );
+				$this->assertIsString( $field['p'] );
+				$this->assertContains( $field['w'], [ 'half', 'full' ] );
+				$this->assertLessThanOrEqual( 3, count( $field['o'] ) );
+			}
+		}
+	}
+
+	public function test_library_cards_draw_no_hidden_fields_or_steps() {
+		add_filter( 'srfm_pro_tier', static fn() => 'business' );
+		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
+
+		foreach ( [ 'contact-us', 'quote-request' ] as $id ) {
+			$types = array_column( $items[ $id ]['card_fields'], 't' );
+			$this->assertNotContains( 'hidden', $types, $id );
+			$this->assertNotContains( 'page-break', $types, $id );
+		}
+		$this->assertSame( 'First Name', $items['contact-us']['card_fields'][0]['l'] );
+	}
+
+	public function test_card_fields_show_a_locked_template_as_its_premium_version() {
+		$keys = [
+			'requires' => 'business',
+			'fields'   => [
+				[
+					'fieldType' => 'upload',
+					'slug'      => 'files',
+					'label'     => 'Files',
+					'pro_only'  => true,
+				],
+				[
+					'fieldType' => 'input',
+					'slug'      => 'name',
+					'label'     => 'Name',
+				],
+			],
+		];
+
+		$locked = $this->template_for_js( $keys );
+		$this->assertTrue( $locked['is_locked'] );
+		$this->assertSame( [ 'Files', 'Name' ], array_column( $locked['card_fields'], 'l' ) );
+		// The field list for search stays this site's build.
+		$this->assertSame( [ 'Name' ], $locked['fields'] );
+	}
+
+	public function test_card_fields_show_an_unlocked_template_as_this_sites_build() {
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		$unlocked = $this->template_for_js(
+			[
+				'fields' => [
+					[
+						'fieldType' => 'upload',
+						'slug'      => 'files',
+						'label'     => 'Files',
+						'pro_only'  => true,
+					],
+					[
+						'fieldType' => 'input',
+						'slug'      => 'name',
+						'label'     => 'Name',
+					],
+				],
+			]
+		);
+		$this->assertFalse( $unlocked['is_locked'] );
+		$this->assertSame( [ 'Name' ], array_column( $unlocked['card_fields'], 'l' ) );
+	}
+
+	public function test_library_no_longer_sends_a_card_picture() {
+		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
+		$this->assertArrayNotHasKey( 'thumbnail', $items['contact-us'] );
+		// The locked preview keeps its Premium picture; a free template's preview stays live.
+		$this->assertSame( '', $items['contact-us']['preview_image'] );
+		$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $items['loan-emi-calculator']['preview_image'] );
+	}
+
 	public function test_pro_keys_show_as_features_from_their_plan() {
 		$template = [
 			'confirmations'    => [ [ 'message' => 'x', 'rules' => [] ] ],

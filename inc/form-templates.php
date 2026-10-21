@@ -437,8 +437,8 @@ class Form_Templates {
 			$features    = self::get_features( $template, $resolved, $tier );
 			$requires    = self::get_required_tier( $template );
 			$lock_reason = self::lock_reason( $template );
-			// A locked template's messages describe its Premium version, whose
-			// answers (a calculated total, say) they use.
+			// A locked template's messages and card describe its Premium version,
+			// whose answers (a calculated total, say) the messages use.
 			$message_fields = '' === $lock_reason ? $resolved : self::resolve_fields( $template, 'business' );
 
 			$list[] = [
@@ -450,6 +450,8 @@ class Form_Templates {
 				'icon'            => Helper::get_string_value( $template['icon'] ?? '' ),
 				'theme'           => isset( self::get_themes()[ $template['theme'] ?? '' ] ) ? Helper::get_string_value( $template['theme'] ) : 'ocean',
 				'fields'          => $fields,
+				// The first fields, drawn as a small form on the library card.
+				'card_fields'     => self::get_card_fields( $message_fields ),
 				'features'        => $features,
 				// What the template gains with a higher SureForms Pro plan.
 				'pro_features'    => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),
@@ -464,14 +466,63 @@ class Form_Templates {
 				'unlock_url'      => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
 				// Picture of the Premium version, shown instead of the live preview while locked.
 				'preview_image'   => self::get_preview_image_url( $template ),
-				// Picture on the library card, so the grid never loads live previews.
-				'thumbnail'       => self::get_thumbnail_url( $template ),
 				// How many of the Premium version's fields the live preview can't show here.
 				'preview_missing' => '' === $lock_reason ? 0 : self::count_missing_preview_fields( $template, $resolved ),
 				'setup'           => self::get_setup( $template ),
 			];
 		}
 		return $list;
+	}
+
+	/**
+	 * The first fields a visitor sees, in the compact shape the library card
+	 * draws as a small form: `t` field type, `l` label, `p` placeholder (a
+	 * dropdown's first option, a date's format), `o` up to three option labels
+	 * and `w` `half` when the field shares its row. Hidden fields, steps and
+	 * HTML blocks are left out; works for any template, added ones too.
+	 *
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<int, array{t: string, l: string, p: string, o: array<int, string>, w: string}>
+	 */
+	public static function get_card_fields( $fields ) {
+		$card = [];
+		foreach ( $fields as $field ) {
+			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
+			if ( in_array( $type, [ 'hidden', 'page-break', 'html' ], true ) ) {
+				continue;
+			}
+			$options = [];
+			foreach ( Helper::get_array_value( $field['fieldOptions'] ?? [] ) as $option ) {
+				$option = is_array( $option ) ? ( $option['optionTitle'] ?? $option['label'] ?? '' ) : $option;
+				$option = trim( wp_strip_all_tags( Helper::get_string_value( $option ) ) );
+				if ( '' !== $option ) {
+					$options[] = $option;
+				}
+			}
+			$placeholder = Helper::get_string_value( $field['placeholder'] ?? '' );
+			if ( '' === $placeholder && 'dropdown' === $type ) {
+				$placeholder = $options[0] ?? '';
+			} elseif ( '' === $placeholder && 'date-picker' === $type ) {
+				$placeholder = Helper::get_string_value( $field['dateFormat'] ?? '' );
+			}
+			$attributes = Helper::get_array_value( $field['blockAttributes'] ?? [] );
+			$width      = (float) ( $attributes['fieldWidth'] ?? 100 );
+
+			$card[] = [
+				't' => $type,
+				// Consent labels run long; the card shows a line or two.
+				'l' => mb_substr( trim( wp_strip_all_tags( Helper::get_string_value( $field['label'] ?? '' ) ) ), 0, 120 ),
+				'p' => mb_substr( trim( wp_strip_all_tags( $placeholder ) ), 0, 60 ),
+				'o' => array_slice( $options, 0, 3 ),
+				'w' => $width > 0 && $width <= 50 ? 'half' : 'full',
+			];
+			// More than the card has room for.
+			if ( count( $card ) >= 8 ) {
+				break;
+			}
+		}
+		return $card;
 	}
 
 	/**
@@ -613,26 +664,6 @@ class Form_Templates {
 			return '';
 		}
 		return SRFM_URL . 'images/templates/' . ltrim( $image, '/' );
-	}
-
-	/**
-	 * URL of the picture on a template's library card: its `preview_image`, or
-	 * the plugin's `images/templates/<id>.webp` when there is one.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
-	 * @return string Unescaped URL, '' when the template has no picture.
-	 */
-	public static function get_thumbnail_url( $template ) {
-		$image = self::get_preview_image_url( $template );
-		if ( '' !== $image ) {
-			return $image;
-		}
-		$id = sanitize_key( Helper::get_string_value( $template['id'] ?? '' ) );
-		if ( '' === $id || ! file_exists( SRFM_DIR . 'images/templates/' . $id . '.webp' ) ) {
-			return '';
-		}
-		return SRFM_URL . 'images/templates/' . $id . '.webp';
 	}
 
 	/**
