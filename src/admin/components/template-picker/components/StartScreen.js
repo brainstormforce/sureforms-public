@@ -1,191 +1,29 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect } from '@wordpress/element';
+import { createInterpolateElement, useEffect } from '@wordpress/element';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Badge, Button, Container, Skeleton, Text } from '@bsf/force-ui';
+import { Button, Container, Text } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 import {
-	clearStartChoice,
 	getScratchUrl,
 	setStartChoice,
 	trackStartStep,
 } from '@Utils/form-start';
 import Header from './Header.js';
+import ICONS from './icons';
+import { AiArt, TemplateArt } from './StartScreenArt.js';
 
 /**
- * Cards in the order they are shown. The order is recorded with every choice,
- * so the share of each path can be read apart from where its card sat.
+ * Cards in the order they are shown. Each choice is counted with its card's
+ * position, so the share of each path can be read apart from where it sat.
  */
 const CARD_ORDER = [ 'ai', 'template' ];
 
-// Icons drawn to match the design exactly.
-const PaymentIcon = () => (
-	<svg
-		width="11"
-		height="11"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		strokeWidth="2"
-		strokeLinecap="round"
-		strokeLinejoin="round"
-		aria-hidden="true"
-	>
-		<rect x="2.5" y="5" width="19" height="14" rx="2" />
-		<path d="M2.5 10h19" />
-	</svg>
-);
+// History entries whose view is already counted: Back to the start screen
+// shows the same entry again, not a new visit.
+const countedViews = new Set();
 
-const QuizIcon = () => (
-	<svg
-		width="11"
-		height="11"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		strokeWidth="2"
-		strokeLinecap="round"
-		strokeLinejoin="round"
-		aria-hidden="true"
-	>
-		<path d="M4 7l2 2 3-3M4 17l2 2 3-3M13 8h7M13 18h7" />
-	</svg>
-);
-
-const SparkleIcon = () => (
-	<svg
-		width="12"
-		height="12"
-		viewBox="0 0 24 24"
-		fill="currentColor"
-		aria-hidden="true"
-	>
-		<path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9zM19 15l.9 2.6 2.6.9-2.6.9L19 22l-.9-2.6-2.6-.9 2.6-.9z" />
-	</svg>
-);
-
-const ArrowIcon = () => (
-	<svg
-		width="16"
-		height="16"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		strokeWidth="2"
-		strokeLinecap="round"
-		strokeLinejoin="round"
-		aria-hidden="true"
-		className="shrink-0 transition-transform duration-[180ms] ease-in-out group-hover:translate-x-[3px] motion-reduce:transition-none"
-	>
-		<path d="M5 12h14M13 6l6 6-6 6" />
-	</svg>
-);
-
-// Static bar for the illustrations, not a loading state.
-const Bar = ( { className } ) => (
-	<Skeleton className={ cn( 'animate-none w-auto', className ) } />
-);
-
-const Chip = ( { icon, label } ) => (
-	<Badge
-		size="xs"
-		type="rounded"
-		variant="neutral"
-		icon={ icon }
-		label={ label }
-		className="h-[22px] px-2 py-0 gap-1 rounded-[5px] border border-solid border-field-color-disabled bg-transparent hover:bg-transparent text-[11px] leading-none font-medium text-text-secondary whitespace-nowrap [&_svg]:size-[11px] [&_svg]:text-[#6B7280] [&>span:last-child]:px-0"
-	/>
-);
-
-const AiArt = () => (
-	<div className="w-[84%] max-w-[300px]">
-		<Container
-			direction="column"
-			className="min-h-[128px] gap-3.5 pt-3.5 px-3.5 pb-3 bg-background-primary border border-solid border-border-subtle rounded-[10px] shadow-[0_6px_18px_rgba(17,24,39,0.08)]"
-		>
-			<Container direction="column" className="gap-[9px] pt-0.5">
-				<Bar className="h-2.5 rounded bg-border-subtle" />
-				<Bar className="h-2.5 w-[70%] rounded bg-border-subtle" />
-			</Container>
-			<Container align="center" className="mt-auto gap-1.5">
-				<Chip
-					icon={ <PaymentIcon /> }
-					label={ __( 'Payment', 'sureforms' ) }
-				/>
-				<Chip icon={ <QuizIcon /> } label={ __( 'Quiz', 'sureforms' ) } />
-				<span className="ml-auto h-[26px] px-2.5 inline-flex items-center gap-[5px] rounded-[5px] bg-[rgba(213,68,7,0.16)] text-[rgba(213,68,7,0.9)] text-[11.5px] font-semibold whitespace-nowrap">
-					<SparkleIcon />
-					{ __( 'Generate', 'sureforms' ) }
-				</span>
-			</Container>
-		</Container>
-	</div>
-);
-
-// Parts of the mini forms in the template illustration.
-const MiniTitle = () => (
-	<div className="h-[7px] w-[58%] mb-[3px] rounded-[3px] bg-field-color-disabled" />
-);
-const MiniLabel = ( { width = '30%' } ) => (
-	<div
-		className="h-1 rounded-sm bg-field-color-disabled"
-		style={ { width } }
-	/>
-);
-const MiniInput = ( { height = 15 } ) => (
-	<div
-		className="mb-[3px] rounded border border-solid border-[#D9DCE1] bg-background-primary"
-		style={ { height } }
-	/>
-);
-const MiniSubmit = () => (
-	<div className="relative mt-auto h-[15px] w-[46%] rounded bg-[rgba(213,68,7,0.26)] after:content-[''] after:absolute after:left-[14%] after:right-[14%] after:top-1/2 after:h-[3px] after:-translate-y-1/2 after:rounded-sm after:bg-[rgba(255,255,255,0.85)]" />
-);
-
-const MiniForm = ( { className, children } ) => (
-	<div
-		className={ cn(
-			'absolute flex flex-col gap-[5px] pt-[11px] px-[11px] pb-3 bg-background-primary rounded-lg shadow-[0_6px_16px_rgba(17,24,39,0.10)]',
-			className
-		) }
-	>
-		<MiniTitle />
-		{ children }
-		<MiniSubmit />
-	</div>
-);
-
-const TemplateArt = () => (
-	<div className="relative w-[82%] max-w-[300px] h-40">
-		<MiniForm className="left-0 top-4 w-[44%] h-[132px] -rotate-[4deg]">
-			<MiniLabel />
-			<MiniInput />
-			<MiniLabel width="38%" />
-			<MiniInput />
-			<MiniLabel />
-			<MiniInput />
-		</MiniForm>
-		<MiniForm className="right-0 top-0.5 w-[44%] h-[132px] rotate-[3deg]">
-			<MiniLabel />
-			<MiniInput />
-			<MiniLabel width="42%" />
-			<MiniInput height={ 26 } />
-		</MiniForm>
-		<MiniForm className="left-1/4 top-[22px] w-1/2 h-[134px] z-[2]">
-			<div className="flex gap-1.5">
-				{ [ 0, 1 ].map( ( i ) => (
-					<div key={ i } className="flex flex-1 flex-col gap-[5px]">
-						<MiniLabel />
-						<MiniInput />
-					</div>
-				) ) }
-			</div>
-			<MiniLabel width="26%" />
-			<MiniInput />
-			<MiniLabel width="34%" />
-			<MiniInput height={ 20 } />
-		</MiniForm>
-	</div>
-);
+// How long the scratch link waits for its count before leaving the page.
+const LEAVE_DELAY = 600;
 
 const CARDS = {
 	ai: {
@@ -196,7 +34,7 @@ const CARDS = {
 		),
 		cta: __( 'Describe your form', 'sureforms' ),
 		art: AiArt,
-		tint: 'bg-[#E6EEFB]',
+		tint: 'bg-background-illustration-blue',
 	},
 	template: {
 		title: __( 'Choose a template', 'sureforms' ),
@@ -206,7 +44,7 @@ const CARDS = {
 		),
 		cta: __( 'Browse templates', 'sureforms' ),
 		art: TemplateArt,
-		tint: 'bg-[#FFE9DC]',
+		tint: 'bg-brand-background-hover-100',
 	},
 };
 
@@ -219,20 +57,52 @@ const CARDS = {
  */
 const StartScreen = () => {
 	const navigate = useNavigate();
-	const { search } = useLocation();
+	const { search, key } = useLocation();
 
+	// The choice is not cleared here: Back then Forward returns to the screen
+	// that choice opened. The next choice replaces it anyway.
 	useEffect( () => {
-		// A fresh visit starts a fresh attempt.
-		clearStartChoice();
-		trackStartStep( 'view', { order: CARD_ORDER.join( ',' ) } );
-	}, [] );
+		if ( countedViews.has( key ) ) {
+			return;
+		}
+		countedViews.add( key );
+		trackStartStep( 'view' );
+	}, [ key ] );
 
 	const choose = ( choice, position ) => {
 		// A blank form carries its choice in the URL instead.
 		if ( 'scratch' !== choice ) {
 			setStartChoice( choice );
+		} else if ( 'learn' === new URLSearchParams( search ).get( 'source' ) ) {
+			// As the AI screen's scratch button does: the editor stores the new
+			// form for the Learn section's Lesson 2 redirect.
+			localStorage.setItem( 'srfmLearnFlow', 'build-scratch' );
 		}
-		trackStartStep( 'choose', { choice, position: String( position ) } );
+		return trackStartStep( 'choose', {
+			choice,
+			position: String( position ),
+		} );
+	};
+
+	const startFromScratch = ( event ) => {
+		// A new tab or window keeps the page, so its count goes out anyway.
+		if (
+			event.metaKey ||
+			event.ctrlKey ||
+			event.shiftKey ||
+			event.altKey ||
+			0 !== event.button
+		) {
+			choose( 'scratch', 'link' );
+			return;
+		}
+		// Leaving at once can cancel the count before it is sent.
+		event.preventDefault();
+		const href = event.currentTarget.href;
+		Promise.race( [
+			choose( 'scratch', 'link' ),
+			new Promise( ( resolve ) => setTimeout( resolve, LEAVE_DELAY ) ),
+		] ).then( () => window.location.assign( href ) );
 	};
 
 	const openPath = ( choice, position ) => {
@@ -260,7 +130,7 @@ const StartScreen = () => {
 					</Text>
 					<Text
 						as="p"
-						className="mt-2.5 mb-0 mx-auto max-w-[520px] text-base leading-[1.45] font-normal text-[#6B7280]"
+						className="mt-2.5 mb-0 mx-auto max-w-[520px] text-base leading-[1.45] font-normal text-text-secondary"
 					>
 						{ __(
 							'Pick the way that suits you best. You can edit everything later.',
@@ -280,7 +150,7 @@ const StartScreen = () => {
 							<div
 								key={ choice }
 								onClick={ open }
-								className="group relative flex flex-col bg-background-primary border border-solid border-border-subtle rounded-xl overflow-hidden cursor-pointer transition-[border-color,box-shadow,transform] duration-[180ms] ease-in-out hover:border-[rgba(213,68,7,0.45)] hover:shadow-[0_10px_28px_rgba(17,24,39,0.08)] hover:-translate-y-0.5 motion-reduce:transition-none"
+								className="group relative flex flex-col bg-background-primary border border-solid border-border-subtle rounded-xl overflow-hidden cursor-pointer transition-[border-color,box-shadow,transform] duration-[180ms] ease-in-out hover:border-border-interactive/45 hover:shadow-md-blur-32 hover:-translate-y-0.5 motion-reduce:transition-none"
 							>
 								<div
 									aria-hidden="true"
@@ -291,7 +161,7 @@ const StartScreen = () => {
 								>
 									<Art />
 								</div>
-								<div className="flex flex-col flex-auto pt-5 px-[22px] pb-[22px] text-left">
+								<div className="flex flex-col flex-auto pt-5 px-[22px] pb-[22px] text-start">
 									<Text
 										as="h2"
 										className="m-0 text-xl leading-[1.25] font-bold tracking-[-0.01em] text-text-primary"
@@ -308,9 +178,13 @@ const StartScreen = () => {
 										<Button
 											variant="outline"
 											size="md"
-											icon={ <ArrowIcon /> }
+											icon={
+												<span className="inline-flex shrink-0 transition-transform duration-[180ms] ease-in-out group-hover:translate-x-[3px] rtl:rotate-180 rtl:group-hover:-translate-x-[3px] motion-reduce:transition-none">
+													{ ICONS.startArrow }
+												</span>
+											}
 											iconPosition="right"
-											className="h-11 px-4 py-0 gap-2 [&>span]:px-0 [&>svg]:size-4 rounded-lg outline-0 border border-solid border-field-color-disabled bg-background-primary text-[#374151] text-sm font-semibold whitespace-nowrap shadow-none transition-colors duration-150 group-hover:bg-button-primary group-hover:border-button-primary group-hover:text-text-on-color hover:bg-button-primary hover:border-button-primary hover:text-text-on-color hover:outline-0 focus:shadow-none"
+											className="h-11 px-4 py-0 gap-2 [&>span]:px-0 [&>svg]:size-4 rounded-lg outline-0 border border-solid border-field-color-disabled bg-background-primary text-text-secondary text-sm font-semibold whitespace-nowrap shadow-none transition-colors duration-150 group-hover:bg-button-primary group-hover:border-button-primary group-hover:text-text-on-color hover:bg-button-primary hover:border-button-primary hover:text-text-on-color hover:outline-0 focus:shadow-none"
 											onClick={ ( event ) => {
 												event.stopPropagation();
 												open();
@@ -327,19 +201,27 @@ const StartScreen = () => {
 
 				<Text
 					as="p"
-					className="m-0 text-center pt-1 pb-[72px] text-[15px] leading-[1.5] font-normal text-[#6B7280]"
+					className="m-0 text-center pt-1 pb-[72px] text-[15px] leading-[1.5] font-normal text-text-secondary"
 				>
-					{ __( 'Prefer to build it yourself?', 'sureforms' ) }{ ' ' }
-					<Button
-						tag="a"
-						variant="link"
-						size="md"
-						href={ getScratchUrl( 'scratch' ) }
-						onClick={ () => choose( 'scratch', 'link' ) }
-						className="inline p-0 h-auto [&>span]:px-0 text-[15px] leading-[1.5] font-semibold text-text-primary no-underline hover:no-underline border-0 border-b border-solid border-field-color-disabled pb-px rounded-none transition-colors duration-150 hover:text-button-primary hover:border-button-primary focus:shadow-none"
-					>
-						{ __( 'Start from scratch', 'sureforms' ) }
-					</Button>
+					{ createInterpolateElement(
+						/* translators: <link> wraps the link that opens a blank form. */
+						__(
+							'Prefer to build it yourself? <link>Start from scratch</link>',
+							'sureforms'
+						),
+						{
+							link: (
+								<Button
+									tag="a"
+									variant="link"
+									size="md"
+									href={ getScratchUrl( 'scratch' ) }
+									onClick={ startFromScratch }
+									className="inline p-0 h-auto [&>span]:px-0 text-[15px] leading-[1.5] font-semibold text-text-primary no-underline hover:no-underline border-0 border-b border-solid border-field-color-disabled pb-px rounded-none transition-colors duration-150 hover:text-button-primary hover:border-button-primary focus:shadow-none"
+								/>
+							),
+						}
+					) }
 				</Text>
 			</main>
 		</div>

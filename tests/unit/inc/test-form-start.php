@@ -38,7 +38,7 @@ class Test_Form_Start extends TestCase {
 		}
 		$this->form_ids = [];
 		$pagenow = '';
-		unset( $_GET[ Form_Start::SCRATCH_QUERY_ARG ] );
+		unset( $_GET[ Form_Start::SCRATCH_QUERY_ARG ], $_GET['post_type'] );
 		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
 		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
 		remove_all_filters( 'srfm_show_form_start_screen' );
@@ -195,7 +195,8 @@ class Test_Form_Start extends TestCase {
 
 	public function test_blank_form_from_post_new_is_tagged_and_counted_once_saved() {
 		global $pagenow;
-		$pagenow = 'post-new.php';
+		$pagenow           = 'post-new.php';
+		$_GET['post_type'] = SRFM_FORMS_POST_TYPE;
 		$_GET[ Form_Start::SCRATCH_QUERY_ARG ] = 'scratch';
 
 		// What post-new.php does when the editor opens.
@@ -224,7 +225,8 @@ class Test_Form_Start extends TestCase {
 
 	public function test_blank_form_switch_from_ai_is_counted_as_a_switch() {
 		global $pagenow;
-		$pagenow = 'post-new.php';
+		$pagenow           = 'post-new.php';
+		$_GET['post_type'] = SRFM_FORMS_POST_TYPE;
 		$_GET[ Form_Start::SCRATCH_QUERY_ARG ] = 'ai';
 
 		$post_id = $this->insert_form( 'auto-draft', 'Auto Draft' );
@@ -242,7 +244,8 @@ class Test_Form_Start extends TestCase {
 
 	public function test_blank_form_without_a_choice_is_tagged_but_not_counted() {
 		global $pagenow;
-		$pagenow = 'post-new.php';
+		$pagenow           = 'post-new.php';
+		$_GET['post_type'] = SRFM_FORMS_POST_TYPE;
 		$_GET[ Form_Start::SCRATCH_QUERY_ARG ] = 'everything';
 
 		$post_id = $this->insert_form( 'auto-draft', 'Auto Draft' );
@@ -265,6 +268,9 @@ class Test_Form_Start extends TestCase {
 	}
 
 	public function test_outcomes_count_drafts_published_and_forms_with_entries() {
+		// Deltas, so forms other tests left behind don't matter.
+		$before = Analytics::form_start_outcomes();
+
 		$this->create_form( 'draft', 'ai', 'ai' );
 		$this->create_form( 'publish', 'ai', 'template' );
 		$template_live = $this->create_form( 'publish', 'template', 'template' );
@@ -280,31 +286,23 @@ class Test_Form_Start extends TestCase {
 			]
 		);
 
-		$outcomes = Analytics::form_start_outcomes();
-		$this->assertSame(
-			[
-				'draft'        => 1,
-				'published'    => 1,
-				'with_entries' => 0,
-			],
-			$outcomes['ai']
-		);
-		$this->assertSame(
-			[
-				'draft'        => 0,
-				'published'    => 1,
-				'with_entries' => 1,
-			],
-			$outcomes['template']
-		);
-		$this->assertSame( 0, $outcomes['scratch']['published'] );
+		$after = Analytics::form_start_outcomes();
+		$delta = static function ( $choice ) use ( $before, $after ) {
+			return array_map(
+				static function ( $now, $then ) {
+					return $now - $then;
+				},
+				$after[ $choice ],
+				$before[ $choice ]
+			);
+		};
+		$this->assertSame( [ 1, 1, 0 ], $delta( 'ai' ), 'draft, published, with_entries' );
+		$this->assertSame( [ 0, 1, 1 ], $delta( 'template' ) );
+		$this->assertSame( [ 0, 0, 0 ], $delta( 'scratch' ) );
 	}
 
 	public function test_refresh_sends_outcomes_only_for_sites_that_used_the_start_screen() {
 		$this->create_form( 'publish', 'template', 'template' );
-
-		Analytics::refresh_form_start_funnel();
-		$this->assertNull( $this->funnel_event(), 'A site that never saw the start screen sends nothing.' );
 
 		Analytics::track_form_start_action( 'view' );
 		Analytics::events()->flush_pending();
@@ -326,5 +324,124 @@ class Test_Form_Start extends TestCase {
 
 		$this->assertSame( '', get_post_meta( $copy, Form_Start::START_CHOICE_META, true ) );
 		$this->assertSame( 'duplicate', get_post_meta( $copy, Form_Templates::CREATED_VIA_META, true ) );
+
+		// The count it exists for: a published copy doesn't add to its template.
+		$published = Analytics::published_template_forms()['contact-us'] ?? 0;
+		wp_update_post(
+			[
+				'ID'          => $copy,
+				'post_status' => 'publish',
+			]
+		);
+		$this->assertSame( $published, Analytics::published_template_forms()['contact-us'] ?? 0 );
+	}
+
+	public function test_register_routes() {
+		$routes = rest_get_server()->get_routes();
+		$this->assertArrayHasKey( '/sureforms/v1/form-start/track', $routes );
+
+		$route = $routes['/sureforms/v1/form-start/track'][0];
+		$this->assertArrayHasKey( 'POST', $route['methods'] );
+		$this->assertTrue( $route['args']['action']['required'] );
+		$this->assertSame( [ 'view', 'choose', 'ai_generate', 'ai_error', 'ai_limit', 'template_open', 'template_preview' ], $route['args']['action']['enum'] );
+	}
+
+	public function test_is_enabled() {
+		$this->assertTrue( Form_Start::is_enabled() );
+		add_filter( 'srfm_show_form_start_screen', '__return_false' );
+		$this->assertFalse( Form_Start::is_enabled() );
+	}
+
+	public function test_get_settings_for_js() {
+		$this->assertSame(
+			[
+				'enabled'  => true,
+				'tracking' => true,
+			],
+			Form_Start::get_settings_for_js()
+		);
+
+		// Tracking follows the usage-sharing opt-in.
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		$this->assertFalse( Form_Start::get_settings_for_js()['tracking'] );
+	}
+
+	public function test_rest_track() {
+		$this->login_admin();
+
+		$this->assertSame( [ 'recorded' => true ], $this->track( 'choose', 'ai', '1' )->get_data() );
+		// A choose without a known choice is answered, not counted.
+		$this->assertSame( [ 'recorded' => false ], $this->track( 'choose', 'import', '1' )->get_data() );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		$this->assertSame( [ 'recorded' => false ], $this->track( 'view' )->get_data() );
+		$this->assertSame( 1, get_option( Analytics::FORM_START_FUNNEL_OPTION, [] )['choice_ai'] );
+	}
+
+	/**
+	 * Each guard of tag_blank_form() on its own: only the auto-draft that
+	 * post-new.php creates for a form is tagged.
+	 */
+	public function test_tag_blank_form() {
+		global $pagenow;
+		$tagger  = Form_Start::get_instance();
+		$post_id = $this->insert_form( 'draft', 'Guard test' );
+		$post    = get_post( $post_id );
+		$tag     = static function ( $post, $update = false ) use ( $tagger, $post_id ) {
+			delete_post_meta( $post_id, Form_Templates::CREATED_VIA_META );
+			$tagger->tag_blank_form( $post_id, $post, $update );
+			return get_post_meta( $post_id, Form_Templates::CREATED_VIA_META, true );
+		};
+
+		$pagenow           = 'post-new.php';
+		$_GET['post_type'] = SRFM_FORMS_POST_TYPE;
+		$draft             = clone $post;
+		$draft->post_status = 'auto-draft';
+		$this->assertSame( 'scratch', $tag( $draft ), 'The case that is tagged.' );
+
+		$this->assertSame( '', $tag( $draft, true ), 'Not on an update.' );
+
+		$other            = clone $draft;
+		$other->post_type = 'post';
+		$this->assertSame( '', $tag( $other ), 'Not another post type.' );
+
+		$this->assertSame( '', $tag( $post ), 'Not a form that is already saved.' );
+
+		$_GET['post_type'] = 'page';
+		$this->assertSame( '', $tag( $draft ), 'Not while post-new.php opens another post type.' );
+
+		$_GET['post_type'] = SRFM_FORMS_POST_TYPE;
+		$pagenow           = 'post.php';
+		$this->assertSame( '', $tag( $draft ), 'Not outside post-new.php.' );
+	}
+
+	/**
+	 * Each guard of count_blank_form(): counted once, on the first save, and
+	 * only for a blank form that carries a start screen choice.
+	 */
+	public function test_count_blank_form() {
+		$counter = Form_Start::get_instance();
+		$post_id = $this->create_form( 'draft', 'ai', 'scratch' );
+		$post    = get_post( $post_id );
+		$created = static function () {
+			return get_option( Analytics::FORM_START_FUNNEL_OPTION, [] )['created_ai'] ?? 0;
+		};
+
+		$counter->count_blank_form( 'auto-draft', 'auto-draft', $post );
+		$counter->count_blank_form( 'trash', 'auto-draft', $post );
+		$counter->count_blank_form( 'publish', 'draft', $post );
+		$this->assertSame( 0, $created(), 'Only the first save out of auto-draft counts.' );
+
+		// A choice made, but the form wasn't made as a blank form.
+		update_post_meta( $post_id, Form_Templates::CREATED_VIA_META, 'template' );
+		$counter->count_blank_form( 'draft', 'auto-draft', $post );
+		$this->assertSame( 0, $created() );
+
+		update_post_meta( $post_id, Form_Templates::CREATED_VIA_META, 'scratch' );
+		$counter->count_blank_form( 'draft', 'auto-draft', $post );
+		$this->assertSame( 1, $created() );
+		$this->assertSame( 1, get_option( Analytics::FORM_START_FUNNEL_OPTION, [] )['switch_ai_to_scratch'] );
 	}
 }

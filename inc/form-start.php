@@ -209,7 +209,9 @@ class Form_Start {
 	public function tag_blank_form( $post_id, $post, $update ) {
 		global $pagenow;
 
-		if ( $update || 'post-new.php' !== $pagenow || SRFM_FORMS_POST_TYPE !== $post->post_type || 'auto-draft' !== $post->post_status ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check that this is the post-new.php screen for forms.
+		$screen_type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : '';
+		if ( $update || 'post-new.php' !== $pagenow || SRFM_FORMS_POST_TYPE !== $screen_type || SRFM_FORMS_POST_TYPE !== $post->post_type || 'auto-draft' !== $post->post_status ) {
 			return;
 		}
 

@@ -72,6 +72,32 @@ export const getStartChoice = () => {
 };
 
 /**
+ * Keep the stored choice only for the visit that made it. A fresh page load
+ * that opens another screen (a payment or quiz link, the dashboard prompt)
+ * never saw the start screen, so a choice left from earlier would credit
+ * that form to a path, and a switch, that never happened. Kept when the AI
+ * sign-in comes back (`access_key`), and on a reload or Back / Forward, which
+ * return to the same visit.
+ *
+ * @since x.x.x
+ * @param {URLSearchParams} params     Query args the page opened with.
+ * @param {string}          navigation How the page was loaded: `navigate`, `reload` or `back_forward`.
+ */
+export const scopeStartChoiceToVisit = (
+	params,
+	navigation = window.performance?.getEntriesByType?.( 'navigation' )?.[ 0 ]
+		?.type || 'navigate'
+) => {
+	if (
+		'navigate' === navigation &&
+		'start' !== getAddNewFormScreen( params ) &&
+		! params.has( 'access_key' )
+	) {
+		clearStartChoice();
+	}
+};
+
+/**
  * Remember the choice made on the start screen.
  *
  * @since x.x.x
@@ -111,6 +137,7 @@ let queue = Promise.resolve();
  * @since x.x.x
  * @param {string} action `view`, `choose` or a path step (see PHP Form_Start::STEPS).
  * @param {Object} data   Extra data: `choice` and `position` for `choose`.
+ * @return {Promise} Settles once the count is sent (or skipped); never rejects.
  */
 export const trackStartStep = ( action, data = {} ) => {
 	// Only the Add New Form screens are part of the funnel; the editor reuses
@@ -119,12 +146,12 @@ export const trackStartStep = ( action, data = {} ) => {
 		'add-new-form' ===
 		new URLSearchParams( window.location.search ).get( 'page' );
 	if ( ! srfm_admin?.form_start?.tracking || ! onAddNewForm ) {
-		return;
+		return Promise.resolve();
 	}
 
 	const choice = data.choice || getStartChoice();
 	if ( ! [ 'view', 'choose' ].includes( action ) && ! choice ) {
-		return;
+		return Promise.resolve();
 	}
 
 	const send = () =>
@@ -139,6 +166,7 @@ export const trackStartStep = ( action, data = {} ) => {
 	// One at a time: each count rewrites the stored totals, so overlapping
 	// requests would drop each other's counts.
 	queue = queue.then( send );
+	return queue;
 };
 
 /**

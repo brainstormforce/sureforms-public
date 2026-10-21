@@ -1042,6 +1042,10 @@ class Analytics {
 	 * @return bool Whether the action was counted.
 	 */
 	public static function track_form_start_action( $action, $choice = '', $position = '' ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return false;
+		}
+
 		$choice = Form_Start::sanitize_choice( $choice );
 		$funnel = self::get_form_start_funnel();
 
@@ -1111,13 +1115,27 @@ class Analytics {
 	 * Those change long after a form is created, so they are recounted from
 	 * the forms each cycle. Sites that never saw the start screen send nothing.
 	 *
+	 * A site that used the start screen while usage sharing was off has no
+	 * stored totals, but its forms still carry the choice, so their outcomes
+	 * are sent once it is turned on.
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	public static function refresh_form_start_funnel() {
-		$funnel = self::get_form_start_funnel();
-		if ( empty( $funnel ) || ! Form_Templates::is_usage_sharing_on() ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
 			return;
+		}
+
+		$funnel = self::get_form_start_funnel();
+		if ( empty( $funnel ) ) {
+			$forms = 0;
+			foreach ( self::form_start_outcomes() as $counts ) {
+				$forms += array_sum( $counts );
+			}
+			if ( 0 === $forms ) {
+				return;
+			}
 		}
 
 		self::send_form_start_funnel( $funnel );
@@ -1142,10 +1160,12 @@ class Analytics {
 			]
 		);
 
+		// Both counts read drafts and published forms only, so `with_entries`
+		// never counts a form that is in neither (private, pending, scheduled).
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT sc.meta_value AS choice, p.post_status AS status, COUNT(*) AS forms
+				"SELECT sc.meta_value AS choice, p.post_status AS status, COUNT(DISTINCT p.ID) AS forms
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} sc ON sc.post_id = p.ID AND sc.meta_key = %s
 				WHERE p.post_type = %s AND p.post_status IN ( %s, %s )
@@ -1178,12 +1198,13 @@ class Analytics {
 				"SELECT sc.meta_value AS choice, COUNT(DISTINCT p.ID) AS forms
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} sc ON sc.post_id = p.ID AND sc.meta_key = %s
-				WHERE p.post_type = %s AND p.post_status <> %s
+				WHERE p.post_type = %s AND p.post_status IN ( %s, %s )
 				AND EXISTS ( SELECT 1 FROM {$entries} e WHERE e.form_id = p.ID AND e.status <> %s )
 				GROUP BY sc.meta_value",
 				Form_Start::START_CHOICE_META,
 				SRFM_FORMS_POST_TYPE,
-				'trash',
+				'draft',
+				'publish',
 				'trash'
 			),
 			ARRAY_A
@@ -1423,6 +1444,9 @@ class Analytics {
 
 		$properties   = [
 			'plan'            => Helper::has_pro() ? 'business' : 'free',
+			// From this version, a duplicated form no longer counts for its
+			// template (`_srfm_created_via` = `duplicate`), so the series can be split here.
+			'plugin_version'  => SRFM_VER,
 			'library_opens'   => (string) Helper::get_integer_value( $usage['library_opens'] ?? 0 ),
 			'previews'        => (string) Helper::get_integer_value( $usage['previews'] ?? 0 ),
 			'created'         => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
@@ -1487,8 +1511,10 @@ class Analytics {
 	 */
 	private static function send_form_start_funnel( $funnel ) {
 		$properties = [
-			'plan'         => Helper::has_pro() ? 'business' : 'free',
-			'first_choice' => Form_Start::sanitize_choice( $funnel['first_choice'] ?? '' ),
+			'plan'           => Helper::has_pro() ? 'business' : 'free',
+			'first_choice'   => Form_Start::sanitize_choice( $funnel['first_choice'] ?? '' ),
+			// Lets a change in how something is counted be told apart in the series.
+			'plugin_version' => SRFM_VER,
 		];
 
 		// Counters are stored under known prefixes only, so they pass through as is.

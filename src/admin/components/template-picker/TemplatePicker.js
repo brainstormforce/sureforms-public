@@ -3,7 +3,10 @@ import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AiFormBuilder from './components/AiFormBuilder.js';
 import TemplateLibrary from './components/TemplateLibrary.js';
 import StartScreen from './components/StartScreen.js';
-import { getAddNewFormScreen } from '@Utils/form-start';
+import {
+	getAddNewFormScreen,
+	scopeStartChoiceToVisit,
+} from '@Utils/form-start';
 
 const SCREENS = {
 	start: StartScreen,
@@ -58,6 +61,7 @@ export default TemplatePicker;
 
 	function renderApp() {
 		if ( null !== app ) {
+			scopeStartChoiceToVisit( new URLSearchParams( window.location.search ) );
 			const root = createRoot( app );
 			root.render( <TemplatePicker /> );
 		}

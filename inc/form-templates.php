@@ -250,6 +250,12 @@ class Form_Templates {
 						'type'    => 'boolean',
 						'default' => false,
 					],
+					// Add New Form start screen choice in play, '' when none.
+					'start_choice'           => [
+						'type'    => 'string',
+						'enum'    => array_merge( [ '' ], Form_Start::CHOICES ),
+						'default' => '',
+					],
 				],
 			]
 		);

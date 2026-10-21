@@ -3093,7 +3093,8 @@ JS;
 				'content'     => wp_kses_post( $content_markup ),
 				'button_text' => esc_html( __( 'Build My First Form', 'sureforms' ) ),
 				'dismiss'     => esc_html( __( 'Dismiss', 'sureforms' ) ),
-				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+				// The pointer is about the AI builder, so it skips the start screen.
+				'button_url'  => admin_url( 'admin.php?page=add-new-form&view=ai' ),
 			]
 		);
 	}
