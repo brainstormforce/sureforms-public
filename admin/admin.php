@@ -16,6 +16,7 @@ use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
+use SRFM\Inc\Form_Start;
 use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Global_Settings;
@@ -2240,6 +2241,7 @@ JS;
 					'form_template_themes'          => Form_Templates::get_themes_for_js(),
 					'form_template_requests'        => Form_Templates::get_request_settings_for_js(),
 					'form_template_spam_protection' => Form_Templates::is_spam_protection_on(),
+					'form_start'                    => Form_Start::get_settings_for_js(),
 					'site_title'                    => get_bloginfo( 'name' ),
 					'admin_email'                   => get_option( 'admin_email' ),
 				]
@@ -3091,7 +3093,8 @@ JS;
 				'content'     => wp_kses_post( $content_markup ),
 				'button_text' => esc_html( __( 'Build My First Form', 'sureforms' ) ),
 				'dismiss'     => esc_html( __( 'Dismiss', 'sureforms' ) ),
-				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+				// The pointer is about the AI builder, so it skips the start screen.
+				'button_url'  => admin_url( 'admin.php?page=add-new-form&view=ai' ),
 			]
 		);
 	}

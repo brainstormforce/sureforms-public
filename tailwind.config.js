@@ -22,6 +22,8 @@ module.exports = withTW( {
 				'background-secondary': '#F9FAFB',
 				'background-inverse': '#1F2937',
 				'background-brand': '#D54407',
+				// Tint behind the AI illustration on the Add New Form start screen.
+				'background-illustration-blue': '#E6EEFB',
 				'background-important': '#DC2626',
 				'background-tertiary': '#F3F4F6',
 				// field
