@@ -14,6 +14,7 @@ import * as inlineButton from '@Blocks/inline-button';
 import * as payment from '@Blocks/payment';
 import * as paymentHistory from '@Blocks/payment-history';
 import { registerBlocks } from '@Blocks/register-block';
+import { isFeatureEnabled } from '@Utils/features';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import SlugControl from '@Components/slug-control';
@@ -46,7 +47,7 @@ const registerBlock = [
 	select,
 	address,
 	inlineButton,
-	payment,
+	...( isFeatureEnabled( 'payments' ) ? [ payment ] : [] ),
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
@@ -58,7 +59,10 @@ if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 		changeCoreParagraphCategory
 	);
 } else {
-	registerBlocks( [ sfForm, paymentHistory ] );
+	registerBlocks( [
+		sfForm,
+		...( isFeatureEnabled( 'payments' ) ? [ paymentHistory ] : [] ),
+	] );
 
 	// Open block inserter and show tooltip on Form block when redirected from Learn section.
 	if (
@@ -339,3 +343,14 @@ addFilter(
 		];
 	}
 );
+
+// Blocks switched off under Settings → Features → Blocks (SureForms, Pro and
+// Spectra). domReady runs after every editor script has registered its blocks;
+// the server unregisters the same list in Features::unregister_disabled_blocks().
+wp.domReady( () => {
+	Object.entries( window.srfmBlocks || {} ).forEach( ( [ name, block ] ) => {
+		if ( false === block.enabled && wp.blocks.getBlockType( name ) ) {
+			wp.blocks.unregisterBlockType( name );
+		}
+	} );
+} );

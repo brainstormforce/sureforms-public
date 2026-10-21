@@ -14,8 +14,10 @@ import {
 	ShieldCheck,
 	TriangleAlert,
 	Globe,
+	ToggleRight,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
+import { withEnabledFeatures } from '@Utils/features';
 import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
@@ -29,6 +31,15 @@ const defaultNavigation = [
 		icon: <Settings />,
 		helpText: __(
 			'Set up email summaries, admin alerts, and data preferences to manage your forms with ease.',
+			'sureforms'
+		),
+	},
+	{
+		name: __( 'Features', 'sureforms' ),
+		slug: 'features-settings',
+		icon: <ToggleRight />,
+		helpText: __(
+			'Turn off the features you do not use. A feature that is off does not load anywhere on your site, and turning it back on restores its data.',
 			'sureforms'
 		),
 	},
@@ -98,6 +109,7 @@ const defaultNavigation = [
 	{
 		name: __( 'OttoKit', 'sureforms' ),
 		slug: 'ottokit-settings',
+		feature: 'ottokit',
 		icon: (
 			<img
 				src={ ottoKitIcon }
@@ -110,6 +122,7 @@ const defaultNavigation = [
 	{
 		name: __( 'Integrations', 'sureforms' ),
 		slug: 'integration-settings',
+		feature: 'native_integrations',
 		icon: <Cpu />,
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
 	},
@@ -147,6 +160,7 @@ const defaultNavigation = [
 	{
 		name: __( 'Payments', 'sureforms' ),
 		slug: 'payments-settings',
+		feature: 'payments',
 		icon: <CreditCard />,
 		submenu: [
 			{
@@ -176,8 +190,11 @@ const defaultNavigation = [
 	// endregion: form-migration.
 ];
 
+// A tab with a `feature` key is hidden while that feature is off; Pro tabs can set it too.
 export const getNavigation = () =>
-	applyFilters( 'srfm.settings.navigation', defaultNavigation );
+	withEnabledFeatures(
+		applyFilters( 'srfm.settings.navigation', defaultNavigation )
+	);
 
 const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 	const activatedTab = useQuery();

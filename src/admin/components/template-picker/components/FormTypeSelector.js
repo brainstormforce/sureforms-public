@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { withEnabledFeatures } from '@Utils/features';
 import { Container, Button, Tooltip } from '@bsf/force-ui';
 import {
 	Calculator,
@@ -68,12 +69,13 @@ const FormTypeSelector = ( {
 		}
 	}, [] );
 
-	const formTypeOptions = applyFilters(
+	const allFormTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
 			{
 				label: __( 'Payment', 'sureforms' ),
 				slug: 'payment',
+				feature: 'payments',
 				isAvailable: true,
 			},
 			{
@@ -84,6 +86,7 @@ const FormTypeSelector = ( {
 			{
 				label: __( 'Calculations', 'sureforms' ),
 				slug: 'calculator',
+				feature: 'calculations',
 				isAvailable: false,
 				tooltipPosition: 'bottom',
 				upgradeTooltipContent: {
@@ -114,6 +117,7 @@ const FormTypeSelector = ( {
 			{
 				label: __( 'Conversational', 'sureforms' ),
 				slug: 'conversational',
+				feature: 'conversational',
 				isAvailable: false,
 				upgradeTooltipContent: {
 					tooltipHeading: __(
@@ -149,6 +153,7 @@ const FormTypeSelector = ( {
 			{
 				label: __( 'Quiz', 'sureforms' ),
 				slug: 'quiz',
+				feature: 'quiz',
 				isAvailable: false,
 				upgradeTooltipContent: {
 					tooltipHeading: __( 'Unlock Quiz Forms', 'sureforms' ),
@@ -175,6 +180,7 @@ const FormTypeSelector = ( {
 			{
 				label: __( 'Survey', 'sureforms' ),
 				slug: 'survey',
+				feature: 'survey',
 				isAvailable: false,
 				upgradeTooltipContent: {
 					tooltipHeading: __( 'Unlock Survey Forms', 'sureforms' ),
@@ -200,6 +206,7 @@ const FormTypeSelector = ( {
 			},
 		]
 	);
+	const formTypeOptions = withEnabledFeatures( allFormTypeOptions );
 
 	// Ensure default type is 'simple' if not set
 	if ( ! formType ) {

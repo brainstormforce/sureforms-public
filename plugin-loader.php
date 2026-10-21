@@ -36,6 +36,7 @@ use SRFM\Inc\Duplicate_Form;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
+use SRFM\Inc\Features;
 use SRFM\Inc\Form_Restriction;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Form_Views;
@@ -231,7 +232,9 @@ class Plugin_Loader {
 		// outside the admin context (REST dispatch runs with `is_admin()` ===
 		// false, so admin-only instantiation would 404 the endpoint).
 		Html_Form_Detector::get_instance();
-		Payments::get_instance();
+		if ( Features::is_enabled( 'payments' ) ) {
+			Payments::get_instance();
+		}
 		Duplicate_Form::get_instance();
 		Learn::get_instance();
 	}
@@ -314,7 +317,10 @@ class Plugin_Loader {
 		Create_New_Form::get_instance();
 		Global_Settings::get_instance();
 		Global_Settings_Defaults::get_instance();
-		Email_Summary::get_instance();
+		// The summary reports stored entries, so it has nothing to send without them.
+		if ( Features::is_enabled( 'entries' ) ) {
+			Email_Summary::get_instance();
+		}
 		add_action( Suremail_Adapter::QUOTA_REFRESH_HOOK, [ Suremail_Adapter::class, 'refresh_surecontact_quota' ] );
 		Compliance_Settings::get_instance();
 		Form_Settings_Api::get_instance();
@@ -324,6 +330,9 @@ class Plugin_Loader {
 		Background_Process::get_instance();
 		Page_Builders::get_instance();
 		Rest_Api::get_instance();
+		add_filter( 'srfm_rest_api_endpoints', [ Features::class, 'filter_endpoints' ], PHP_INT_MAX );
+		// Runs after every SureForms, Pro and Spectra block has registered.
+		add_action( 'init', [ Features::class, 'unregister_disabled_blocks' ], PHP_INT_MAX );
 		// region: form-migration — Phase P1 foundation.
 		Migrator_Bootstrap::get_instance();
 		// endregion: form-migration.

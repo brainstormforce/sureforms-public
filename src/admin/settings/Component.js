@@ -22,6 +22,7 @@ import GoogleMapsPage from './pages/GoogleMaps';
 import PaymentsPage from '../payment/global-setting-page';
 import MCPPage from './pages/MCP';
 import OttoKitPage from './pages/OttoKit';
+import FeaturesPage from './pages/Features';
 // region: form-migration — Phase P1 UI.
 import MigrationPage from './migration/MigrationPage';
 // endregion: form-migration.
@@ -741,6 +742,7 @@ const Component = ( { path, subpage } ) => {
 						setLogMeta={ setLogMeta }
 					/>
 				) }
+				{ 'features-settings' === path && <FeaturesPage /> }
 				{ 'global-defaults' === path && (
 					<GlobalDefaultsPage
 						loading={ loading }

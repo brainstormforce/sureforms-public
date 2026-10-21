@@ -43,6 +43,7 @@ import FormCustomCssPanel from '../FormCustomCssPanel';
 import SpamProtection from '../SpamProtection';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { withEnabledFeatures } from '@Utils/features';
 import EmailNotification from '../email-settings/EmailNotification';
 import FormConfirmSetting from '../form-confirm-setting';
 import { setFormSpecificSmartTags, cn } from '@Utils/Helpers';
@@ -345,7 +346,7 @@ const Dialog = ( {
 		srfm_admin?.integrations?.sure_triggers?.status
 	);
 
-	const tabs = applyFilters(
+	const allTabs = applyFilters(
 		'srfm.formSettings.tabs',
 		[
 			/*parent tabs linked to nav*/
@@ -372,6 +373,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'conditional-confirmations-preview',
+				feature: 'conditional_confirmations',
 				label: __( 'Conditional Confirmations', 'sureforms' ),
 				icon: <Split />,
 				component: (
@@ -422,6 +424,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'integrations-preview',
+				feature: 'native_integrations',
 				label: __( 'Integrations', 'sureforms' ),
 				icon: <Cpu />,
 				component: (
@@ -466,6 +469,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'ottokit',
+				feature: 'ottokit',
 				label: __( 'Automations', 'sureforms' ),
 				icon: (
 					<img
@@ -488,6 +492,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'pdf-generation-preview',
+				feature: 'pdf',
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File />,
 				component: (
@@ -529,6 +534,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'save-resume-preview',
+				feature: 'save_resume',
 				label: __( 'Save & Progress', 'sureforms' ),
 				icon: <Save />,
 				component: (
@@ -573,6 +579,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'user-login-preview',
+				feature: 'user_registration',
 				label: __( 'User Registration', 'sureforms' ),
 				icon: <UserPlus />,
 				component: (
@@ -617,6 +624,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'post-feed-preview',
+				feature: 'post_feeds',
 				label: __( 'Post Feed', 'sureforms' ),
 				icon: <FileText />,
 				component: (
@@ -671,6 +679,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'quiz-preview',
+				feature: 'quiz',
 				label: __( 'Quizzes', 'sureforms' ),
 				icon: <ListTodo size={ 18 } />,
 				component: (
@@ -773,6 +782,8 @@ const Dialog = ( {
 			setHasValidationErrors,
 		}
 	);
+	// Upsell tabs carry the Pro feature they advertise; hide them while it is switched off.
+	const tabs = withEnabledFeatures( allTabs );
 
 	useEffect( () => {
 		setFormSpecificSmartTags( updateBlockAttributes );

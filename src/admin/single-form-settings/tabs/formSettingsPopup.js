@@ -1,6 +1,7 @@
 import { Popover } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { withEnabledFeatures } from '@Utils/features';
 import { dispatch, select } from '@wordpress/data';
 
 // Lucide Icons
@@ -62,7 +63,7 @@ const FormSettingsPopup = ( {
 		setOpenPopover( false );
 	};
 
-	const tabs = applyFilters(
+	const allTabs = applyFilters(
 		'srfm.formSettings.tabs',
 		[
 			{
@@ -77,6 +78,7 @@ const FormSettingsPopup = ( {
 			},
 			{
 				id: 'conditional-confirmations-preview',
+				feature: 'conditional_confirmations',
 				label: __( 'Conditional Confirmations', 'sureforms' ),
 				icon: <Split size={ 18 } />,
 			},
@@ -87,11 +89,13 @@ const FormSettingsPopup = ( {
 			},
 			{
 				id: 'integrations-preview',
+				feature: 'native_integrations',
 				label: __( 'Integrations', 'sureforms' ),
 				icon: <Cpu size={ 18 } />,
 			},
 			{
 				id: 'ottokit',
+				feature: 'ottokit',
 				label: __( 'Automations', 'sureforms' ),
 				icon: (
 					<img
@@ -102,21 +106,25 @@ const FormSettingsPopup = ( {
 			},
 			{
 				id: 'pdf-generation-preview',
+				feature: 'pdf',
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File size={ 18 } />,
 			},
 			{
 				id: 'save-resume-preview',
+				feature: 'save_resume',
 				label: __( 'Save & Progress', 'sureforms' ),
 				icon: <Save size={ 18 } />,
 			},
 			{
 				id: 'user-login-preview',
+				feature: 'user_registration',
 				label: __( 'User Registration', 'sureforms' ),
 				icon: <UserPlus size={ 18 } />,
 			},
 			{
 				id: 'post-feed-preview',
+				feature: 'post_feeds',
 				label: __( 'Post Feed', 'sureforms' ),
 				icon: <FileText size={ 18 } />,
 			},
@@ -137,6 +145,8 @@ const FormSettingsPopup = ( {
 			setHasValidationErrors: () => {},
 		}
 	);
+	// Upsell tabs carry the Pro feature they advertise; hide them while it is switched off.
+	const tabs = withEnabledFeatures( allTabs );
 
 	// Filter out tabs with parent property as they are nested
 	const mainTabs = tabs.filter( ( tab ) => ! tab.parent );

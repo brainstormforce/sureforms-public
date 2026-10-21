@@ -16,6 +16,7 @@ use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
+use SRFM\Inc\Features;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
@@ -239,13 +240,14 @@ class Admin {
 		$general_options       = get_option( 'srfm_general_settings_options', [] );
 		$admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
 
-		if ( $admin_notification_on ) {
+		if ( $admin_notification_on && Features::is_enabled( 'entries' ) ) {
 			add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
 		}
 
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_pointer' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'localize_features' ] );
 		// Ajax callbacks for wp-pointer functionality.
 		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
 		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
@@ -1487,6 +1489,27 @@ JS;
 	}
 
 	/**
+	 * Expose the feature switches to every admin and editor script as
+	 * `window.srfmFeatures`, read through `window.srfmIsFeatureEnabled()`.
+	 * A key that is not listed reads as on, matching Features::is_enabled().
+	 *
+	 * Attached to `wp-hooks`, which every SureForms and SureForms Pro bundle
+	 * depends on, so it prints before any of them on any screen they load.
+	 *
+	 * @since 2.13.0
+	 * @return void
+	 */
+	public function localize_features() {
+		if ( ! Helper::current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+		$script  = 'window.srfmFeatures = ' . wp_json_encode( Features::for_js() ) . ';';
+		$script .= 'window.srfmBlocks = ' . wp_json_encode( Features::blocks_for_js() ) . ';';
+		$script .= 'window.srfmIsFeatureEnabled = function ( key ) { var f = window.srfmFeatures && window.srfmFeatures[ key ]; return ! f || false !== f.enabled; };';
+		wp_add_inline_script( 'wp-hooks', $script, 'before' );
+	}
+
+	/**
 	 * Add Learn submenu page.
 	 *
 	 * @return void
@@ -1531,7 +1554,7 @@ JS;
 			[ $this, 'render_forms' ],
 			1
 		);
-		add_submenu_page(
+		$new_form_hook = add_submenu_page(
 			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
@@ -1540,7 +1563,17 @@ JS;
 			[ $this, 'add_new_form_callback' ],
 			2
 		);
-		$entries_hook = add_submenu_page(
+		// The New Form screen is the AI builder; without it, every link to it opens a blank form instead.
+		if ( $new_form_hook && ! Features::is_enabled( 'ai_builder' ) ) {
+			add_action(
+				'load-' . $new_form_hook,
+				static function () {
+					wp_safe_redirect( admin_url( 'post-new.php?post_type=' . SRFM_FORMS_POST_TYPE ) );
+					exit;
+				}
+			);
+		}
+		$entries_hook = Features::is_enabled( 'entries' ) ? add_submenu_page(
 			'sureforms_menu',
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
@@ -1548,17 +1581,19 @@ JS;
 			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3
-		);
+		) : false;
 
-		add_submenu_page(
-			'sureforms_menu',
-			__( 'Payments', 'sureforms' ),
-			__( 'Payments', 'sureforms' ),
-			self::$sureforms_page_default_capability,
-			SRFM_PAYMENTS,
-			[ $this, 'render_payments' ],
-			4
-		);
+		if ( Features::is_enabled( 'payments' ) ) {
+			add_submenu_page(
+				'sureforms_menu',
+				__( 'Payments', 'sureforms' ),
+				__( 'Payments', 'sureforms' ),
+				self::$sureforms_page_default_capability,
+				SRFM_PAYMENTS,
+				[ $this, 'render_payments' ],
+				4
+			);
+		}
 
 		if ( $entries_hook ) {
 			add_action( 'load-' . $entries_hook, [ $this, 'mark_entries_page_visit' ] );
@@ -3144,7 +3179,13 @@ JS;
 		}
 
 		// Register the AI quick draft widget for capable users (the capability gate above applies); unlike the recent-entries widget below, it is not conditional on having entries.
-		add_action( 'wp_dashboard_setup', [ $this, 'register_ai_dashboard_widget' ] );
+		if ( Features::is_enabled( 'ai_builder' ) ) {
+			add_action( 'wp_dashboard_setup', [ $this, 'register_ai_dashboard_widget' ] );
+		}
+
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return;
+		}
 
 		// Quick check if there are any entries in the last 7 days.
 		$seven_days_ago = strtotime( '-7 days' );
@@ -3244,7 +3285,7 @@ JS;
 	 */
 	public function enqueue_ai_dashboard_widget_assets( $hook_suffix ) {
 		// Only on the main dashboard, and only for capable users (matches the widget gate).
-		if ( 'index.php' !== $hook_suffix || ! Helper::current_user_can() || Helper::hide_promotions() ) {
+		if ( 'index.php' !== $hook_suffix || ! Helper::current_user_can() || Helper::hide_promotions() || ! Features::is_enabled( 'ai_builder' ) ) {
 			return;
 		}
 
