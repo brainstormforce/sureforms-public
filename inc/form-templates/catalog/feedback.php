@@ -27,7 +27,7 @@ return [
 		'theme'         => 'mint',
 		'icon'          => 'message-circle-heart',
 		'title'         => __( 'Customer Feedback', 'sureforms' ),
-		'description'   => __( 'Ask customers what they liked and what to improve.', 'sureforms' ),
+		'description'   => __( 'Ask customers what they liked and what could be improved.', 'sureforms' ),
 		'submit_text'   => __( 'Send feedback', 'sureforms' ),
 		'fields'        => [
 			Catalog::field(
@@ -100,7 +100,7 @@ return [
 		'theme'         => 'lavender',
 		'icon'          => 'gauge',
 		'title'         => __( 'Satisfaction Survey', 'sureforms' ),
-		'description'   => __( 'A short survey with a 0–10 recommend score.', 'sureforms' ),
+		'description'   => __( 'Capture responses to a short survey with a 0–10 recommendation score.', 'sureforms' ),
 		'submit_text'   => __( 'Submit survey', 'sureforms' ),
 		'fields'        => [
 			Catalog::field(
@@ -226,7 +226,7 @@ return [
 		'theme'         => 'sand',
 		'icon'          => 'quote',
 		'title'         => __( 'Testimonial Submission', 'sureforms' ),
-		'description'   => __( 'Collect reviews you can feature on your site.', 'sureforms' ),
+		'description'   => __( 'Collect reviews to mention on your website.', 'sureforms' ),
 		'submit_text'   => __( 'Share my testimonial', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
@@ -290,7 +290,7 @@ return [
 		'theme'          => 'mint',
 		'icon'           => 'circle-alert',
 		'title'          => __( 'Complaint Form', 'sureforms' ),
-		'description'    => __( 'Give customers a clear way to raise a problem.', 'sureforms' ),
+		'description'    => __( 'Give customers a clear way to report issues.', 'sureforms' ),
 		'submit_text'    => __( 'Submit complaint', 'sureforms' ),
 		'steps'          => [ __( 'Your details', 'sureforms' ), __( 'Your complaint', 'sureforms' ) ],
 		'fields'         => [

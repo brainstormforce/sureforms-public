@@ -120,7 +120,7 @@ return [
 		'theme'          => 'lavender',
 		'icon'           => 'briefcase',
 		'title'          => __( 'Job Application', 'sureforms' ),
-		'description'    => __( 'Accept applications with the applicant\'s CV.', 'sureforms' ),
+		'description'    => __( 'Accept applications and CVs.', 'sureforms' ),
 		'submit_text'    => __( 'Submit application', 'sureforms' ),
 		'steps'          => [ __( 'About you', 'sureforms' ), __( 'Your experience', 'sureforms' ) ],
 		'fields'         => [

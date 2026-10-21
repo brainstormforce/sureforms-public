@@ -30,7 +30,7 @@ return [
 		'theme'         => 'lavender',
 		'icon'          => 'calendar-clock',
 		'title'         => __( 'Appointment Request', 'sureforms' ),
-		'description'   => __( 'Let clients request an appointment and preferred time.', 'sureforms' ),
+		'description'   => __( 'Let clients request appointments at their preferred times.', 'sureforms' ),
 		'submit_text'   => __( 'Request appointment', 'sureforms' ),
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
