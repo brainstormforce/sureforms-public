@@ -35,7 +35,9 @@
  * machine or site: the browser runs as en-US in New York (a phone field that
  * detects the visitor's country shows +1, the plugin's own fallback), the
  * admin-only Stripe test-mode notice is hidden, and the "Connect Stripe" note
- * is drawn as the card fields a connected site shows.
+ * is drawn as the card fields a connected site shows. A conversational
+ * template (welcome screen, one question per screen) is drawn as its welcome
+ * card with the first question under it.
  *
  * Needs Google Chrome (Playwright's `chrome` channel) and `cwebp`
  * (brew install webp). Theme fonts come from the site's active theme; the
@@ -151,8 +153,11 @@ const toWebp = ( png, webp ) => {
 				throw new Error( 'locked on this site, so its preview is not the full version' );
 			}
 			await page.goto( template.preview_url, { waitUntil: 'networkidle' } );
+			// A conversational template previews as its own full page (welcome
+			// screen first), which paints its own background.
+			const conversational = ( await page.locator( '.srfm-cf-ctn' ).count() ) > 0;
 			await page.addStyleTag( {
-				content: `html, body.srfm-template-preview { background: ${ pageColor( template.theme, themes ) } !important; }
+				content: `${ conversational ? '' : `html, body.srfm-template-preview { background: ${ pageColor( template.theme, themes ) } !important; }` }
 					*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }
 					.srfm-test-mode-notice { display: none !important; }`,
 			} );
@@ -184,6 +189,51 @@ const toWebp = ( png, webp ) => {
 			// Scripts that finish the form's look after load, e.g. the phone field's flag.
 			await page.waitForTimeout( 800 );
 
+			const png = path.join( tmp, `${ template.id }.png` );
+			if ( conversational ) {
+				// Drawn like the other cards: the welcome screen as a white card
+				// on the page color, with the first question as a second card
+				// under it, so the picture says "one question at a time".
+				await page.addStyleTag( {
+					content: `html, body, .srfm-cf-inner-ctn { background: ${ pageColor( template.theme, themes ) } !important; }
+						.srfm-cf-inner-ctn { justify-content: flex-start !important; align-items: center !important; padding-top: ${ SIDE }px !important; }
+						.srfm-cf-progress-bar-ctn, .srfm-error-message { display: none !important; }`,
+				} );
+				const box = await page.evaluate( ( formWidth ) => {
+					const content = document.querySelector( '.srfm-cf-content' );
+					const blocks = document.querySelectorAll( '.srfm-cf-block' );
+					if ( ! content || ! blocks.length ) {
+						return null;
+					}
+					const [ welcome, first ] = blocks;
+					const card = `box-sizing: border-box; width: ${ formWidth }px; background: #fff; border-radius: 12px;`;
+					content.style.cssText += `; width: ${ formWidth }px; max-width: ${ formWidth }px; padding: 0; background: none;`;
+					welcome.style.cssText += `; ${ card } padding: 40px; text-align: center;`;
+					if ( first ) {
+						first.classList.add( 'srfm-active' );
+						first.style.cssText += `; display: block; opacity: 1; visibility: visible; transform: none; position: static; margin-top: 16px; ${ card } padding: 32px 40px;`;
+						welcome.after( first );
+					}
+					// Runs in the preview page, which has no node refs to go by.
+					// eslint-disable-next-line @wordpress/no-global-active-element
+					document.activeElement?.blur?.();
+					const rect = content.getBoundingClientRect();
+					return { left: rect.left + window.scrollX, top: rect.top + window.scrollY, bottom: rect.bottom + window.scrollY };
+				}, FORM_WIDTH );
+				if ( ! box ) {
+					throw new Error( 'no conversational welcome screen on the preview page' );
+				}
+				await page.waitForTimeout( 300 );
+				await page.screenshot( {
+					path: png,
+					fullPage: true,
+					clip: { x: box.left - SIDE, y: Math.max( 0, box.top - SIDE ), width: FORM_WIDTH + ( 2 * SIDE ), height: Math.ceil( box.bottom - box.top + ( 2 * SIDE ) ) },
+				} );
+				const { quality, bytes } = toWebp( png, path.join( OUT, `${ template.id }.webp` ) );
+				console.log( `${ template.id }: ${ Math.round( bytes / 1024 ) } KB (q${ quality }, conversational)` );
+				continue;
+			}
+
 			const box = await page.evaluate( () => {
 				const wrap = document.querySelector( '.srfm-template-preview__wrap' );
 				const form = wrap?.querySelector( '.srfm-form-container' );
@@ -200,7 +250,6 @@ const toWebp = ( png, webp ) => {
 			if ( Math.round( box.width ) !== FORM_WIDTH ) {
 				throw new Error( `form is ${ box.width }px wide, expected ${ FORM_WIDTH }px` );
 			}
-			const png = path.join( tmp, `${ template.id }.png` );
 			await page.screenshot( {
 				path: png,
 				// The whole page, not a taller viewport: resizing just before the

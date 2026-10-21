@@ -1978,6 +1978,32 @@ class Form_Templates {
 			\Spec_Gb_Helper::get_instance()->get_generated_stylesheet( get_post( self::get_preview_post_id() ) );
 		}
 
+		// SureForms Pro draws the conversational layout on the form's own page
+		// only: it switches it on at template_redirect when the page's post is
+		// a conversational form. So such a template previews as that page:
+		// the in-memory form becomes the post, Pro's hook sees it, and the
+		// form's page template renders it once every hook has run.
+		if ( self::is_conversational( $built['metas'] ) ) {
+			$preview_post = get_post( self::get_preview_post_id() );
+			if ( $preview_post instanceof \WP_Post ) {
+				$GLOBALS['post'] = $preview_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- The preview is this form's page.
+				setup_postdata( $preview_post );
+			}
+			// Only Pro's hook needs to see the form before it renders. Other
+			// plugins' redirects (maintenance mode, language, membership) would
+			// send the preview frame elsewhere, as the other previews exit
+			// before them.
+			self::remove_third_party_hooks( [ 'template_redirect' ] );
+			add_action(
+				'template_redirect',
+				static function () {
+					self::render_conversational_preview();
+				},
+				PHP_INT_MAX
+			);
+			return;
+		}
+
 		// Render first, so the blocks enqueue the scripts and styles they need
 		// before the head and footer print them.
 		$markup = Helper::get_string_value( Generate_Form_Markup::get_form_markup( self::get_preview_post_id(), false ) );
@@ -2068,10 +2094,11 @@ class Form_Templates {
 	 * chat widget) is left out like their queued assets. WordPress core,
 	 * SureForms, SureForms Pro and the active theme keep theirs.
 	 *
+	 * @param array<int, string> $hooks Hooks to clear; the head and footer ones by default.
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function remove_third_party_hooks() {
+	public static function remove_third_party_hooks( $hooks = self::PREVIEW_ASSET_HOOKS ) {
 		global $wp_filter;
 
 		$kept = [ ABSPATH . 'wp-includes', Helper::get_string_value( SRFM_DIR ), get_stylesheet_directory(), get_template_directory() ];
@@ -2086,7 +2113,7 @@ class Form_Templates {
 			$kept
 		);
 
-		foreach ( self::PREVIEW_ASSET_HOOKS as $hook ) {
+		foreach ( $hooks as $hook ) {
 			if ( ! isset( $wp_filter[ $hook ] ) || ! $wp_filter[ $hook ] instanceof \WP_Hook ) {
 				continue;
 			}
@@ -2994,6 +3021,91 @@ class Form_Templates {
 	}
 
 	/**
+	 * Whether built metas switch the conversational layout on (set by SureForms
+	 * Pro's template builder when the template declares `conversational`).
+	 *
+	 * @param array<string, mixed> $metas Built metas.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_conversational( $metas ) {
+		$form = Helper::get_array_value( $metas['_srfm_conversational_form'] ?? [] );
+		return ! empty( $form['is_cf_enabled'] ) && filter_var( $form['is_cf_enabled'], FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
+	 * Render a conversational template's preview as the form's own page
+	 * (templates/single-form.php), whose body SureForms Pro replaces with the
+	 * conversational layout. Runs last on template_redirect, after Pro has
+	 * seen the in-memory form. Keeps the preview's own body class, styles and
+	 * submit blocker, which the library relies on.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function render_conversational_preview() {
+		add_filter(
+			'body_class',
+			static function ( $classes ) {
+				$classes[] = 'srfm-template-preview';
+				return $classes;
+			}
+		);
+		add_action( 'wp_head', [ self::class, 'remove_third_party_hooks' ], 0 );
+		add_action(
+			'wp_head',
+			static function () {
+				?>
+	<meta name="robots" content="noindex, nofollow">
+	<style>
+		html { margin-top: 0 !important; }
+		.srfm-template-preview .srfm-edit-form-btn-wrap { display: none !important; }
+		.srfm-template-preview__payment-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--srfm-color-input-description, #6b7280); }
+	</style>
+				<?php
+			},
+			99
+		);
+		add_action( 'wp_footer', [ self::class, 'remove_third_party_hooks' ], 0 );
+		add_action(
+			'wp_footer',
+			static function () {
+				self::print_submit_blocker();
+			},
+			99
+		);
+
+		include SRFM_DIR . 'templates/single-form.php';
+		exit;
+	}
+
+	/**
+	 * Script that stops the preview's form from being submitted: it is a
+	 * picture of the form, and the in-memory form cannot take entries.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function print_submit_blocker() {
+		?>
+	<script>
+		( function () {
+			var stop = function ( event ) {
+				var target = event.target;
+				var isSubmit = 'submit' === event.type || ( target && target.closest && target.closest( 'form button[type="submit"], form .srfm-submit-button, form input[type="submit"]' ) );
+				if ( isSubmit ) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+				}
+			};
+			document.addEventListener( 'submit', stop, true );
+			document.addEventListener( 'click', stop, true );
+		}() );
+	</script>
+		<?php
+	}
+
+	/**
 	 * Print the preview page around the rendered form.
 	 *
 	 * Submitting is switched off: this is a picture of the form, and the
@@ -3030,21 +3142,8 @@ class Form_Templates {
 	<div class="srfm-template-preview__wrap">
 		<?php echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output of the SureForms form renderer, escaped by each block. ?>
 	</div>
-	<script>
-		( function () {
-			var stop = function ( event ) {
-				var target = event.target;
-				var isSubmit = 'submit' === event.type || ( target && target.closest && target.closest( 'form button[type="submit"], form .srfm-submit-button, form input[type="submit"]' ) );
-				if ( isSubmit ) {
-					event.preventDefault();
-					event.stopImmediatePropagation();
-				}
-			};
-			document.addEventListener( 'submit', stop, true );
-			document.addEventListener( 'click', stop, true );
-		}() );
-	</script>
 		<?php
+		self::print_submit_blocker();
 		self::remove_third_party_hooks();
 		wp_footer();
 		?>
