@@ -361,6 +361,8 @@ const LiveForm = ( {
 							) }
 							aria-hidden={ index !== shown }
 							tabIndex={ index === shown ? 0 : -1 }
+							// Keeps Tab out of the fields of the frame behind.
+							inert={ index !== shown ? '' : undefined }
 							onLoad={ ( event ) => onFrameLoad( index, event ) }
 							// See-through: the form card sits on the stage's page color.
 							className={ cn(
