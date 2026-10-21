@@ -1,4 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 import { Button, Tooltip } from '@bsf/force-ui';
 import { Crown, ExternalLink } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
@@ -111,9 +112,9 @@ export const getMiniRows = ( fields ) => {
 };
 
 /**
- * The card's picture: the template's first fields drawn as a small form on
- * its page colour, in the colors the form starts with. Decorative; the
- * card's text names the template.
+ * The template's first fields drawn as a small form on its page colour, in
+ * the colors the form starts with: the card's picture when the template has
+ * no screenshot.
  *
  * @param {Object} props          Props.
  * @param {Object} props.template Template.
@@ -136,6 +137,40 @@ const MiniForm = ( { template, look } ) => (
 		) ) }
 	</span>
 );
+
+/**
+ * The card's picture: a screenshot of the template's preview, the white form
+ * on its page color, cropped to the tile from the top. A template without
+ * one (added through `srfm_form_templates`) gets its first fields drawn
+ * instead. Decorative; the card's text names the template.
+ *
+ * @param {Object} props          Props.
+ * @param {Object} props.template Template.
+ * @param {Object} props.look     The template's look, from resolveLook().
+ */
+export const CardPicture = ( { template, look } ) => {
+	const [ failed, setFailed ] = useState( false );
+	if ( ! template.thumbnail || failed ) {
+		return <MiniForm template={ template } look={ look } />;
+	}
+	return (
+		<img
+			src={ template.thumbnail }
+			alt=""
+			loading="lazy"
+			decoding="async"
+			// Twice the tile's width at its widest; the tile's fixed height
+			// keeps the grid from shifting while it loads.
+			width="760"
+			height="520"
+			onError={ () => setFailed( true ) }
+			// Full width from the top, never zoomed: a short form (a one-line
+			// sign-up) ends on the tile's tint instead of being blown up to
+			// fill it.
+			className="absolute inset-x-0 top-0 w-full h-auto"
+		/>
+	);
+};
 
 /**
  * Gradient crown on a Premium template.
@@ -240,8 +275,8 @@ export const getUnlockLabel = ( template ) =>
 		  );
 
 /**
- * A template in the library: its first fields drawn as a small form, with
- * its name and description.
+ * A template in the library: a picture of its form, with its name and
+ * description.
  *
  * A template this site can use is one button that opens the preview. A
  * locked one is one button that opens the pricing page (or the update
@@ -285,7 +320,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 				) }
 			>
 				<span className={ tileClass } style={ tileStyle }>
-					<MiniForm template={ template } look={ look } />
+					<CardPicture template={ template } look={ look } />
 					<TileShade />
 					<span
 						className={ cn(
@@ -313,7 +348,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 							size="md"
 							icon={ <ExternalLink /> }
 							iconPosition="right"
-							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
+							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] bg-[#D54407] hover:bg-[#B83A06] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
 						>
 							{ needsUpdate
 								? getLockLabels( template ).button
@@ -347,7 +382,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 			) }
 		>
 			<span className={ cn( tileClass, 'w-full group/tile' ) } style={ tileStyle }>
-				<MiniForm template={ template } look={ look } />
+				<CardPicture template={ template } look={ look } />
 				<TileShade />
 				<span
 					className={ cn(

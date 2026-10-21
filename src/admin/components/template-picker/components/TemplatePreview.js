@@ -442,8 +442,9 @@ const PremiumPicture = ( { template, onError } ) => (
 				) }
 				decoding="async"
 				onError={ onError }
-				// At the form's own width (pictures are taken at 522px), centered like the live preview, never stretched.
-				className="block w-full max-w-[570px] h-auto mx-auto px-6 py-10"
+				// The picture is the preview page itself, form and page color: at
+				// 690px its form is as wide as the live one, centered the same way.
+				className="block w-full max-w-[690px] h-auto mx-auto"
 			/>
 		</div>
 		<span className="absolute top-3 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium whitespace-nowrap rounded-full bg-background-inverse/90 text-text-on-color shadow-md">

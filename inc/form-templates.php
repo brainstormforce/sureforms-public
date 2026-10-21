@@ -440,6 +440,7 @@ class Form_Templates {
 			// A locked template's messages and card describe its Premium version,
 			// whose answers (a calculated total, say) the messages use.
 			$message_fields = '' === $lock_reason ? $resolved : self::resolve_fields( $template, 'business' );
+			$thumbnail      = self::get_thumbnail_url( $template );
 
 			$list[] = [
 				'id'              => $template['id'],
@@ -452,7 +453,8 @@ class Form_Templates {
 				// Built from the same version as the messages: what this site gets, or the Premium version while locked.
 				'form_type'       => self::get_form_type( $template, $message_fields ),
 				'fields'          => $fields,
-				// The first fields, drawn as a small form on the library card.
+				// The first fields, drawn as a small form on a card that has no picture.
+				// Drawn when there's no picture, or the picture doesn't load.
 				'card_fields'     => self::get_card_fields( $message_fields ),
 				'features'        => $features,
 				// What the template gains with a higher SureForms Pro plan.
@@ -468,6 +470,8 @@ class Form_Templates {
 				'unlock_url'      => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
 				// Picture of the Premium version, shown instead of the live preview while locked.
 				'preview_image'   => self::get_preview_image_url( $template ),
+				// Picture of the form on the library card, so the grid never loads live previews.
+				'thumbnail'       => $thumbnail,
 				// How many of the Premium version's fields the live preview can't show here.
 				'preview_missing' => '' === $lock_reason ? 0 : self::count_missing_preview_fields( $template, $resolved ),
 				'setup'           => self::get_setup( $template ),
@@ -685,7 +689,29 @@ class Form_Templates {
 		if ( false !== strpos( $image, '..' ) || ! preg_match( '#^[a-z0-9][a-z0-9/_.-]*\.(webp|png|jpe?g|avif)$#i', $image ) ) {
 			return '';
 		}
-		return SRFM_URL . 'images/templates/' . ltrim( $image, '/' );
+		// Versioned, so a plugin update replaces cached pictures.
+		return add_query_arg( 'ver', SRFM_VER, SRFM_URL . 'images/templates/' . ltrim( $image, '/' ) );
+	}
+
+	/**
+	 * URL of the picture on a template's library card: its `preview_image`, or
+	 * the plugin's `images/templates/<id>.webp`. Both are screenshots of the
+	 * template's preview, taken with bin/capture-template-images.js.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string Unescaped URL, '' when the template has no picture.
+	 */
+	public static function get_thumbnail_url( $template ) {
+		$image = self::get_preview_image_url( $template );
+		if ( '' !== $image ) {
+			return $image;
+		}
+		$id = sanitize_key( Helper::get_string_value( $template['id'] ?? '' ) );
+		if ( '' === $id || ! file_exists( SRFM_DIR . 'images/templates/' . $id . '.webp' ) ) {
+			return '';
+		}
+		return add_query_arg( 'ver', SRFM_VER, SRFM_URL . 'images/templates/' . $id . '.webp' );
 	}
 
 	/**

@@ -98,7 +98,7 @@ class Test_Form_Templates_UI extends TestCase {
 
 	public function test_preview_image_is_exposed_as_plugin_url() {
 		$item = $this->template_for_js( [ 'preview_image' => 'quiz.webp' ] );
-		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp', $item['preview_image'] );
+		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp?ver=' . SRFM_VER, $item['preview_image'] );
 	}
 
 	public function test_preview_image_rejects_paths_leaving_the_folder() {
@@ -394,11 +394,13 @@ class Test_Form_Templates_UI extends TestCase {
 	}
 
 	public function test_card_fields_have_the_compact_shape() {
-		foreach ( Form_Templates::get_templates_for_js() as $item ) {
-			$this->assertNotEmpty( $item['card_fields'], "Template {$item['id']}: nothing to draw on its card." );
-			$this->assertLessThanOrEqual( 8, count( $item['card_fields'] ) );
-			foreach ( $item['card_fields'] as $field ) {
-				$this->assertSame( [ 't', 'l', 'p', 'o', 'w' ], array_keys( $field ), "Template {$item['id']}." );
+		// Every template can be drawn, should one ship without its picture.
+		foreach ( Form_Templates::get_templates() as $template ) {
+			$card = Form_Templates::get_card_fields( Form_Templates::resolve_fields( $template, 'business' ) );
+			$this->assertNotEmpty( $card, "Template {$template['id']}: nothing to draw on its card." );
+			$this->assertLessThanOrEqual( 8, count( $card ) );
+			foreach ( $card as $field ) {
+				$this->assertSame( [ 't', 'l', 'p', 'o', 'w' ], array_keys( $field ), "Template {$template['id']}." );
 				$this->assertIsString( $field['l'] );
 				$this->assertIsString( $field['p'] );
 				$this->assertContains( $field['w'], [ 'half', 'full' ] );
@@ -408,15 +410,14 @@ class Test_Form_Templates_UI extends TestCase {
 	}
 
 	public function test_library_cards_draw_no_hidden_fields_or_steps() {
-		add_filter( 'srfm_pro_tier', static fn() => 'business' );
-		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
-
+		$cards = [];
 		foreach ( [ 'contact-us', 'quote-request' ] as $id ) {
-			$types = array_column( $items[ $id ]['card_fields'], 't' );
+			$cards[ $id ] = Form_Templates::get_card_fields( Form_Templates::resolve_fields( Form_Templates::get_template( $id ), 'business' ) );
+			$types        = array_column( $cards[ $id ], 't' );
 			$this->assertNotContains( 'hidden', $types, $id );
 			$this->assertNotContains( 'page-break', $types, $id );
 		}
-		$this->assertSame( 'First Name', $items['contact-us']['card_fields'][0]['l'] );
+		$this->assertSame( 'First Name', $cards['contact-us'][0]['l'] );
 	}
 
 	public function test_card_fields_show_a_locked_template_as_its_premium_version() {
@@ -467,12 +468,32 @@ class Test_Form_Templates_UI extends TestCase {
 		$this->assertSame( [ 'Name' ], array_column( $unlocked['card_fields'], 'l' ) );
 	}
 
-	public function test_library_no_longer_sends_a_card_picture() {
+	public function test_every_catalog_template_has_a_card_picture_within_budget() {
+		foreach ( Form_Templates::get_templates_for_js() as $item ) {
+			$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $item['thumbnail'], "Template {$item['id']}: no card picture." );
+			$path = SRFM_DIR . substr( strtok( $item['thumbnail'], '?' ), strlen( SRFM_URL ) );
+			$this->assertFileExists( $path, "Template {$item['id']}: card picture missing." );
+			$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$item['id']}: card picture is 60 KB or more." );
+			// The form is drawn instead if the picture doesn't load.
+			$this->assertNotEmpty( $item['card_fields'], "Template {$item['id']}: nothing to draw if its picture fails." );
+		}
+	}
+
+	public function test_card_picture_of_a_free_template_is_its_own_file() {
 		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
-		$this->assertArrayNotHasKey( 'thumbnail', $items['contact-us'] );
-		// The locked preview keeps its Premium picture; a free template's preview stays live.
+
+		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp?ver=' . SRFM_VER, $items['contact-us']['thumbnail'] );
+		// A free template's preview stays live: it has no Premium picture.
 		$this->assertSame( '', $items['contact-us']['preview_image'] );
-		$this->assertStringStartsWith( SRFM_URL . 'images/templates/', $items['loan-emi-calculator']['preview_image'] );
+		// A Premium template's card and locked preview show the same picture.
+		$this->assertSame( SRFM_URL . 'images/templates/loan-emi-calculator.webp?ver=' . SRFM_VER, $items['loan-emi-calculator']['preview_image'] );
+		$this->assertSame( $items['loan-emi-calculator']['preview_image'], $items['loan-emi-calculator']['thumbnail'] );
+	}
+
+	public function test_an_added_template_without_a_picture_is_drawn() {
+		$item = $this->template_for_js( [] );
+		$this->assertSame( '', $item['thumbnail'] );
+		$this->assertSame( [ 'Name' ], array_column( $item['card_fields'], 'l' ) );
 	}
 
 	public function test_pro_keys_show_as_features_from_their_plan() {
