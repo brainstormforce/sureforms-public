@@ -269,6 +269,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 			<button
 				type="button"
 				hidden={ hidden }
+				data-template-id={ template.id }
 				onClick={ () => openTemplateUnlock( template ) }
 				aria-label={ getUnlockLabel( template ) }
 				aria-describedby={
@@ -330,6 +331,7 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 		<button
 			type="button"
 			hidden={ hidden }
+			data-template-id={ template.id }
 			onClick={ () => onSelect( template.id ) }
 			aria-label={ getPreviewLabel( template ) }
 			aria-describedby={

@@ -166,28 +166,6 @@ export const getFeatures = ( ids ) => {
 };
 
 /**
- * Whether SureForms Pro is active, on the admin screens or in the editor.
- *
- * @since x.x.x
- * @return {boolean} Pro is active.
- */
-export const isProActive = () =>
-	Boolean(
-		window.srfm_admin?.is_pro_active ||
-			window.srfm_block_data?.is_pro_active
-	);
-
-/**
- * Features the template gains with Pro, when the site doesn't have it.
- *
- * @since x.x.x
- * @param {Object} template Template.
- * @return {Array} Features.
- */
-export const getProFeatures = ( template ) =>
-	isProActive() ? [] : getFeatures( template?.pro_features );
-
-/**
  * Labels for a locked template. The badge always reads "Premium", whatever
  * plan the template needs.
  *

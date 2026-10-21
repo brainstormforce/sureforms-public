@@ -489,7 +489,7 @@ const TemplateLibrary = () => {
 					template={ preview }
 					browseList={ previewList }
 					onNavigate={ setPreviewId }
-					isCreating={ creatingId === preview.id }
+					isCreating={ Boolean( creatingId ) }
 					onUse={ createFromTemplate }
 					onClose={ closePreview }
 					offerSpamProtection={ isSpamProtectionOff(

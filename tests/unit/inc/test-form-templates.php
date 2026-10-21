@@ -2701,4 +2701,37 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'conversational', Form_Templates::get_form_type( [ 'conversational' => [ 'start_button' => 'Go' ] ], [ $input, $step ] ) );
 		$this->assertSame( 'multistep', Form_Templates::get_form_type( [ 'conversational' => [] ], [ $step ] ) );
 	}
+
+	public function test_is_dark() {
+		$this->assertTrue( Form_Templates::is_dark( '#111C44' ) );
+		$this->assertTrue( Form_Templates::is_dark( '#000000' ) );
+		$this->assertFalse( Form_Templates::is_dark( '#E3EBFB' ) );
+		$this->assertFalse( Form_Templates::is_dark( '#FFFFFF' ) );
+		// Either side of the 0.179 luminance threshold.
+		$this->assertTrue( Form_Templates::is_dark( '#757575' ) );
+		$this->assertFalse( Form_Templates::is_dark( '#767676' ) );
+	}
+
+	public function test_get_banner_title_color() {
+		$form_id = wp_insert_post(
+			[
+				'post_title'  => 'Banner title test',
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
+
+		// Not made from a template: the title stays white.
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', '#F3F4F6' ) );
+
+		update_post_meta( $form_id, Form_Templates::TEMPLATE_ID_META, 'contact-us' );
+		$this->assertSame( '#1E293B', Form_Templates::get_banner_title_color( $form_id, 'color', '#F3F4F6' ) );
+		// A dark banner, an image banner or a color that isn't plain hex keep it white.
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', '#111C44' ) );
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'image', '#F3F4F6' ) );
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', 'linear-gradient(#fff, #eee)' ) );
+		$this->assertSame( '', Form_Templates::get_banner_title_color( $form_id, 'color', null ) );
+
+		wp_delete_post( $form_id, true );
+	}
 }
