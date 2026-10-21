@@ -172,7 +172,13 @@ const TemplateStylePanel = ( {
 	id,
 } ) => {
 	const presets = givenPresets || srfm_admin?.form_template_themes || [];
-	const activePreset = style.preset || theme;
+	// A template on a dark preset starts with its light look, which is none
+	// of the presets.
+	const activePreset =
+		style.preset ||
+		( presets.find( ( preset ) => preset.id === theme )?.default
+			? ''
+			: theme );
 	const isCustomized = Object.keys( style ).length > 0;
 
 	return (
@@ -219,6 +225,10 @@ const TemplateStylePanel = ( {
 			<Group label={ __( 'Style', 'sureforms' ) }>
 				<div className="grid grid-cols-3 gap-2">
 					{ presets.map( ( preset ) => {
+						// A light preset shows its page color, a dark one its form.
+						const tile = isDark( firstHex( preset.background ) )
+							? preset.background
+							: preset.page || preset.background;
 						const active =
 							activePreset === preset.id &&
 							! style.background &&
@@ -244,7 +254,7 @@ const TemplateStylePanel = ( {
 											? 'border-border-interactive ring-2 ring-border-interactive'
 											: 'border-border-subtle hover:shadow-md'
 									) }
-									style={ { background: preset.background } }
+									style={ { background: tile } }
 									aria-hidden="true"
 								>
 									{ /* A tiny form: two fields and the button. */ }
@@ -254,9 +264,7 @@ const TemplateStylePanel = ( {
 											className="block h-1.5 w-4/5 rounded-full opacity-25"
 											style={ {
 												background: isDark(
-													firstHex(
-														preset.background
-													)
+													firstHex( tile )
 												)
 													? '#FFFFFF'
 													: '#0F172A',

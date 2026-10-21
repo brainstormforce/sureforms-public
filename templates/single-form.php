@@ -6,6 +6,7 @@
  */
 
 use SRFM\Inc\Compatibility\Multilingual\String_Translator;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Helper;
 
@@ -41,6 +42,9 @@ if ( apply_filters( 'srfm_use_color_or_image_as_bg', true ) ) {
 		$bg_color = $bg_color ? $bg_color : '';
 	}
 }
+
+// Set as a variable, so the form's custom CSS can still change it.
+$srfm_banner_title_color = Form_Templates::get_banner_title_color( $srfm_custom_post_id, $cover_type, $cover_color );
 
 $body_classes = [];
 
@@ -93,6 +97,9 @@ if ( $use_banner_as_page_background ) {
 			#srfm-single-page-container {
 				--srfm-form-container-width: <?php echo esc_attr( $form_container_width . 'px' ); ?>;
 				--srfm-bg-color: <?php echo $bg_color && is_string( $bg_color ) ? esc_html( $bg_color ) : ''; ?>;
+				<?php if ( $srfm_banner_title_color ) { ?>
+					--srfm-banner-title-color: <?php echo esc_html( $srfm_banner_title_color ); ?>;
+				<?php } ?>
 			}
 			<?php
 			$selector = '.single-sureforms_form .srfm-single-page-container .srfm-page-banner';

@@ -9,35 +9,44 @@ import {
 const presets = [
 	{
 		id: 'ocean',
-		background: 'linear-gradient(135deg, #EAF2FF 0%, #F7FAFF 100%)',
+		page: '#E3EBFB',
+		background: '#FFFFFF',
 		accent: '#2563EB',
 		text: '#1E293B',
 		onPrimary: '#FFFFFF',
 	},
 	{
 		id: 'midnight',
-		background: 'linear-gradient(160deg, #0F172A 0%, #1E293B 100%)',
+		page: '#E4E8EF',
+		background: '#111827',
 		accent: '#38BDF8',
 		text: '#E2E8F0',
 		onPrimary: '#0F172A',
+		default: {
+			background: '#FFFFFF',
+			accent: '#0369A1',
+			text: '#1E293B',
+			onPrimary: '#FFFFFF',
+		},
 	},
 	{
 		id: 'mint',
-		background: 'linear-gradient(135deg, #E6FAF1 0%, #F5FFFB 100%)',
-		accent: '#059669',
+		page: '#DEF2E8',
+		background: '#FFFFFF',
+		accent: '#047857',
 		text: '#1F2F2A',
 		onPrimary: '#FFFFFF',
 	},
 ];
 
 // The parts of the form's <style> block that carry the theme's colors.
-const formCss = ( look ) => `.srfm-form-container-1 {
+const formCss = ( look, id = 1 ) => `.srfm-form-container-${ id } {
 	--srfm-color-scheme-primary: ${ look.primary };
 	--srfm-color-scheme-text-on-primary: ${ look.onPrimary };
 	--srfm-color-scheme-text: ${ look.text };
 	--srfm-color-input-border: hsl( from ${ look.text } h s l / 0.25 );
 	--srfm-btn-color-hover: hsl( from ${ look.primary } h s l / 0.9 );
-	--srfm-bg-gradient: ${ look.background };
+	--srfm-bg-color: ${ look.background };
 	--srfm-page-break-back-btn-bg-hover: ${ look.text }0D;
 	--srfm-page-break-back-btn-color-hover: ${ look.text }CC;
 	--srfm-bg-overlay-color: #FFFFFF75;
@@ -51,12 +60,32 @@ const renderPreview = ( look ) => {
 };
 
 describe( 'resolveLook', () => {
-	it( "keeps a preset's own text colors", () => {
+	it( "keeps a preset's own text colors and page", () => {
 		expect( resolveLook( {}, 'mint', presets ) ).toEqual( {
-			background: presets[ 2 ].background,
-			primary: '#059669',
+			page: '#DEF2E8',
+			background: '#FFFFFF',
+			primary: '#047857',
 			text: '#1F2F2A',
 			onPrimary: '#FFFFFF',
+		} );
+	} );
+
+	it( 'starts a template on a dark theme light, and the preset stays dark', () => {
+		expect( resolveLook( {}, 'midnight', presets ) ).toEqual( {
+			page: '#E4E8EF',
+			background: '#FFFFFF',
+			primary: '#0369A1',
+			text: '#1E293B',
+			onPrimary: '#FFFFFF',
+		} );
+		expect(
+			resolveLook( { preset: 'midnight' }, 'midnight', presets )
+		).toEqual( {
+			page: '#E4E8EF',
+			background: '#111827',
+			primary: '#38BDF8',
+			text: '#E2E8F0',
+			onPrimary: '#0F172A',
 		} );
 	} );
 
@@ -66,9 +95,8 @@ describe( 'resolveLook', () => {
 			'ocean',
 			presets
 		);
-		expect( look.background ).toBe(
-			'linear-gradient(135deg, #0F172A 0%, #636875 100%)'
-		);
+		expect( look.background ).toBe( '#0F172A' );
+		expect( look.page ).toBe( '#E3EBFB' );
 		expect( look.text ).toBe( '#E2E8F0' );
 		expect( look.onPrimary ).toBe( '#0F172A' );
 	} );
@@ -81,14 +109,25 @@ describe( 'getProbePreset', () => {
 		).toBe( 'midnight' );
 		expect(
 			getProbePreset( resolveLook( {}, 'midnight', presets ), presets )
-		).toBe( 'ocean' );
+		).toBe( 'midnight' );
+	} );
+
+	it( 'passes over a preset that repeats a color of its own', () => {
+		// A white form with white button text can't tell the two apart.
+		const list = [ presets[ 1 ], presets[ 0 ] ];
+		expect(
+			getProbePreset(
+				resolveLook( { preset: 'midnight' }, 'ocean', list ),
+				list
+			)
+		).toBe( '' );
 	} );
 
 	it( 'passes over a preset that shares even one color', () => {
 		const ocean = presets[ 0 ];
-		// Same button text as ocean: listed first, so a preset that differs
-		// in some colors only would be picked.
-		const sky = { ...presets[ 1 ], id: 'sky', onPrimary: ocean.onPrimary };
+		// Same accent as ocean: listed first, so a preset that differs in
+		// some colors only would be picked.
+		const sky = { ...presets[ 1 ], id: 'sky', accent: ocean.accent };
 		const list = [ ocean, sky, presets[ 1 ] ];
 		expect( getProbePreset( resolveLook( {}, 'ocean', list ), list ) ).toBe(
 			'midnight'
@@ -103,9 +142,11 @@ describe( 'getProbePreset', () => {
 } );
 
 describe( 'restyleDocument', () => {
-	// Ocean's button text is white, like the fixed overlay color.
+	// Ocean's form and button text are both white, like the fixed overlay color.
 	const from = resolveLook( {}, 'ocean', presets );
-	const probe = [ formCss( resolveLook( {}, 'midnight', presets ) ) ];
+	const probeLook = resolveLook( { preset: 'midnight' }, 'ocean', presets );
+	// Rendered as another in-memory form, so with another form id.
+	const probe = { blocks: [ formCss( probeLook, 2 ) ], look: probeLook };
 	// frontend.js's dark-background handling, on the preview's window.
 	const normalize = jest.fn();
 
@@ -185,18 +226,42 @@ describe( 'restyleDocument', () => {
 	it( 'swaps a color only where it is the whole color', () => {
 		// A 3-digit color is the start of a 6-digit one, and a 6-digit one
 		// of an 8-digit one with alpha, which does follow it.
-		const short = { ...from, onPrimary: '#FFF' };
 		const css = ( look ) =>
 			`.srfm-form-container-1 { --srfm-color-scheme-primary: ${ look.primary }; --a: linear-gradient(${ look.onPrimary } 0%, #FFFFFF 100%); --b: ${ look.primary }1A; }`;
-		const other = { ...from, primary: '#38BDF8', onPrimary: '#000' };
+		const short = { ...from, background: '#FAFAFA', onPrimary: '#FFF' };
+		const other = {
+			...from,
+			background: '#111111',
+			text: '#EEEEEE',
+			primary: '#38BDF8',
+			onPrimary: '#000',
+		};
 		document.head.innerHTML = `<style>${ css( short ) }</style>`;
 		const to = { ...short, primary: '#059669', onPrimary: '#0F172A' };
 		expect(
-			restyleDocument( document, short, to, [ css( other ) ] )
+			restyleDocument( document, short, to, {
+				blocks: [ css( other ) ],
+				look: other,
+			} )
 		).toBe( true );
 		expect( document.querySelector( 'style' ).textContent ).toBe(
 			`.srfm-form-container-1 { --srfm-color-scheme-primary: #059669; --a: linear-gradient(#0F172A 0%, #FFFFFF 100%); --b: #0596691A; }`
 		);
+	} );
+
+	it( 'tells a white form from its white button text', () => {
+		const doc = renderPreview( from );
+		expect( from.background ).toBe( from.onPrimary );
+		const charcoal = resolveLook(
+			{ background: '#1F2937' },
+			'ocean',
+			presets
+		);
+		expect( restyleDocument( doc, from, charcoal, probe ) ).toBe( true );
+		expect( doc.querySelectorAll( 'style' )[ 1 ].textContent ).toBe(
+			formCss( charcoal )
+		);
+		expect( charcoal.onPrimary ).toBe( '#FFFFFF' );
 	} );
 
 	it( 'leaves other styles alone', () => {
@@ -225,7 +290,10 @@ describe( 'restyleDocument', () => {
 		).toBe( false );
 		// The other render has no form CSS.
 		expect(
-			restyleDocument( renderPreview( from ), from, other, [ 'a;b' ] )
+			restyleDocument( renderPreview( from ), from, other, {
+				blocks: [ 'a;b' ],
+				look: probeLook,
+			} )
 		).toBe( false );
 
 		document.head.innerHTML = '<style>body { margin: 0; }</style>';

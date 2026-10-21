@@ -71,6 +71,8 @@ const ChangeTemplate = () => {
 	const [ library, setLibrary ] = useState( null );
 	const [ loadError, setLoadError ] = useState( '' );
 	const [ previewId, setPreviewId ] = useState( '' );
+	// The cards shown when the preview opened, for its arrows.
+	const [ previewList, setPreviewList ] = useState( [] );
 	const [ busy, setBusy ] = useState( false );
 	// The template waiting on the user:
 	// { template, style, content, styling, instantForm, settings, hasEntries,
@@ -146,6 +148,10 @@ const ChangeTemplate = () => {
 	}, [] );
 
 	const closePreview = useCallback( () => setPreviewId( '' ), [] );
+	const openPreview = useCallback( ( id, shown = [] ) => {
+		setPreviewList( shown );
+		setPreviewId( id );
+	}, [] );
 
 	// Escape closes the library when no preview or confirmation is on top.
 	useEffect( () => {
@@ -441,7 +447,8 @@ const ChangeTemplate = () => {
 			<TemplateGrid
 				templates={ templates }
 				categories={ library.categories || [] }
-				onSelect={ setPreviewId }
+				presets={ library.themes }
+				onSelect={ openPreview }
 				requests={ library.requests }
 			>
 				<p className="m-0 text-sm text-text-secondary">
@@ -495,8 +502,9 @@ const ChangeTemplate = () => {
 						</div>
 						{ preview && (
 							<TemplatePreview
-								key={ preview.id }
 								template={ preview }
+								browseList={ previewList }
+								onNavigate={ setPreviewId }
 								isCreating={ busy }
 								presets={ library?.themes }
 								top={ adminBarHeight }

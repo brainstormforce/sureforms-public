@@ -1033,57 +1033,68 @@ class Form_Templates {
 	}
 
 	/**
-	 * Visual themes a template can use: the form's background and colors.
-	 * Everything maps to the free form styling options, so a
+	 * Visual themes a template can use: the form's colors and the page
+	 * behind it. Everything maps to the free form styling options, so a
 	 * form created from a template keeps its look and stays editable in the
 	 * Style tab.
 	 *
+	 * Each theme is a white form on a light page of its own color, with an
+	 * accent that keeps white button text readable (WCAG AA). A dark theme
+	 * also carries a light `default`: a template on it starts light, and the
+	 * dark look is there to pick in the preview.
+	 *
 	 * @since x.x.x
-	 * @return array<string, array<string, string>>
+	 * @return array<string, array<string, mixed>>
 	 */
 	public static function get_themes() {
 		return [
 			'ocean'    => [
-				'background' => 'linear-gradient(135deg, #EAF2FF 0%, #F7FAFF 100%)',
+				'page'       => '#E3EBFB',
+				'background' => '#FFFFFF',
 				'primary'    => '#2563EB',
 				'text'       => '#1E293B',
 				'on_primary' => '#FFFFFF',
-				'banner'     => '#1D4ED8',
 			],
 			'midnight' => [
-				'background' => 'linear-gradient(160deg, #0F172A 0%, #1E293B 100%)',
+				'page'       => '#E4E8EF',
+				'background' => '#111827',
 				'primary'    => '#38BDF8',
 				'text'       => '#E2E8F0',
 				'on_primary' => '#0F172A',
-				'banner'     => '#020617',
+				'default'    => [
+					'background' => '#FFFFFF',
+					'primary'    => '#0369A1',
+					'text'       => '#1E293B',
+					'on_primary' => '#FFFFFF',
+				],
 			],
 			'mint'     => [
-				'background' => 'linear-gradient(135deg, #E6FAF1 0%, #F5FFFB 100%)',
-				'primary'    => '#059669',
+				'page'       => '#DEF2E8',
+				'background' => '#FFFFFF',
+				'primary'    => '#047857',
 				'text'       => '#1F2F2A',
 				'on_primary' => '#FFFFFF',
-				'banner'     => '#047857',
 			],
 			'lavender' => [
-				'background' => 'linear-gradient(135deg, #F0EBFF 0%, #FBF8FF 100%)',
+				'page'       => '#EAE5FA',
+				'background' => '#FFFFFF',
 				'primary'    => '#7C3AED',
 				'text'       => '#27203A',
 				'on_primary' => '#FFFFFF',
-				'banner'     => '#6D28D9',
 			],
 			'sunset'   => [
-				'background' => 'linear-gradient(135deg, #FFEADF 0%, #FFF5F7 100%)',
-				'primary'    => '#E4572E',
+				'page'       => '#FAE6DD',
+				'background' => '#FFFFFF',
+				'primary'    => '#C2410C',
 				'text'       => '#33201A',
 				'on_primary' => '#FFFFFF',
-				'banner'     => '#C2410C',
 			],
 			'sand'     => [
-				'background' => 'linear-gradient(135deg, #FFF4D9 0%, #FFFBF1 100%)',
+				'page'       => '#F8EED6',
+				'background' => '#FFFFFF',
 				'primary'    => '#B45309',
 				'text'       => '#2D2416',
 				'on_primary' => '#FFFFFF',
-				'banner'     => '#92400E',
 			],
 		];
 	}
@@ -1093,19 +1104,26 @@ class Form_Templates {
 	 * the text colors that go with them, so the preview can restyle itself
 	 * exactly like resolve_theme() does.
 	 *
+	 * A dark preset also carries the light look a template on it starts
+	 * with (`default`), so the card and the preview start out the same.
+	 *
 	 * @since x.x.x
-	 * @return array<int, array{id:string,background:string,accent:string,text:string,onPrimary:string}>
+	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_themes_for_js() {
+		$to_js   = static fn( $colors ) => [
+			'background' => $colors['background'],
+			'accent'     => $colors['primary'],
+			'text'       => $colors['text'],
+			'onPrimary'  => $colors['on_primary'],
+		];
 		$presets = [];
 		foreach ( self::get_themes() as $id => $theme ) {
-			$presets[] = [
-				'id'         => $id,
-				'background' => $theme['background'],
-				'accent'     => $theme['primary'],
-				'text'       => $theme['text'],
-				'onPrimary'  => $theme['on_primary'],
-			];
+			$preset = array_merge( [ 'id' => $id ], $to_js( $theme ), [ 'page' => $theme['page'] ] );
+			if ( ! empty( $theme['default'] ) ) {
+				$preset['default'] = $to_js( $theme['default'] );
+			}
+			$presets[] = $preset;
 		}
 		return $presets;
 	}
@@ -1158,11 +1176,18 @@ class Form_Templates {
 	public static function resolve_theme( $template, $style = [] ) {
 		$themes = self::get_themes();
 		$preset = Helper::get_string_value( $style['preset'] ?? '' );
-		$theme  = $themes[ $preset ] ?? self::get_template_theme( $template );
+		if ( isset( $themes[ $preset ] ) ) {
+			$theme = $themes[ $preset ];
+		} else {
+			// The template's own look: a dark theme starts light.
+			$theme = self::get_template_theme( $template );
+			$theme = array_merge( $theme, Helper::get_array_value( $theme['default'] ?? [] ) );
+		}
+		unset( $theme['default'] );
 
 		if ( ! empty( $style['background'] ) ) {
 			$background          = Helper::get_string_value( $style['background'] );
-			$theme['background'] = 'linear-gradient(135deg, ' . $background . ' 0%, ' . self::mix_with( $background, '#FFFFFF', 0.35 ) . ' 100%)';
+			$theme['background'] = $background;
 			$theme['text']       = self::is_dark( $background ) ? '#E2E8F0' : '#1E293B';
 		}
 
@@ -1170,10 +1195,11 @@ class Form_Templates {
 			$accent              = Helper::get_string_value( $style['accent'] );
 			$theme['primary']    = $accent;
 			$theme['on_primary'] = self::is_dark( $accent ) ? '#FFFFFF' : '#0F172A';
-			$theme['banner']     = self::mix_with( $accent, '#000000', 0.15 );
 		}
 
-		$theme['radius'] = 16;
+		// The form as a card on its page, like the library's preview.
+		$theme['radius']  = 10;
+		$theme['padding'] = 28;
 
 		return $theme;
 	}
@@ -1444,22 +1470,21 @@ class Form_Templates {
 				'text_color_on_primary'   => $theme['on_primary'],
 				'field_spacing'           => 'medium',
 				'submit_button_alignment' => 'justify',
-				'bg_type'                 => 'gradient',
-				'gradient_type'           => 'basic',
-				'bg_gradient'             => $theme['background'],
+				'bg_type'                 => 'color',
+				'bg_color'                => $theme['background'],
 			]
 		);
 		// The form's own page (Instant Form) reads its own padding and corner
 		// keys, so both get the same values and the form looks alike everywhere.
 		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
-			$styling[ 'form_padding_' . $side ]               = 40;
+			$styling[ 'form_padding_' . $side ]               = $theme['padding'];
 			$styling[ 'form_border_radius_' . $side ]         = $theme['radius'];
-			$styling[ 'instant_form_padding_' . $side ]       = 40;
+			$styling[ 'instant_form_padding_' . $side ]       = $theme['padding'];
 			$styling[ 'instant_form_border_radius_' . $side ] = $theme['radius'];
 		}
 
 		// The form's own page (Instant Form) shows the form title above the
-		// form, and its banner follows the template's theme.
+		// form, on the template's page color.
 		$instant_form = array_merge(
 			Helper::get_array_value( $registered['_srfm_instant_form_settings']['default'] ?? [] ),
 			self::instant_form_style( $theme )
@@ -1693,7 +1718,15 @@ class Form_Templates {
 				'content'      => $built['content'],
 				'has_entries'  => $has_entries,
 				// Applied over the open form's own settings in the editor.
-				'styling'      => self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
+				// The background always goes along, also when it matches the
+				// default, so a form that had a gradient or image doesn't keep it.
+				'styling'      => array_merge(
+					self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
+					[
+						'bg_type'  => $style_metas['_srfm_forms_styling']['bg_type'],
+						'bg_color' => $style_metas['_srfm_forms_styling']['bg_color'],
+					]
+				),
 				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
 				// Button text, emails, thank-you message and steps the template sets.
 				// The editor only applies the get_message_meta_keys() ones when the
@@ -2738,12 +2771,30 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @since x.x.x
-	 * @return array<string, string>
+	 * @return array<string, mixed>
 	 */
 	private static function get_template_theme( $template ) {
 		$themes = self::get_themes();
 		$key    = Helper::get_string_value( $template['theme'] ?? '' );
 		return $themes[ $key ] ?? $themes['ocean'];
+	}
+
+	/**
+	 * Text color for the Instant Form banner title, which is white. A form made
+	 * from a template has a light page color behind the title, so it gets dark
+	 * text; other forms keep theirs.
+	 *
+	 * @param int   $form_id     Form ID.
+	 * @param mixed $cover_type  Banner type, `color` or `image`.
+	 * @param mixed $cover_color Banner color.
+	 * @since x.x.x
+	 * @return string Hex color, or '' to keep the white title.
+	 */
+	public static function get_banner_title_color( $form_id, $cover_type, $cover_color ) {
+		if ( 'image' === $cover_type || ! is_string( $cover_color ) || ! preg_match( '/^#[0-9a-f]{6}$/i', $cover_color ) || self::is_dark( $cover_color ) ) {
+			return '';
+		}
+		return '' !== get_post_meta( $form_id, self::TEMPLATE_ID_META, true ) ? '#1E293B' : '';
 	}
 
 	/**
@@ -2753,7 +2804,7 @@ class Form_Templates {
 	 * @since x.x.x
 	 * @return bool
 	 */
-	private static function is_dark( $hex ) {
+	public static function is_dark( $hex ) {
 		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
 		$channel       = static function ( $value ) {
 			$value /= 255;
@@ -2763,25 +2814,6 @@ class Form_Templates {
 
 		// Below this, white text has the better contrast.
 		return $luminance < 0.179;
-	}
-
-	/**
-	 * Mix two hex colors.
-	 *
-	 * @param string $hex    Base color.
-	 * @param string $with   Color mixed in.
-	 * @param float  $amount Share of $with, 0 to 1.
-	 * @since x.x.x
-	 * @return string
-	 */
-	private static function mix_with( $hex, $with, $amount ) {
-		$base = self::hex_to_rgb( $hex );
-		$mix  = self::hex_to_rgb( $with );
-		$out  = '#';
-		foreach ( [ 0, 1, 2 ] as $i ) {
-			$out .= str_pad( dechex( (int) round( $base[ $i ] + ( $mix[ $i ] - $base[ $i ] ) * $amount ) ), 2, '0', STR_PAD_LEFT );
-		}
-		return strtoupper( $out );
 	}
 
 	/**
@@ -2847,9 +2879,12 @@ class Form_Templates {
 	 */
 	private static function instant_form_style( $theme ) {
 		return [
-			'single_page_form_title' => true,
-			'cover_type'             => 'color',
-			'cover_color'            => $theme['banner'],
+			'single_page_form_title'        => true,
+			'cover_type'                    => 'color',
+			// The banner color fills the whole page, so the form sits on its
+			// page color as a card, like in the library.
+			'cover_color'                   => $theme['page'],
+			'use_banner_as_page_background' => true,
 		];
 	}
 
@@ -2957,6 +2992,8 @@ class Form_Templates {
 		?>
 	<style>
 		html { margin-top: 0 !important; }
+		/* See-through, so the form card sits on the page color the library paints behind the frame. */
+		html, body.srfm-template-preview { background: transparent !important; }
 		body.srfm-template-preview { margin: 0; }
 		.srfm-template-preview .srfm-edit-form-btn-wrap { display: none !important; }
 		.srfm-template-preview__payment-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--srfm-color-input-description, #6b7280); }

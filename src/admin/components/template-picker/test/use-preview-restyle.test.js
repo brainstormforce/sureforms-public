@@ -17,14 +17,16 @@ global.IS_REACT_ACT_ENVIRONMENT = true;
 const presets = [
 	{
 		id: 'ocean',
-		background: 'linear-gradient(135deg, #EAF2FF 0%, #F7FAFF 100%)',
+		page: '#E3EBFB',
+		background: '#FFFFFF',
 		accent: '#2563EB',
 		text: '#1E293B',
 		onPrimary: '#FFFFFF',
 	},
 	{
 		id: 'midnight',
-		background: 'linear-gradient(160deg, #0F172A 0%, #1E293B 100%)',
+		page: '#E4E8EF',
+		background: '#111827',
 		accent: '#38BDF8',
 		text: '#E2E8F0',
 		onPrimary: '#0F172A',
@@ -38,7 +40,7 @@ const template = {
 };
 
 const formCss = ( look ) =>
-	`.srfm-form-container-1 { --srfm-color-scheme-primary: ${ look.primary }; --srfm-color-scheme-text: ${ look.text }; --srfm-color-scheme-text-on-primary: ${ look.onPrimary }; --srfm-bg-gradient: ${ look.background }; }`;
+	`.srfm-form-container-1 { --srfm-color-scheme-primary: ${ look.primary }; --srfm-color-scheme-text: ${ look.text }; --srfm-color-scheme-text-on-primary: ${ look.onPrimary }; --srfm-bg-color: ${ look.background }; }`;
 
 const ocean = resolveLook( {}, 'ocean', presets );
 const midnightStyle = { preset: 'midnight' };
@@ -54,7 +56,7 @@ const pageCss = () => document.head.querySelector( 'style' ).textContent;
 
 // The probe render: the same form in midnight.
 const probeHtml = `<html><head><style>${ formCss(
-	resolveLook( {}, 'midnight', presets )
+	resolveLook( { preset: 'midnight' }, 'midnight', presets )
 ) }</style></head><body></body></html>`;
 
 let root;
