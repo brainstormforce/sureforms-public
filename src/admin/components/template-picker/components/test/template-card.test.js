@@ -105,10 +105,10 @@ describe( 'CardPicture', () => {
 } );
 
 describe( 'getPreviewLabel', () => {
-	it( 'names Premium templates as Premium', () => {
+	it( 'names the template, Premium or not (a usable Premium card has no crown)', () => {
 		expect(
 			getPreviewLabel( { title: 'Quote', requires: 'business' } )
-		).toBe( 'Preview the Quote template (Premium)' );
+		).toBe( 'Preview the Quote template' );
 		expect( getPreviewLabel( { title: 'Contact', requires: 'free' } ) ).toBe(
 			'Preview the Contact template'
 		);
@@ -123,7 +123,7 @@ describe( 'getUnlockLabel', () => {
 		expect(
 			getUnlockLabel( { title: 'Quote', lock_reason: 'update' } )
 		).toBe(
-			'Update SureForms Pro to use the Quote template (opens in a new tab)'
+			'Update SureForms Premium to use the Quote template (opens in a new tab)'
 		);
 	} );
 } );

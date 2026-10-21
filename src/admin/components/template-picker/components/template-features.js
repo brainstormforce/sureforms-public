@@ -178,10 +178,10 @@ export const getLockLabels = ( template ) => {
 	return {
 		badge: __( 'Premium', 'sureforms' ),
 		button: needsUpdate
-			? __( 'Update SureForms Pro', 'sureforms' )
+			? __( 'Update SureForms Premium', 'sureforms' )
 			: __( 'Upgrade to unlock', 'sureforms' ),
 		notice: needsUpdate
-			? __( 'Update SureForms Pro to use this template', 'sureforms' )
+			? __( 'Update SureForms Premium to use this template', 'sureforms' )
 			: '',
 	};
 };
