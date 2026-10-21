@@ -9,7 +9,8 @@
 const { test, expect } = require( '@playwright/test' );
 const { loginAsAdmin } = require( '../utils/loginAsAdmin' );
 
-const AI_SCREEN = '/wp-admin/admin.php?page=add-new-form';
+// `view=ai`: Add New Form itself opens on the start screen.
+const AI_SCREEN = '/wp-admin/admin.php?page=add-new-form&view=ai';
 const GENERATE_FORM_ROUTE = /sureforms(\/|%2F)v1(\/|%2F)generate-form/;
 
 const STARTERS = [
