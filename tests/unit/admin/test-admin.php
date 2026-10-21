@@ -4276,3 +4276,105 @@ class Test_Thankyou_Prompt_Notice extends TestCase {
 
 
 }
+
+/**
+ * Admin pieces that follow Settings → Features.
+ */
+class Test_Admin_Features extends TestCase {
+
+	protected function setUp(): void {
+		parent::setUp();
+		delete_option( \SRFM\Inc\Features::OPTION );
+		delete_option( \SRFM\Inc\Features::BLOCKS_OPTION );
+		\SRFM\Inc\Features::reset();
+	}
+
+	protected function tearDown(): void {
+		delete_option( \SRFM\Inc\Features::OPTION );
+		delete_option( \SRFM\Inc\Features::BLOCKS_OPTION );
+		\SRFM\Inc\Features::reset();
+		wp_set_current_user( 0 );
+		parent::tearDown();
+	}
+
+	/**
+	 * The Entries and Payments menus are not added while their features are off.
+	 */
+	public function test_add_new_form_follows_features() {
+		global $submenu;
+
+		$admin_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_features_admin',
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin_id );
+		$slugs = static function () {
+			global $submenu;
+			$submenu = [];
+			\SRFM\Admin\Admin::get_instance()->add_new_form();
+			return wp_list_pluck( $submenu['sureforms_menu'] ?? [], 2 );
+		};
+
+		$on = $slugs();
+		$this->assertContains( SRFM_ENTRIES, $on );
+		$this->assertContains( SRFM_PAYMENTS, $on );
+
+		\SRFM\Inc\Features::save(
+			[
+				'entries'  => false,
+				'payments' => false,
+			]
+		);
+		$off = $slugs();
+		$this->assertNotContains( SRFM_ENTRIES, $off );
+		$this->assertNotContains( SRFM_PAYMENTS, $off );
+		$this->assertContains( 'sureforms_forms', $off, 'the Forms menu stays' );
+
+		$submenu = [];
+		wp_delete_user( $admin_id );
+	}
+
+	/**
+	 * The feature and block switches are printed before wp-hooks for users who can
+	 * edit, and not at all for anyone else.
+	 */
+	public function test_localize_features() {
+		$scripts  = wp_scripts();
+		$original = $scripts->get_data( 'wp-hooks', 'before' );
+		$users    = [];
+
+		try {
+			foreach ( [ 'subscriber', 'editor' ] as $role ) {
+				$users[ $role ] = wp_insert_user(
+					[
+						'user_login' => 'srfm_localize_' . $role,
+						'user_pass'  => wp_generate_password(),
+						'role'       => $role,
+					]
+				);
+			}
+
+			$scripts->add_data( 'wp-hooks', 'before', [] );
+			wp_set_current_user( $users['subscriber'] );
+			Admin::get_instance()->localize_features();
+			$this->assertSame( [], $scripts->get_data( 'wp-hooks', 'before' ), 'nothing is printed for a user who cannot edit' );
+
+			wp_set_current_user( $users['editor'] );
+			Admin::get_instance()->localize_features();
+			$printed = implode( '', (array) $scripts->get_data( 'wp-hooks', 'before' ) );
+			$this->assertStringContainsString( 'window.srfmFeatures = ', $printed );
+			$this->assertStringContainsString( 'window.srfmBlocks = ', $printed );
+			$this->assertStringContainsString( 'window.srfmIsFeatureEnabled = function', $printed );
+		} finally {
+			$scripts->add_data( 'wp-hooks', 'before', $original );
+			if ( function_exists( 'wp_delete_user' ) ) {
+				foreach ( $users as $id ) {
+					wp_delete_user( $id );
+				}
+			}
+		}
+	}
+}

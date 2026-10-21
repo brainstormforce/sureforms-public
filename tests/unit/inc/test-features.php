@@ -31,7 +31,7 @@ class Test_Features extends TestCase {
 	/**
 	 * A site that never saved the tab behaves exactly as before: every feature is on.
 	 */
-	public function test_every_feature_defaults_on() {
+	public function test_is_enabled_defaults_on() {
 		foreach ( array_keys( Features::definitions() ) as $key ) {
 			$this->assertTrue( Features::is_enabled( $key ), $key . ' must default on' );
 		}
@@ -40,7 +40,7 @@ class Test_Features extends TestCase {
 	/**
 	 * Asking about a feature nobody registered never switches it off.
 	 */
-	public function test_unknown_feature_reads_on() {
+	public function test_is_enabled_unknown_key_reads_on() {
 		update_option( Features::OPTION, [ 'not_a_feature' => false ] );
 		Features::reset();
 		$this->assertTrue( Features::is_enabled( 'not_a_feature' ) );
@@ -65,7 +65,7 @@ class Test_Features extends TestCase {
 	/**
 	 * Pro (or anyone) adds rows through srfm_features, and they gate the same way.
 	 */
-	public function test_filter_adds_rows_with_dependencies() {
+	public function test_definitions_filter_adds_rows_with_dependencies() {
 		$add = static function ( $rows ) {
 			$rows['pdf'] = [
 				'label'      => 'PDF',
@@ -244,46 +244,6 @@ class Test_Features extends TestCase {
 	}
 
 	/**
-	 * The Entries and Payments menus are not added while their features are off.
-	 */
-	public function test_menus_follow_their_features() {
-		global $submenu;
-
-		$admin_id = wp_insert_user(
-			[
-				'user_login' => 'srfm_features_admin',
-				'user_pass'  => wp_generate_password(),
-				'role'       => 'administrator',
-			]
-		);
-		wp_set_current_user( $admin_id );
-		$slugs = static function () {
-			global $submenu;
-			$submenu = [];
-			\SRFM\Admin\Admin::get_instance()->add_new_form();
-			return wp_list_pluck( $submenu['sureforms_menu'] ?? [], 2 );
-		};
-
-		$on = $slugs();
-		$this->assertContains( SRFM_ENTRIES, $on );
-		$this->assertContains( SRFM_PAYMENTS, $on );
-
-		Features::save(
-			[
-				'entries'  => false,
-				'payments' => false,
-			]
-		);
-		$off = $slugs();
-		$this->assertNotContains( SRFM_ENTRIES, $off );
-		$this->assertNotContains( SRFM_PAYMENTS, $off );
-		$this->assertContains( 'sureforms_forms', $off, 'the Forms menu stays' );
-
-		$submenu = [];
-		wp_delete_user( $admin_id );
-	}
-
-	/**
 	 * Saving keeps listed blocks with boolean values and drops unknown names,
 	 * feature-owned blocks and non-booleans.
 	 */
@@ -311,7 +271,7 @@ class Test_Features extends TestCase {
 	/**
 	 * A block owned by a feature is on exactly while that feature is on.
 	 */
-	public function test_feature_owned_block_follows_its_feature() {
+	public function test_is_block_enabled_follows_owning_feature() {
 		$this->assertTrue( Features::is_block_enabled( 'srfm/payment' ) );
 		Features::save( [ 'payments' => false ] );
 		$this->assertFalse( Features::is_block_enabled( 'srfm/payment' ) );
@@ -320,7 +280,7 @@ class Test_Features extends TestCase {
 	/**
 	 * A switched-off block is unregistered, so it renders nothing.
 	 */
-	public function test_disabled_block_is_unregistered() {
+	public function test_unregister_disabled_blocks() {
 		$registry = WP_Block_Type_Registry::get_instance();
 		$this->assertTrue( $registry->is_registered( 'srfm/url' ) );
 		$type = $registry->get_registered( 'srfm/url' );
@@ -362,6 +322,215 @@ class Test_Features extends TestCase {
 		$this->assertFalse( $data['blocks']['srfm/url']['enabled'] );
 
 		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Only string keys with boolean values survive a read of the option.
+	 */
+	public function test_get_saved() {
+		update_option(
+			Features::OPTION,
+			[
+				'payments' => false,
+				'entries'  => 'no',
+				7          => true,
+			]
+		);
+		$this->assertSame( [ 'payments' => false ], Features::get_saved() );
+
+		update_option( Features::OPTION, 'garbage' );
+		$this->assertSame( [], Features::get_saved() );
+	}
+
+	/**
+	 * States are resolved, so a dependent reads off while its parent is off.
+	 */
+	public function test_states() {
+		$add = static function ( $rows ) {
+			$rows['child'] = [
+				'label'      => 'Child',
+				'depends_on' => [ 'entries' ],
+			];
+			return $rows;
+		};
+		add_filter( 'srfm_features', $add );
+		Features::save( [ 'entries' => false ] );
+
+		$states = Features::states();
+		remove_filter( 'srfm_features', $add );
+
+		$this->assertFalse( $states['entries'] );
+		$this->assertFalse( $states['child'] );
+		$this->assertTrue( $states['payments'] );
+	}
+
+	/**
+	 * The JS rows keep the saved switch apart from the resolved state, and name the blocker.
+	 */
+	public function test_for_js() {
+		$add = static function ( $rows ) {
+			$rows['child'] = [
+				'label'      => 'Child',
+				'depends_on' => [ 'entries' ],
+			];
+			return $rows;
+		};
+		add_filter( 'srfm_features', $add );
+		Features::save( [ 'entries' => false ] );
+
+		$rows = Features::for_js();
+		remove_filter( 'srfm_features', $add );
+
+		$this->assertTrue( $rows['child']['switch'], 'its own switch stays on' );
+		$this->assertFalse( $rows['child']['enabled'], 'but it is off through its parent' );
+		$this->assertSame( [ 'entries' ], $rows['child']['blocked_by'] );
+		$this->assertSame( 'core', $rows['entries']['group'] );
+	}
+
+	/**
+	 * A feature lists the published forms that use its blocks.
+	 */
+	public function test_forms_using() {
+		$paid = $this->make_payment_form();
+
+		$ids = wp_list_pluck( Features::forms_using( 'payments' ), 'id' );
+		$this->assertContains( $paid, $ids );
+		$this->assertSame( [], Features::forms_using( 'not_a_feature' ) );
+		$this->assertSame( [], Features::forms_using( 'ai_builder' ), 'a row with no usage rules lists nothing' );
+
+		wp_delete_post( $paid, true );
+	}
+
+	/**
+	 * Published forms match by block or by a switched-on meta; drafts never match.
+	 */
+	public function test_forms_matching() {
+		$published = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+				'post_title'  => 'Meta Form',
+			]
+		);
+		$draft     = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'draft',
+				'post_content' => '<!-- wp:srfm/url {"block_id":"d1"} /-->',
+			]
+		);
+		update_post_meta( $published, '_srfm_test_meta', wp_json_encode( [ 'status' => true ] ) );
+
+		$this->assertSame( [], Features::forms_matching( [], [] ) );
+		$this->assertContains( $published, wp_list_pluck( Features::forms_matching( [], [ '_srfm_test_meta' ] ), 'id' ) );
+		$this->assertNotContains( $draft, wp_list_pluck( Features::forms_matching( [ 'srfm/url' ], [] ), 'id' ), 'drafts are not listed' );
+
+		wp_delete_post( $published, true );
+		wp_delete_post( $draft, true );
+	}
+
+	/**
+	 * Meta counts only when its on/off flag is on, as an array, JSON or a list of items.
+	 */
+	public function test_form_uses() {
+		$form = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/email {"block_id":"e1"} /-->',
+			]
+		);
+
+		$this->assertTrue( Features::form_uses( $form, [ 'srfm/email' ], [] ) );
+		$this->assertFalse( Features::form_uses( $form, [ 'srfm/url' ], [] ) );
+
+		update_post_meta( $form, '_srfm_flag', wp_json_encode( [ 'enabled' => false ] ) );
+		$this->assertFalse( Features::form_uses( $form, [], [ '_srfm_flag' ] ), 'a flag that is off does not count' );
+
+		update_post_meta( $form, '_srfm_flag', [ 'is_cf_enabled' => 'true' ] );
+		$this->assertTrue( Features::form_uses( $form, [], [ '_srfm_flag' ] ) );
+
+		update_post_meta( $form, '_srfm_flag', wp_json_encode( [ [ 'status' => false ], [ 'status' => true ] ] ) );
+		$this->assertTrue( Features::form_uses( $form, [], [ '_srfm_flag' ] ), 'any item of a list that is on counts' );
+
+		wp_delete_post( $form, true );
+	}
+
+	/**
+	 * reset() drops the cached rows, so a filter added later is picked up.
+	 */
+	public function test_reset() {
+		Features::definitions();
+		Features::block_definitions();
+		$add = static function ( $rows ) {
+			$rows['late'] = [ 'label' => 'Late' ];
+			return $rows;
+		};
+		add_filter( 'srfm_features', $add );
+
+		$cached = array_key_exists( 'late', Features::definitions() );
+		Features::reset();
+		$fresh = array_key_exists( 'late', Features::definitions() );
+		remove_filter( 'srfm_features', $add );
+
+		$this->assertFalse( $cached, 'rows are cached until reset' );
+		$this->assertTrue( $fresh );
+	}
+
+	/**
+	 * Block rows are normalised, filterable, and never include the Form block.
+	 */
+	public function test_block_definitions() {
+		$add = static function ( $rows ) {
+			$rows['srfm/form']   = [ 'label' => 'Form' ];
+			$rows['acme/widget'] = [ 'label' => 'Widget' ];
+			$rows[]              = 'not a row';
+			return $rows;
+		};
+		add_filter( 'srfm_feature_blocks', $add );
+		Features::reset();
+
+		$rows = Features::block_definitions();
+		remove_filter( 'srfm_feature_blocks', $add );
+
+		$this->assertArrayNotHasKey( 'srfm/form', $rows );
+		$this->assertSame(
+			[
+				'label'   => 'Widget',
+				'group'   => 'free',
+				'feature' => '',
+			],
+			$rows['acme/widget']
+		);
+		$this->assertSame( 'spectra', $rows['srfm/separator']['group'] );
+		$this->assertSame( 'payments', $rows['srfm/payment']['feature'] );
+	}
+
+	/**
+	 * Only string block names survive a read of the option.
+	 */
+	public function test_get_disabled_blocks() {
+		update_option( Features::BLOCKS_OPTION, [ 'srfm/url', 5, null, 'srfm/email' ] );
+		$this->assertSame( [ 'srfm/url', 'srfm/email' ], Features::get_disabled_blocks() );
+
+		update_option( Features::BLOCKS_OPTION, 42 );
+		$this->assertSame( [], Features::get_disabled_blocks(), 'a value that holds no block name reads as none' );
+	}
+
+	/**
+	 * A feature-owned block reports its feature's state as its switch, the others their own.
+	 */
+	public function test_blocks_for_js() {
+		Features::save( [ 'payments' => false ] );
+		Features::save_blocks( [ 'srfm/url' => false ] );
+
+		$rows = Features::blocks_for_js();
+
+		$this->assertFalse( $rows['srfm/payment']['switch'] );
+		$this->assertFalse( $rows['srfm/payment']['enabled'] );
+		$this->assertFalse( $rows['srfm/url']['switch'] );
+		$this->assertTrue( $rows['srfm/email']['switch'] );
+		$this->assertTrue( $rows['srfm/email']['enabled'] );
 	}
 
 	/**
