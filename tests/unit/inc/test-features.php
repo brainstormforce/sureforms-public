@@ -325,6 +325,36 @@ class Test_Features extends TestCase {
 	}
 
 	/**
+	 * Gating runs on plugins_loaded, before translations may load, so reading the
+	 * rows and resolving a state must translate nothing. Text lives in labels().
+	 */
+	public function test_definitions_translate_nothing() {
+		$calls = 0;
+		$count = static function ( $text ) use ( &$calls ) {
+			++$calls;
+			return $text;
+		};
+		add_filter( 'gettext_sureforms', $count );
+		Features::reset();
+		Features::definitions();
+		Features::is_enabled( 'payments' );
+		remove_filter( 'gettext_sureforms', $count );
+
+		$this->assertSame( 0, $calls );
+	}
+
+	/**
+	 * Every feature row has a label and description, and the JS rows carry them.
+	 */
+	public function test_labels() {
+		$labels = Features::labels();
+		foreach ( array_keys( Features::definitions() ) as $key ) {
+			$this->assertNotEmpty( $labels[ $key ]['label'] ?? '', $key . ' has a label' );
+		}
+		$this->assertSame( $labels['payments']['label'], Features::for_js()['payments']['label'] );
+	}
+
+	/**
 	 * Only string keys with boolean values survive a read of the option.
 	 */
 	public function test_get_saved() {

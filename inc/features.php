@@ -64,8 +64,11 @@ class Features {
 	/**
 	 * Every feature that can be switched off.
 	 *
+	 * Rows hold no translated text, because modules are gated on
+	 * `plugins_loaded`, before translations may load; labels() supplies it.
+	 *
 	 * Row keys:
-	 * - label, description (string), group (string).
+	 * - group (string).
 	 * - default (bool): state when the site never saved the switch.
 	 * - depends_on (string[]): the feature is off whenever any of these is off.
 	 * - routes (string[]): keys this feature adds to `srfm_rest_api_endpoints`.
@@ -87,10 +90,8 @@ class Features {
 
 		$rows = [
 			'entries'    => [
-				'label'       => __( 'Entries', 'sureforms' ),
-				'description' => __( 'Store form submissions and view them under SureForms → Entries. When off, notifications, confirmations, webhooks and integrations still run, but no submission is saved.', 'sureforms' ),
-				'group'       => 'core',
-				'routes'      => [
+				'group'      => 'core',
+				'routes'     => [
 					'entries/list',
 					'entries/read-status',
 					'entries/trash',
@@ -100,22 +101,16 @@ class Features {
 					'entry/(?P<id>\d+)/logs',
 					'database/repair-entries-table',
 				],
-				'cron_hooks'  => [ 'srfm_weekly_scheduled_events' ],
+				'cron_hooks' => [ 'srfm_weekly_scheduled_events' ],
 			],
 			'ai_builder' => [
-				'label'       => __( 'AI form builder', 'sureforms' ),
-				'description' => __( 'Create forms from a prompt, in the New Form screen and the WordPress dashboard widget.', 'sureforms' ),
-				'group'       => 'core',
-				'routes'      => [ 'generate-form', 'map-fields', 'initiate-auth', 'handle-access-key' ],
+				'group'  => 'core',
+				'routes' => [ 'generate-form', 'map-fields', 'initiate-auth', 'handle-access-key' ],
 			],
 			'ottokit'    => [
-				'label'       => __( 'OttoKit automations', 'sureforms' ),
-				'description' => __( 'The Automations tab in form settings and the OttoKit settings page.', 'sureforms' ),
-				'group'       => 'core',
+				'group' => 'core',
 			],
 			'payments'   => [
-				'label'        => __( 'Payments', 'sureforms' ),
-				'description'  => __( 'Collect payments with Stripe: the Payment and Payment History blocks, the Payments page and the payment settings.', 'sureforms' ),
 				'group'        => 'core',
 				'usage_blocks' => [ 'srfm/payment' ],
 			],
@@ -137,8 +132,6 @@ class Features {
 			$normalised[ $key ] = wp_parse_args(
 				$row,
 				[
-					'label'        => $key,
-					'description'  => '',
 					'group'        => 'core',
 					'default'      => true,
 					'depends_on'   => [],
@@ -329,6 +322,7 @@ class Features {
 	public static function for_js() {
 		$definitions = self::definitions();
 		$saved       = self::get_saved();
+		$labels      = self::labels();
 		$out         = [];
 
 		foreach ( $definitions as $key => $row ) {
@@ -339,8 +333,8 @@ class Features {
 				}
 			}
 			$out[ $key ] = [
-				'label'       => $row['label'],
-				'description' => $row['description'],
+				'label'       => Helper::get_string_value( $labels[ $key ]['label'] ?? $key ),
+				'description' => Helper::get_string_value( $labels[ $key ]['description'] ?? '' ),
 				'group'       => $row['group'],
 				'depends_on'  => array_values( Helper::get_array_value( $row['depends_on'] ) ),
 				'switch'      => $saved[ $key ] ?? (bool) $row['default'],
@@ -468,6 +462,44 @@ class Features {
 		self::$resolved    = [];
 		self::$definitions = null;
 		self::$blocks      = null;
+	}
+
+	/**
+	 * Label and description of each feature, for the Features tab.
+	 *
+	 * Kept apart from definitions() so that gating modules on `plugins_loaded`
+	 * never loads translations early. Only read on admin screens, after `init`.
+	 *
+	 * @since 2.13.0
+	 * @return array<string,array{label:string,description:string}>
+	 */
+	public static function labels() {
+		$labels = [
+			'entries'    => [
+				'label'       => __( 'Entries', 'sureforms' ),
+				'description' => __( 'Store form submissions and view them under SureForms → Entries. When off, notifications, confirmations, webhooks and integrations still run, but no submission is saved.', 'sureforms' ),
+			],
+			'ai_builder' => [
+				'label'       => __( 'AI form builder', 'sureforms' ),
+				'description' => __( 'Create forms from a prompt, in the New Form screen and the WordPress dashboard widget.', 'sureforms' ),
+			],
+			'ottokit'    => [
+				'label'       => __( 'OttoKit automations', 'sureforms' ),
+				'description' => __( 'The Automations tab in form settings and the OttoKit settings page.', 'sureforms' ),
+			],
+			'payments'   => [
+				'label'       => __( 'Payments', 'sureforms' ),
+				'description' => __( 'Collect payments with Stripe: the Payment and Payment History blocks, the Payments page and the payment settings.', 'sureforms' ),
+			],
+		];
+
+		/**
+		 * Filters the label and description shown for each feature.
+		 *
+		 * @since 2.13.0
+		 * @param array<string,array<string,string>> $labels Keyed by feature key.
+		 */
+		return Helper::get_array_value( apply_filters( 'srfm_feature_labels', $labels ) );
 	}
 
 	/**
