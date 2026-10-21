@@ -33,11 +33,31 @@ return [
 		'description'   => __( 'Let clients request appointments at their preferred times.', 'sureforms' ),
 		'submit_text'   => __( 'Request appointment', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'service', __( 'Service', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'First visit', 'sureforms' ), __( 'Follow-up visit', 'sureforms' ), __( 'Consultation', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a service', 'sureforms' ) ] ) ), $no_search ), 50 ),
-			$appointment_date,
+			// Beside the date on free forms. With SureForms Pro the date and time
+			// pickers share a row, so the service takes the full row above them.
+			Catalog::width(
+				Catalog::attrs(
+					Catalog::field(
+						'dropdown',
+						'service',
+						__( 'Service', 'sureforms' ),
+						true,
+						array_merge(
+							Catalog::dropdown_options( [ __( 'First visit', 'sureforms' ), __( 'Follow-up visit', 'sureforms' ), __( 'Consultation', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ),
+							[
+								'placeholder' => __( 'Select a service', 'sureforms' ),
+								'pro'         => [ 'blockAttributes' => [ 'fieldWidth' => 100 ] ],
+							]
+						)
+					),
+					$no_search
+				),
+				50
+			),
+			Catalog::width( $appointment_date, 50 ),
 			// With SureForms Pro, an exact time next to the date instead of a part of the day.
 			Catalog::attrs(
 				Catalog::field(
@@ -46,7 +66,7 @@ return [
 					__( 'Preferred Time', 'sureforms' ),
 					true,
 					array_merge(
-						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true ),
+						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ),
 						[
 							'pro' => [
 								'fieldType'       => 'time-picker',
@@ -58,7 +78,18 @@ return [
 						]
 					)
 				),
-				[ 'choiceWidth' => 33.33 ]
+				// Icon beside the text, the three choices side by side.
+				[
+					'verticalLayout' => false,
+					'choiceWidth'    => 33.33,
+				]
+			),
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), true, Catalog::choice_options( [ __( 'In person', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'Video call', 'sureforms' ) ], true, [ 'handshake', 'phone', 'video' ] ) ),
+				[
+					'verticalLayout' => false,
+					'choiceWidth'    => 33.33,
+				]
 			),
 			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. the reason for your visit, access needs, or other times that work', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$c['consent'],
@@ -67,12 +98,13 @@ return [
 			'heading' => __( 'Appointment requested', 'sureforms' ),
 			'text'    => __( 'We have noted {form:preferred-date} ({form:preferred-time}). This is not confirmed yet: we will check availability and confirm by email or phone.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Appointment request from {form:full-name}: {form:preferred-date}, {form:preferred-time}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} would like an appointment ({form:service}) on {form:preferred-date}, {form:preferred-time}. Reply to this email to confirm, or call them on {form:phone}.', 'sureforms' ),
+		'email_subject' => __( 'Appointment request from {form:name}: {form:preferred-date}, {form:preferred-time} ({form:meeting-type})', 'sureforms' ),
+		'email_intro'   => __( '{form:name} would like an appointment ({form:service}, {form:meeting-type}) on {form:preferred-date}, {form:preferred-time}. Reply to this email to confirm, or call them on {form:phone}.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'We received your appointment request', 'sureforms' ),
-			'lines'   => [
-				__( 'Thanks for your request. We have noted {form:service} on {form:preferred-date} ({form:preferred-time}).', 'sureforms' ),
+			'subject'  => __( 'We received your appointment request', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
+				__( 'Thanks for your request. We have noted {form:service} ({form:meeting-type}) on {form:preferred-date} ({form:preferred-time}).', 'sureforms' ),
 				__( 'This is not a confirmation yet: we will check availability and get back to you to confirm.', 'sureforms' ),
 			],
 		],
