@@ -1136,6 +1136,9 @@ class Analytics {
 			if ( 0 === $forms ) {
 				return;
 			}
+			// Views and choices can't be rebuilt from the forms, so mark these
+			// outcomes for the warehouse to leave out of cross-site rates.
+			$funnel = [ 'recovered' => true ];
 		}
 
 		self::send_form_start_funnel( $funnel );
@@ -1503,7 +1506,9 @@ class Analytics {
 	 * Queue the `form_start_funnel` event: the stored view, choice, step,
 	 * creation and switch totals plus each choice's forms in draft, published
 	 * and receiving entries right now. Shares and completion rates are worked
-	 * out in the warehouse, e.g. published_ai / choice_ai.
+	 * out in the warehouse, e.g. published_ai / choice_ai. `views` counts the
+	 * times the screen was shown, not unique visits: going back and picking
+	 * the other card is two choices on one view, so choices can exceed views.
 	 *
 	 * @param array<string, mixed> $funnel Stored totals.
 	 * @since x.x.x
@@ -1516,6 +1521,9 @@ class Analytics {
 			// Lets a change in how something is counted be told apart in the series.
 			'plugin_version' => SRFM_VER,
 		];
+		if ( ! empty( $funnel['recovered'] ) ) {
+			$properties['recovered'] = '1';
+		}
 
 		// Counters are stored under known prefixes only, so they pass through as is.
 		foreach ( $funnel as $key => $value ) {

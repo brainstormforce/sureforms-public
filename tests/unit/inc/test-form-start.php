@@ -302,6 +302,8 @@ class Test_Form_Start extends TestCase {
 	}
 
 	public function test_refresh_sends_outcomes_only_for_sites_that_used_the_start_screen() {
+		// Deltas, so forms other tests left behind don't matter.
+		$before = Analytics::form_start_outcomes();
 		$this->create_form( 'publish', 'template', 'template' );
 
 		Analytics::track_form_start_action( 'view' );
@@ -310,8 +312,9 @@ class Test_Form_Start extends TestCase {
 
 		$event = $this->funnel_event();
 		$this->assertSame( '1', $event['properties']['views'] );
-		$this->assertSame( '1', $event['properties']['published_template'] );
-		$this->assertSame( '0', $event['properties']['draft_scratch'] );
+		$this->assertSame( (string) ( $before['template']['published'] + 1 ), $event['properties']['published_template'] );
+		$this->assertSame( (string) $before['scratch']['draft'], $event['properties']['draft_scratch'] );
+		$this->assertArrayNotHasKey( 'recovered', $event['properties'], 'Stored totals: nothing was rebuilt.' );
 	}
 
 	public function test_duplicates_do_not_count_for_the_start_screen_or_templates() {

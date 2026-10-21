@@ -16,7 +16,11 @@ import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 import useOpenTemplateLibrary from '../use-open-template-library.js';
-import { getStartChoice, trackStartStep } from '@Utils/form-start';
+import {
+	getStartChoice,
+	reloadAddNewForm,
+	trackStartStep,
+} from '@Utils/form-start';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -249,8 +253,9 @@ const AiFormBuilder = () => {
 		} );
 
 		if ( response?.success ) {
-			window.location.href =
-				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&view=ai`;
+			reloadAddNewForm(
+				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&view=ai`
+			);
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
@@ -324,11 +329,12 @@ const AiFormBuilder = () => {
 					title={ srfm_admin?.srfm_ai_usage_details?.title }
 					paraOne={ srfm_admin?.srfm_ai_usage_details?.message }
 					buttonText={ __( 'Try Again', 'sureforms' ) }
-					onclick={ () => {
-						window.location.href =
+					onclick={ () =>
+						reloadAddNewForm(
 							srfm_admin.site_url +
-							'/wp-admin/admin.php?page=add-new-form&view=ai';
-					} }
+								'/wp-admin/admin.php?page=add-new-form&view=ai'
+						)
+					}
 				/>
 			);
 		}
@@ -378,11 +384,12 @@ const AiFormBuilder = () => {
 						new Date( resetAt * 1000 ).toLocaleString()
 					) }
 					buttonText={ __( 'Try Again', 'sureforms' ) }
-					onclick={ () => {
-						window.location.href =
+					onclick={ () =>
+						reloadAddNewForm(
 							srfm_admin.site_url +
-							'/wp-admin/admin.php?page=add-new-form&view=ai';
-					} }
+								'/wp-admin/admin.php?page=add-new-form&view=ai'
+						)
+					}
 				/>
 			);
 		}

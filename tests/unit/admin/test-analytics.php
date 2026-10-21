@@ -2236,6 +2236,8 @@ class Test_Analytics extends TestCase {
 		$this->assertNotNull( $event, 'Tagged forms are sent although no totals were stored.' );
 		$this->assertSame( (string) ( $before['ai']['published'] + 1 ), $event['properties']['published_ai'] );
 		$this->assertSame( SRFM_VER, $event['properties']['plugin_version'] );
+		$this->assertSame( '1', $event['properties']['recovered'], 'Rebuilt from the forms, without views or choices.' );
+		$this->assertArrayNotHasKey( 'views', $event['properties'] );
 
 		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
 		add_filter( 'sureforms_tracking_enabled', '__return_false' );
@@ -2265,6 +2267,7 @@ class Test_Analytics extends TestCase {
 
 		$after = Analytics::form_start_outcomes();
 		$this->assertSame( 2, $after['scratch']['published'] - $before['scratch']['published'] );
+		$this->assertSame( 0, $after['scratch']['draft'] - $before['scratch']['draft'], 'A private form is neither a draft nor published.' );
 		// Only the published form with a live entry: not the private form (in
 		// neither draft nor published) and not a form whose only entry is trashed.
 		$this->assertSame( 1, $after['scratch']['with_entries'] - $before['scratch']['with_entries'] );

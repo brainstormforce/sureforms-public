@@ -11,6 +11,9 @@ export const START_CHOICES = [ 'ai', 'template', 'scratch' ];
 // the AI sign-in redirect still counts for the path picked on the start screen.
 const STORAGE_KEY = 'srfm_start_choice';
 const MAX_AGE = 2 * 60 * 60 * 1000;
+// Set just before Add New Form reloads itself, so that one load counts as
+// the same visit.
+const CARRY_KEY = 'srfm_start_carry';
 
 /**
  * Whether the start screen is shown, or skipped straight to the AI screen.
@@ -76,8 +79,9 @@ export const getStartChoice = () => {
  * that opens another screen (a payment or quiz link, the dashboard prompt)
  * never saw the start screen, so a choice left from earlier would credit
  * that form to a path, and a switch, that never happened. Kept when the AI
- * sign-in comes back (`access_key`), and on a reload or Back / Forward, which
- * return to the same visit.
+ * sign-in comes back (`access_key`), when Add New Form reloads itself
+ * (reloadAddNewForm()), and on a reload or Back / Forward, which return to
+ * the same visit.
  *
  * @since x.x.x
  * @param {URLSearchParams} params     Query args the page opened with.
@@ -88,13 +92,38 @@ export const scopeStartChoiceToVisit = (
 	navigation = window.performance?.getEntriesByType?.( 'navigation' )?.[ 0 ]
 		?.type || 'navigate'
 ) => {
+	let carried = false;
+	try {
+		carried = '1' === window.sessionStorage.getItem( CARRY_KEY );
+		window.sessionStorage.removeItem( CARRY_KEY );
+	} catch ( error ) {
+		// Storage blocked: there's no stored choice to keep either.
+	}
 	if (
+		! carried &&
 		'navigate' === navigation &&
 		'start' !== getAddNewFormScreen( params ) &&
 		! params.has( 'access_key' )
 	) {
 		clearStartChoice();
 	}
+};
+
+/**
+ * Load an Add New Form screen again as part of the same visit, e.g. the AI
+ * screen after the AI sign-in or a "Try Again". A plain page load would look
+ * like a new visit and drop the start screen choice.
+ *
+ * @since x.x.x
+ * @param {string} url Add New Form URL.
+ */
+export const reloadAddNewForm = ( url ) => {
+	try {
+		window.sessionStorage.setItem( CARRY_KEY, '1' );
+	} catch ( error ) {
+		// Storage blocked: there's no stored choice to keep either.
+	}
+	window.location.href = url;
 };
 
 /**

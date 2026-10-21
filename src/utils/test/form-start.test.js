@@ -5,6 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {
 	getAddNewFormScreen,
 	getStartChoice,
+	reloadAddNewForm,
 	scopeStartChoiceToVisit,
 	setStartChoice,
 	trackStartStep,
@@ -72,6 +73,45 @@ describe( 'scopeStartChoiceToVisit', () => {
 			'back_forward'
 		);
 		expect( getStartChoice() ).toBe( 'ai' );
+	} );
+
+	it( 'reads how the page loaded when not told (a fresh load here)', () => {
+		setStartChoice( 'template' );
+		scopeStartChoiceToVisit( params( '?page=add-new-form&form_type=quiz' ) );
+		expect( getStartChoice() ).toBe( '' );
+	} );
+
+	it( 'keeps the choice through the AI sign-in and the reload after it', () => {
+		const { location } = window;
+		delete window.location;
+		window.location = { href: '' };
+		try {
+			setStartChoice( 'ai' );
+			// Back from the sign-in.
+			scopeStartChoiceToVisit(
+				params( '?page=add-new-form&access_key=abc' ),
+				'navigate'
+			);
+			// The AI screen then reloads itself without the key.
+			reloadAddNewForm(
+				'http://example.test/wp-admin/admin.php?page=add-new-form&view=ai'
+			);
+			expect( window.location.href ).toContain( 'view=ai' );
+			scopeStartChoiceToVisit(
+				params( '?page=add-new-form&view=ai' ),
+				'navigate'
+			);
+			expect( getStartChoice() ).toBe( 'ai' );
+
+			// Only that one load: a later fresh load of another screen clears it.
+			scopeStartChoiceToVisit(
+				params( '?page=add-new-form&form_type=payment' ),
+				'navigate'
+			);
+			expect( getStartChoice() ).toBe( '' );
+		} finally {
+			window.location = location;
+		}
 	} );
 
 	it( 'leaves the choice alone when the start screen opens', () => {
