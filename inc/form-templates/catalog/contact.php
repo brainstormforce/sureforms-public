@@ -185,7 +185,14 @@ return [
 				),
 				[ 'rows' => 4 ]
 			),
-			Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true ) ),
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true, [ 'video', 'phone', 'handshake' ] ) ),
+				// Icon beside the text, the three choices side by side.
+				[
+					'verticalLayout' => false,
+					'choiceWidth'    => 33.33,
+				]
+			),
 			Catalog::width( Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), false, true ) + [ 'pro_only' => true ], 50 ),
 			Catalog::width(
 				Catalog::field(
