@@ -101,7 +101,7 @@ return [
 		'theme'         => 'lavender',
 		'icon'          => 'gauge',
 		'title'         => __( 'Satisfaction Survey', 'sureforms' ),
-		'description'   => __( 'Capture responses to a short survey with a 0–10 recommendation score.', 'sureforms' ),
+		'description'   => __( 'A short survey: how likely people are to recommend you (0–10), and why.', 'sureforms' ),
 		'submit_text'   => __( 'Submit survey', 'sureforms' ),
 		'fields'        => [
 			Catalog::field(
@@ -123,7 +123,7 @@ return [
 					]
 				)
 			),
-			Catalog::attrs( Catalog::field( 'textarea', 'reason', __( 'What is the main reason for your score?', 'sureforms' ) ), [ 'rows' => 3 ] ),
+			Catalog::attrs( Catalog::field( 'textarea', 'reason', __( 'What is the main reason for your score?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. great support, but setup took a while', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			Catalog::attrs( Catalog::field( 'multi-choice', 'frequency', __( 'How often do you use our product or service?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Daily', 'sureforms' ), __( 'Weekly', 'sureforms' ), __( 'Monthly', 'sureforms' ), __( 'Rarely', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 25 ] ),
 			Catalog::field(
 				'email',
@@ -138,6 +138,7 @@ return [
 					),
 				]
 			),
+			$c['consent'],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thank you', 'sureforms' ),

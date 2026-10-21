@@ -30,7 +30,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'event-registration'   => 'name:input email:email phone:phone attendees:number organization:input questions:textarea event-updates:checkbox consent:gdpr',
 		'rsvp'                 => 'first-name:input last-name:input email:email attending:multi-choice guests:number dietary:input message:textarea consent:gdpr',
 		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea name:input email:email consent:gdpr',
-		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email',
+		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email consent:gdpr',
 		'website-feedback'     => 'found-it:multi-choice ease:multi-choice improve:textarea page:input email:email',
 		'complaint'            => 'full-name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
 		'support-request'      => 'full-name:input email:email topic:dropdown order-number:input subject:input priority:multi-choice description:textarea link:url consent:gdpr',
