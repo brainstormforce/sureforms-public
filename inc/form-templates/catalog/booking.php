@@ -118,7 +118,7 @@ return [
 		'description'   => __( 'Register attendees for a workshop, webinar or meetup.', 'sureforms' ),
 		'submit_text'   => __( 'Register now', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::width(
@@ -134,9 +134,8 @@ return [
 				),
 				50
 			),
-			Catalog::field( 'input', 'organization', __( 'Organization', 'sureforms' ) ),
-			Catalog::field( 'multi-choice', 'dietary', __( 'Dietary Requirements', 'sureforms' ), false, array_merge( Catalog::choice_options( [ __( 'Vegetarian', 'sureforms' ), __( 'Vegan', 'sureforms' ), __( 'Gluten-free', 'sureforms' ), __( 'Dairy-free', 'sureforms' ), __( 'Halal', 'sureforms' ), __( 'Other', 'sureforms' ) ], false ), [ 'helpText' => __( 'For in-person events. Leave blank if none.', 'sureforms' ) ] ) ),
-			Catalog::attrs( Catalog::field( 'textarea', 'questions', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Accessibility needs, dietary details or questions for the organizers', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			Catalog::width( Catalog::field( 'input', 'organization', __( 'Organization', 'sureforms' ) ), 50 ),
+			Catalog::attrs( Catalog::field( 'textarea', 'questions', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Dietary or accessibility needs, or questions for the organizers', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			Catalog::field( 'checkbox', 'event-updates', __( 'Email me about future events', 'sureforms' ) ),
 			$c['consent'],
 			// With SureForms Pro, the campaign that brought each registration.
@@ -175,11 +174,12 @@ return [
 			'heading' => __( 'You are registered', 'sureforms' ),
 			'text'    => __( 'Thanks for registering. We will send the event details to {form:email}.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New registration: {form:full-name} ({form:attendees} attending)', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} has registered for your event. Places requested: {form:attendees}. Reply to this email to reach them directly.', 'sureforms' ),
+		'email_subject' => __( 'New registration: {form:name} ({form:attendees} attending)', 'sureforms' ),
+		'email_intro'   => __( '{form:name} has registered for your event. Places requested: {form:attendees}. Reply to this email to reach them directly.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'You are registered', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'You are registered', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thanks for registering. Places requested: {form:attendees}.', 'sureforms' ),
 				__( 'We will send you the event details before the day. If your plans change, just reply to this email.', 'sureforms' ),
 			],
