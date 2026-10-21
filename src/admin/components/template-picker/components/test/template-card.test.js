@@ -123,7 +123,7 @@ describe( 'getUnlockLabel', () => {
 		expect(
 			getUnlockLabel( { title: 'Quote', lock_reason: 'update' } )
 		).toBe(
-			'Update SureForms Pro to use the Quote template (opens in a new tab)'
+			'Update SureForms Premium to use the Quote template (opens in a new tab)'
 		);
 	} );
 } );

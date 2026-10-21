@@ -2306,7 +2306,7 @@ class Form_Templates {
 			return null;
 		}
 		$message = 'update' === $reason
-			? __( 'Update SureForms Pro to use this template.', 'sureforms' )
+			? __( 'Update SureForms Premium to use this template.', 'sureforms' )
 			: __( 'This template needs a SureForms Premium plan.', 'sureforms' );
 
 		return new WP_Error(

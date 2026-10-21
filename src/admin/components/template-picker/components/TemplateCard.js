@@ -245,7 +245,7 @@ export const getUnlockLabel = ( template ) =>
 	'update' === template.lock_reason
 		? sprintf(
 			/* translators: %s: template name. */
-			__( 'Update SureForms Pro to use the %s template (opens in a new tab)', 'sureforms' ),
+			__( 'Update SureForms Premium to use the %s template (opens in a new tab)', 'sureforms' ),
 			template.title
 		  )
 		: sprintf(
