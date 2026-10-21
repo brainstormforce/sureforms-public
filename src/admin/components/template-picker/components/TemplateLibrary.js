@@ -12,7 +12,6 @@ import { cn } from '@Utils/Helpers';
 import {
 	createFormFromTemplate,
 	recordEmptySearch,
-	requestTemplate,
 	trackTemplateAction,
 } from '@Utils/form-templates';
 import Header from './Header.js';
@@ -242,13 +241,9 @@ export const TemplateGrid = ( {
 			count: typeCounts[ option.id ] || 0,
 		} ) );
 
+	// Opens the AI builder with the search; the search text isn't sent anywhere.
 	const buildWithAi = onBuildWithAi
-		? () => {
-			if ( requestsOn && searchFoundNothing ) {
-				requestTemplate( search ).catch( () => {} );
-			}
-			onBuildWithAi( search );
-		  }
+		? () => onBuildWithAi( search )
 		: undefined;
 	// A short list for a search or filter: offer to make the form instead.
 	const isThin = canCreate && narrowed && shownCount > 0 && shownCount <= 3;
