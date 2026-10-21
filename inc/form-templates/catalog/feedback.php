@@ -52,9 +52,9 @@ return [
 					]
 				)
 			),
-			Catalog::attrs( Catalog::field( 'textarea', 'liked', __( 'What did you like most?', 'sureforms' ) ), [ 'rows' => 3 ] ),
-			Catalog::attrs( Catalog::field( 'textarea', 'improve', __( 'What could we do better?', 'sureforms' ) ), [ 'rows' => 3 ] ),
-			Catalog::width( Catalog::field( 'input', 'full-name', __( 'Name (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
+			Catalog::attrs( Catalog::field( 'textarea', 'liked', __( 'What did you like most?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. fast delivery, friendly staff, easy to use', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			Catalog::attrs( Catalog::field( 'textarea', 'improve', __( 'What could we do better?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. clearer pricing, quicker replies', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				Catalog::field(
 					'email',
@@ -67,6 +67,7 @@ return [
 				),
 				50
 			),
+			$c['consent'],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks for your feedback', 'sureforms' ),

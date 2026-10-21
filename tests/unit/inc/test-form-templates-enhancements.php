@@ -29,7 +29,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'appointment-request'  => 'name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice meeting-type:multi-choice notes:textarea consent:gdpr',
 		'event-registration'   => 'name:input email:email phone:phone attendees:number organization:input questions:textarea event-updates:checkbox consent:gdpr',
 		'rsvp'                 => 'first-name:input last-name:input email:email attending:multi-choice guests:number dietary:input message:textarea consent:gdpr',
-		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea full-name:input email:email',
+		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea name:input email:email consent:gdpr',
 		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email',
 		'website-feedback'     => 'found-it:multi-choice ease:multi-choice improve:textarea page:input email:email',
 		'complaint'            => 'full-name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
