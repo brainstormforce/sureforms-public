@@ -8,14 +8,18 @@ import apiFetch from '@wordpress/api-fetch';
  * @param {boolean} options.enableSpamProtection Also turn on the site-wide honeypot.
  * @param {Object}  options.messages             Thank-you message and email text changed
  *                                               before creating; only changed values.
+ * @param {string}  options.startChoice          Add New Form start screen choice in play.
  * @return {Promise<Object>} Response with `edit_url`.
  */
 export const createFormFromTemplate = (
 	templateId,
 	style = {},
-	{ enableSpamProtection = false, messages } = {}
+	{ enableSpamProtection = false, messages, startChoice } = {}
 ) => {
 	const data = { template_id: templateId };
+	if ( startChoice ) {
+		data.start_choice = startChoice;
+	}
 	if ( Object.keys( style ).length ) {
 		data.style = style;
 	}

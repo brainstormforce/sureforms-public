@@ -4,6 +4,7 @@ import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { Zap, ChevronRight } from 'lucide-react';
 import { useEffect } from '@wordpress/element';
+import { getScratchUrl } from '@Utils/form-start';
 
 const LimitReachedPopup = ( {
 	title = '',
@@ -167,7 +168,8 @@ const LimitReachedPopup = ( {
 						size="md"
 						variant="ghost"
 						onClick={ () => {
-							window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+							// Tagged with the start screen choice, so this counts as a switch to scratch.
+							window.location.href = getScratchUrl();
 						} }
 					>
 						{ __( 'Or create it yourself', 'sureforms' ) }

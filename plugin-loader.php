@@ -37,6 +37,7 @@ use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
 use SRFM\Inc\Form_Restriction;
+use SRFM\Inc\Form_Start;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Form_Views;
@@ -314,6 +315,7 @@ class Plugin_Loader {
 		Generate_Form_Markup::get_instance();
 		Create_New_Form::get_instance();
 		Form_Templates::get_instance();
+		Form_Start::get_instance();
 		Global_Settings::get_instance();
 		Global_Settings_Defaults::get_instance();
 		Email_Summary::get_instance();

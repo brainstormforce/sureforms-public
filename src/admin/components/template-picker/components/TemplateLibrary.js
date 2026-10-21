@@ -32,6 +32,11 @@ import {
 	requestTemplate,
 	trackTemplateAction,
 } from '@Utils/form-templates';
+import {
+	clearStartChoice,
+	getStartChoice,
+	trackStartStep,
+} from '@Utils/form-start';
 import Header from './Header.js';
 import TemplateStylePanel from './TemplateStylePanel.js';
 import TemplateCard from './TemplateCard.js';
@@ -327,6 +332,7 @@ export const TemplatePreview = ( {
 
 	useEffect( () => {
 		trackTemplateAction( 'preview', template.id );
+		trackStartStep( 'template_preview' );
 	}, [ template.id ] );
 	// The card that opened the preview gets focus back on close. Read before
 	// the dialog exists, so there is no node to take ownerDocument from yet.
@@ -1223,6 +1229,7 @@ const TemplateLibrary = () => {
 
 	useEffect( () => {
 		trackTemplateAction( 'library_open' );
+		trackStartStep( 'template_open' );
 	}, [] );
 
 	const isRTL = srfm_admin?.is_rtl;
@@ -1243,9 +1250,10 @@ const TemplateLibrary = () => {
 			const response = await createFormFromTemplate(
 				template.id,
 				style,
-				options
+				{ ...options, startChoice: getStartChoice() }
 			);
 			if ( response?.edit_url ) {
+				clearStartChoice();
 				window.location.href = response.edit_url;
 				return;
 			}

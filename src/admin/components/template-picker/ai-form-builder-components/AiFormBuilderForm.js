@@ -21,6 +21,7 @@ import {
 } from '../utils/starter-prompts.js';
 import useOpenTemplateLibrary from '../use-open-template-library.js';
 import { useLocation } from 'react-router-dom';
+import { getScratchUrl } from '@Utils/form-start';
 
 const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
 	const buttonProps = isListening
@@ -816,7 +817,8 @@ export default ( props ) => {
 										'build-scratch'
 									);
 								}
-								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+								// Tagged with the start screen choice, so this counts as a switch to scratch.
+								window.location.href = getScratchUrl();
 							} }
 						>
 							{ __( 'Start from scratch', 'sureforms' ) }
