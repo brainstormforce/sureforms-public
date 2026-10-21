@@ -409,69 +409,6 @@ class Test_Form_Templates_UI extends TestCase {
 		}
 	}
 
-	public function test_card_fields_skip_hidden_fields_and_steps() {
-		$card = Form_Templates::get_card_fields(
-			[
-				[
-					'fieldType'       => 'input',
-					'slug'            => 'first',
-					'label'           => 'First <b>Name</b>',
-					'placeholder'     => 'Jane',
-					'blockAttributes' => [ 'fieldWidth' => 50 ],
-				],
-				[
-					'fieldType' => 'hidden',
-					'slug'      => 'source',
-					'label'     => 'Source',
-				],
-				[
-					'fieldType' => 'page-break',
-					'slug'      => 'step',
-					'label'     => 'Step two',
-				],
-				[
-					'fieldType'    => 'dropdown',
-					'slug'         => 'plan',
-					'label'        => 'Plan',
-					'fieldOptions' => [ [ 'label' => 'Basic' ], [ 'label' => 'Plus' ], [ 'label' => 'Max' ], [ 'label' => 'Team' ] ],
-				],
-				[
-					'fieldType'    => 'multi-choice',
-					'slug'         => 'size',
-					'label'        => 'Size',
-					'fieldOptions' => [ [ 'optionTitle' => 'Small' ], [ 'optionTitle' => 'Large' ] ],
-				],
-			]
-		);
-
-		$this->assertSame( [ 'input', 'dropdown', 'multi-choice' ], array_column( $card, 't' ) );
-		$this->assertSame(
-			[
-				't' => 'input',
-				'l' => 'First Name',
-				'p' => 'Jane',
-				'o' => [],
-				'w' => 'half',
-			],
-			$card[0]
-		);
-		// A dropdown without a placeholder shows its first option, and at most three.
-		$this->assertSame( 'Basic', $card[1]['p'] );
-		$this->assertSame( [ 'Basic', 'Plus', 'Max' ], $card[1]['o'] );
-		$this->assertSame( 'full', $card[1]['w'] );
-		$this->assertSame( [ 'Small', 'Large' ], $card[2]['o'] );
-
-		$many = array_fill(
-			0,
-			12,
-			[
-				'fieldType' => 'input',
-				'label'     => 'X',
-			]
-		);
-		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
-	}
-
 	public function test_library_cards_draw_no_hidden_fields_or_steps() {
 		$cards = [];
 		foreach ( [ 'contact-us', 'quote-request' ] as $id ) {

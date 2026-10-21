@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { useRef, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { Button, Tooltip } from '@bsf/force-ui';
 import { Crown, ExternalLink } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
@@ -192,7 +192,7 @@ const PremiumCrown = () => {
 			tooltipPortalId="srfm-dashboard-container-tooltip"
 			className="z-[999999]"
 		>
-			<span className="absolute top-2.5 end-2.5 z-[7] flex items-center justify-center size-6 rounded-full text-white bg-[linear-gradient(135deg,#7C3AED_0%,#DB2777_100%)] cursor-help">
+			<span className="absolute top-2.5 end-2.5 z-[7] pointer-events-auto flex items-center justify-center size-6 rounded-full text-white bg-[linear-gradient(135deg,#7C3AED_0%,#DB2777_100%)] cursor-help">
 				<Crown className="size-[13px]" aria-hidden="true" />
 				<span className="sr-only">{ label }</span>
 			</span>
@@ -238,12 +238,53 @@ const CardBody = ( { template } ) => (
 );
 
 /**
+ * Accessible name of the button that opens a template's preview. The button's
+ * label replaces the crown's hidden text, so Premium is named here.
+ *
+ * @param {Object} template Template.
+ * @return {string} Label.
+ */
+export const getPreviewLabel = ( template ) =>
+	isPremiumTemplate( template )
+		? sprintf(
+			/* translators: %s: template name. */
+			__( 'Preview the %s template (Premium)', 'sureforms' ),
+			template.title
+		  )
+		: sprintf(
+			/* translators: %s: template name. */
+			__( 'Preview the %s template', 'sureforms' ),
+			template.title
+		  );
+
+/**
+ * Accessible name of a locked card, which opens the pricing page, or the
+ * update screen when only a newer SureForms Pro is missing.
+ *
+ * @param {Object} template Template.
+ * @return {string} Label.
+ */
+export const getUnlockLabel = ( template ) =>
+	'update' === template.lock_reason
+		? sprintf(
+			/* translators: %s: template name. */
+			__( 'Update SureForms Pro to use the %s template (opens in a new tab)', 'sureforms' ),
+			template.title
+		  )
+		: sprintf(
+			/* translators: %s: template name. */
+			__( 'See plans for the %s template (Premium, opens in a new tab)', 'sureforms' ),
+			template.title
+		  );
+
+/**
  * A template in the library: a picture of its form, with its name and
  * description.
  *
  * A template this site can use is one button that opens the preview. A
- * locked one isn't: hovering or focusing it shows "Premium" and a "See plans"
- * button, which is its only control.
+ * locked one is one button that opens the pricing page (or the update
+ * screen); Premium templates aren't previewed before they're bought.
+ * Hovering or focusing it shows "Premium" and "See plans".
  *
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
@@ -259,18 +300,25 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 		presets || window.srfm_admin?.form_template_themes
 	);
 	const tileStyle = { backgroundColor: look.page };
-	const panelRef = useRef( null );
-	const hiddenTap = useRef( false );
 
 	if ( template.is_locked ) {
 		const needsUpdate = 'update' === template.lock_reason;
 		return (
-			<div
+			<button
+				type="button"
 				hidden={ hidden }
+				data-template-id={ template.id }
+				onClick={ () => openTemplateUnlock( template ) }
+				aria-label={ getUnlockLabel( template ) }
+				aria-describedby={
+					template.description
+						? `srfm-template-description-${ template.id }`
+						: undefined
+				}
 				className={ cn(
 					cardClass,
-					// Lets mobile Safari show the panel on a tap, as on hover.
-					'[@media(hover:none)]:cursor-pointer',
+					'w-full p-0 m-0 text-start cursor-pointer font-[inherit]',
+					'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DC4809]',
 					hidden && 'hidden'
 				) }
 			>
@@ -280,64 +328,40 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 					<span
 						className={ cn(
 							'absolute inset-0 z-[6] flex flex-col items-center justify-center gap-3 p-[22px] text-center bg-[#FFF3EE] rounded-t-[9px]',
-							'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-[220ms] ease-out motion-reduce:transition-none'
+							'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none'
 						) }
-						ref={ panelRef }
+						aria-hidden="true"
 					>
 						<span className="inline-flex items-center gap-1.5 py-1 px-[11px] text-[11px] leading-4 font-bold uppercase tracking-[.02em] text-[#A8320A] bg-white border border-solid border-[#FAD0B8] rounded-full">
-							<Crown className="size-[13px]" aria-hidden="true" />
+							<Crown className="size-[13px]" />
 							{ __( 'Premium', 'sureforms' ) }
 						</span>
-						<span
-							className="text-[15px] leading-[1.3] font-bold text-[#5C2410]"
-							aria-hidden="true"
-						>
+						<span className="text-[15px] leading-[1.3] font-bold text-[#5C2410]">
 							{ template.title }
 						</span>
-						<span
-							id={ `srfm-template-plan-${ template.id }` }
-							className="max-w-[250px] text-[12.5px] leading-[1.5] text-[#8A5438]"
-						>
-							{ needsUpdate && getLockLabels( template ).notice }
-							{ ! needsUpdate &&
-								__( 'Available with SureForms Premium.', 'sureforms' ) }
+						<span className="max-w-[250px] text-[12.5px] leading-[1.5] text-[#8A5438]">
+							{ needsUpdate
+								? getLockLabels( template ).notice
+								: __( 'Available with SureForms Premium.', 'sureforms' ) }
 						</span>
+						{ /* A label inside the card's button, not a second control. */ }
 						<Button
+							tag="span"
 							variant="primary"
 							size="md"
-							icon={ <ExternalLink aria-hidden="true" /> }
+							icon={ <ExternalLink /> }
 							iconPosition="right"
-							onPointerDown={ ( event ) => {
-								// A touch screen has no hover: the tap that lands on the
-								// still hidden button only shows the panel.
-								hiddenTap.current =
-									'touch' === event.pointerType &&
-									Number( window.getComputedStyle( panelRef.current ).opacity ) < 0.5;
-							} }
-							onClick={ ( event ) => {
-								if ( hiddenTap.current ) {
-									hiddenTap.current = false;
-									// Focused, the panel stays open for the next tap.
-									event.currentTarget.focus();
-									return;
-								}
-								openTemplateUnlock( template );
-							} }
-							aria-describedby={ `srfm-template-title-${ template.id } srfm-template-plan-${ template.id }` }
 							className="h-9 px-[15px] gap-[7px] text-[13.5px] rounded-[7px] bg-[#D54407] hover:bg-[#B83A06] shadow-[0_6px_16px_-8px_rgba(213,68,7,.6)] [&>svg]:size-[13px]"
 						>
 							{ needsUpdate
 								? getLockLabels( template ).button
 								: __( 'See plans', 'sureforms' ) }
-							<span className="sr-only">
-								{ __( '(opens in a new tab)', 'sureforms' ) }
-							</span>
 						</Button>
 					</span>
 					<PremiumCrown />
 				</span>
 				<CardBody template={ template } />
-			</div>
+			</button>
 		);
 	}
 
@@ -345,12 +369,9 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 		<button
 			type="button"
 			hidden={ hidden }
+			data-template-id={ template.id }
 			onClick={ () => onSelect( template.id ) }
-			aria-label={ sprintf(
-				/* translators: %s: template name. */
-				__( 'Preview the %s template', 'sureforms' ),
-				template.title
-			) }
+			aria-label={ getPreviewLabel( template ) }
 			aria-describedby={
 				template.description
 					? `srfm-template-description-${ template.id }`

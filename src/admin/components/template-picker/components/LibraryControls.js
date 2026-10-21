@@ -158,9 +158,11 @@ export const TemplateSearch = forwardRef(
 					className={ cn(
 						'[&>input]:m-0 [&>input]:border-0 [&>input]:text-text-primary [&>input::-webkit-search-cancel-button]:hidden [&>input:focus]:ring-0 [&>input:focus]:ring-offset-0 [&>input:focus]:outline-brand-800 [&>input:focus]:shadow-[0_0_0_3px_rgba(213,68,7,0.10)]',
 						'[&>div:first-child>svg]:text-icon-secondary',
+						// force-ui pins the icon to the physical left; move it to the start in RTL.
+						'rtl:[&>div:first-child]:left-auto rtl:[&>div:first-child]:right-0 rtl:[&>div:first-child]:pl-0',
 						isHero
-							? '[&>input]:h-[50px] [&>input]:rounded-[10px] [&>input]:text-[15px] [&>input]:ps-[46px] [&>input]:pe-12 [&>input]:outline-border-subtle [&>input]:shadow-[0_1px_2px_rgba(17,24,39,0.04),0_8px_22px_-8px_rgba(17,24,39,0.12)] [&>input:hover]:outline-[#D1D5DB] [&>input:hover]:shadow-[0_1px_2px_rgba(17,24,39,0.06)] [&>div:first-child]:ps-4 [&>div:first-child>svg]:size-[18px]'
-							: '[&>input]:h-[38px] [&>input]:rounded-[10px] [&>input]:text-sm [&>input]:ps-9 [&>input]:pe-9 [&>input]:bg-background-tertiary [&>input]:outline-transparent [&>input:hover]:bg-[#ECEEF1] [&>input:hover]:outline-transparent [&>input:focus]:bg-background-primary [&>input]:placeholder:text-[#8A9099]'
+							? '[&>input]:h-[50px] [&>input]:rounded-[10px] [&>input]:text-[15px] [&>input]:ps-[46px] [&>input]:pe-12 [&>input]:outline-border-subtle [&>input]:shadow-[0_1px_2px_rgba(17,24,39,0.04),0_8px_22px_-8px_rgba(17,24,39,0.12)] [&>input:hover]:outline-[#D1D5DB] [&>input:hover]:shadow-[0_1px_2px_rgba(17,24,39,0.06)] [&>div:first-child]:ps-4 rtl:[&>div:first-child]:pr-4 [&>div:first-child>svg]:size-[18px]'
+							: '[&>input]:h-[38px] [&>input]:rounded-[10px] [&>input]:text-sm [&>input]:ps-9 [&>input]:pe-9 [&>input]:bg-background-tertiary [&>input]:outline-transparent [&>input:hover]:bg-[#ECEEF1] [&>input:hover]:outline-transparent [&>input:focus]:bg-background-primary [&>input]:placeholder:text-[#8A9099] rtl:[&>div:first-child]:pr-3'
 					) }
 					{ ...rest }
 				/>

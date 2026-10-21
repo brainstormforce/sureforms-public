@@ -263,4 +263,59 @@ describe( 'usePreviewRestyle', () => {
 		// The page that was shown stays until the next change, to fade out.
 		expect( result.frames[ 0 ] ).toBe( template.preview_url );
 	} );
+
+	describe( 'when the page is rendered again for each style', () => {
+		const accentStyle = { accent: '#123456' };
+
+		beforeEach( () => {
+			// As in the block editor: the frame can't be read, so no restyle.
+			window.crossOriginIsolated = true;
+		} );
+
+		it( 'swaps back to a style already rendered (A, B, then A again)', async () => {
+			await render();
+			await load( 0 );
+
+			await choose( midnightStyle );
+			await wait( RESTYLE_DELAY );
+			await load( 1 );
+			expect( result.shown ).toBe( 1 );
+
+			await choose( accentStyle );
+			await wait( RESTYLE_DELAY );
+			await load( 0 );
+			expect( result.shown ).toBe( 0 );
+			expect( result.frames[ 0 ] ).toBe(
+				styledPreviewUrl( template, accentStyle )
+			);
+
+			await choose( midnightStyle );
+			expect( result.shown ).toBe( 1 );
+			expect( result.frames[ 1 ] ).toBe(
+				styledPreviewUrl( template, midnightStyle )
+			);
+			expect( result.isUpdating ).toBe( false );
+		} );
+
+		it( 'drops a render still loading when the style goes back', async () => {
+			await render();
+			await load( 0 );
+
+			await choose( midnightStyle );
+			await wait( RESTYLE_DELAY );
+			const midnightUrl = result.frames[ 1 ];
+			expect( result.isUpdating ).toBe( true );
+
+			await choose( {} );
+			expect( result.frames[ 1 ] ).toBe( '' );
+			expect( result.shown ).toBe( 0 );
+			expect( result.isUpdating ).toBe( false );
+
+			// A load that still arrives for it doesn't take over.
+			await act( () => {
+				result.onFrameLoad( 1, { currentTarget: frame( midnightUrl ) } );
+			} );
+			expect( result.shown ).toBe( 0 );
+		} );
+	} );
 } );

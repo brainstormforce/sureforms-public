@@ -3,6 +3,7 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from '@wordpress/element';
 import { Button, ButtonGroup, Checkbox, Text, Tooltip } from '@bsf/force-ui';
@@ -361,6 +362,8 @@ const LiveForm = ( {
 							) }
 							aria-hidden={ index !== shown }
 							tabIndex={ index === shown ? 0 : -1 }
+							// Keeps Tab out of the fields of the frame behind.
+							inert={ index !== shown ? '' : undefined }
 							onLoad={ ( event ) => onFrameLoad( index, event ) }
 							// See-through: the form card sits on the stage's page color.
 							className={ cn(
@@ -514,9 +517,13 @@ const TemplatePreview = ( {
 	const showImage = showsPreviewImage( template ) && ! imageFailed;
 	const [ dialogNode, setDialogNode ] = useState( null );
 
+	// One view per opened preview: stepping with the arrows isn't counted again.
+	const [ openedId ] = useState( template.id );
 	useEffect( () => {
-		trackTemplateAction( 'preview', template.id );
-	}, [ template.id ] );
+		trackTemplateAction( 'preview', openedId );
+	}, [ openedId ] );
+	const currentId = useRef( template.id );
+	currentId.current = template.id;
 	// The card that opened the preview gets focus back on close. Read before
 	// the dialog exists, so there is no node to take ownerDocument from yet.
 	const [ opener ] = useState( () =>
@@ -552,7 +559,12 @@ const TemplatePreview = ( {
 		[ browseList ]
 	);
 	const position = browsable.findIndex( ( item ) => item.id === template.id );
-	const canBrowse = Boolean( onNavigate ) && position > -1 && browsable.length > 1;
+	// Not while a form is being made: the page leaves for that template's form.
+	const canBrowse =
+		Boolean( onNavigate ) &&
+		! isCreating &&
+		position > -1 &&
+		browsable.length > 1;
 	const step = useCallback(
 		( by ) => {
 			if ( ! canBrowse ) {
@@ -571,14 +583,35 @@ const TemplatePreview = ( {
 		dialogNode?.focus();
 	}, [ dialogNode ] );
 
+	// Focus goes back to the card of the template last shown, or else to
+	// whatever opened the preview.
 	useEffect(
 		() => () => {
-			if ( opener?.isConnected && 'function' === typeof opener.focus ) {
-				opener.focus();
+			const card = opener?.ownerDocument?.querySelector(
+				`[data-template-id="${ currentId.current }"]:not([hidden])`
+			);
+			const target = card || opener;
+			if ( target?.isConnected && 'function' === typeof target.focus ) {
+				target.focus();
 			}
 		},
 		[ opener ]
 	);
+
+	// Entering or leaving full screen removes the focused button, so focus
+	// moves to the one that took its place and the arrow keys keep working.
+	const wasFullScreen = useRef( fullScreen );
+	useEffect( () => {
+		if ( wasFullScreen.current === fullScreen ) {
+			return;
+		}
+		wasFullScreen.current = fullScreen;
+		dialogNode
+			?.querySelector(
+				`[data-srfm-focus="${ fullScreen ? 'full-screen-back' : 'full-screen-open' }"]`
+			)
+			?.focus();
+	}, [ fullScreen, dialogNode ] );
 
 	useEffect( () => {
 		const onKeyDown = ( event ) => {
@@ -843,6 +876,7 @@ const TemplatePreview = ( {
 						label={ __( 'Preview full screen', 'sureforms' ) }
 						icon={ <Eye className="size-4" /> }
 						onClick={ openFullScreen }
+						data-srfm-focus="full-screen-open"
 					/>
 					{ showCustomize && (
 						<IconButton
@@ -955,6 +989,7 @@ const TemplatePreview = ( {
 										size="sm"
 										icon={ <ArrowLeft className="size-4 rtl:rotate-180" /> }
 										onClick={ () => setFullScreen( false ) }
+										data-srfm-focus="full-screen-back"
 										className={ cn(
 											'absolute top-4 start-4 z-30 h-10 ps-3 pe-4 gap-2 rounded-full text-sm font-semibold text-text-primary bg-background-primary/90 hover:bg-background-primary outline-[rgba(17,24,39,.12)] shadow-sm backdrop-blur',
 											FOCUS_RING
