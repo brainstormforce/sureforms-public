@@ -1996,6 +1996,11 @@ class Form_Templates {
 				$GLOBALS['post'] = $preview_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- The preview is this form's page.
 				setup_postdata( $preview_post );
 			}
+			// Only Pro's hook needs to see the form before it renders. Other
+			// plugins' redirects (maintenance mode, language, membership) would
+			// send the preview frame elsewhere, as the other previews exit
+			// before them.
+			self::remove_third_party_hooks( [ 'template_redirect' ] );
 			add_action(
 				'template_redirect',
 				static function () {
@@ -2096,10 +2101,11 @@ class Form_Templates {
 	 * chat widget) is left out like their queued assets. WordPress core,
 	 * SureForms, SureForms Pro and the active theme keep theirs.
 	 *
+	 * @param array<int, string> $hooks Hooks to clear; the head and footer ones by default.
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function remove_third_party_hooks() {
+	public static function remove_third_party_hooks( $hooks = self::PREVIEW_ASSET_HOOKS ) {
 		global $wp_filter;
 
 		$kept = [ ABSPATH . 'wp-includes', Helper::get_string_value( SRFM_DIR ), get_stylesheet_directory(), get_template_directory() ];
@@ -2114,7 +2120,7 @@ class Form_Templates {
 			$kept
 		);
 
-		foreach ( self::PREVIEW_ASSET_HOOKS as $hook ) {
+		foreach ( $hooks as $hook ) {
 			if ( ! isset( $wp_filter[ $hook ] ) || ! $wp_filter[ $hook ] instanceof \WP_Hook ) {
 				continue;
 			}
