@@ -299,7 +299,7 @@ return [
 		'submit_text'    => __( 'Submit complaint', 'sureforms' ),
 		'steps'          => [ __( 'Your details', 'sureforms' ), __( 'Your complaint', 'sureforms' ) ],
 		'fields'         => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::width( Catalog::field( 'input', 'reference', __( 'Order or Reference Number', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. #10234', 'sureforms' ) ] ), 50 ),
@@ -310,7 +310,7 @@ return [
 			Catalog::field(
 				'url',
 				'evidence',
-				__( 'Link to a photo or document (optional)', 'sureforms' ),
+				__( 'Link to a photo or document', 'sureforms' ),
 				false,
 				[
 					'placeholder' => 'https://',
@@ -328,30 +328,20 @@ return [
 				]
 			),
 			Catalog::attrs( Catalog::field( 'textarea', 'resolution', __( 'How would you like us to put it right?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a refund, a replacement or a call back', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-			// With SureForms Pro (Pro plan), a signed declaration.
-			Catalog::field(
-				'signature',
-				'declaration-signature',
-				__( 'Your Signature', 'sureforms' ),
-				true,
-				[
-					'helpText' => __( 'By signing, you confirm that the information you have given is accurate.', 'sureforms' ),
-					'pro_tier' => 'pro',
-				]
-			),
 			$c['consent'],
 		],
 		// With SureForms Pro, the evidence arrives with the notification.
 		'attach_uploads' => [ 'evidence' ],
 		'confirmation'   => [
 			'heading' => __( 'We have received your complaint', 'sureforms' ),
-			'text'    => __( 'We are sorry for the trouble, {form:full-name}. We will look into it and contact you at {form:email}.', 'sureforms' ),
+			'text'    => __( 'We are sorry for the trouble, {form:name}. We will look into it and contact you at {form:email}.', 'sureforms' ),
 		],
-		'email_subject'  => __( 'Complaint from {form:full-name}: {form:complaint-type}', 'sureforms' ),
-		'email_intro'    => __( '{form:full-name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),
+		'email_subject'  => __( 'Complaint from {form:name}: {form:complaint-type}', 'sureforms' ),
+		'email_intro'    => __( '{form:name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),
 		'autoresponder'  => [
-			'subject' => __( 'We have received your complaint', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'We have received your complaint', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'We are sorry for the trouble, and thank you for letting us know.', 'sureforms' ),
 				__( 'Your complaint has been logged and someone from our team will look into it and contact you. If you have anything to add, just reply to this email.', 'sureforms' ),
 			],

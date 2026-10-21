@@ -32,7 +32,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea name:input email:email consent:gdpr',
 		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email consent:gdpr',
 		'website-feedback'     => 'found-it:multi-choice ease:multi-choice improve:textarea page:input email:email consent:gdpr',
-		'complaint'            => 'full-name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
+		'complaint'            => 'name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
 		'support-request'      => 'full-name:input email:email topic:dropdown order-number:input subject:input priority:multi-choice description:textarea link:url consent:gdpr',
 		'bug-report'           => 'full-name:input email:email summary:input severity:multi-choice what-happened:textarea steps:textarea page-url:url browser:dropdown device:dropdown screenshot:url consent:gdpr',
 		'volunteer-signup'     => 'full-name:input email:email phone:phone availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
@@ -115,7 +115,6 @@ class Test_Form_Templates_Enhancements extends TestCase {
 
 	public function test_signatures_need_the_pro_plan() {
 		$cases = [
-			'complaint'        => [ 'declaration-signature' ],
 			'volunteer-signup' => [ 'waiver-agreement', 'waiver-signature' ],
 		];
 		foreach ( $cases as $id => $slugs ) {
@@ -126,10 +125,6 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		}
 		$this->assertSame( 'signature', $this->fields( 'volunteer-signup', 'pro' )['waiver-signature']['fieldType'] );
 		$this->assertSame( 'checkbox', $this->fields( 'volunteer-signup', 'pro' )['waiver-agreement']['fieldType'] );
-
-		// The declaration sits on the complaint step, right before consent.
-		$complaint = array_keys( $this->fields( 'complaint', 'pro' ) );
-		$this->assertSame( 'consent', $complaint[ array_search( 'declaration-signature', $complaint, true ) + 1 ] );
 	}
 
 	public function test_declarations_point_at_fields_of_the_plan_that_builds_them() {
@@ -235,7 +230,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		$this->assertContains( 'conditional_logic', $items['website-feedback']['pro_features'] );
 		$this->assertContains( 'survey', $items['satisfaction-survey']['pro_features'] );
 		$this->assertContains( 'save_resume', $items['job-application']['pro_features'] );
-		$this->assertContains( 'signature', $items['complaint']['pro_features'] );
+		$this->assertNotContains( 'signature', $items['complaint']['pro_features'] );
 		$this->assertContains( 'signature', $items['volunteer-signup']['pro_features'] );
 
 		foreach ( [ 'rsvp', 'satisfaction-survey', 'job-application', 'complaint' ] as $id ) {
