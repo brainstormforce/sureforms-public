@@ -1,11 +1,10 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { Button, Tooltip } from '@bsf/force-ui';
+import { Button } from '@bsf/force-ui';
 import { Crown, ExternalLink } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 import {
 	getLockLabels,
-	isPremiumTemplate,
 	openTemplateUnlock,
 } from './template-features.js';
 import { resolveLook } from '../template-colors.js';
@@ -173,29 +172,17 @@ export const CardPicture = ( { template, look } ) => {
 };
 
 /**
- * Gradient crown on a Premium template.
+ * Gradient crown on a Premium template this site can't use yet. Decorative:
+ * the card's label and its hover panel already say it needs Premium.
  */
-const PremiumCrown = () => {
-	// Users only ever see "Premium", whichever plan the template needs.
-	const label = __( 'Premium', 'sureforms' );
-	return (
-		<Tooltip
-			content={ label }
-			placement="bottom-end"
-			arrow
-			triggers={ [ 'hover' ] }
-			// Rendered outside the screen's root, in the container the admin
-			// styles also apply to, and above the editor's Change template dialog.
-			tooltipPortalId="srfm-dashboard-container-tooltip"
-			className="z-[999999]"
-		>
-			<span className="absolute top-2.5 end-2.5 z-[7] pointer-events-auto flex items-center justify-center size-6 rounded-full text-white bg-[linear-gradient(135deg,#7C3AED_0%,#DB2777_100%)] cursor-help">
-				<Crown className="size-[13px]" aria-hidden="true" />
-				<span className="sr-only">{ label }</span>
-			</span>
-		</Tooltip>
-	);
-};
+const PremiumCrown = () => (
+	<span
+		className="absolute top-2.5 end-2.5 z-[7] flex items-center justify-center size-6 rounded-full text-white bg-[linear-gradient(135deg,#7C3AED_0%,#DB2777_100%)]"
+		aria-hidden="true"
+	>
+		<Crown className="size-[13px]" />
+	</span>
+);
 
 const tileClass =
 	'relative block h-[260px] overflow-hidden rounded-t-[9px] isolate';
@@ -235,24 +222,17 @@ const CardBody = ( { template } ) => (
 );
 
 /**
- * Accessible name of the button that opens a template's preview. The button's
- * label replaces the crown's hidden text, so Premium is named here.
+ * Accessible name of the button that opens a template's preview.
  *
  * @param {Object} template Template.
  * @return {string} Label.
  */
 export const getPreviewLabel = ( template ) =>
-	isPremiumTemplate( template )
-		? sprintf(
-			/* translators: %s: template name. */
-			__( 'Preview the %s template (Premium)', 'sureforms' ),
-			template.title
-		  )
-		: sprintf(
-			/* translators: %s: template name. */
-			__( 'Preview the %s template', 'sureforms' ),
-			template.title
-		  );
+	sprintf(
+		/* translators: %s: template name. */
+		__( 'Preview the %s template', 'sureforms' ),
+		template.title
+	);
 
 /**
  * Accessible name of a locked card, which opens the pricing page, or the
@@ -278,10 +258,12 @@ export const getUnlockLabel = ( template ) =>
  * A template in the library: a picture of its form, with its name and
  * description.
  *
- * A template this site can use is one button that opens the preview. A
+ * A template this site can use is one button that opens the preview; a
+ * Premium one it has the plan for looks like any other, with no crown. A
  * locked one is one button that opens the pricing page (or the update
  * screen); Premium templates aren't previewed before they're bought.
- * Hovering or focusing it shows "Premium" and "See plans".
+ * It carries the crown, and hovering or focusing it shows "Premium" and
+ * "See plans".
  *
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
@@ -395,7 +377,6 @@ const TemplateCard = ( { template, presets, hidden, onSelect } ) => {
 						{ __( 'Use this template', 'sureforms' ) }
 					</span>
 				</span>
-				{ isPremiumTemplate( template ) && <PremiumCrown /> }
 			</span>
 			<CardBody template={ template } />
 		</button>

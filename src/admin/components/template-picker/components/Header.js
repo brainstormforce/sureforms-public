@@ -34,7 +34,7 @@ const Header = ( { actions, hideLogoOnPhone = false } ) => {
 
 	return (
 		<div>
-			<Topbar className="fixed inset-x-0 top-0 z-[1] py-0 px-0 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+			<Topbar className="fixed inset-x-0 top-0 z-[1] py-0 px-0 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary">
 				<Topbar.Left
 					className={ cn(
 						'gap-3 pl-5 max-[620px]:pl-3 min-w-0 shrink-0',

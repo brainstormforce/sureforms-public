@@ -445,20 +445,23 @@ const TemplateLibrary = () => {
 				hideLogoOnPhone={ ! searchInView }
 				actions={
 					<div className="flex items-center justify-end gap-2 min-w-0 flex-1 max-[620px]:ps-3">
-						<TemplateSearch
-							variant="compact"
-							value={ query }
-							onChange={ setQuery }
-							placeholder={ __( 'Search templates', 'sureforms' ) }
-							aria-hidden={ searchInView ? 'true' : undefined }
-							tabIndex={ searchInView ? -1 : undefined }
-							className={ cn(
-								'max-w-[300px] min-w-[130px] flex-[0_1_300px] max-[620px]:min-w-0 max-[620px]:flex-[1_1_80px] transition-[opacity,transform,visibility] duration-150 motion-reduce:transition-none',
-								searchInView
-									? 'invisible opacity-0 -translate-y-1 max-[620px]:hidden'
-									: 'visible opacity-100 translate-y-0'
-							) }
-						/>
+						{ /* Centred in the space between the breadcrumb and the buttons. */ }
+						<div className="flex flex-1 justify-center min-w-0 max-[620px]:justify-start">
+							<TemplateSearch
+								variant="compact"
+								value={ query }
+								onChange={ setQuery }
+								placeholder={ __( 'Search templates', 'sureforms' ) }
+								aria-hidden={ searchInView ? 'true' : undefined }
+								tabIndex={ searchInView ? -1 : undefined }
+								className={ cn(
+									'max-w-[300px] min-w-[130px] flex-[0_1_300px] max-[620px]:min-w-0 max-[620px]:flex-[1_1_80px] transition-[opacity,transform,visibility] duration-150 motion-reduce:transition-none',
+									searchInView
+										? 'invisible opacity-0 -translate-y-1 max-[620px]:hidden'
+										: 'visible opacity-100 translate-y-0'
+								) }
+							/>
+						</div>
 						<CreateButtons
 							size="header"
 							onAi={ aiReady ? () => openAiBuilder() : undefined }
