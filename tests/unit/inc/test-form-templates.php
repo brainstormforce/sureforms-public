@@ -2745,4 +2745,12 @@ class Test_Form_Templates extends TestCase {
 		// The id can't point outside the pictures folder.
 		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
 	}
+
+	public function test_is_conversational() {
+		$this->assertTrue( Form_Templates::is_conversational( [ '_srfm_conversational_form' => [ 'is_cf_enabled' => true ] ] ) );
+		$this->assertTrue( Form_Templates::is_conversational( [ '_srfm_conversational_form' => [ 'is_cf_enabled' => '1' ] ] ) );
+		$this->assertFalse( Form_Templates::is_conversational( [ '_srfm_conversational_form' => [ 'is_cf_enabled' => false ] ] ) );
+		$this->assertFalse( Form_Templates::is_conversational( [ '_srfm_conversational_form' => 'yes' ] ) );
+		$this->assertFalse( Form_Templates::is_conversational( [] ) );
+	}
 }

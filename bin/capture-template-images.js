@@ -151,8 +151,11 @@ const toWebp = ( png, webp ) => {
 				throw new Error( 'locked on this site, so its preview is not the full version' );
 			}
 			await page.goto( template.preview_url, { waitUntil: 'networkidle' } );
+			// A conversational template previews as its own full page (welcome
+			// screen first), which paints its own background.
+			const conversational = ( await page.locator( '.srfm-cf-ctn' ).count() ) > 0;
 			await page.addStyleTag( {
-				content: `html, body.srfm-template-preview { background: ${ pageColor( template.theme, themes ) } !important; }
+				content: `${ conversational ? '' : `html, body.srfm-template-preview { background: ${ pageColor( template.theme, themes ) } !important; }` }
 					*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }
 					.srfm-test-mode-notice { display: none !important; }`,
 			} );
@@ -184,6 +187,37 @@ const toWebp = ( png, webp ) => {
 			// Scripts that finish the form's look after load, e.g. the phone field's flag.
 			await page.waitForTimeout( 800 );
 
+			const png = path.join( tmp, `${ template.id }.png` );
+			if ( conversational ) {
+				// The welcome screen sits mid-page; crop around it at the card's
+				// proportions (the card shows a picture from its top).
+				const welcome = await page.evaluate( () => {
+					const content = document.querySelector( '.srfm-cf-content' );
+					const rect = content?.getBoundingClientRect();
+					return rect ? { top: rect.top + window.scrollY, center: rect.left + ( rect.width / 2 ) } : null;
+				} );
+				if ( ! welcome ) {
+					throw new Error( 'no conversational welcome screen on the preview page' );
+				}
+				const width = FORM_WIDTH + ( 2 * SIDE );
+				const height = Math.round( width * 520 / 760 );
+				// What the welcome screen shows (heading, message, button), centred in the crop.
+				const shown = await page.evaluate( () => {
+					const rects = Array.from( document.querySelectorAll( '.srfm-cf-content *' ) )
+						.filter( ( el ) => el.offsetParent && el.innerText?.trim() )
+						.map( ( el ) => el.getBoundingClientRect() );
+					return rects.length ? { top: Math.min( ...rects.map( ( r ) => r.top ) ) + window.scrollY, bottom: Math.max( ...rects.map( ( r ) => r.bottom ) ) + window.scrollY } : null;
+				} );
+				const middle = shown ? ( shown.top + shown.bottom ) / 2 : welcome.top + ( height / 2 );
+				await page.screenshot( {
+					path: png,
+					clip: { x: Math.round( welcome.center - ( width / 2 ) ), y: Math.max( 0, Math.round( middle - ( height / 2 ) ) ), width, height },
+				} );
+				const { quality, bytes } = toWebp( png, path.join( OUT, `${ template.id }.webp` ) );
+				console.log( `${ template.id }: ${ Math.round( bytes / 1024 ) } KB (q${ quality }, conversational)` );
+				continue;
+			}
+
 			const box = await page.evaluate( () => {
 				const wrap = document.querySelector( '.srfm-template-preview__wrap' );
 				const form = wrap?.querySelector( '.srfm-form-container' );
@@ -200,7 +234,6 @@ const toWebp = ( png, webp ) => {
 			if ( Math.round( box.width ) !== FORM_WIDTH ) {
 				throw new Error( `form is ${ box.width }px wide, expected ${ FORM_WIDTH }px` );
 			}
-			const png = path.join( tmp, `${ template.id }.png` );
 			await page.screenshot( {
 				path: png,
 				// The whole page, not a taller viewport: resizing just before the
