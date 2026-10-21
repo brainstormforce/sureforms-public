@@ -2565,4 +2565,22 @@ class Test_Form_Templates extends TestCase {
 		);
 		$this->assertCount( 8, Form_Templates::get_card_fields( $many ) );
 	}
+
+	public function test_get_form_type() {
+		$input = [
+			'fieldType' => 'input',
+			'label'     => 'Name',
+		];
+		$step  = [
+			'fieldType' => 'page-break',
+			'label'     => 'Step two',
+		];
+
+		$this->assertSame( 'single', Form_Templates::get_form_type( [], [] ) );
+		$this->assertSame( 'single', Form_Templates::get_form_type( [], [ $input ] ) );
+		$this->assertSame( 'multistep', Form_Templates::get_form_type( [], [ $input, $step, $input ] ) );
+		// Conversational wins over steps; an empty conversational key doesn't count.
+		$this->assertSame( 'conversational', Form_Templates::get_form_type( [ 'conversational' => [ 'start_button' => 'Go' ] ], [ $input, $step ] ) );
+		$this->assertSame( 'multistep', Form_Templates::get_form_type( [ 'conversational' => [] ], [ $step ] ) );
+	}
 }
