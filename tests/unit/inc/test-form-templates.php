@@ -2744,6 +2744,24 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( '', Form_Templates::get_thumbnail_url( [] ) );
 		// The id can't point outside the pictures folder.
 		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
+		// A free template that SureForms Premium builds differently has a Pro picture, shown on Premium sites.
+		$this->assertFileExists( SRFM_DIR . 'images/templates/complaint-pro.webp' );
+		$this->assertSame( SRFM_URL . 'images/templates/complaint-pro.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'complaint' ], 'business' ) );
+		$this->assertSame( SRFM_URL . 'images/templates/complaint.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'complaint' ], 'free' ) );
+		// Pro doesn't change Contact Us, so every plan sees the one picture.
+		$this->assertFileDoesNotExist( SRFM_DIR . 'images/templates/contact-us-pro.webp' );
+		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'contact-us' ], 'business' ) );
+	}
+
+	public function test_pro_pictures_belong_to_free_templates_and_stay_small() {
+		$templates = array_column( Form_Templates::get_templates(), null, 'id' );
+		foreach ( glob( SRFM_DIR . 'images/templates/*-pro.webp' ) as $file ) {
+			$id = basename( $file, '-pro.webp' );
+			$this->assertArrayHasKey( $id, $templates, "{$id}-pro.webp has no template." );
+			$this->assertSame( 'free', $templates[ $id ]['requires'] ?? 'free', "{$id}-pro.webp is for a free template (Premium ones are always pictured as Pro)." );
+			$this->assertFileExists( SRFM_DIR . "images/templates/{$id}.webp", "{$id} keeps its free picture." );
+			$this->assertLessThan( 60 * 1024, filesize( $file ), "{$id}-pro.webp is 60 KB or more." );
+		}
 	}
 
 	public function test_is_conversational() {

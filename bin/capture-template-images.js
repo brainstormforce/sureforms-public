@@ -13,6 +13,7 @@
  *
  *   node bin/capture-template-images.js --plan=free
  *   node bin/capture-template-images.js --plan=premium
+ *   node bin/capture-template-images.js --plan=pro
  *   node bin/capture-template-images.js --plan=free --only=contact-us,rsvp
  *
  * Options:
@@ -28,6 +29,11 @@
  *                  the `srfm_pro_tier` filter is not enough without SureForms
  *                  Pro: its blocks (calculations, signatures, uploads...)
  *                  would not render.
+ *                  `pro`: the free templates again, as the Business plan
+ *                  builds them (step dividers, Pro fields), saved as
+ *                  <id>-pro.webp. Sites with SureForms Pro show that picture.
+ *                  When it comes out the same as the free picture it is not
+ *                  kept, so only templates Pro changes have one.
  *   --only=<ids>   Comma-separated template ids to capture.
  *   --out=<dir>    Output folder. Default images/templates.
  *
@@ -75,8 +81,8 @@ const SIDE = 44;
 const OUTPUT_WIDTH = 760;
 const MAX_BYTES = 58 * 1024;
 
-if ( ! [ 'free', 'premium' ].includes( PLAN ) ) {
-	console.error( 'Pass --plan=free or --plan=premium. See the header of this file.' );
+if ( ! [ 'free', 'premium', 'pro' ].includes( PLAN ) ) {
+	console.error( 'Pass --plan=free, --plan=premium or --plan=pro. See the header of this file.' );
 	process.exit( 1 );
 }
 
@@ -111,6 +117,75 @@ const toWebp = ( png, webp ) => {
 	throw new Error( `${ path.basename( webp ) } stays over ${ MAX_BYTES } bytes.` );
 };
 
+/**
+ * A picture's pixels, decoded with `dwebp` (part of the same webp package).
+ *
+ * @param {string} webp Picture.
+ * @return {{width: number, height: number, data: Buffer}} RGBA pixels.
+ */
+const readPixels = ( webp ) => {
+	const pam = execFileSync( 'dwebp', [ '-quiet', webp, '-pam', '-o', '-' ], { maxBuffer: 64 * 1024 * 1024 } );
+	const end = pam.indexOf( 'ENDHDR\n' ) + 7;
+	const header = pam.subarray( 0, end ).toString();
+	return {
+		width: Number( /WIDTH (\d+)/.exec( header )[ 1 ] ),
+		height: Number( /HEIGHT (\d+)/.exec( header )[ 1 ] ),
+		data: pam.subarray( end ),
+	};
+};
+
+/**
+ * Whether two pictures show the same thing: same size and no more than a few
+ * pixels apart (font smoothing can flip a pixel or two between renders).
+ *
+ * @param {string} a Picture.
+ * @param {string} b Picture.
+ * @return {boolean} Same.
+ */
+const looksTheSame = ( a, b ) => {
+	const one = readPixels( a );
+	const two = readPixels( b );
+	if ( one.width !== two.width || one.height !== two.height ) {
+		return false;
+	}
+	let different = 0;
+	for ( let i = 0; i < one.data.length; i += 4 ) {
+		const gap = Math.max(
+			Math.abs( one.data[ i ] - two.data[ i ] ),
+			Math.abs( one.data[ i + 1 ] - two.data[ i + 1 ] ),
+			Math.abs( one.data[ i + 2 ] - two.data[ i + 2 ] )
+		);
+		if ( gap > 20 && ++different > 50 ) {
+			return false;
+		}
+	}
+	return true;
+};
+
+/**
+ * Encode a capture to its picture. A `pro` capture that shows the same as the
+ * free picture is dropped: the free picture already shows that template on a
+ * Pro site.
+ *
+ * @param {string} id  Template id.
+ * @param {string} png Captured PNG.
+ * @return {{quality: number, bytes: number}} Encoding used.
+ */
+const save = ( id, png ) => {
+	const free = path.join( OUT, `${ id }.webp` );
+	const target = 'pro' === PLAN ? path.join( OUT, `${ id }-pro.webp` ) : free;
+	const result = toWebp( png, target );
+	if ( 'pro' === PLAN && ! fs.existsSync( free ) ) {
+		// The plugin only shows a Pro picture next to a free one.
+		fs.rmSync( target );
+		console.log( `${ id }: no free picture to go with it, no Pro picture kept (run --plan=free first)` );
+	} else if ( 'pro' === PLAN && looksTheSame( free, target ) ) {
+		fs.rmSync( target );
+		console.log( `${ id }: same as the free picture, no Pro picture kept` );
+	}
+	return result;
+};
+
 ( async () => {
 	const browser = await chromium.launch( { channel: 'chrome' } );
 	const context = await browser.newContext( {
@@ -142,7 +217,7 @@ const toWebp = ( png, webp ) => {
 	}
 
 	const list = templates.filter(
-		( template ) => ( 'free' === PLAN ) === ( 'free' === template.requires ) && ( ! ONLY || ONLY.includes( template.id ) )
+		( template ) => ( 'premium' !== PLAN ) === ( 'free' === template.requires ) && ( ! ONLY || ONLY.includes( template.id ) )
 	);
 	const tmp = fs.mkdtempSync( path.join( os.tmpdir(), 'srfm-template-images-' ) );
 	const failures = [];
@@ -229,7 +304,7 @@ const toWebp = ( png, webp ) => {
 					fullPage: true,
 					clip: { x: box.left - SIDE, y: Math.max( 0, box.top - SIDE ), width: FORM_WIDTH + ( 2 * SIDE ), height: Math.ceil( box.bottom - box.top + ( 2 * SIDE ) ) },
 				} );
-				const { quality, bytes } = toWebp( png, path.join( OUT, `${ template.id }.webp` ) );
+				const { quality, bytes } = save( template.id, png );
 				console.log( `${ template.id }: ${ Math.round( bytes / 1024 ) } KB (q${ quality }, conversational)` );
 				continue;
 			}
@@ -257,7 +332,7 @@ const toWebp = ( png, webp ) => {
 				fullPage: true,
 				clip: { x: box.left - SIDE, y: 0, width: FORM_WIDTH + ( 2 * SIDE ), height: Math.ceil( box.bottom ) },
 			} );
-			const { quality, bytes } = toWebp( png, path.join( OUT, `${ template.id }.webp` ) );
+			const { quality, bytes } = save( template.id, png );
 			console.log( `${ template.id }: ${ Math.round( bytes / 1024 ) } KB (q${ quality })` );
 		} catch ( error ) {
 			failures.push( template.id );

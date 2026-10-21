@@ -440,7 +440,7 @@ class Form_Templates {
 			// A locked template's messages and card describe its Premium version,
 			// whose answers (a calculated total, say) the messages use.
 			$message_fields = '' === $lock_reason ? $resolved : self::resolve_fields( $template, 'business' );
-			$thumbnail      = self::get_thumbnail_url( $template );
+			$thumbnail      = self::get_thumbnail_url( $template, $tier );
 
 			$list[] = [
 				'id'              => $template['id'],
@@ -698,11 +698,16 @@ class Form_Templates {
 	 * the plugin's `images/templates/<id>.webp`. Both are screenshots of the
 	 * template's preview, taken with bin/capture-template-images.js.
 	 *
+	 * A free template that SureForms Pro builds differently (step dividers,
+	 * Pro fields) also has `<id>-pro.webp`, its Business build, which sites
+	 * on a paid plan see instead.
+	 *
 	 * @param array<string, mixed> $template Template.
+	 * @param string               $tier     Plan tier, defaults to this site's (Helper::get_pro_tier()).
 	 * @since x.x.x
 	 * @return string Unescaped URL, '' when the template has no picture.
 	 */
-	public static function get_thumbnail_url( $template ) {
+	public static function get_thumbnail_url( $template, $tier = '' ) {
 		$image = self::get_preview_image_url( $template );
 		if ( '' !== $image ) {
 			return $image;
@@ -711,7 +716,9 @@ class Form_Templates {
 		if ( '' === $id || ! file_exists( SRFM_DIR . 'images/templates/' . $id . '.webp' ) ) {
 			return '';
 		}
-		return add_query_arg( 'ver', SRFM_VER, SRFM_URL . 'images/templates/' . $id . '.webp' );
+		$tier = '' === $tier ? Helper::get_pro_tier() : $tier;
+		$file = 'free' !== $tier && file_exists( SRFM_DIR . 'images/templates/' . $id . '-pro.webp' ) ? $id . '-pro.webp' : $id . '.webp';
+		return add_query_arg( 'ver', SRFM_VER, SRFM_URL . 'images/templates/' . $file );
 	}
 
 	/**
