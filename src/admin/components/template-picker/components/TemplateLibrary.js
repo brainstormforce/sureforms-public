@@ -3,24 +3,30 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from '@wordpress/element';
-import { Button, Checkbox, Toaster, toast } from '@bsf/force-ui';
+import { useNavigate } from 'react-router-dom';
+import {
+	Button,
+	Checkbox,
+	Text,
+	Title,
+	Toaster,
+	toast,
+} from '@bsf/force-ui';
 import {
 	ArrowLeft,
 	ArrowRight,
-	Check,
 	ExternalLink,
 	FileText,
 	ImageOff,
 	Info,
 	Lock,
 	Mail,
-	MessageSquarePlus,
 	Monitor,
 	Palette,
 	PartyPopper,
-	Search,
 	Smartphone,
 	Wrench,
 	X,
@@ -29,7 +35,6 @@ import { cn } from '@Utils/Helpers';
 import {
 	createFormFromTemplate,
 	recordEmptySearch,
-	requestTemplate,
 	trackTemplateAction,
 } from '@Utils/form-templates';
 import {
@@ -43,13 +48,31 @@ import TemplateCard from './TemplateCard.js';
 import {
 	IncludedFeatures,
 	PremiumBadge,
-	getFeatures,
 	getLockLabels,
 	getMissingSetup,
-	isPremiumTemplate,
 	openTemplateUnlock,
 	showsPreviewImage,
 } from './template-features.js';
+import {
+	DEFAULT_FILTERS,
+	countOptions,
+	getSearchText,
+	isNarrowed,
+	matchesSearch,
+	passesFilters,
+	sortTemplates,
+} from './template-filters.js';
+import {
+	CreateButtons,
+	FilterSelect,
+	NoTemplates,
+	NotQuiteCard,
+	PlanSwitch,
+	ResultCount,
+	TemplateSearch,
+	canGenerateWithAi,
+	useInView,
+} from './LibraryControls.js';
 import useFocusTrap from '../use-focus-trap.js';
 import { resolveLook } from '../template-colors.js';
 import {
@@ -894,26 +917,14 @@ export const TemplatePreview = ( {
  */
 const useMatchingTemplates = ( templates, categories, search ) =>
 	useMemo( () => {
-		const words = search.toLowerCase().split( /\s+/ ).filter( Boolean );
 		const labels = Object.fromEntries(
 			categories.map( ( category ) => [ category.id, category.label ] )
 		);
 		return new Set(
 			templates
-				.filter( ( template ) => {
-					const text = [
-						template.title,
-						template.description,
-						labels[ template.category ],
-						...( template.fields || [] ),
-						...getFeatures( template.features ).map(
-							( feature ) => feature.label
-						),
-					]
-						.join( ' ' )
-						.toLowerCase();
-					return words.every( ( word ) => text.includes( word ) );
-				} )
+				.filter( ( template ) =>
+					matchesSearch( getSearchText( template, labels ), search )
+				)
 				.map( ( template ) => template.id )
 		);
 	}, [ templates, categories, search ] );
@@ -922,275 +933,255 @@ const useMatchingTemplates = ( templates, categories, search ) =>
 const NO_RESULTS_DELAY = 1500;
 
 /**
- * Shown when a search finds no template: offers to request one.
+ * Counts a search that found no template, once per search and without its
+ * text. Like template requests, only while the site shares usage data.
  *
- * Requests reach the SureForms team through usage sharing, so they are only
- * sent when the site has it on. Searches with no results are counted the
- * same way, once per search, without their text.
- *
- * @param {Object} props          Props.
- * @param {string} props.query    Search text.
- * @param {Object} props.requests { enabled, settings_url }.
+ * @param {string}  search   Search text.
+ * @param {boolean} noResult No template matches the search.
+ * @param {boolean} enabled  Usage sharing is on.
  */
-const TemplateRequestCard = ( { query, requests } ) => {
-	const [ status, setStatus ] = useState( 'idle' );
-	const enabled = Boolean( requests?.enabled );
-
+const useEmptySearchSignal = ( search, noResult, enabled ) => {
 	useEffect( () => {
-		setStatus( 'idle' );
-		if ( ! enabled ) {
+		if ( ! enabled || ! search || ! noResult ) {
 			return;
 		}
 		const timer = setTimeout( () => {
 			recordEmptySearch().catch( () => {} );
 		}, NO_RESULTS_DELAY );
 		return () => clearTimeout( timer );
-	}, [ query, enabled ] );
-
-	const send = async () => {
-		setStatus( 'sending' );
-		try {
-			await requestTemplate( query );
-			setStatus( 'sent' );
-		} catch ( error ) {
-			setStatus( 'error' );
-		}
-	};
-
-	return (
-		<div className="flex flex-col items-center gap-3 px-6 py-10 text-center bg-background-primary border border-dashed border-border-subtle rounded-lg">
-			<MessageSquarePlus
-				className="size-6 text-icon-secondary"
-				aria-hidden="true"
-			/>
-			<div className="flex flex-col gap-1">
-				<p className="m-0 text-base font-semibold text-text-primary">
-					{ sprintf(
-						/* translators: %s: search text. */
-						__( 'No template for “%s” yet', 'sureforms' ),
-						query
-					) }
-				</p>
-				<p className="m-0 text-sm text-text-secondary">
-					{ enabled
-						? __(
-							'Request it and we will consider adding it. You can also start from a template that is close, and change it.',
-							'sureforms'
-						  )
-						: __(
-							'Template requests are shared with the SureForms team through usage sharing, which is off on this site.',
-							'sureforms'
-						  ) }
-				</p>
-			</div>
-			{ enabled && 'sent' !== status && (
-				<Button
-					variant="primary"
-					size="sm"
-					loading={ 'sending' === status }
-					disabled={ 'sending' === status }
-					onClick={ send }
-				>
-					{ __( 'Request this template', 'sureforms' ) }
-				</Button>
-			) }
-			{ 'sent' === status && (
-				<p
-					className="m-0 flex items-center gap-1.5 text-sm font-medium text-text-primary"
-					role="status"
-				>
-					<Check className="size-4" aria-hidden="true" />
-					{ __(
-						'Thanks, your request has been noted.',
-						'sureforms'
-					) }
-				</p>
-			) }
-			{ 'error' === status && (
-				<p className="m-0 text-sm text-text-error" role="alert">
-					{ __(
-						'The request could not be sent. Please try again.',
-						'sureforms'
-					) }
-				</p>
-			) }
-			{ ! enabled && requests?.settings_url && (
-				<a
-					href={ requests.settings_url }
-					className="text-sm font-medium text-link-primary"
-				>
-					{ __( 'Turn on usage sharing', 'sureforms' ) }
-				</a>
-			) }
-		</div>
-	);
+	}, [ search, noResult, enabled ] );
 };
 
 /**
- * Category filter and the grid of template cards. Shared by the template
+ * Search, filters and the grid of template cards. Shared by the template
  * library screen and the editor's "Change template".
  *
- * @param {Object}   props            Props.
- * @param {Array}    props.templates  Templates.
- * @param {Array}    props.categories Categories.
- * @param {Function} props.onSelect   Called with a template id to preview it.
- * @param {Object}   props.children   Heading shown beside the filter.
- * @param {Object}   props.requests   Request settings: { enabled, settings_url }.
+ * @param {Object}   props                    Props.
+ * @param {Array}    props.templates          Templates.
+ * @param {Array}    props.categories         Categories.
+ * @param {Function} props.onSelect           Called with a template id to preview it.
+ * @param {Object}   props.children           Intro shown above the search, when there is no heading.
+ * @param {string}   props.heading            Page title, shown centered above the search.
+ * @param {Object}   props.requests           Request settings: { enabled, settings_url }.
+ * @param {string}   props.query              Search text, when the parent keeps it.
+ * @param {Function} props.onQueryChange      Called with new search text, with `query`.
+ * @param {Function} props.onSearchVisibility Called with whether the search box is in view.
+ * @param {boolean}  props.canCreate          Offer "Start from scratch" when nothing fits.
+ *                                            Only on the Add New Form screen.
+ * @param {Function} props.onBuildWithAi      Open the AI builder with a prompt. Only on the
+ *                                            Add New Form screen, and while AI can run.
  */
 export const TemplateGrid = ( {
 	templates,
 	categories,
 	onSelect,
 	children,
+	heading,
 	requests,
+	query: controlledQuery,
+	onQueryChange,
+	onSearchVisibility,
+	canCreate = false,
+	onBuildWithAi,
 } ) => {
-	const [ activeCategory, setActiveCategory ] = useState( 'all' );
-	// Only templates that need a paid plan. Combines with a category or search.
-	const [ premiumOnly, setPremiumOnly ] = useState( false );
-	const [ query, setQuery ] = useState( '' );
+	const [ filters, setFilters ] = useState( DEFAULT_FILTERS );
+	const [ ownQuery, setOwnQuery ] = useState( '' );
+	const isControlled = undefined !== controlledQuery;
+	const query = isControlled ? controlledQuery : ownQuery;
+	const setQuery = isControlled ? onQueryChange : setOwnQuery;
 	const [ gridNode, setGridNode ] = useState( null );
+	const searchRef = useRef( null );
+	const searchBoxRef = useRef( null );
 
 	// Shown inside a dialog (the editor's "Change template"), keep focus in it.
 	const dialog =
 		gridNode?.closest( '[role="dialog"][aria-modal="true"]' ) || null;
 	useFocusTrap( dialog, Boolean( dialog ) );
+	useInView( searchBoxRef, onSearchVisibility );
+
+	// "/" jumps to the search, unless something else has focus to type in.
+	useEffect( () => {
+		const onKeyDown = ( event ) => {
+			if (
+				'/' !== event.key ||
+				event.metaKey ||
+				event.ctrlKey ||
+				event.altKey ||
+				event.defaultPrevented
+			) {
+				return;
+			}
+			const target = event.target;
+			if (
+				target?.isContentEditable ||
+				target?.closest?.( 'input, textarea, select, [role="listbox"]' )
+			) {
+				return;
+			}
+			// Not while a preview is open over the grid.
+			const openDialog = target?.closest?.( '[role="dialog"]' );
+			if ( openDialog && ! openDialog.contains( gridNode ) ) {
+				return;
+			}
+			event.preventDefault();
+			searchRef.current?.focus();
+		};
+		document.addEventListener( 'keydown', onKeyDown );
+		return () => document.removeEventListener( 'keydown', onKeyDown );
+	}, [ gridNode ] );
+
 	const search = query.trim();
 	const matches = useMatchingTemplates( templates, categories, search );
-
-	// A search looks through every category.
+	const isMatched = useCallback(
+		( template ) => matches.has( template.id ),
+		[ matches ]
+	);
 	const isShown = ( template ) =>
-		( ! premiumOnly || isPremiumTemplate( template ) ) &&
-		( search
-			? matches.has( template.id )
-			: 'all' === activeCategory || template.category === activeCategory );
+		passesFilters( template, filters, isMatched( template ) );
 	const shownCount = templates.filter( isShown ).length;
-	const hasPremium = templates.some( isPremiumTemplate );
+	const narrowed = isNarrowed( filters, search );
+	const ordered = useMemo(
+		() => sortTemplates( templates, narrowed ),
+		[ templates, narrowed ]
+	);
+	const requestsOn = Boolean( requests?.enabled );
+	// Only a search the whole library has nothing for, whatever the filters,
+	// says what is missing from it.
+	const searchFoundNothing = Boolean( search ) && 0 === matches.size;
+	useEmptySearchSignal( search, searchFoundNothing, requestsOn );
 
-	const chips = [
-		{ id: 'all', label: __( 'All', 'sureforms' ) },
-		...categories.filter( ( category ) =>
-			templates.some( ( t ) => t.category === category.id )
-		),
+	const setFilter = ( key ) => ( value ) =>
+		setFilters( ( current ) => ( { ...current, [ key ]: value } ) );
+
+	const categoryCounts = countOptions(
+		templates,
+		filters,
+		isMatched,
+		'category'
+	);
+	const typeCounts = countOptions( templates, filters, isMatched, 'formType' );
+	const categoryOptions = [
+		{
+			id: 'all',
+			label: __( 'All categories', 'sureforms' ),
+			short: __( 'All', 'sureforms' ),
+			count: categoryCounts.all,
+		},
+		...categories
+			.filter( ( category ) =>
+				templates.some( ( t ) => t.category === category.id )
+			)
+			.map( ( category ) => ( {
+				...category,
+				count: categoryCounts[ category.id ] || 0,
+			} ) ),
 	];
+	const typeOptions = [
+		{
+			id: 'all',
+			label: __( 'All form types', 'sureforms' ),
+			short: __( 'All', 'sureforms' ),
+		},
+		{ id: 'single', label: __( 'Single page', 'sureforms' ) },
+		{ id: 'multistep', label: __( 'Multi-step', 'sureforms' ) },
+		{ id: 'conversational', label: __( 'Conversational', 'sureforms' ) },
+	]
+		.filter(
+			( option ) =>
+				'all' === option.id ||
+				templates.some(
+					( t ) => ( t.form_type || 'single' ) === option.id
+				)
+		)
+		.map( ( option ) => ( {
+			...option,
+			count: typeCounts[ option.id ] || 0,
+		} ) );
+
+	// Opens the AI builder with the search; the search text isn't sent anywhere.
+	const buildWithAi = onBuildWithAi
+		? () => onBuildWithAi( search )
+		: undefined;
+	// A short list for a search or filter: offer to make the form instead.
+	const isThin = canCreate && narrowed && shownCount > 0 && shownCount <= 3;
+
+	const searchBox = (
+		<div ref={ searchBoxRef } className="w-full max-w-[640px]">
+			<TemplateSearch
+				ref={ searchRef }
+				value={ query }
+				onChange={ setQuery }
+				placeholder={ sprintf(
+					/* translators: %d: number of templates. */
+					_n(
+						'Search %d template, try quote or booking',
+						'Search %d templates, try quote or booking',
+						templates.length,
+						'sureforms'
+					),
+					templates.length
+				) }
+			/>
+		</div>
+	);
 
 	return (
-		<div ref={ setGridNode } className="flex flex-col gap-6">
-			<div className="flex flex-wrap items-end justify-between gap-4">
-				{ children }
-				<div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-					<label className="relative flex items-center w-full sm:w-auto">
-						<span className="sr-only">
-							{ __( 'Search templates', 'sureforms' ) }
-						</span>
-						<Search
-							className="absolute left-2.5 size-4 text-icon-secondary pointer-events-none"
-							aria-hidden="true"
-						/>
-						<input
-							type="search"
-							value={ query }
-							onChange={ ( event ) =>
-								setQuery( event.target.value )
-							}
-							placeholder={ __(
-								'Search templates',
-								'sureforms'
-							) }
-							className="w-full sm:w-56 h-8 pl-8 pr-2 m-0 text-sm rounded-md border border-solid border-border-subtle bg-background-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-border-interactive"
-						/>
-					</label>
-					<div
-						className="flex flex-wrap gap-2"
-						role="group"
-						aria-label={ __( 'Filter templates', 'sureforms' ) }
-					>
-						{ chips.map( ( chip ) => (
-							<button
-								key={ chip.id }
-								type="button"
-								aria-pressed={
-									! search && activeCategory === chip.id
-								}
-								onClick={ () => {
-									setQuery( '' );
-									setActiveCategory( chip.id );
-								} }
-								className={ cn(
-									'px-3 py-1 text-xs font-medium rounded-full border border-solid cursor-pointer transition-colors',
-									'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-interactive',
-									! search && activeCategory === chip.id
-										? 'bg-button-primary text-text-on-color border-transparent'
-										: 'bg-background-primary text-text-secondary border-border-subtle hover:text-text-primary',
-									search && 'opacity-50'
-								) }
-							>
-								{ chip.label }
-							</button>
-						) ) }
-						{ hasPremium && (
-							<button
-								type="button"
-								aria-pressed={ premiumOnly }
-								aria-label={ __(
-									'Show only Premium templates',
-									'sureforms'
-								) }
-								title={ __(
-									'Show only Premium templates',
-									'sureforms'
-								) }
-								onClick={ () =>
-									setPremiumOnly( ( current ) => ! current )
-								}
-								className={ cn(
-									'inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border border-solid cursor-pointer transition-colors',
-									'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-interactive',
-									premiumOnly
-										? 'bg-brand-background-50 text-brand-800 border-brand-border-300'
-										: 'bg-background-primary text-text-secondary border-border-subtle hover:text-text-primary',
-								) }
-							>
-								<Lock className="size-3" aria-hidden="true" />
-								{ __( 'Premium', 'sureforms' ) }
-							</button>
-						) }
-					</div>
+		<div ref={ setGridNode } className="flex flex-col">
+			{ heading ? (
+				<div className="flex flex-col items-center gap-5 pt-10 pb-12 text-center">
+					<Title
+						tag="h1"
+						title={ heading }
+						className="[&_h1]:text-[28px] [&_h1]:leading-[1.45] [&_h1]:font-bold [&_h1]:tracking-[-0.022em] [&_h1]:text-text-primary"
+					/>
+					{ searchBox }
 				</div>
+			) : (
+				<div className="flex flex-col gap-4 pb-6">
+					{ children }
+					{ searchBox }
+				</div>
+			) }
+
+			<div className="flex flex-wrap items-center justify-between gap-3 pb-5">
+				<div className="order-1 flex flex-wrap items-center gap-3.5 max-[760px]:gap-2.5 max-[560px]:w-full">
+					<FilterSelect
+						name={ __( 'Category', 'sureforms' ) }
+						label={ __( 'Category:', 'sureforms' ) }
+						value={ filters.category }
+						options={ categoryOptions }
+						onChange={ setFilter( 'category' ) }
+					/>
+					{ typeOptions.length > 2 && (
+						<FilterSelect
+							name={ __( 'Form type', 'sureforms' ) }
+							label={ __( 'Form type:', 'sureforms' ) }
+							value={ filters.formType }
+							options={ typeOptions }
+							onChange={ setFilter( 'formType' ) }
+						/>
+					) }
+					<ResultCount count={ shownCount } />
+				</div>
+				<PlanSwitch
+					value={ filters.plan }
+					onChange={ setFilter( 'plan' ) }
+				/>
 			</div>
 
-			{ search && shownCount > 0 && (
-				<p
-					className="m-0 -mt-2 text-xs text-text-tertiary"
-					role="status"
-				>
-					{ sprintf(
-						/* translators: 1: number of templates, 2: search text. */
-						_n(
-							'%1$d template for “%2$s”',
-							'%1$d templates for “%2$s”',
-							shownCount,
-							'sureforms'
-						),
-						shownCount,
-						search
-					) }
-				</p>
+			{ 0 === shownCount && (
+				<NoTemplates canCreate={ canCreate } onAi={ buildWithAi } />
 			) }
 
-			{ ! search && premiumOnly && 0 === shownCount && (
-				<p className="m-0 text-sm text-text-secondary" role="status">
-					{ __( 'No Premium templates in this category yet.', 'sureforms' ) }
-				</p>
-			) }
-
-			{ search && 0 === shownCount && (
-				<TemplateRequestCard query={ search } requests={ requests } />
-			) }
-
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+			<div
+				className={ cn(
+					'grid grid-cols-1 min-[601px]:grid-cols-2 min-[901px]:grid-cols-3 gap-7 pb-7',
+					0 === shownCount && 'hidden'
+				) }
+			>
 				{ /* Cards are hidden rather than removed, so their live previews
 				load once instead of on every filter or keystroke. */ }
-				{ templates.map( ( template ) => (
+				{ ordered.map( ( template ) => (
 					<TemplateCard
 						key={ template.id }
 						template={ template }
@@ -1199,6 +1190,13 @@ export const TemplateGrid = ( {
 					/>
 				) ) }
 			</div>
+
+			{ isThin && <NotQuiteCard onAi={ buildWithAi } /> }
+			{ shownCount > 0 && ! isThin && (
+				<Text className="pt-2.5 pb-[72px] text-[13px] text-center text-text-tertiary">
+					{ __( 'That is every template', 'sureforms' ) }
+				</Text>
+			) }
 		</div>
 	);
 };
@@ -1224,6 +1222,22 @@ const TemplateLibrary = () => {
 	const categories = srfm_admin?.form_template_categories || [];
 	const [ previewId, setPreviewId ] = useState( '' );
 	const [ creatingId, setCreatingId ] = useState( '' );
+	const [ query, setQuery ] = useState( '' );
+	// The header gets its own search once the big one scrolls out of view.
+	const [ searchInView, setSearchInView ] = useState( true );
+	const navigate = useNavigate();
+	const aiReady = canGenerateWithAi();
+	// Opens the AI screen in place with the prompt typed in, without
+	// generating: that spends a credit, so it waits for the visitor.
+	const openAiBuilder = useCallback(
+		( prompt = '' ) =>
+			navigate( {
+				search: `?page=add-new-form&view=ai${
+					prompt ? `&srfm_ai_prompt=${ encodeURIComponent( prompt ) }` : ''
+				}`,
+			} ),
+		[ navigate ]
+	);
 
 	const closePreview = useCallback( () => setPreviewId( '' ), [] );
 
@@ -1279,27 +1293,46 @@ const TemplateLibrary = () => {
 				theme="light"
 				dismissAfter={ 5000 }
 			/>
-			<Header />
-			<div className="mt-14 px-4 sm:px-8 pt-8 sm:pt-10 pb-16">
+			<Header
+				hideLogoOnPhone={ ! searchInView }
+				actions={
+					<div className="flex items-center justify-end gap-2 min-w-0 flex-1 max-[620px]:ps-3">
+						<TemplateSearch
+							variant="compact"
+							value={ query }
+							onChange={ setQuery }
+							placeholder={ __( 'Search templates', 'sureforms' ) }
+							aria-hidden={ searchInView ? 'true' : undefined }
+							tabIndex={ searchInView ? -1 : undefined }
+							className={ cn(
+								'max-w-[300px] min-w-[130px] flex-[0_1_300px] max-[620px]:min-w-0 max-[620px]:flex-[1_1_80px] transition-[opacity,transform,visibility] duration-150 motion-reduce:transition-none',
+								searchInView
+									? 'invisible opacity-0 -translate-y-1 max-[620px]:hidden'
+									: 'visible opacity-100 translate-y-0'
+							) }
+						/>
+						<CreateButtons
+							size="header"
+							onAi={ aiReady ? () => openAiBuilder() : undefined }
+							className="flex-nowrap"
+						/>
+					</div>
+				}
+			/>
+			<div className="mt-14 px-5 min-[901px]:px-10 pb-4">
 				<div className="max-w-[1200px] mx-auto">
 					<TemplateGrid
 						templates={ templates }
 						categories={ categories }
 						onSelect={ setPreviewId }
 						requests={ srfm_admin?.form_template_requests }
-					>
-						<div className="flex flex-col gap-1">
-							<h1 className="m-0 text-2xl font-semibold text-text-primary">
-								{ __( 'Choose a template', 'sureforms' ) }
-							</h1>
-							<p className="m-0 text-sm text-text-secondary">
-								{ __(
-									'Preview any template as it will look on your site, then create a form from it. You can change everything afterwards.',
-									'sureforms'
-								) }
-							</p>
-						</div>
-					</TemplateGrid>
+						heading={ __( 'Choose a Template', 'sureforms' ) }
+						query={ query }
+						onQueryChange={ setQuery }
+						onSearchVisibility={ setSearchInView }
+						canCreate
+						onBuildWithAi={ aiReady ? openAiBuilder : undefined }
+					/>
 				</div>
 			</div>
 

@@ -56,6 +56,12 @@ const AiFormBuilder = () => {
 	const dashboardPromptFromWidget = (
 		urlParams.get( 'srfm_ai_dashboard_prompt' ) || ''
 	).trim();
+	// Typed in for the visitor to send, e.g. a template library search that
+	// found nothing. Unlike the dashboard widget's prompt, it never generates
+	// on its own: that would spend a credit.
+	const [ prefillPrompt ] = useState( () =>
+		( urlParams.get( 'srfm_ai_prompt' ) || '' ).trim()
+	);
 	const [ initialPromptFromWidget ] = useState( dashboardPromptFromWidget );
 	const [ hasHandledWidgetPrompt, setHasHandledWidgetPrompt ] =
 		useState( false );
@@ -273,6 +279,15 @@ const AiFormBuilder = () => {
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
 	const resetAt = srfm_admin?.srfm_ai_usage_details?.resetAt;
+
+	useEffect( () => {
+		if ( ! prefillPrompt ) {
+			return;
+		}
+		const url = new URL( window.location.href );
+		url.searchParams.delete( 'srfm_ai_prompt' );
+		window.history.replaceState( window.history.state, '', url.toString() );
+	}, [ prefillPrompt ] );
 
 	useEffect( () => {
 		if ( ! initialPromptFromWidget || hasHandledWidgetPrompt ) {
@@ -502,7 +517,7 @@ const AiFormBuilder = () => {
 			<div className="mt-14">
 				<AiFormBuilderForm
 					handleCreateAiForm={ handleCreateAiForm }
-					prefilledPrompt={ initialPromptFromWidget }
+					prefilledPrompt={ initialPromptFromWidget || prefillPrompt }
 					formTypeObj={ formTypeObj }
 					setFormTypeObj={ setFormTypeObj }
 					setFormType={ setFormType }

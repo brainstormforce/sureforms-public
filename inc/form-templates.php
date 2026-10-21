@@ -449,6 +449,8 @@ class Form_Templates {
 				'category'        => Helper::get_string_value( $template['category'] ?? 'other' ),
 				'icon'            => Helper::get_string_value( $template['icon'] ?? '' ),
 				'theme'           => isset( self::get_themes()[ $template['theme'] ?? '' ] ) ? Helper::get_string_value( $template['theme'] ) : 'ocean',
+				// Built from the same version as the messages: what this site gets, or the Premium version while locked.
+				'form_type'       => self::get_form_type( $template, $message_fields ),
 				'fields'          => $fields,
 				// The first fields, drawn as a small form on the library card.
 				'card_fields'     => self::get_card_fields( $message_fields ),
@@ -472,6 +474,26 @@ class Form_Templates {
 			];
 		}
 		return $list;
+	}
+
+	/**
+	 * How a template is laid out, for the library's "Form type" filter.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return string `conversational`, `multistep` or `single`.
+	 */
+	public static function get_form_type( $template, $fields ) {
+		if ( ! empty( $template['conversational'] ) ) {
+			return 'conversational';
+		}
+		foreach ( $fields as $field ) {
+			if ( 'page-break' === ( $field['fieldType'] ?? '' ) ) {
+				return 'multistep';
+			}
+		}
+		return 'single';
 	}
 
 	/**

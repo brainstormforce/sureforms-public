@@ -523,4 +523,104 @@ class Test_Form_Templates_UI extends TestCase {
 		// Saved through wp_kses_post(), which must keep the icon.
 		$this->assertStringContainsString( 'images/check-icon.svg', wp_kses_post( $message ) );
 	}
+
+	/**
+	 * Form type of catalog templates on each plan.
+	 *
+	 * @return array<string, array{0: string, 1: array<string, string>}>
+	 */
+	public function form_type_by_plan() {
+		return [
+			// Step dividers need a plan, so free sites build these on one page.
+			// Locked templates show their Premium version.
+			'free'     => [
+				'free',
+				[
+					'contact-us'                    => 'single',
+					'quote-request'                 => 'single',
+					'rental-application'            => 'multistep',
+					'conversational-lead-qualifier' => 'conversational',
+				],
+			],
+			'starter'  => [
+				'starter',
+				[
+					'contact-us'                    => 'single',
+					'quote-request'                 => 'multistep',
+					'rental-application'            => 'multistep',
+					'conversational-lead-qualifier' => 'conversational',
+				],
+			],
+			'pro'      => [
+				'pro',
+				[
+					'contact-us'                    => 'single',
+					'quote-request'                 => 'multistep',
+					'rental-application'            => 'multistep',
+					'conversational-lead-qualifier' => 'conversational',
+				],
+			],
+			'business' => [
+				'business',
+				[
+					'contact-us'                    => 'single',
+					'quote-request'                 => 'multistep',
+					'rental-application'            => 'multistep',
+					'conversational-lead-qualifier' => 'conversational',
+				],
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider form_type_by_plan
+	 *
+	 * @param string                $tier     Plan.
+	 * @param array<string, string> $expected Form type by template id.
+	 */
+	public function test_library_form_type_follows_the_plan( $tier, $expected ) {
+		add_filter( 'srfm_pro_tier', static fn() => $tier );
+		$types = array_column( Form_Templates::get_templates_for_js(), 'form_type', 'id' );
+
+		foreach ( $expected as $id => $type ) {
+			$this->assertSame( $type, $types[ $id ] ?? '', $id . ' on ' . $tier );
+		}
+		foreach ( $types as $id => $type ) {
+			$this->assertContains( $type, [ 'single', 'multistep', 'conversational' ], $id );
+		}
+	}
+
+	public function test_form_type_of_a_third_party_template() {
+		$this->assertSame( 'single', $this->template_for_js( [] )['form_type'] );
+		remove_all_filters( 'srfm_form_templates' );
+		$this->reset_templates();
+
+		$steps = $this->template_for_js(
+			[
+				'fields' => [
+					[
+						'fieldType' => 'input',
+						'slug'      => 'name',
+						'label'     => 'Name',
+					],
+					[
+						'fieldType' => 'page-break',
+						'slug'      => 'step-2',
+						'label'     => 'Step 2',
+					],
+				],
+			]
+		);
+		$this->assertSame( 'multistep', $steps['form_type'] );
+		remove_all_filters( 'srfm_form_templates' );
+		$this->reset_templates();
+
+		$this->assertSame( 'conversational', $this->template_for_js( [ 'conversational' => [ 'start_button' => 'Go' ] ] )['form_type'] );
+	}
+
+	private function reset_templates() {
+		$property = new ReflectionProperty( Form_Templates::class, 'templates' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+	}
 }
