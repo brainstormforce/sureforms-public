@@ -2220,6 +2220,56 @@ class Form_Templates {
 	}
 
 	/**
+	 * Text color for the Instant Form banner title, which is white. A form made
+	 * from a template has a light page color behind the title, so it gets dark
+	 * text; other forms keep theirs.
+	 *
+	 * @param int   $form_id     Form ID.
+	 * @param mixed $cover_type  Banner type, `color` or `image`.
+	 * @param mixed $cover_color Banner color.
+	 * @since x.x.x
+	 * @return string Hex color, or '' to keep the white title.
+	 */
+	public static function get_banner_title_color( $form_id, $cover_type, $cover_color ) {
+		if ( 'image' === $cover_type || ! is_string( $cover_color ) || ! preg_match( '/^#[0-9a-f]{6}$/i', $cover_color ) || self::is_dark( $cover_color ) ) {
+			return '';
+		}
+		return '' !== get_post_meta( $form_id, self::TEMPLATE_ID_META, true ) ? '#1E293B' : '';
+	}
+
+	/**
+	 * Whether a hex color is dark enough to need light text on it.
+	 *
+	 * @param string $hex Hex color.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_dark( $hex ) {
+		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
+		$channel       = static function ( $value ) {
+			$value /= 255;
+			return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
+		};
+		$luminance     = 0.2126 * $channel( $r ) + 0.7152 * $channel( $g ) + 0.0722 * $channel( $b );
+
+		// Below this, white text has the better contrast.
+		return $luminance < 0.179;
+	}
+
+	/**
+	 * Whether built metas switch the conversational layout on (set by SureForms
+	 * Pro's template builder when the template declares `conversational`).
+	 *
+	 * @param array<string, mixed> $metas Built metas.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_conversational( $metas ) {
+		$form = Helper::get_array_value( $metas['_srfm_conversational_form'] ?? [] );
+		return ! empty( $form['is_cf_enabled'] ) && filter_var( $form['is_cf_enabled'], FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
 	 * Whether the active SureForms Pro is too old for a template: older than its
 	 * `min_pro_version`, or without the template builder its Pro keys need.
 	 *
@@ -2840,43 +2890,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * Text color for the Instant Form banner title, which is white. A form made
-	 * from a template has a light page color behind the title, so it gets dark
-	 * text; other forms keep theirs.
-	 *
-	 * @param int   $form_id     Form ID.
-	 * @param mixed $cover_type  Banner type, `color` or `image`.
-	 * @param mixed $cover_color Banner color.
-	 * @since x.x.x
-	 * @return string Hex color, or '' to keep the white title.
-	 */
-	public static function get_banner_title_color( $form_id, $cover_type, $cover_color ) {
-		if ( 'image' === $cover_type || ! is_string( $cover_color ) || ! preg_match( '/^#[0-9a-f]{6}$/i', $cover_color ) || self::is_dark( $cover_color ) ) {
-			return '';
-		}
-		return '' !== get_post_meta( $form_id, self::TEMPLATE_ID_META, true ) ? '#1E293B' : '';
-	}
-
-	/**
-	 * Whether a hex color is dark enough to need light text on it.
-	 *
-	 * @param string $hex Hex color.
-	 * @since x.x.x
-	 * @return bool
-	 */
-	public static function is_dark( $hex ) {
-		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
-		$channel       = static function ( $value ) {
-			$value /= 255;
-			return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
-		};
-		$luminance     = 0.2126 * $channel( $r ) + 0.7152 * $channel( $g ) + 0.0722 * $channel( $b );
-
-		// Below this, white text has the better contrast.
-		return $luminance < 0.179;
-	}
-
-	/**
 	 * Hex color to RGB.
 	 *
 	 * @param string $hex #RGB or #RRGGBB.
@@ -3025,19 +3038,6 @@ class Form_Templates {
 			$meta[ $key ] = [ is_scalar( $value ) ? (string) $value : maybe_serialize( Helper::get_array_value( $value ) ) ];
 		}
 		wp_cache_set( self::get_preview_post_id(), $meta, 'post_meta' );
-	}
-
-	/**
-	 * Whether built metas switch the conversational layout on (set by SureForms
-	 * Pro's template builder when the template declares `conversational`).
-	 *
-	 * @param array<string, mixed> $metas Built metas.
-	 * @since x.x.x
-	 * @return bool
-	 */
-	public static function is_conversational( $metas ) {
-		$form = Helper::get_array_value( $metas['_srfm_conversational_form'] ?? [] );
-		return ! empty( $form['is_cf_enabled'] ) && filter_var( $form['is_cf_enabled'], FILTER_VALIDATE_BOOLEAN );
 	}
 
 	/**
