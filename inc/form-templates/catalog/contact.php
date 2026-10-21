@@ -234,8 +234,17 @@ return [
 		'description'   => __( 'Answer questions about a product before someone buys.', 'sureforms' ),
 		'submit_text'   => __( 'Send my question', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
+			Catalog::width( $c['phone'], 50 ),
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'topic', __( 'What would you like to know?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Price & bulk orders', 'sureforms' ), __( 'Stock & delivery', 'sureforms' ), __( 'Product details', 'sureforms' ), __( 'Something else', 'sureforms' ) ], true, [ 'tags', 'truck', 'circle-info', 'circle-question' ] ) ),
+				// Icon beside the text, two choices per row.
+				[
+					'verticalLayout' => false,
+					'choiceWidth'    => 50,
+				]
+			),
 			Catalog::width( Catalog::field( 'input', 'product', __( 'Product', 'sureforms' ), true, [ 'placeholder' => __( 'Product name or code', 'sureforms' ) ] ), 66.66 ),
 			Catalog::width( Catalog::number_field( 'quantity', __( 'Quantity', 'sureforms' ), false, 1, 10000, [ 'placeholder' => '1' ] ), 33.33 ),
 			Catalog::attrs( Catalog::field( 'textarea', 'question', __( 'Your Question', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Is it in stock? Does it come in other sizes? Do you offer bulk pricing?', 'sureforms' ) ] ), [ 'rows' => 4 ] ),
@@ -259,11 +268,12 @@ return [
 				'rules'   => [ [ 'quantity', '_REGEX_', '^([5-9][0-9]|[1-9][0-9]{2,}|[1-9][0-9]{0,2}[.,][0-9]{3})$' ] ],
 			],
 		],
-		'email_subject' => __( 'Product question: {form:product} from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} has a question about {form:product}. Reply to this email to answer them directly.', 'sureforms' ),
+		'email_subject' => __( 'Product question ({form:topic}): {form:product} from {form:name}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} has a question about {form:product} ({form:topic}). Reply to this email to answer them directly.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'We got your question about {form:product}', 'sureforms' ),
-			'lines'   => [ __( 'Thanks for your interest in {form:product}. We have received your question and will get back to you with an answer soon.', 'sureforms' ) ],
+			'subject'  => __( 'We got your question about {form:product}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [ __( 'Thanks for your interest in {form:product}. We have received your question and will get back to you with an answer soon.', 'sureforms' ) ],
 		],
 	],
 	[
