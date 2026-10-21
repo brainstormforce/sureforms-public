@@ -541,6 +541,49 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
+	 * The first-form pointer is about the AI builder, so its button opens the
+	 * AI screen directly instead of the Add New Form start screen.
+	 */
+	public function test_pointer_should_show() {
+		$admin   = Admin::get_instance();
+		$user_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_admin_' . uniqid(),
+				'user_pass'  => 'password',
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $user_id );
+		$_POST['pointer_nonce'] = wp_create_nonce( 'sureforms_pointer_action' );
+
+		$throw_handler = static function () {
+			return static function () {
+				throw new \WPDieException( 'srfm_test_die' );
+			};
+		};
+		add_filter( 'wp_die_ajax_handler', $throw_handler );
+		add_filter( 'wp_die_handler', $throw_handler );
+		add_filter( 'wp_doing_ajax', '__return_true' );
+
+		ob_start();
+		try {
+			$admin->pointer_should_show();
+		} catch ( \WPDieException $e ) {
+			// Expected: the handler ends with wp_send_json().
+		} finally {
+			$output = (string) ob_get_clean();
+			remove_filter( 'wp_die_ajax_handler', $throw_handler );
+			remove_filter( 'wp_die_handler', $throw_handler );
+			remove_filter( 'wp_doing_ajax', '__return_true' );
+			unset( $_POST['pointer_nonce'] );
+		}
+
+		$response = json_decode( $output, true );
+		$this->assertTrue( $response['show'] );
+		$this->assertSame( admin_url( 'admin.php?page=add-new-form&view=ai' ), $response['button_url'] );
+	}
+
+	/**
 	 * The attribution marker must be handed to core's removable-query-args list.
 	 *
 	 * wp_admin_canonical_url() strips those from the address bar on admin_head, which
