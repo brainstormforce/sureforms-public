@@ -233,6 +233,26 @@ const PageBreakSettings = () => {
 					isFormSpecific={ true }
 				/>
 			) }
+			{ pageBreakSettings?.review_step && (
+				<SRFMTextControl
+					variant="textarea"
+					data={ {
+						value: pageBreakSettings?.review_step_notice,
+						label: 'review_step_notice',
+					} }
+					label={ __( 'Review Step Message', 'sureforms' ) }
+					// Shown when empty, which is also what the page falls back to.
+					placeholder={ __(
+						'Please take a moment to review your answers before submitting.',
+						'sureforms'
+					) }
+					value={ pageBreakSettings?.review_step_notice }
+					onChange={ ( value ) =>
+						updatePageBreakSettings( 'review_step_notice', value )
+					}
+					isFormSpecific={ true }
+				/>
+			) }
 		</>
 	);
 };
