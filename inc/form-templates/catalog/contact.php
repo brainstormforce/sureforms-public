@@ -71,8 +71,7 @@ return [
 		'submit_text'    => __( 'Request my quote', 'sureforms' ),
 		'steps'          => [ __( 'Your details', 'sureforms' ), __( 'Your project', 'sureforms' ) ],
 		'fields'         => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'If you are asking for a business', 'sureforms' ) ] ),
@@ -113,14 +112,14 @@ return [
 		// With SureForms Pro, the files arrive with the notification.
 		'attach_uploads' => [ 'attachments' ],
 		'confirmation'   => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your quote request is in. We will review your project details and send your estimate to {form:email}.', 'sureforms' ),
 		],
-		'email_subject'  => __( 'Quote request: {form:service} from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'    => __( '{form:first-name} {form:last-name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
+		'email_subject'  => __( 'Quote request: {form:service} from {form:name}', 'sureforms' ),
+		'email_intro'    => __( '{form:name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
 		'autoresponder'  => [
 			'subject'  => __( 'We received your quote request', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [ __( 'Thanks for telling us about your project. We will review the details and get back to you with an estimate.', 'sureforms' ) ],
 		],
 	],
