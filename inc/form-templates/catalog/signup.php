@@ -72,7 +72,7 @@ return [
 					__( 'When are you available?', 'sureforms' ),
 					true,
 					array_merge(
-						Catalog::choice_options( [ __( 'Weekday daytime', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ), __( 'Flexible', 'sureforms' ) ], false, [ 'sun', 'moon', 'calendar-week', 'clock' ] ),
+						Catalog::choice_options( [ __( 'Weekday daytime', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ), __( 'Flexible', 'sureforms' ) ], false ),
 						[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
 					)
 				),
@@ -84,7 +84,7 @@ return [
 				__( 'How would you like to help?', 'sureforms' ),
 				false,
 				array_merge(
-					Catalog::choice_options( [ __( 'Events', 'sureforms' ), __( 'Fundraising', 'sureforms' ), __( 'Outreach', 'sureforms' ), __( 'Admin and office', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Wherever needed', 'sureforms' ) ], false, [ 'calendar-days', 'hand-holding-dollar', 'bullhorn', 'file-lines', 'hashtag', 'heart' ] ),
+					Catalog::choice_options( [ __( 'Events', 'sureforms' ), __( 'Fundraising', 'sureforms' ), __( 'Outreach', 'sureforms' ), __( 'Admin and office', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Wherever needed', 'sureforms' ) ], false ),
 					[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
 				)
 			),

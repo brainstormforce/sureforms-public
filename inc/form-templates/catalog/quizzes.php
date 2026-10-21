@@ -305,8 +305,7 @@ return [
 					true,
 					Catalog::choice_options(
 						[ __( 'New features', 'sureforms' ), __( 'Better performance', 'sureforms' ), __( 'More tutorials', 'sureforms' ), __( 'Lower prices', 'sureforms' ) ],
-						true,
-						[ 'wand-magic-sparkles', 'gauge-high', 'book-open', 'tags' ]
+						true
 					)
 				),
 				[ 'choiceWidth' => 50 ]
@@ -364,7 +363,7 @@ return [
 					'workload',
 					__( 'How is your workload?', 'sureforms' ),
 					true,
-					Catalog::choice_options( [ __( 'Too light', 'sureforms' ), __( 'About right', 'sureforms' ), __( 'Too heavy', 'sureforms' ) ], true, [ 'battery-quarter', 'scale-balanced', 'weight-hanging' ] )
+					Catalog::choice_options( [ __( 'Too light', 'sureforms' ), __( 'About right', 'sureforms' ), __( 'Too heavy', 'sureforms' ) ], true )
 				),
 				[ 'choiceWidth' => 33.33 ]
 			),
@@ -373,7 +372,7 @@ return [
 				'support',
 				__( 'Do you have what you need to do your job well?', 'sureforms' ),
 				true,
-				Catalog::choice_options( [ __( 'Yes', 'sureforms' ), __( 'Mostly', 'sureforms' ), __( 'No', 'sureforms' ) ], true, [ 'circle-check', 'circle-half-stroke', 'circle-xmark' ] )
+				Catalog::choice_options( [ __( 'Yes', 'sureforms' ), __( 'Mostly', 'sureforms' ), __( 'No', 'sureforms' ) ], true )
 			),
 			Catalog::field(
 				'nps',
@@ -404,8 +403,8 @@ return [
 		'submit_text'   => __( 'Show my plan', 'sureforms' ),
 		'features'      => [ 'conditional_logic' ],
 		'fields'        => [
-			Catalog::attrs( Catalog::field( 'multi-choice', 'team-size', __( 'How many people will use it?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true, [ 'user', 'user-group', 'users', 'building' ] ) ), [ 'choiceWidth' => 25 ] ),
-			Catalog::attrs( Catalog::field( 'multi-choice', 'main-goal', __( 'What matters most to you?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Getting started quickly', 'sureforms' ), __( 'Growing my business', 'sureforms' ), __( 'Advanced control and security', 'sureforms' ) ], true, [ 'rocket', 'arrow-trend-up', 'shield-halved' ] ) ), [ 'choiceWidth' => 33.33 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'team-size', __( 'How many people will use it?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true ) ), [ 'choiceWidth' => 25 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'main-goal', __( 'What matters most to you?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Getting started quickly', 'sureforms' ), __( 'Growing my business', 'sureforms' ), __( 'Advanced control and security', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 33.33 ] ),
 			Catalog::field(
 				'dropdown',
 				'budget',
@@ -481,10 +480,10 @@ return [
 		'fields'         => [
 			Catalog::field( 'input', 'first-name', __( 'First, what’s your name?', 'sureforms' ), true, [ 'placeholder' => __( 'Jane', 'sureforms' ) ] ),
 			Catalog::field( 'input', 'company', __( 'Which company are you with?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ),
-			Catalog::field( 'multi-choice', 'role', __( 'What best describes your role?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Owner or founder', 'sureforms' ), __( 'Manager', 'sureforms' ), __( 'Team member', 'sureforms' ), __( 'Something else', 'sureforms' ) ], true, [ 'crown', 'user-tie', 'user', 'ellipsis' ] ) ),
-			Catalog::field( 'multi-choice', 'team-size', __( 'How big is your team?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true, [ 'user', 'user-group', 'users', 'building' ] ) ),
-			Catalog::field( 'multi-choice', 'timeline', __( 'When would you like to get started?', 'sureforms' ), true, Catalog::choice_options( [ __( 'This month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later this year', 'sureforms' ), __( 'Just exploring', 'sureforms' ) ], true, [ 'fire', 'calendar-days', 'calendar', 'compass' ] ) ),
-			Catalog::field( 'multi-choice', 'budget', __( 'Roughly what budget do you have?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Small', 'sureforms' ), __( 'Medium', 'sureforms' ), __( 'Large', 'sureforms' ), __( 'Not sure yet', 'sureforms' ) ], true, [ 'seedling', 'chart-simple', 'chart-line', 'circle-question' ] ) ),
+			Catalog::field( 'multi-choice', 'role', __( 'What best describes your role?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Owner or founder', 'sureforms' ), __( 'Manager', 'sureforms' ), __( 'Team member', 'sureforms' ), __( 'Something else', 'sureforms' ) ], true ) ),
+			Catalog::field( 'multi-choice', 'team-size', __( 'How big is your team?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true ) ),
+			Catalog::field( 'multi-choice', 'timeline', __( 'When would you like to get started?', 'sureforms' ), true, Catalog::choice_options( [ __( 'This month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later this year', 'sureforms' ), __( 'Just exploring', 'sureforms' ) ], true ) ),
+			Catalog::field( 'multi-choice', 'budget', __( 'Roughly what budget do you have?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Small', 'sureforms' ), __( 'Medium', 'sureforms' ), __( 'Large', 'sureforms' ), __( 'Not sure yet', 'sureforms' ) ], true ) ),
 			array_merge(
 				$c['email'],
 				[

@@ -51,7 +51,7 @@ return [
 					__( 'How urgent is this?', 'sureforms' ),
 					true,
 					array_merge(
-						Catalog::choice_options( [ __( 'Low', 'sureforms' ), __( 'Normal', 'sureforms' ), __( 'High', 'sureforms' ), __( 'Urgent', 'sureforms' ) ], true, [ 'arrow-down', 'equals', 'arrow-up', 'fire' ] ),
+						Catalog::choice_options( [ __( 'Low', 'sureforms' ), __( 'Normal', 'sureforms' ), __( 'High', 'sureforms' ), __( 'Urgent', 'sureforms' ) ], true ),
 						[ 'helpText' => __( 'Choose Urgent only if you cannot use the product or service at all.', 'sureforms' ) ]
 					)
 				),
@@ -95,7 +95,7 @@ return [
 				__( 'Severity', 'sureforms' ),
 				true,
 				array_merge(
-					Catalog::choice_options( [ __( 'Minor', 'sureforms' ), __( 'Major', 'sureforms' ), __( 'Blocking', 'sureforms' ) ], true, [ 'circle-info', 'triangle-exclamation', 'ban' ] ),
+					Catalog::choice_options( [ __( 'Minor', 'sureforms' ), __( 'Major', 'sureforms' ), __( 'Blocking', 'sureforms' ) ], true ),
 					[ 'helpText' => __( 'Minor: looks wrong or is annoying. Major: something does not work. Blocking: you cannot continue.', 'sureforms' ) ]
 				)
 			),

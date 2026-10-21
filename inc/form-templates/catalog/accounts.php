@@ -299,7 +299,7 @@ return [
 					'fulfilment',
 					__( 'Delivery or Pickup?', 'sureforms' ),
 					true,
-					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true, [ 'truck', 'store' ] )
+					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true )
 				),
 				[ 'choiceWidth' => 50 ]
 			),

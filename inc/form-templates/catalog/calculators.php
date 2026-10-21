@@ -123,9 +123,9 @@ return [
 					array_merge(
 						$priced_options(
 							[
-								[ $label_with_price( __( 'Copywriting', 'sureforms' ), '+' . $money( 300 ) ), 300, 'pen-nib' ],
-								[ $label_with_price( __( 'SEO setup', 'sureforms' ), '+' . $money( 400 ) ), 400, 'magnifying-glass' ],
-								[ $label_with_price( __( 'Rush delivery', 'sureforms' ), '+' . $money( 500 ) ), 500, 'bolt' ],
+								[ $label_with_price( __( 'Copywriting', 'sureforms' ), '+' . $money( 300 ) ), 300 ],
+								[ $label_with_price( __( 'SEO setup', 'sureforms' ), '+' . $money( 400 ) ), 400 ],
+								[ $label_with_price( __( 'Rush delivery', 'sureforms' ), '+' . $money( 500 ) ), 500 ],
 							],
 							'multi-choice',
 							false
@@ -331,7 +331,7 @@ return [
 					'goal',
 					__( 'Your Goal', 'sureforms' ),
 					true,
-					Catalog::choice_options( [ __( 'Lose weight', 'sureforms' ), __( 'Maintain my weight', 'sureforms' ), __( 'Gain weight', 'sureforms' ) ], true, [ 'arrow-trend-down', 'scale-balanced', 'arrow-trend-up' ] )
+					Catalog::choice_options( [ __( 'Lose weight', 'sureforms' ), __( 'Maintain my weight', 'sureforms' ), __( 'Gain weight', 'sureforms' ) ], true )
 				),
 				[ 'choiceWidth' => 33.33 ]
 			),
@@ -516,9 +516,9 @@ return [
 					true,
 					$priced_options(
 						[
-							[ __( 'Standard (3 to 5 days)', 'sureforms' ), 0, 'truck' ],
+							[ __( 'Standard (3 to 5 days)', 'sureforms' ), 0 ],
 							/* translators: %s: express surcharge. */
-							[ sprintf( __( 'Express, next day (+%s)', 'sureforms' ), $money( 15 ) ), 15, 'truck-fast' ],
+							[ sprintf( __( 'Express, next day (+%s)', 'sureforms' ), $money( 15 ) ), 15 ],
 						]
 					)
 				),

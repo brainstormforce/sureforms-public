@@ -36,9 +36,9 @@ return [
 				__( 'How satisfied are you overall?', 'sureforms' ),
 				true,
 				array_merge(
-					Catalog::choice_options( $satisfaction, true, [ 'face-grin-stars', 'face-smile', 'face-meh', 'face-frown', 'face-angry' ] ),
+					Catalog::choice_options( $satisfaction, true ),
 					[
-						// One option per row, so the five faces read as a scale.
+						// One option per row, so the five answers read as a scale.
 						'blockAttributes' => [
 							'verticalLayout' => false,
 							'choiceWidth'    => 100,
@@ -123,7 +123,7 @@ return [
 				)
 			),
 			Catalog::attrs( Catalog::field( 'textarea', 'reason', __( 'What is the main reason for your score?', 'sureforms' ) ), [ 'rows' => 3 ] ),
-			Catalog::attrs( Catalog::field( 'multi-choice', 'frequency', __( 'How often do you use our product or service?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Daily', 'sureforms' ), __( 'Weekly', 'sureforms' ), __( 'Monthly', 'sureforms' ), __( 'Rarely', 'sureforms' ) ], true, [ 'calendar-day', 'calendar-week', 'calendar', 'hourglass' ] ) ), [ 'choiceWidth' => 25 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'frequency', __( 'How often do you use our product or service?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Daily', 'sureforms' ), __( 'Weekly', 'sureforms' ), __( 'Monthly', 'sureforms' ), __( 'Rarely', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 25 ] ),
 			Catalog::field(
 				'email',
 				'email',
@@ -175,7 +175,7 @@ return [
 		'description'   => __( 'Learn whether visitors found what they came for.', 'sureforms' ),
 		'submit_text'   => __( 'Send feedback', 'sureforms' ),
 		'fields'        => [
-			Catalog::field( 'multi-choice', 'found-it', __( 'Did you find what you were looking for?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Yes', 'sureforms' ), __( 'Partly', 'sureforms' ), __( 'No', 'sureforms' ) ], true, [ 'circle-check', 'circle-half-stroke', 'circle-xmark' ] ) ),
+			Catalog::field( 'multi-choice', 'found-it', __( 'Did you find what you were looking for?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Yes', 'sureforms' ), __( 'Partly', 'sureforms' ), __( 'No', 'sureforms' ) ], true ) ),
 			Catalog::attrs( Catalog::field( 'multi-choice', 'ease', __( 'How easy was the site to use?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Very easy', 'sureforms' ), __( 'Easy', 'sureforms' ), __( 'Difficult', 'sureforms' ), __( 'Very difficult', 'sureforms' ) ], true, [ 'face-grin-beam', 'face-smile', 'face-frown', 'face-angry' ] ) ), [ 'choiceWidth' => 25 ] ),
 			Catalog::field( 'textarea', 'improve', __( 'What could we do better?', 'sureforms' ), false, [ 'placeholder' => __( 'Tell us what was missing, confusing or not working.', 'sureforms' ) ] ),
 			Catalog::field(
