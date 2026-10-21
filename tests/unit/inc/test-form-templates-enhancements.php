@@ -35,7 +35,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'complaint'            => 'name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
 		'support-request'      => 'name:input email:email topic:dropdown order-number:input subject:input priority:multi-choice description:textarea link:url consent:gdpr',
 		'bug-report'           => 'name:input email:email summary:input severity:multi-choice what-happened:textarea steps:textarea page-url:url browser:dropdown device:dropdown screenshot:url consent:gdpr',
-		'volunteer-signup'     => 'full-name:input email:email phone:phone availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
+		'volunteer-signup'     => 'name:input email:email phone:phone over-18:multi-choice availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
 		'job-application'      => 'full-name:input email:email phone:phone position:input cv:url linkedin:url portfolio:url years-experience:number start-date:dropdown cover-letter:textarea consent:gdpr',
 	];
 

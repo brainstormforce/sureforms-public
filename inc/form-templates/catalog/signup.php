@@ -72,9 +72,11 @@ return [
 		'description'   => __( 'Recruit volunteers and see when they can help.', 'sureforms' ),
 		'submit_text'   => __( 'Sign me up', 'sureforms' ),
 		'fields'        => [
-			$c['name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
+			// Many organisations need a guardian's consent for younger volunteers.
+			Catalog::attrs( Catalog::field( 'multi-choice', 'over-18', __( 'Are you 18 or over?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Yes', 'sureforms' ), __( 'No', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 50 ] ),
 			Catalog::attrs(
 				Catalog::field(
 					'multi-choice',
@@ -82,8 +84,8 @@ return [
 					__( 'When are you available?', 'sureforms' ),
 					true,
 					array_merge(
-						Catalog::choice_options( [ __( 'Weekday daytime', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ), __( 'Flexible', 'sureforms' ) ], false ),
-						[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
+						Catalog::choice_options( [ __( 'Daytime', 'sureforms' ), __( 'Evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ), __( 'Flexible', 'sureforms' ) ], false ),
+						[ 'helpText' => __( 'Daytime and evenings are on weekdays. Select all that apply.', 'sureforms' ) ]
 					)
 				),
 				[ 'choiceWidth' => 25 ]
@@ -111,14 +113,15 @@ return [
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can contact me about volunteering opportunities.', 'sureforms' ) ] ),
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks for volunteering, {form:full-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks for volunteering, {form:name}!', 'sureforms' ),
 			'text'    => __( 'We will be in touch at {form:email} about opportunities that suit your availability.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New volunteer: {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} signed up to volunteer. Available: {form:availability}.', 'sureforms' ),
+		'email_subject' => __( 'New volunteer: {form:name}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} signed up to volunteer. Available: {form:availability}.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'Thanks for volunteering with {site_title}', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'Thanks for volunteering with {site_title}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thank you for offering your time. We have noted when you are available and what you would like to help with.', 'sureforms' ),
 				__( 'We will contact you about upcoming opportunities that match.', 'sureforms' ),
 			],
