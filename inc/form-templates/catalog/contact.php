@@ -41,8 +41,7 @@ return [
 		'description'   => __( 'A simple form for visitors to send you a message.', 'sureforms' ),
 		'submit_text'   => __( 'Send message', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::field( 'input', 'subject', __( 'Subject', 'sureforms' ), false, [ 'placeholder' => __( 'What is this about?', 'sureforms' ) ] ),
@@ -51,14 +50,14 @@ return [
 			$source_page,
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your message is with us. We will reply to {form:email} as soon as we can.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New message from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} sent a message through your contact form. Reply to this email to answer them directly.', 'sureforms' ),
+		'email_subject' => __( 'New message from {form:name}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} sent a message through your contact form. Reply to this email to answer them directly.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Thanks for contacting {site_title}', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [ __( 'Thanks for reaching out. Your message has reached us and we will get back to you as soon as we can.', 'sureforms' ) ],
 		],
 	],
