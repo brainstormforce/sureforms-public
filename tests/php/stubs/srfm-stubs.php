@@ -234,6 +234,47 @@ class Analytics
     {
     }
     /**
+     * Count a step of the Add New Form start screen.
+     *
+     * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
+     * @param string $choice   Choice, required for `choose`.
+     * @param string $position Card position (`1`, `2`) or `link`, for `choose`.
+     * @since x.x.x
+     * @return bool Whether the action was counted.
+     */
+    public static function track_form_start_action($action, $choice = '', $position = '')
+    {
+    }
+    /**
+     * Count a form created after a start screen choice.
+     *
+     * @param string $choice      Start screen choice.
+     * @param string $created_via How the form was created: `ai`, `template` or `scratch`.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_form_start_created($choice, $created_via)
+    {
+    }
+    /**
+     * Queue the start screen funnel with fresh outcomes before a report.
+     *
+     * @since x.x.x
+     * @return void
+     */
+    public static function refresh_form_start_funnel()
+    {
+    }
+    /**
+     * Drafts, published forms and forms with entries, per start screen choice.
+     *
+     * @since x.x.x
+     * @return array<string, array<string, int>> Choice => [ `draft`, `published`, `with_entries` ].
+     */
+    public static function form_start_outcomes()
+    {
+    }
+    /**
      * Return total number of forms using instant forms.
      *
      * @since 1.4.0

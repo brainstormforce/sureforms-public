@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 import { trackTemplateAction } from '@Utils/form-templates';
+import { trackStartStep } from '@Utils/form-start';
 import TemplateStylePanel from './TemplateStylePanel.js';
 import {
 	PremiumBadge,
@@ -521,6 +522,7 @@ const TemplatePreview = ( {
 	const [ openedId ] = useState( template.id );
 	useEffect( () => {
 		trackTemplateAction( 'preview', openedId );
+		trackStartStep( 'template_preview' );
 	}, [ openedId ] );
 	const currentId = useRef( template.id );
 	currentId.current = template.id;

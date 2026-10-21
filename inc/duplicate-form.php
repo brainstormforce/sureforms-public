@@ -157,6 +157,11 @@ class Duplicate_Form {
 			}
 		}
 
+		// A copy wasn't created from the start screen or a template, so it must not
+		// count in their numbers.
+		delete_post_meta( $new_form_id, Form_Start::START_CHOICE_META );
+		update_post_meta( $new_form_id, Form_Templates::CREATED_VIA_META, 'duplicate' );
+
 		// Allow other plugins to hook after duplication.
 		do_action( 'srfm_after_form_duplicated', $new_form_id, $form_id );
 

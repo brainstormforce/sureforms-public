@@ -52,7 +52,7 @@ class Learn {
 					[
 						'id'           => 'creating-first-form',
 						'title'        => __( 'Creating Your First Form', 'sureforms' ),
-						'description'  => __( 'Creating a form with SureForms takes just a few minutes. Just describe the kind of form you need in a simple prompt, and let SureForms AI handle the heavy lifting for you.', 'sureforms' ),
+						'description'  => __( 'Creating a form with SureForms takes just a few minutes. Describe the form you need and let SureForms AI build it, pick a ready-made template, or start from scratch.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [

@@ -250,6 +250,12 @@ class Form_Templates {
 						'type'    => 'boolean',
 						'default' => false,
 					],
+					// Add New Form start screen choice in play, '' when none.
+					'start_choice'           => [
+						'type'    => 'string',
+						'enum'    => array_merge( [ '' ], Form_Start::CHOICES ),
+						'default' => '',
+					],
 				],
 			]
 		);
@@ -1687,6 +1693,8 @@ class Form_Templates {
 		if ( is_wp_error( $post_id ) ) {
 			return $post_id;
 		}
+
+		Form_Start::record_created( $post_id, $request->get_param( 'start_choice' ), 'template' );
 
 		return new WP_REST_Response(
 			[
