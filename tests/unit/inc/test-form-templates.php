@@ -233,14 +233,16 @@ class Test_Form_Templates extends TestCase {
 
 				// Fields sit side by side until their widths reach 100; a half-empty row looks unfinished.
 				$row = 0;
-				foreach ( $fields as $field ) {
+				foreach ( $fields as $index => $field ) {
 					if ( 'page-break' === $field['fieldType'] ) {
 						$this->assertSame( 0, $row, "Template {$id} has a row cut by a step." );
 						continue;
 					}
 					$width = $field['blockAttributes']['fieldWidth'] ?? 100;
-					// Help text sits above the input, so a narrow field with help text is taller than its neighbour.
-					if ( $width < 100 ) {
+					// Help text sits above the input, so a narrow field with help text is taller than its
+					// neighbour. An inline button lines up with the input, so it can sit beside one.
+					$next = $fields[ $index + 1 ]['fieldType'] ?? '';
+					if ( $width < 100 && 'inline-button' !== $next ) {
 						$this->assertEmpty( $field['helpText'] ?? '', "Template {$id}: {$field['slug']} shares a row, so it cannot have help text." );
 					}
 					$row += $width;
@@ -298,6 +300,12 @@ class Test_Form_Templates extends TestCase {
 		// The custom button replaces the form's own one, so the form is marked for it.
 		$this->assertTrue( Form_Templates::build_settings_metas( $template )['_srfm_is_inline_button'] );
 		$this->assertFalse( Form_Templates::build_settings_metas( Form_Templates::get_template( 'contact-us' ) )['_srfm_is_inline_button'] );
+
+		// Nothing comes after the button, so it is the last stop for the keyboard,
+		// and the notice is on the email field, read before the button.
+		$fields = array_column( $template['fields'], null, 'slug' );
+		$this->assertSame( 'inline-button', end( $template['fields'] )['fieldType'] );
+		$this->assertStringContainsString( 'Unsubscribe', $fields['email']['helpText'] );
 	}
 
 	public function test_a_score_scale_starting_at_zero_keeps_its_options() {
@@ -321,8 +329,9 @@ class Test_Form_Templates extends TestCase {
 			$types  = wp_list_pluck( $fields, 'fieldType' );
 			$email  = array_values( array_filter( $fields, static fn( $f ) => 'email' === $f['slug'] ) );
 
-			// A form that requires the visitor's details asks for consent.
-			if ( ! empty( $email ) && ! empty( $email[0]['required'] ) ) {
+			// A form that requires the visitor's details asks for consent. A signup-only form
+			// (an email and its button) states what it is for, and subscribing is the consent.
+			if ( ! empty( $email ) && ! empty( $email[0]['required'] ) && [ 'email', 'inline-button' ] !== $types ) {
 				$this->assertContains( 'gdpr', $types, "Template {$id} collects an email without consent." );
 			}
 

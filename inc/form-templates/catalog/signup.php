@@ -28,7 +28,18 @@ return [
 		'description'   => __( 'Grow your mailing list with a one-line signup form.', 'sureforms' ),
 		'submit_text'   => __( 'Subscribe', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( array_merge( $c['email'], [ 'label' => __( 'Email Address', 'sureforms' ) ] ), 75 ),
+			// The notice sits above the box, so it is read before the button. On a
+			// signup-only form, entering an email and pressing Subscribe is the consent.
+			Catalog::width(
+				array_merge(
+					$c['email'],
+					[
+						'label'    => __( 'Email Address', 'sureforms' ),
+						'helpText' => __( 'News and updates only. Unsubscribe at any time.', 'sureforms' ),
+					]
+				),
+				75
+			),
 			Catalog::attrs(
 				Catalog::field( 'inline-button', 'subscribe', __( 'Subscribe', 'sureforms' ) ),
 				[
@@ -36,7 +47,6 @@ return [
 					'buttonText' => __( 'Subscribe', 'sureforms' ),
 				]
 			),
-			Catalog::field( 'gdpr', 'subscribe-consent', __( 'Yes, send me news and updates by email. I can unsubscribe at any time.', 'sureforms' ), true ),
 		],
 		'confirmation'  => [
 			'heading' => __( 'You are on the list', 'sureforms' ),
