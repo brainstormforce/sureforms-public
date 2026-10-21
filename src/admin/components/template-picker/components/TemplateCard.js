@@ -150,11 +150,8 @@ const MiniForm = ( { template, look } ) => (
  */
 export const CardPicture = ( { template, look } ) => {
 	const [ failed, setFailed ] = useState( false );
-	if ( ! template.thumbnail ) {
+	if ( ! template.thumbnail || failed ) {
 		return <MiniForm template={ template } look={ look } />;
-	}
-	if ( failed ) {
-		return null;
 	}
 	return (
 		<img

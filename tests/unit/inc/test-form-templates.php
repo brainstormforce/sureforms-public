@@ -2734,4 +2734,15 @@ class Test_Form_Templates extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	public function test_get_thumbnail_url() {
+		// A catalog template: its own picture in the plugin, versioned so a new release isn't cached.
+		$this->assertSame( SRFM_URL . 'images/templates/contact-us.webp?ver=' . SRFM_VER, Form_Templates::get_thumbnail_url( [ 'id' => 'contact-us' ] ) );
+		// An added template: its own preview_image, or none.
+		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
+		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => 'no-picture-here' ] ) );
+		$this->assertSame( '', Form_Templates::get_thumbnail_url( [] ) );
+		// The id can't point outside the pictures folder.
+		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
+	}
 }

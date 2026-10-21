@@ -448,7 +448,8 @@ class Form_Templates {
 				'form_type'       => self::get_form_type( $template, $message_fields ),
 				'fields'          => $fields,
 				// The first fields, drawn as a small form on a card that has no picture.
-				'card_fields'     => '' === $thumbnail ? self::get_card_fields( $message_fields ) : [],
+				// Drawn when there's no picture, or the picture doesn't load.
+				'card_fields'     => self::get_card_fields( $message_fields ),
 				'features'        => $features,
 				// What the template gains with a higher SureForms Pro plan.
 				'pro_features'    => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),

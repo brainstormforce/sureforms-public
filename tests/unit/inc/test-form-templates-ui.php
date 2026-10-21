@@ -474,8 +474,8 @@ class Test_Form_Templates_UI extends TestCase {
 			$path = SRFM_DIR . substr( strtok( $item['thumbnail'], '?' ), strlen( SRFM_URL ) );
 			$this->assertFileExists( $path, "Template {$item['id']}: card picture missing." );
 			$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$item['id']}: card picture is 60 KB or more." );
-			// A card with a picture doesn't draw the form.
-			$this->assertSame( [], $item['card_fields'], "Template {$item['id']}." );
+			// The form is drawn instead if the picture doesn't load.
+			$this->assertNotEmpty( $item['card_fields'], "Template {$item['id']}: nothing to draw if its picture fails." );
 		}
 	}
 
@@ -488,13 +488,6 @@ class Test_Form_Templates_UI extends TestCase {
 		// A Premium template's card and locked preview show the same picture.
 		$this->assertSame( SRFM_URL . 'images/templates/loan-emi-calculator.webp?ver=' . SRFM_VER, $items['loan-emi-calculator']['preview_image'] );
 		$this->assertSame( $items['loan-emi-calculator']['preview_image'], $items['loan-emi-calculator']['thumbnail'] );
-	}
-
-	public function test_card_picture_of_an_added_template() {
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => 'no-picture-here' ] ) );
-		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
-		// The id can't point outside the pictures folder.
-		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
 	}
 
 	public function test_an_added_template_without_a_picture_is_drawn() {
