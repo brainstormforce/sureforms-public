@@ -232,10 +232,11 @@ return [
 		'description'   => __( 'Collect reviews to mention on your website.', 'sureforms' ),
 		'submit_text'   => __( 'Share my testimonial', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name (as you\'d like it shown)', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( array_merge( $c['email'], [ 'label' => __( 'Email (never published)', 'sureforms' ) ] ), 50 ),
 			Catalog::width( Catalog::field( 'input', 'role', __( 'Job Title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Owner', 'sureforms' ) ] ), 50 ),
 			Catalog::width( Catalog::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
+			Catalog::field( 'input', 'product', __( 'Product or Service (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Website redesign', 'sureforms' ) ] ),
 			Catalog::field(
 				'rating',
 				'rating',
@@ -274,14 +275,15 @@ return [
 			Catalog::field( 'gdpr', 'publish-permission', __( 'You may publish my testimonial with my name and job title on this website. It may be lightly edited for length.', 'sureforms' ), true ),
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thank you, {form:full-name}', 'sureforms' ),
+			'heading' => __( 'Thank you, {form:name}', 'sureforms' ),
 			'text'    => __( 'We really appreciate you sharing your experience. We will review it before it appears on our site.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New testimonial from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} shared a testimonial and gave permission to publish it. Reply to this email to thank them or ask a question.', 'sureforms' ),
+		'email_subject' => __( 'New testimonial from {form:name}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} shared a testimonial and gave permission to publish it. Reply to this email to thank them or ask a question.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'Thank you for your testimonial', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'Thank you for your testimonial', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thank you for taking the time to share your experience. It means a lot to us.', 'sureforms' ),
 				__( 'We review every testimonial before publishing it. If you would like to change anything, just reply to this email.', 'sureforms' ),
 			],
