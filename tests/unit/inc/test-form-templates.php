@@ -2753,4 +2753,66 @@ class Test_Form_Templates extends TestCase {
 		$this->assertFalse( Form_Templates::is_conversational( [ '_srfm_conversational_form' => 'yes' ] ) );
 		$this->assertFalse( Form_Templates::is_conversational( [] ) );
 	}
+
+	/**
+	 * A conversational template previews as the form's own page: the in-memory
+	 * form becomes the post, other plugins' template_redirect callbacks are
+	 * dropped (a redirect would send the preview frame elsewhere), and the page
+	 * renders last on template_redirect.
+	 */
+	public function test_conversational_preview_renders_as_the_forms_page() {
+		global $wp_filter;
+
+		$user_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_conv_' . uniqid(),
+				'user_pass'  => 'password',
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $user_id );
+		$_GET[ Form_Templates::PREVIEW_QUERY_VAR ] = 'conversational-lead-qualifier';
+
+		// What SureForms Pro's template builder sets for a conversational template.
+		$conversational = static function ( $metas ) {
+			$metas['_srfm_conversational_form'] = [ 'is_cf_enabled' => true ];
+			return $metas;
+		};
+		add_filter( 'srfm_form_template_metas', $conversational );
+		// Another plugin's redirect (e.g. a maintenance mode), defined outside
+		// the plugin folder, as a third-party plugin's would be.
+		$plugin_file = trailingslashit( get_temp_dir() ) . 'srfm-test-redirect-' . uniqid() . '.php';
+		file_put_contents( $plugin_file, '<?php return static function () {};' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Test fixture.
+		$redirect = include $plugin_file;
+		add_action( 'template_redirect', $redirect, 5 );
+		$saved_redirect_hooks = isset( $wp_filter['template_redirect'] ) ? clone $wp_filter['template_redirect'] : null;
+
+		try {
+			@Form_Templates::get_instance()->maybe_render_preview(); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- nocache_headers() after test output.
+
+			$this->assertFalse( has_action( 'template_redirect', $redirect ), 'Other plugins\' template_redirect callbacks are dropped.' );
+			$this->assertNotEmpty( $wp_filter['template_redirect']->callbacks[ PHP_INT_MAX ] ?? [], 'The page renders last on template_redirect.' );
+			$this->assertInstanceOf( WP_Post::class, $GLOBALS['post'] );
+			$this->assertSame( SRFM_FORMS_POST_TYPE, $GLOBALS['post']->post_type );
+			$this->assertSame( 'srfm-template-preview', $GLOBALS['post']->post_name, 'The in-memory preview form is the post.' );
+		} finally {
+			remove_filter( 'srfm_form_template_metas', $conversational );
+			if ( null !== $saved_redirect_hooks ) {
+				$wp_filter['template_redirect'] = $saved_redirect_hooks; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Restoring the hook as it was before the test.
+			}
+			remove_action( 'template_redirect', $redirect, 5 );
+			wp_delete_file( $plugin_file );
+			remove_action( 'wp_enqueue_scripts', [ \SRFM\Inc\Frontend_Assets::class, 'enqueue_scripts_and_styles' ], 20 );
+			remove_filter( 'srfm_payment_methods_registry', [ Form_Templates::class, 'preview_payment_methods' ], 99 );
+			remove_action( 'wp_print_styles', [ Form_Templates::class, 'filter_preview_assets' ], PHP_INT_MAX );
+			remove_action( 'wp_print_scripts', [ Form_Templates::class, 'filter_preview_assets' ], PHP_INT_MAX );
+			remove_action( 'wp_print_footer_scripts', [ Form_Templates::class, 'filter_preview_assets' ], 9 );
+			Form_Templates::forget_preview_form();
+			wp_reset_postdata();
+			$GLOBALS['post'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Test cleanup.
+			unset( $_GET[ Form_Templates::PREVIEW_QUERY_VAR ] );
+			show_admin_bar( true );
+			wp_set_current_user( 0 );
+		}
+	}
 }
