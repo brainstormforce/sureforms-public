@@ -178,7 +178,7 @@ return [
 		'submit_text'   => __( 'Send feedback', 'sureforms' ),
 		'fields'        => [
 			Catalog::field( 'multi-choice', 'found-it', __( 'Did you find what you were looking for?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Yes', 'sureforms' ), __( 'Partly', 'sureforms' ), __( 'No', 'sureforms' ) ], true ) ),
-			Catalog::attrs( Catalog::field( 'multi-choice', 'ease', __( 'How easy was the site to use?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Very easy', 'sureforms' ), __( 'Easy', 'sureforms' ), __( 'Difficult', 'sureforms' ), __( 'Very difficult', 'sureforms' ) ], true, [ 'face-grin-beam', 'face-smile', 'face-frown', 'face-angry' ] ) ), [ 'choiceWidth' => 25 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'ease', __( 'How easy was the site to use?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Very easy', 'sureforms' ), __( 'Easy', 'sureforms' ), __( 'Difficult', 'sureforms' ), __( 'Very difficult', 'sureforms' ) ], true, [ 'face-grin-beam', 'face-smile', 'face-frown', 'face-tired' ] ) ), [ 'choiceWidth' => 25 ] ),
 			Catalog::field( 'textarea', 'improve', __( 'What could we do better?', 'sureforms' ), false, [ 'placeholder' => __( 'Tell us what was missing, confusing or not working.', 'sureforms' ) ] ),
 			Catalog::field(
 				'upload',
@@ -192,7 +192,7 @@ return [
 					'uploadSize'   => 5,
 				]
 			),
-			Catalog::width( Catalog::field( 'input', 'page', __( 'Which page is this about?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Pricing, or paste a link', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'page', __( 'Which page is this about? (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Pricing, or paste a link', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				Catalog::field(
 					'email',
@@ -205,6 +205,7 @@ return [
 				),
 				50
 			),
+			$c['consent'],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks for helping us improve', 'sureforms' ),
