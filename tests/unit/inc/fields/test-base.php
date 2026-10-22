@@ -142,6 +142,23 @@ class Test_Base extends TestCase {
 	}
 
 	/**
+	 * The visible title prefers the render-time translation, and falls back to
+	 * the entered optionTitle when there is none.
+	 */
+	public function test_get_option_display_title() {
+		$this->assertSame( 'Frühbucher', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird', 'translatedTitle' => 'Frühbucher' ] ] ) );
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird' ] ] ) );
+
+		// A blank or non-string translation never hides the title.
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird', 'translatedTitle' => '' ] ] ) );
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird', 'translatedTitle' => [ 'x' ] ] ] ) );
+
+		$this->assertSame( '5', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 5 ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => [ 'nested' ] ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_display_title', [ 'not-an-array' ] ) );
+	}
+
+	/**
 	 * Only the first option carries the field-level ids, which is what the field
 	 * did before descriptions existed; each option points at its own description.
 	 */

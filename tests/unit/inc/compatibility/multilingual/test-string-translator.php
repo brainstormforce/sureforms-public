@@ -445,6 +445,27 @@ class Test_String_Translator extends TestCase {
 		$this->assertCount( 0, $this->stub->calls );
 	}
 
+	public function test_translate_block_option_field_uses_a_field_specific_name() {
+		$this->stub->translate_returns = 'Frühbucher';
+
+		$out = String_Translator::get_instance()->translate_block_option_field( 42, 'mc1', 2, 'optionTitle', 'Early Bird' );
+
+		$this->assertSame( 'Frühbucher', $out );
+		$this->assertSame( 'form_42_block_mc1_option_2_optionTitle', $this->stub->calls[0]['name'] );
+		$this->assertSame( 'Early Bird', $this->stub->calls[0]['value'] );
+		// The dropdown label name is unchanged, so existing translations still match.
+		$this->assertSame( 'block_mc1_option_2_label', String_Translator::block_option_name( 'mc1', 2 ) );
+	}
+
+	public function test_translate_block_option_field_returns_original_when_inputs_missing() {
+		$translator = String_Translator::get_instance();
+
+		$this->assertSame( '', $translator->translate_block_option_field( 1, 'b', 0, 'description', '' ) );
+		$this->assertSame( 'Early Bird', $translator->translate_block_option_field( 1, '', 0, 'optionTitle', 'Early Bird' ) );
+		$this->assertSame( 'Early Bird', $translator->translate_block_option_field( 1, 'b', 0, '', 'Early Bird' ) );
+		$this->assertCount( 0, $this->stub->calls );
+	}
+
 	public function test_translate_form_content_translates_label_and_option_labels() {
 		// Stub returns "DE:<original>" so substitution is visible in the output.
 		$this->stub->translate_returns = '';
