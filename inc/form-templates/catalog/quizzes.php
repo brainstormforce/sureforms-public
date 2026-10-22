@@ -49,6 +49,11 @@ $lead_budgets   = [
 	__( 'Not sure yet', 'sureforms' ),
 ];
 
+// The ad lead form's interests its thank-you rules match.
+$ad_consultation = __( 'A free consultation', 'sureforms' );
+$ad_pricing      = __( 'Pricing information', 'sureforms' );
+$ad_demo         = __( 'A product demo', 'sureforms' );
+
 // The plan finder's answers its rules match, and why it recommends a plan.
 $plan_goal_control = __( 'Advanced control and security', 'sureforms' );
 $plan_budget_low   = __( 'Free or low-cost', 'sureforms' );
@@ -601,22 +606,13 @@ return [
 		'description'   => __( 'A lead form that records which ad, source, and campaign each lead came from.', 'sureforms' ),
 		'submit_text'   => __( 'Get started', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
-			Catalog::field(
-				'dropdown',
-				'interest',
-				__( 'What are you interested in?', 'sureforms' ),
-				true,
-				array_merge(
-					Catalog::dropdown_options( [ __( 'A free consultation', 'sureforms' ), __( 'Pricing information', 'sureforms' ), __( 'A product demo', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ),
-					[
-						'placeholder'     => __( 'Select an option', 'sureforms' ),
-						'blockAttributes' => $no_search,
-					]
-				)
+			// Cards, not a dropdown: one tap on a phone, where most ad clicks land.
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'interest', __( 'What are you interested in?', 'sureforms' ), true, Catalog::choice_options( [ $ad_consultation, $ad_pricing, $ad_demo, __( 'Something else', 'sureforms' ) ], true ) ),
+				[ 'choiceWidth' => 50 ]
 			),
 			$c['consent'],
 			// Filled from the link the visitor arrived on (?utm_source=…) and the page
@@ -663,6 +659,36 @@ return [
 			),
 			Catalog::field(
 				'hidden',
+				'utm-term',
+				__( 'UTM Term', 'sureforms' ),
+				false,
+				[
+					'pro_only'     => true,
+					'defaultValue' => '{get_input:utm_term}',
+				]
+			),
+			Catalog::field(
+				'hidden',
+				'gclid',
+				__( 'Google Ads Click ID', 'sureforms' ),
+				false,
+				[
+					'pro_only'     => true,
+					'defaultValue' => '{get_input:gclid}',
+				]
+			),
+			Catalog::field(
+				'hidden',
+				'fbclid',
+				__( 'Meta Click ID', 'sureforms' ),
+				false,
+				[
+					'pro_only'     => true,
+					'defaultValue' => '{get_input:fbclid}',
+				]
+			),
+			Catalog::field(
+				'hidden',
 				'landing-page',
 				__( 'Landing Page', 'sureforms' ),
 				false,
@@ -671,16 +697,45 @@ return [
 					'defaultValue' => '{current_page_url}',
 				]
 			),
+			// The page they came from, for visitors who arrive without UTM tags.
+			Catalog::field(
+				'hidden',
+				'referrer',
+				__( 'Referrer', 'sureforms' ),
+				false,
+				[
+					'pro_only'     => true,
+					'defaultValue' => '{http_referer}',
+				]
+			),
+		],
+		// With Premium, each interest gets its own next step; "Something else" gets the message below.
+		'confirmations' => [
+			[
+				'name'    => __( 'Demo', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:name}!', 'sureforms' ), __( 'We will email {form:email} to set up your demo.', 'sureforms' ) ),
+				'rules'   => [ [ 'interest', '_EQUAL_', $ad_demo ] ],
+			],
+			[
+				'name'    => __( 'Pricing', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:name}!', 'sureforms' ), __( 'We will send our pricing to {form:email} within one business day.', 'sureforms' ) ),
+				'rules'   => [ [ 'interest', '_EQUAL_', $ad_pricing ] ],
+			],
+			[
+				'name'    => __( 'Consultation', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:name}!', 'sureforms' ), __( 'We will email {form:email} to book your free consultation.', 'sureforms' ) ),
+				'rules'   => [ [ 'interest', '_EQUAL_', $ad_consultation ] ],
+			],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'We have your request and will be in touch at {form:email} within one business day.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New ad lead: {form:first-name} {form:last-name} – {form:interest}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} is interested in: {form:interest}. The ad source, medium and campaign they came from are listed with their answers below (blank when they arrived without UTM tags).', 'sureforms' ),
+		'email_subject' => __( 'New ad lead: {form:name} – {form:interest}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} is interested in: {form:interest}. The ad source, campaign, keyword and click IDs they came with are listed with their answers below (blank when the link had none).', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Thanks for your interest', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for reaching out. We have your request and someone from our team will contact you within one business day.', 'sureforms' ),
 				__( 'If you have any questions before then, just reply to this email.', 'sureforms' ),

@@ -173,7 +173,11 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 				'utm-medium'   => '{get_input:utm_medium}',
 				'utm-campaign' => '{get_input:utm_campaign}',
 				'utm-content'  => '{get_input:utm_content}',
+				'utm-term'     => '{get_input:utm_term}',
+				'gclid'        => '{get_input:gclid}',
+				'fbclid'       => '{get_input:fbclid}',
 				'landing-page' => '{current_page_url}',
+				'referrer'     => '{http_referer}',
 			],
 			$hidden
 		);
