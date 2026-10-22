@@ -1504,7 +1504,6 @@ JS;
 			return;
 		}
 		$script  = 'window.srfmFeatures = ' . wp_json_encode( Features::for_js() ) . ';';
-		$script .= 'window.srfmBlocks = ' . wp_json_encode( Features::blocks_for_js() ) . ';';
 		$script .= 'window.srfmIsFeatureEnabled = function ( key ) { var f = window.srfmFeatures && window.srfmFeatures[ key ]; return ! f || false !== f.enabled; };';
 		wp_add_inline_script( 'wp-hooks', $script, 'before' );
 	}

@@ -35,19 +35,6 @@ class Features {
 	public const OPTION = 'srfm_features_options';
 
 	/**
-	 * Option holding the blocks a site owner switched off: a list of block names.
-	 * An empty or missing option means every block is on.
-	 */
-	public const BLOCKS_OPTION = 'srfm_disabled_blocks';
-
-	/**
-	 * Per-request cache of the filtered block rows.
-	 *
-	 * @var array<string,array{label:string,group:string,feature:string}>|null
-	 */
-	private static $blocks = null;
-
-	/**
 	 * Per-request cache of resolved states, reset when the option is saved.
 	 *
 	 * @var array<string,bool>
@@ -263,19 +250,10 @@ class Features {
 	 */
 	public static function rest_save( $params ) {
 		$values  = Helper::get_array_value( $params['features'] ?? [] );
-		$blocks  = Helper::get_array_value( $params['blocks'] ?? [] );
 		$confirm = filter_var( $params['confirm'] ?? false, FILTER_VALIDATE_BOOLEAN );
 
 		if ( ! $confirm ) {
 			$in_use = self::in_use_if_saved( $values );
-			// Blocks this save switches off that published forms still contain.
-			$newly_off = array_diff( self::disabled_after( $blocks ), self::get_disabled_blocks() );
-			foreach ( $newly_off as $name ) {
-				$forms = self::forms_matching( [ $name ], [] );
-				if ( ! empty( $forms ) ) {
-					$in_use[ $name ] = $forms;
-				}
-			}
 			if ( ! empty( $in_use ) ) {
 				return new \WP_REST_Response(
 					[
@@ -287,13 +265,11 @@ class Features {
 		}
 
 		self::save( $values );
-		self::save_blocks( $blocks );
 
 		return new \WP_REST_Response(
 			[
 				'data'     => __( 'Settings Saved Successfully.', 'sureforms' ),
 				'features' => self::for_js(),
-				'blocks'   => self::blocks_for_js(),
 			]
 		);
 	}
@@ -374,7 +350,7 @@ class Features {
 	 *
 	 * @param string $key Feature key.
 	 * @since 2.13.0
-	 * @return array<int,array{id:int,title:string}>
+	 * @return array<int,array{id:int,title:string,edit_url:string}>
 	 */
 	public static function forms_using( $key ) {
 		$definitions = self::definitions();
@@ -393,7 +369,7 @@ class Features {
 	 * @param array<mixed> $blocks Block names.
 	 * @param array<mixed> $metas  Form meta keys.
 	 * @since 2.13.0
-	 * @return array<int,array{id:int,title:string}>
+	 * @return array<int,array{id:int,title:string,edit_url:string}>
 	 */
 	public static function forms_matching( $blocks, $metas ) {
 		if ( empty( $blocks ) && empty( $metas ) ) {
@@ -414,8 +390,10 @@ class Features {
 			$form_id = Helper::get_integer_value( $form_id );
 			if ( self::form_uses( $form_id, $blocks, $metas ) ) {
 				$using[] = [
-					'id'    => $form_id,
-					'title' => get_the_title( $form_id ),
+					'id'       => $form_id,
+					'title'    => get_the_title( $form_id ),
+					// Empty when the current user cannot edit the form.
+					'edit_url' => (string) get_edit_post_link( $form_id, 'raw' ),
 				];
 			}
 		}
@@ -461,7 +439,6 @@ class Features {
 	public static function reset() {
 		self::$resolved    = [];
 		self::$definitions = null;
-		self::$blocks      = null;
 	}
 
 	/**
@@ -477,19 +454,19 @@ class Features {
 		$labels = [
 			'entries'    => [
 				'label'       => __( 'Entries', 'sureforms' ),
-				'description' => __( 'Store form submissions and view them under SureForms → Entries. When off, notifications, confirmations, webhooks and integrations still run, but no submission is saved.', 'sureforms' ),
+				'description' => __( 'Turning this off stops saving new submissions. Existing entries are kept.', 'sureforms' ),
 			],
 			'ai_builder' => [
 				'label'       => __( 'AI form builder', 'sureforms' ),
-				'description' => __( 'Create forms from a prompt, in the New Form screen and the WordPress dashboard widget.', 'sureforms' ),
+				'description' => __( 'Turning this off hides the AI form builder and its dashboard widget.', 'sureforms' ),
 			],
 			'ottokit'    => [
 				'label'       => __( 'OttoKit automations', 'sureforms' ),
-				'description' => __( 'The Automations tab in form settings and the OttoKit settings page.', 'sureforms' ),
+				'description' => __( 'Turning this off hides the Automations tab and the OttoKit settings page.', 'sureforms' ),
 			],
 			'payments'   => [
 				'label'       => __( 'Payments', 'sureforms' ),
-				'description' => __( 'Collect payments with Stripe: the Payment and Payment History blocks, the Payments page and the payment settings.', 'sureforms' ),
+				'description' => __( 'Turning this off removes payment fields, and paid forms stop taking submissions.', 'sureforms' ),
 			],
 		];
 
@@ -503,185 +480,12 @@ class Features {
 	}
 
 	/**
-	 * Blocks a site owner can switch off, keyed by block name.
-	 *
-	 * Each row has a label, a group (free, pro or spectra) and an optional
-	 * owning feature. A block with a feature has no switch of its own: it is on
-	 * exactly while that feature is on. The Form block is not listed, because
-	 * it is how forms are embedded on pages.
-	 *
-	 * @since 2.13.0
-	 * @return array<string,array{label:string,group:string,feature:string}>
-	 */
-	public static function block_definitions() {
-		if ( null !== self::$blocks ) {
-			return self::$blocks;
-		}
-
-		$rows = [
-			'srfm/input'            => [ 'label' => __( 'Text', 'sureforms' ) ],
-			'srfm/email'            => [ 'label' => __( 'Email', 'sureforms' ) ],
-			'srfm/textarea'         => [ 'label' => __( 'Textarea', 'sureforms' ) ],
-			'srfm/number'           => [ 'label' => __( 'Number', 'sureforms' ) ],
-			'srfm/phone'            => [ 'label' => __( 'Phone Number', 'sureforms' ) ],
-			'srfm/url'              => [ 'label' => __( 'URL', 'sureforms' ) ],
-			'srfm/address'          => [ 'label' => __( 'Address', 'sureforms' ) ],
-			'srfm/dropdown'         => [ 'label' => __( 'Dropdown', 'sureforms' ) ],
-			'srfm/multi-choice'     => [ 'label' => __( 'Multiple Choice', 'sureforms' ) ],
-			'srfm/checkbox'         => [ 'label' => __( 'Checkbox', 'sureforms' ) ],
-			'srfm/gdpr'             => [ 'label' => __( 'GDPR Agreement', 'sureforms' ) ],
-			'srfm/inline-button'    => [ 'label' => __( 'Custom Button', 'sureforms' ) ],
-			'srfm/payment'          => [
-				'label'   => __( 'Payment', 'sureforms' ),
-				'feature' => 'payments',
-			],
-			'srfm/payment-history'  => [
-				'label'   => __( 'Payment History', 'sureforms' ),
-				'feature' => 'payments',
-			],
-			'srfm/advanced-heading' => [
-				'label' => __( 'Advanced Heading', 'sureforms' ),
-				'group' => 'spectra',
-			],
-			'srfm/image'            => [
-				'label' => __( 'Image', 'sureforms' ),
-				'group' => 'spectra',
-			],
-			'srfm/icon'             => [
-				'label' => __( 'Icon', 'sureforms' ),
-				'group' => 'spectra',
-			],
-			'srfm/separator'        => [
-				'label' => __( 'Separator', 'sureforms' ),
-				'group' => 'spectra',
-			],
-		];
-
-		/**
-		 * Filters the blocks a site owner can switch off.
-		 *
-		 * @since 2.13.0
-		 * @param array<string,array<string,string>> $rows Block rows keyed by block name.
-		 */
-		$rows = apply_filters( 'srfm_feature_blocks', $rows );
-
-		self::$blocks = [];
-		foreach ( Helper::get_array_value( $rows ) as $name => $row ) {
-			if ( ! is_string( $name ) || 'srfm/form' === $name || ! is_array( $row ) ) {
-				continue;
-			}
-			self::$blocks[ $name ] = [
-				'label'   => Helper::get_string_value( $row['label'] ?? $name ),
-				'group'   => Helper::get_string_value( $row['group'] ?? 'free' ),
-				'feature' => Helper::get_string_value( $row['feature'] ?? '' ),
-			];
-		}
-
-		return self::$blocks;
-	}
-
-	/**
-	 * Block names switched off on the Blocks tab.
-	 *
-	 * @since 2.13.0
-	 * @return array<int,string>
-	 */
-	public static function get_disabled_blocks() {
-		return array_values( array_filter( Helper::get_array_value( get_option( self::BLOCKS_OPTION, [] ) ), 'is_string' ) );
-	}
-
-	/**
-	 * Whether a block is on. A block nobody listed is always on.
-	 *
-	 * @param string $name Block name.
-	 * @since 2.13.0
-	 * @return bool
-	 */
-	public static function is_block_enabled( $name ) {
-		$rows = self::block_definitions();
-		if ( ! isset( $rows[ $name ] ) ) {
-			return true;
-		}
-		if ( '' !== $rows[ $name ]['feature'] ) {
-			return self::is_enabled( $rows[ $name ]['feature'] );
-		}
-		return ! in_array( $name, self::get_disabled_blocks(), true );
-	}
-
-	/**
-	 * Unregister every switched-off block, so it renders nothing and loads no assets.
-	 *
-	 * Hooked on `init` after every block is registered. The editor drops the same
-	 * blocks in `src/blocks/blocks.js`.
-	 *
-	 * @since 2.13.0
-	 * @return void
-	 */
-	public static function unregister_disabled_blocks() {
-		$registry = \WP_Block_Type_Registry::get_instance();
-		foreach ( array_keys( self::block_definitions() ) as $name ) {
-			if ( ! self::is_block_enabled( $name ) && $registry->is_registered( $name ) ) {
-				unregister_block_type( $name );
-			}
-		}
-	}
-
-	/**
-	 * Block rows for the Blocks tab and the editor.
-	 *
-	 * @since 2.13.0
-	 * @return array<string,array{label:string,group:string,feature:string,switch:bool,enabled:bool}>
-	 */
-	public static function blocks_for_js() {
-		$disabled = self::get_disabled_blocks();
-		$out      = [];
-		foreach ( self::block_definitions() as $name => $row ) {
-			$enabled      = self::is_block_enabled( $name );
-			$out[ $name ] = $row + [
-				'switch'  => '' === $row['feature'] ? ! in_array( $name, $disabled, true ) : $enabled,
-				'enabled' => $enabled,
-			];
-		}
-		return $out;
-	}
-
-	/**
-	 * Save block switches. Keeps listed blocks without an owning feature and
-	 * boolean values; drops everything else.
-	 *
-	 * @param array<mixed> $values Map of block name → bool.
-	 * @since 2.13.0
-	 * @return void
-	 */
-	public static function save_blocks( $values ) {
-		update_option( self::BLOCKS_OPTION, self::disabled_after( $values ), false );
-	}
-
-	/**
-	 * The disabled-block list that saving these values would store.
-	 *
-	 * @param array<mixed> $values Map of block name → bool.
-	 * @return array<int,string>
-	 */
-	private static function disabled_after( $values ) {
-		$rows     = self::block_definitions();
-		$disabled = self::get_disabled_blocks();
-		foreach ( $values as $name => $on ) {
-			if ( ! is_string( $name ) || ! isset( $rows[ $name ] ) || '' !== $rows[ $name ]['feature'] || ! is_bool( $on ) ) {
-				continue;
-			}
-			$disabled = $on ? array_diff( $disabled, [ $name ] ) : array_merge( $disabled, [ $name ] );
-		}
-		return array_values( array_unique( $disabled ) );
-	}
-
-	/**
 	 * Features this save would turn off, directly or through a dependency,
 	 * with the published forms that use them.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
 	 * @since 2.13.0
-	 * @return array<string,array<int,array{id:int,title:string}>>
+	 * @return array<string,array<int,array{id:int,title:string,edit_url:string}>>
 	 */
 	private static function in_use_if_saved( $values ) {
 		$saved  = self::get_saved();

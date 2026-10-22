@@ -4285,13 +4285,11 @@ class Test_Admin_Features extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		delete_option( \SRFM\Inc\Features::OPTION );
-		delete_option( \SRFM\Inc\Features::BLOCKS_OPTION );
 		\SRFM\Inc\Features::reset();
 	}
 
 	protected function tearDown(): void {
 		delete_option( \SRFM\Inc\Features::OPTION );
-		delete_option( \SRFM\Inc\Features::BLOCKS_OPTION );
 		\SRFM\Inc\Features::reset();
 		wp_set_current_user( 0 );
 		parent::tearDown();
@@ -4366,7 +4364,7 @@ class Test_Admin_Features extends TestCase {
 			Admin::get_instance()->localize_features();
 			$printed = implode( '', (array) $scripts->get_data( 'wp-hooks', 'before' ) );
 			$this->assertStringContainsString( 'window.srfmFeatures = ', $printed );
-			$this->assertStringContainsString( 'window.srfmBlocks = ', $printed );
+			$this->assertStringNotContainsString( 'window.srfmBlocks', $printed );
 			$this->assertStringContainsString( 'window.srfmIsFeatureEnabled = function', $printed );
 		} finally {
 			$scripts->add_data( 'wp-hooks', 'before', $original );

@@ -38,9 +38,21 @@ const defaultNavigation = [
 		name: __( 'Features', 'sureforms' ),
 		slug: 'features-settings',
 		icon: <ToggleRight />,
-		helpText: __(
-			'Turn off the features you do not use. A feature that is off does not load anywhere on your site, and turning it back on restores its data.',
-			'sureforms'
+		helpText: (
+			<>
+				{ __(
+					"Turn off what you don't use. Anything off stops loading on your site, and turning it back on restores its data exactly where you left it.",
+					'sureforms'
+				) }{ ' ' }
+				<a
+					href="https://sureforms.com/docs/manage-features/"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-field-helper underline"
+				>
+					{ __( 'Learn more', 'sureforms' ) }
+				</a>
+			</>
 		),
 	},
 	{

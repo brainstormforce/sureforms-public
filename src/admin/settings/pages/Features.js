@@ -2,24 +2,54 @@ import { __, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Switch, Tabs, toast } from '@bsf/force-ui';
+import {
+	Bot,
+	Calculator,
+	CircleCheck,
+	Crown,
+	CreditCard,
+	Database,
+	FileText,
+	GitBranch,
+	GraduationCap,
+	Hourglass,
+	LayoutGrid,
+	MailCheck,
+	MessageCircle,
+	Newspaper,
+	Package,
+	Save,
+	Sparkles,
+	UserPlus,
+	Webhook,
+	ChartColumn,
+} from 'lucide-react';
 import { useGlobalSettingsTabSaveAdapter } from '../tab-save-adapter';
 
-const GROUP_LABELS = {
-	core: __( 'Core', 'sureforms' ),
-	payments: __( 'Payments', 'sureforms' ),
-	pro: __( 'SureForms Pro', 'sureforms' ),
-};
-
-const BLOCK_GROUP_LABELS = {
-	free: __( 'SureForms', 'sureforms' ),
-	pro: __( 'SureForms Pro', 'sureforms' ),
-	spectra: __( 'Layout blocks', 'sureforms' ),
+const ICONS = {
+	entries: Database,
+	ai_builder: Sparkles,
+	ottokit: Bot,
+	payments: CreditCard,
+	quiz: GraduationCap,
+	survey: ChartColumn,
+	pdf: FileText,
+	partial_entries: Hourglass,
+	save_resume: Save,
+	conversational: MessageCircle,
+	calculations: Calculator,
+	conditional_logic: GitBranch,
+	conditional_emails: MailCheck,
+	conditional_confirmations: CircleCheck,
+	post_feeds: Newspaper,
+	native_integrations: Webhook,
+	user_registration: UserPlus,
 };
 
 /**
- * Each row's own saved switch, keyed by feature key or block name.
+ * Each row's own saved switch, keyed by feature key.
  *
- * @param {Object} rows Rows from Features::for_js() or Features::blocks_for_js().
+ * @param {Object} rows Rows from Features::for_js().
  * @return {Object} Map of key to its switch.
  */
 const switchesOf = ( rows ) =>
@@ -28,49 +58,58 @@ const switchesOf = ( rows ) =>
 	);
 
 /**
- * Rows grouped by their `group` key, in first-seen order.
+ * One feature card: icon, name, description and its switch.
  *
- * @param {Object} rows Rows keyed by feature key or block name.
- * @return {Array} Pairs of group and its [ key, row ] entries.
+ * @param {Object}      props
+ * @param {string}      props.featureKey  Feature key, picks the icon.
+ * @param {string}      props.label       Feature name.
+ * @param {string}      props.description What turning it off does.
+ * @param {JSX.Element} props.control     The switch.
  */
-const groupRows = ( rows ) => {
-	const groups = {};
-	Object.entries( rows ).forEach( ( [ key, row ] ) => {
-		( groups[ row.group ] = groups[ row.group ] || [] ).push( [
-			key,
-			row,
-		] );
-	} );
-	return Object.entries( groups );
+const FeatureCell = ( {
+	featureKey,
+	label,
+	description,
+	control,
+} ) => {
+	const Icon = ICONS[ featureKey ] || LayoutGrid;
+	return (
+		<div className="flex items-start gap-3 p-4 bg-background-primary">
+			<div className="flex items-center justify-center shrink-0 size-9 rounded-lg border border-solid border-border-subtle bg-background-secondary">
+				<Icon className="size-5 text-icon-secondary" />
+			</div>
+			<div className="flex-1 min-w-0">
+				<p className="m-0 text-sm font-semibold text-text-primary">
+					{ label }
+				</p>
+				<p className="m-0 mt-0.5 text-xs leading-5 text-text-secondary">
+					{ description }
+				</p>
+			</div>
+			{ control }
+		</div>
+	);
 };
 
 /**
- * Settings → Features: switch whole features, and single blocks, off and on.
+ * Settings → Features: switch whole features off and on.
  *
- * Rows come from `window.srfmFeatures` and `window.srfmBlocks` (Features::for_js()
- * and Features::blocks_for_js()), so Pro rows show up without any Pro JS. The
- * header Save button saves both tabs in place; the WordPress admin menus and the
- * editor pick up the change on their next load, because a feature or block that
+ * Rows come from `window.srfmFeatures` (Features::for_js()), so Pro rows show
+ * up on a Premium tab without any Pro JS; without Pro there are no tabs. The
+ * header Save button saves in place; menus and
+ * the editor pick the change up on their next load, because a feature that
  * is off is not loaded at all.
  */
 const FeaturesPage = () => {
 	const [ features, setFeatures ] = useState( window.srfmFeatures || {} );
-	const [ blocks, setBlocks ] = useState( window.srfmBlocks || {} );
 	const [ switches, setSwitches ] = useState( () => switchesOf( features ) );
-	const [ blockSwitches, setBlockSwitches ] = useState( () =>
-		switchesOf( blocks )
-	);
-	const [ activeTab, setActiveTab ] = useState( 'features' );
+	const [ activeTab, setActiveTab ] = useState( 'core' );
 	const [ inUse, setInUse ] = useState( null );
 	const [ saving, setSaving ] = useState( false );
 
-	const isDirty =
-		Object.keys( switches ).some(
-			( key ) => switches[ key ] !== features[ key ].switch
-		) ||
-		Object.keys( blockSwitches ).some(
-			( name ) => blockSwitches[ name ] !== blocks[ name ].switch
-		);
+	const isDirty = Object.keys( switches ).some(
+		( key ) => switches[ key ] !== features[ key ].switch
+	);
 
 	// Whether every feature this one needs is switched on, using unsaved state.
 	const parentsOn = ( key, seen = [] ) =>
@@ -89,7 +128,6 @@ const FeaturesPage = () => {
 			data: {
 				srfm_tab: 'features-settings',
 				features: switches,
-				blocks: blockSwitches,
 				confirm,
 			},
 		} )
@@ -99,13 +137,10 @@ const FeaturesPage = () => {
 					setSaving( false );
 					return;
 				}
-				// Settings tabs, isFeatureEnabled() and the editor read these globals.
+				// Settings tabs and isFeatureEnabled() read this global.
 				window.srfmFeatures = res.features;
-				window.srfmBlocks = res.blocks;
 				setFeatures( res.features );
-				setBlocks( res.blocks );
 				setSwitches( switchesOf( res.features ) );
-				setBlockSwitches( switchesOf( res.blocks ) );
 				setInUse( null );
 				setSaving( false );
 				toast.success( __( 'Settings saved.', 'sureforms' ) );
@@ -123,106 +158,59 @@ const FeaturesPage = () => {
 		onSave: () => save(),
 	} );
 
-	const featureRows = groupRows( features ).map( ( [ group, rows ] ) => (
-		<div key={ group } className="space-y-4">
-			<h3 className="text-base font-semibold text-text-primary m-0">
-				{ GROUP_LABELS[ group ] || group }
-			</h3>
-			{ rows.map( ( [ key, row ] ) => {
-				const available = parentsOn( key );
-				const needs = row.depends_on
-					.map( ( parent ) => features[ parent ]?.label )
-					.filter( Boolean )
-					.join( ', ' );
-				return (
-					<div key={ key }>
-						<Switch
-							disabled={ ! available }
-							value={ available && switches[ key ] }
-							onChange={ ( value ) => {
-								setInUse( null );
-								setSwitches( { ...switches, [ key ]: value } );
-							} }
-							label={ {
-								heading: row.label,
-								description: available
-									? row.description
-									: sprintf(
-										/* translators: %s: names of the features this one needs. */
-										__(
-											'Needs %s. Turn that on to use this feature.',
-											'sureforms'
-										),
-										needs
-									),
-							} }
-						/>
-					</div>
-				);
-			} ) }
-		</div>
-	) );
+	const proKeys = Object.keys( features ).filter(
+		( key ) => 'pro' === features[ key ].group
+	);
+	const coreKeys = Object.keys( features ).filter(
+		( key ) => 'pro' !== features[ key ].group
+	);
+	// Without Pro there is only the Core list, so no tabs.
+	const hasPro = proKeys.length > 0;
+	const keys = hasPro && 'premium' === activeTab ? proKeys : coreKeys;
 
-	const blockRows = groupRows( blocks ).map( ( [ group, rows ] ) => (
-		<div key={ group } className="space-y-4">
-			<h3 className="text-base font-semibold text-text-primary m-0">
-				{ BLOCK_GROUP_LABELS[ group ] || group }
-			</h3>
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-				{ rows.map( ( [ name, row ] ) => {
-					// A block owned by a feature follows that feature's unsaved switch.
-					const owner = row.feature ? features[ row.feature ] : null;
-					return (
-						<div key={ name }>
-							<Switch
-								disabled={ !! row.feature }
-								value={
-									row.feature
-										? false !== switches[ row.feature ] &&
-										  parentsOn( row.feature )
-										: blockSwitches[ name ]
-								}
-								onChange={ ( value ) => {
-									setInUse( null );
-									setBlockSwitches( {
-										...blockSwitches,
-										[ name ]: value,
-									} );
-								} }
-								label={ {
-									heading: row.label,
-									description: owner
-										? sprintf(
-											/* translators: %s: feature name. */
-											__(
-												'Follows %s on the Features tab.',
-												'sureforms'
-											),
-											owner.label
-										)
-										: undefined,
-								} }
-							/>
-						</div>
-					);
-				} ) }
-			</div>
-		</div>
-	) );
+	const cells = keys.map( ( key ) => {
+		const row = features[ key ];
+		const available = parentsOn( key );
+		const needs = row.depends_on
+			.map( ( parent ) => features[ parent ]?.label )
+			.filter( Boolean )
+			.join( ', ' );
+		return (
+			<FeatureCell
+				key={ key }
+				featureKey={ key }
+				label={ row.label }
+				description={
+					available
+						? row.description
+						: sprintf(
+							/* translators: %s: names of the features this one needs. */
+							__( 'Needs %s.', 'sureforms' ),
+							needs
+						)
+				}
+				control={
+					<Switch
+						size="sm"
+						disabled={ ! available }
+						value={ available && false !== switches[ key ] }
+						aria-label={ row.label }
+						onChange={ ( value ) => {
+							setInUse( null );
+							setSwitches( { ...switches, [ key ]: value } );
+						} }
+					/>
+				}
+			/>
+		);
+	} );
 
 	return (
-		<div className="space-y-6">
-			<p className="text-sm text-text-secondary m-0">
-				{ __(
-					'Turning a feature or block off never deletes its data. Turn it back on and everything is where you left it.',
-					'sureforms'
-				) }
-			</p>
-
+		<div className="space-y-4">
 			{ inUse && (
 				<div
 					role="alert"
-					className="p-4 rounded-md border border-solid border-alert-border-warning bg-alert-background-warning space-y-2"
+					className="p-4 rounded-lg border border-solid border-alert-border-warning bg-alert-background-warning space-y-2"
 				>
 					<p className="text-sm font-semibold m-0">
 						{ __(
@@ -234,25 +222,24 @@ const FeaturesPage = () => {
 						{ Object.entries( inUse ).map( ( [ key, forms ] ) =>
 							forms.map( ( form ) => (
 								<li key={ `${ key }-${ form.id }` }>
-									{ sprintf(
-										/* translators: 1: form title, 2: feature or block name. */
-										__( '%1$s (%2$s)', 'sureforms' ),
+									{ form.edit_url ? (
+										<a
+											href={ form.edit_url }
+											target="_blank"
+											rel="noreferrer"
+										>
+											{ form.title ||
+												__( '(no title)', 'sureforms' ) }
+										</a>
+									) : (
 										form.title ||
-											__( '(no title)', 'sureforms' ),
-										features[ key ]?.label ||
-											blocks[ key ]?.label ||
-											key
-									) }
+										__( '(no title)', 'sureforms' )
+									) }{ ' ' }
+									({ features[ key ]?.label || key })
 								</li>
 							) )
 						) }
 					</ul>
-					<p className="text-sm m-0">
-						{ __(
-							'They keep working without it, but a switched-off block is no longer shown in them. A form that takes payments stops accepting submissions until Payments is back on.',
-							'sureforms'
-						) }
-					</p>
 					<div className="flex gap-2">
 						<Button
 							variant="primary"
@@ -273,32 +260,31 @@ const FeaturesPage = () => {
 				</div>
 			) }
 
-			<Tabs activeItem={ activeTab }>
-				<Tabs.Group
-					variant="rounded"
-					onChange={ ( { value: { slug } } ) => setActiveTab( slug ) }
-				>
-					<Tabs.Tab
-						slug="features"
-						text={ __( 'Features', 'sureforms' ) }
-					/>
-					<Tabs.Tab slug="blocks" text={ __( 'Blocks', 'sureforms' ) } />
-				</Tabs.Group>
-				<Tabs.Panel slug="features">
-					<div className="space-y-6 pt-4">{ featureRows }</div>
-				</Tabs.Panel>
-				<Tabs.Panel slug="blocks">
-					<div className="space-y-6 pt-4">
-						<p className="text-sm text-text-secondary m-0">
-							{ __(
-								'A block that is off disappears from the block inserter and is not loaded in the editor or on your site.',
-								'sureforms'
-							) }
-						</p>
-						{ blockRows }
-					</div>
-				</Tabs.Panel>
-			</Tabs>
+			{ hasPro && (
+				<Tabs activeItem={ activeTab }>
+					<Tabs.Group
+						variant="rounded"
+						size="md"
+						width="full"
+						onChange={ ( { value: { slug } } ) => setActiveTab( slug ) }
+					>
+						<Tabs.Tab
+							slug="core"
+							icon={ <Package /> }
+							text={ __( 'Core', 'sureforms' ) }
+						/>
+						<Tabs.Tab
+							slug="premium"
+							icon={ <Crown /> }
+							text={ __( 'Premium', 'sureforms' ) }
+						/>
+					</Tabs.Group>
+				</Tabs>
+			) }
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-px overflow-hidden rounded-lg border border-solid border-border-subtle bg-border-subtle md:[&>*:last-child:nth-child(odd)]:col-span-2">
+				{ cells }
+			</div>
 		</div>
 	);
 };

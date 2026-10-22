@@ -16,13 +16,11 @@ class Test_Features extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		delete_option( Features::OPTION );
-		delete_option( Features::BLOCKS_OPTION );
 		Features::reset();
 	}
 
 	protected function tearDown(): void {
 		delete_option( Features::OPTION );
-		delete_option( Features::BLOCKS_OPTION );
 		Features::reset();
 		wp_set_current_user( 0 );
 		parent::tearDown();
@@ -144,6 +142,20 @@ class Test_Features extends TestCase {
 		$this->assertTrue( $data['needs_confirmation'] );
 		$this->assertSame( $form_id, $data['in_use']['payments'][0]['id'] );
 		$this->assertTrue( Features::is_enabled( 'payments' ), 'nothing is saved before confirmation' );
+		$this->assertSame( '', $data['in_use']['payments'][0]['edit_url'], 'no editor link for a user who cannot edit the form' );
+
+		$admin = wp_insert_user(
+			[
+				'user_login' => 'features_editor_' . wp_generate_password( 6, false ),
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin );
+		$listed = Features::forms_using( 'payments' );
+		$this->assertStringContainsString( 'post.php?post=' . $form_id . '&action=edit', $listed[0]['edit_url'] );
+		wp_set_current_user( 0 );
+		wp_delete_user( $admin );
 
 		$data = Features::rest_save(
 			[
@@ -241,87 +253,6 @@ class Test_Features extends TestCase {
 		Features::save( [ 'entries' => false ] );
 
 		$this->assertFalse( as_next_scheduled_action( 'srfm_weekly_scheduled_events' ) );
-	}
-
-	/**
-	 * Saving keeps listed blocks with boolean values and drops unknown names,
-	 * feature-owned blocks and non-booleans.
-	 */
-	public function test_save_blocks_keeps_only_switchable_blocks() {
-		Features::save_blocks(
-			[
-				'srfm/url'      => false,
-				'srfm/email'    => 'no',
-				'srfm/payment'  => false,
-				'srfm/form'     => false,
-				'acme/anything' => false,
-			]
-		);
-
-		$this->assertSame( [ 'srfm/url' ], get_option( Features::BLOCKS_OPTION ) );
-		$this->assertFalse( Features::is_block_enabled( 'srfm/url' ) );
-		$this->assertTrue( Features::is_block_enabled( 'srfm/email' ) );
-		$this->assertTrue( Features::is_block_enabled( 'srfm/form' ), 'the Form block is never switchable' );
-		$this->assertTrue( Features::is_block_enabled( 'acme/anything' ), 'a block nobody listed is on' );
-
-		Features::save_blocks( [ 'srfm/url' => true ] );
-		$this->assertTrue( Features::is_block_enabled( 'srfm/url' ) );
-	}
-
-	/**
-	 * A block owned by a feature is on exactly while that feature is on.
-	 */
-	public function test_is_block_enabled_follows_owning_feature() {
-		$this->assertTrue( Features::is_block_enabled( 'srfm/payment' ) );
-		Features::save( [ 'payments' => false ] );
-		$this->assertFalse( Features::is_block_enabled( 'srfm/payment' ) );
-	}
-
-	/**
-	 * A switched-off block is unregistered, so it renders nothing.
-	 */
-	public function test_unregister_disabled_blocks() {
-		$registry = WP_Block_Type_Registry::get_instance();
-		$this->assertTrue( $registry->is_registered( 'srfm/url' ) );
-		$type = $registry->get_registered( 'srfm/url' );
-
-		Features::save_blocks( [ 'srfm/url' => false ] );
-		Features::unregister_disabled_blocks();
-
-		$registered = $registry->is_registered( 'srfm/url' );
-		register_block_type( $type );
-
-		$this->assertFalse( $registered );
-		$this->assertTrue( $registry->is_registered( 'srfm/email' ), 'other blocks stay' );
-	}
-
-	/**
-	 * Switching off a block that published forms contain asks first.
-	 */
-	public function test_rest_save_lists_forms_using_a_block() {
-		$form_id = wp_insert_post(
-			[
-				'post_type'    => SRFM_FORMS_POST_TYPE,
-				'post_status'  => 'publish',
-				'post_title'   => 'URL Form',
-				'post_content' => '<!-- wp:srfm/url {"block_id":"u1"} /-->',
-			]
-		);
-
-		$data = Features::rest_save( [ 'blocks' => [ 'srfm/url' => false ] ] )->get_data();
-		$this->assertTrue( $data['needs_confirmation'] );
-		$this->assertSame( $form_id, $data['in_use']['srfm/url'][0]['id'] );
-		$this->assertTrue( Features::is_block_enabled( 'srfm/url' ), 'nothing is saved before confirmation' );
-
-		$data = Features::rest_save(
-			[
-				'blocks'  => [ 'srfm/url' => false ],
-				'confirm' => true,
-			]
-		)->get_data();
-		$this->assertFalse( $data['blocks']['srfm/url']['enabled'] );
-
-		wp_delete_post( $form_id, true );
 	}
 
 	/**
@@ -491,7 +422,6 @@ class Test_Features extends TestCase {
 	 */
 	public function test_reset() {
 		Features::definitions();
-		Features::block_definitions();
 		$add = static function ( $rows ) {
 			$rows['late'] = [ 'label' => 'Late' ];
 			return $rows;
@@ -505,62 +435,6 @@ class Test_Features extends TestCase {
 
 		$this->assertFalse( $cached, 'rows are cached until reset' );
 		$this->assertTrue( $fresh );
-	}
-
-	/**
-	 * Block rows are normalised, filterable, and never include the Form block.
-	 */
-	public function test_block_definitions() {
-		$add = static function ( $rows ) {
-			$rows['srfm/form']   = [ 'label' => 'Form' ];
-			$rows['acme/widget'] = [ 'label' => 'Widget' ];
-			$rows[]              = 'not a row';
-			return $rows;
-		};
-		add_filter( 'srfm_feature_blocks', $add );
-		Features::reset();
-
-		$rows = Features::block_definitions();
-		remove_filter( 'srfm_feature_blocks', $add );
-
-		$this->assertArrayNotHasKey( 'srfm/form', $rows );
-		$this->assertSame(
-			[
-				'label'   => 'Widget',
-				'group'   => 'free',
-				'feature' => '',
-			],
-			$rows['acme/widget']
-		);
-		$this->assertSame( 'spectra', $rows['srfm/separator']['group'] );
-		$this->assertSame( 'payments', $rows['srfm/payment']['feature'] );
-	}
-
-	/**
-	 * Only string block names survive a read of the option.
-	 */
-	public function test_get_disabled_blocks() {
-		update_option( Features::BLOCKS_OPTION, [ 'srfm/url', 5, null, 'srfm/email' ] );
-		$this->assertSame( [ 'srfm/url', 'srfm/email' ], Features::get_disabled_blocks() );
-
-		update_option( Features::BLOCKS_OPTION, 42 );
-		$this->assertSame( [], Features::get_disabled_blocks(), 'a value that holds no block name reads as none' );
-	}
-
-	/**
-	 * A feature-owned block reports its feature's state as its switch, the others their own.
-	 */
-	public function test_blocks_for_js() {
-		Features::save( [ 'payments' => false ] );
-		Features::save_blocks( [ 'srfm/url' => false ] );
-
-		$rows = Features::blocks_for_js();
-
-		$this->assertFalse( $rows['srfm/payment']['switch'] );
-		$this->assertFalse( $rows['srfm/payment']['enabled'] );
-		$this->assertFalse( $rows['srfm/url']['switch'] );
-		$this->assertTrue( $rows['srfm/email']['switch'] );
-		$this->assertTrue( $rows['srfm/email']['enabled'] );
 	}
 
 	/**

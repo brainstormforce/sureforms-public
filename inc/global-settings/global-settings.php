@@ -661,7 +661,6 @@ class Global_Settings {
 			'srfm_form_confirmation_settings_options',
 			'srfm_email_notification_settings_options',
 			Features::OPTION,
-			Features::BLOCKS_OPTION,
 		];
 		$options_to_get  = array_values( array_intersect( array_map( 'sanitize_text_field', $options_to_get ), $allowed_options ) );
 

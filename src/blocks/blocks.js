@@ -344,13 +344,3 @@ addFilter(
 	}
 );
 
-// Blocks switched off under Settings → Features → Blocks (SureForms, Pro and
-// Spectra). domReady runs after every editor script has registered its blocks;
-// the server unregisters the same list in Features::unregister_disabled_blocks().
-wp.domReady( () => {
-	Object.entries( window.srfmBlocks || {} ).forEach( ( [ name, block ] ) => {
-		if ( false === block.enabled && wp.blocks.getBlockType( name ) ) {
-			wp.blocks.unregisterBlockType( name );
-		}
-	} );
-} );

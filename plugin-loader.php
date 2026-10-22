@@ -331,8 +331,6 @@ class Plugin_Loader {
 		Page_Builders::get_instance();
 		Rest_Api::get_instance();
 		add_filter( 'srfm_rest_api_endpoints', [ Features::class, 'filter_endpoints' ], PHP_INT_MAX );
-		// Runs after every SureForms, Pro and Spectra block has registered.
-		add_action( 'init', [ Features::class, 'unregister_disabled_blocks' ], PHP_INT_MAX );
 		// region: form-migration — Phase P1 foundation.
 		Migrator_Bootstrap::get_instance();
 		// endregion: form-migration.
