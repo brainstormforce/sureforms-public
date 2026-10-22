@@ -144,26 +144,49 @@ return [
 		'title'         => __( 'Guest Post Submission', 'sureforms' ),
 		'description'   => __( 'Accept guest post submissions for your review.', 'sureforms' ),
 		'submit_text'   => __( 'Submit my post', 'sureforms' ),
+		// About the writer first, then the post on a screen of its own.
+		'steps'         => [ __( 'About you', 'sureforms' ), __( 'Your post', 'sureforms' ) ],
 		'fields'        => [
-			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your Name', 'sureforms' ) ] ), 50 ),
+			// What you accept, before anyone writes a whole article. Edit it to match your site.
+			Catalog::field(
+				'html',
+				'guidelines',
+				'',
+				false,
+				[ 'htmlContent' => '<div style="padding: 12px 16px;border-radius: 8px;background: #f5f3ff"><p style="margin: 0 0 4px;font-size: 15px"><strong>' . esc_html__( 'Before you submit', 'sureforms' ) . '</strong></p><p style="margin: 0;font-size: 15px;line-height: 1.6">' . esc_html__( 'Original work only, around 800 to 2,000 words, with at most two links. We may edit for length and style.', 'sureforms' ) . '</p></div>' ]
+			),
+			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your name', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
-			Catalog::field( 'input', 'post-title', __( 'Post Title', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 5 Simple Ways to Cut Your Energy Bill', 'sureforms' ) ] ),
+			Catalog::field( 'url', 'website', __( 'Your website or a link to your work (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'https://', 'sureforms' ) ] ),
 			Catalog::attrs(
-				Catalog::field( 'textarea', 'post-content', __( 'Your Post', 'sureforms' ), true, [ 'helpText' => __( 'Write or paste your article. You can add headings, links and lists.', 'sureforms' ) ] ),
+				Catalog::field( 'textarea', 'author-bio', __( 'About you (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Jane writes about saving energy at home and runs the blog Small Green Steps.', 'sureforms' ) ] ),
+				[ 'rows' => 3 ]
+			),
+			Catalog::step( 'post-step', __( 'Your post', 'sureforms' ) ),
+			Catalog::field( 'input', 'post-title', __( 'Post title', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 5 Simple Ways to Cut Your Energy Bill', 'sureforms' ) ] ),
+			// Filled with the site's own categories when the form loads (dynamic options). It tells
+			// the editor where the post belongs; the post itself is filed when it is published.
+			Catalog::attrs(
+				Catalog::field( 'dropdown', 'category', __( 'Category', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'General', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a category', 'sureforms' ) ] ) ),
+				[
+					'searchable'        => false,
+					'optionsSource'     => 'dynamic',
+					'dynamicSourceType' => 'taxonomy',
+					'dynamicSource'     => 'category',
+				]
+			),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'post-content', __( 'Your post', 'sureforms' ), true, [ 'helpText' => __( 'Write or paste your article. You can add headings, links and lists.', 'sureforms' ) ] ),
 				[
 					'isRichText' => true,
 					'rows'       => 12,
 				]
 			),
 			Catalog::attrs(
-				Catalog::field( 'textarea', 'excerpt', __( 'Short Summary', 'sureforms' ), false, [ 'helpText' => __( 'One or two sentences shown in post listings.', 'sureforms' ) ] ),
+				Catalog::field( 'textarea', 'excerpt', __( 'Short summary (optional)', 'sureforms' ), false, [ 'helpText' => __( 'One or two sentences shown in post listings.', 'sureforms' ) ] ),
 				[ 'rows' => 2 ]
 			),
-			$image_upload( 'featured-image', __( 'Featured Image', 'sureforms' ), __( 'A landscape JPG, PNG or WebP image, up to 5 MB.', 'sureforms' ) ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'author-bio', __( 'About You', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Jane writes about saving energy at home and runs the blog Small Green Steps.', 'sureforms' ) ] ),
-				[ 'rows' => 3 ]
-			),
+			$image_upload( 'featured-image', __( 'Featured image (optional)', 'sureforms' ), __( 'A landscape JPG, PNG or WebP image, up to 5 MB.', 'sureforms' ) ),
 			Catalog::field( 'checkbox', 'original-work', __( 'This is my original work and has not been published elsewhere.', 'sureforms' ), true ),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can review my post and contact me about it.', 'sureforms' ) ] ),
 		],
@@ -182,7 +205,7 @@ return [
 			'text'    => __( 'Your post “{form:post-title}” is waiting for review. We will email you at {form:email} once we have read it.', 'sureforms' ),
 		],
 		'email_subject' => __( 'New guest post for review: {form:post-title}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} submitted “{form:post-title}”. It is waiting for review under Posts, marked Pending.', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} submitted “{form:post-title}” for the category {form:category}. It is waiting for review under Posts, marked Pending.', 'sureforms' ),
 		'autoresponder' => [
 			'subject' => __( 'We received your post “{form:post-title}”', 'sureforms' ),
 			'lines'   => [
