@@ -146,11 +146,13 @@ const StartScreen = () => {
 						const open = () => openPath( choice, index + 1 );
 						return (
 							// The button is the keyboard target; the card is a bigger mouse target.
+							// No lift on hover: moving the card makes its thin lines shimmer, and
+							// at its edge the lift can switch hover off and on.
 							// eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
 							<div
 								key={ choice }
 								onClick={ open }
-								className="group relative flex flex-col bg-background-primary border border-solid border-border-subtle rounded-xl overflow-hidden cursor-pointer transition-[border-color,box-shadow,transform] duration-[180ms] ease-in-out hover:border-border-interactive/45 hover:shadow-md-blur-32 hover:-translate-y-0.5 motion-reduce:transition-none"
+								className="group relative flex flex-col bg-background-primary border border-solid border-border-subtle rounded-xl overflow-hidden cursor-pointer transition-[border-color,box-shadow] duration-[180ms] ease-in-out hover:border-border-interactive/45 hover:shadow-md-blur-32 motion-reduce:transition-none"
 							>
 								<div
 									aria-hidden="true"
