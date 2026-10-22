@@ -59,9 +59,10 @@ $priced_options = static function ( $options, $field_type = 'multi-choice', $sin
  * the formula are the answers it uses.
  */
 $result = static function ( $slug, $label, $formula, $round, $prefix = '', $suffix = '', $extra = [] ) {
-	// The block shows the prefix and suffix; the saved answer has neither.
+	// The block shows the prefix and suffix; the saved answer has neither. Not
+	// required: nobody types in it, so a required mark would only confuse.
 	return Catalog::attrs(
-		Catalog::field( 'number', $slug, $label, true, $extra ),
+		Catalog::field( 'number', $slug, $label, false, $extra ),
 		[
 			'enableCalculation'  => true,
 			'calculationFormula' => $formula,
@@ -74,6 +75,38 @@ $result = static function ( $slug, $label, $formula, $round, $prefix = '', $suff
 
 /* translators: %1$s: option name, %2$s: its price, e.g. "Website (+$1,500)". */
 $label_with_price = static fn( $name, $price ) => sprintf( __( '%1$s (%2$s)', 'sureforms' ), $name, $price );
+
+// The instant quote's services. Its conditions match these labels.
+$quote_services = [
+	'website' => $label_with_price( __( 'Website', 'sureforms' ), $money( 1500 ) ),
+	'store'   => $label_with_price( __( 'Online store', 'sureforms' ), $money( 3000 ) ),
+	'landing' => $label_with_price( __( 'Landing page', 'sureforms' ), $money( 600 ) ),
+];
+
+/*
+ * One service's add-ons in the instant quote, stacked with an icon each. A
+ * condition shows them only for that service; $no_sample keeps them out of the
+ * library's example, which picks the first service.
+ */
+$quote_extras = static function ( $slug, $options, $no_sample = false ) use ( $priced_options ) {
+	return Catalog::attrs(
+		Catalog::field(
+			'multi-choice',
+			$slug,
+			__( 'Add-ons', 'sureforms' ),
+			false,
+			array_merge(
+				$priced_options( $options, 'multi-choice', false ),
+				[ 'helpText' => __( 'Optional. Select all that apply.', 'sureforms' ) ],
+				$no_sample ? [ 'no_sample' => true ] : []
+			)
+		),
+		[
+			'choiceWidth'    => 100,
+			'verticalLayout' => false,
+		]
+	);
+};
 
 // Monthly repayment of a loan: P × r × (1 + r)^n / ((1 + r)^n − 1), r the monthly rate, n the months.
 $rate       = '({form:interest-rate} / 1200)';
@@ -103,9 +136,9 @@ return [
 					array_merge(
 						$priced_options(
 							[
-								[ $label_with_price( __( 'Website', 'sureforms' ), $money( 1500 ) ), 1500 ],
-								[ $label_with_price( __( 'Online store', 'sureforms' ), $money( 3000 ) ), 3000 ],
-								[ $label_with_price( __( 'Landing page', 'sureforms' ), $money( 600 ) ), 600 ],
+								[ $quote_services['website'], 1500 ],
+								[ $quote_services['store'], 3000 ],
+								[ $quote_services['landing'], 600 ],
 							],
 							'dropdown'
 						),
@@ -114,48 +147,68 @@ return [
 				),
 				$no_search
 			),
-			Catalog::attrs(
-				Catalog::field(
-					'multi-choice',
-					'extras',
-					__( 'Add-ons', 'sureforms' ),
-					false,
-					array_merge(
-						$priced_options(
-							[
-								[ $label_with_price( __( 'Copywriting', 'sureforms' ), '+' . $money( 300 ) ), 300 ],
-								[ $label_with_price( __( 'SEO setup', 'sureforms' ), '+' . $money( 400 ) ), 400 ],
-								[ $label_with_price( __( 'Rush delivery', 'sureforms' ), '+' . $money( 500 ) ), 500 ],
-							],
-							'multi-choice',
-							false
-						),
-						[ 'helpText' => __( 'Optional. Select all that apply.', 'sureforms' ) ]
-					)
-				),
-				[ 'choiceWidth' => 33.33 ]
+			// Full width: it only shows once a website or store is chosen.
+			Catalog::number_field(
+				'pages',
+				__( 'Number of pages', 'sureforms' ),
+				true,
+				1,
+				50,
+				[ 'placeholder' => __( 'e.g. 5', 'sureforms' ) ]
 			),
-			Catalog::width(
-				Catalog::number_field(
-					'pages',
-					__( 'Number of Pages', 'sureforms' ),
-					true,
-					1,
-					50,
-					[ 'placeholder' => __( 'e.g. 5', 'sureforms' ) ]
-				),
-				50
+			$quote_extras(
+				'website-extras',
+				[
+					[ $label_with_price( __( 'Copywriting', 'sureforms' ), '+' . $money( 300 ) ), 300, 'pen-nib' ],
+					[ $label_with_price( __( 'SEO setup', 'sureforms' ), '+' . $money( 400 ) ), 400, 'magnifying-glass' ],
+					[ $label_with_price( __( 'Blog setup', 'sureforms' ), '+' . $money( 250 ) ), 250, 'newspaper' ],
+					[ $label_with_price( __( 'Rush delivery', 'sureforms' ), '+' . $money( 500 ) ), 500, 'bolt' ],
+				]
 			),
-			Catalog::width( $result( 'estimate', __( 'Estimated Price', 'sureforms' ), '{form:service} + {form:pages} * 100 + {form:extras}', 0, $symbol ), 50 ),
-			$c['first_name'],
-			$c['last_name'],
+			$quote_extras(
+				'store-extras',
+				[
+					[ $label_with_price( __( 'Product upload, up to 50', 'sureforms' ), '+' . $money( 400 ) ), 400, 'boxes-stacked' ],
+					[ $label_with_price( __( 'Payments and shipping setup', 'sureforms' ), '+' . $money( 300 ) ), 300, 'credit-card' ],
+					[ $label_with_price( __( 'SEO setup', 'sureforms' ), '+' . $money( 400 ) ), 400, 'magnifying-glass' ],
+					[ $label_with_price( __( 'Rush delivery', 'sureforms' ), '+' . $money( 500 ) ), 500, 'bolt' ],
+				],
+				true
+			),
+			$quote_extras(
+				'landing-extras',
+				[
+					[ $label_with_price( __( 'Copywriting', 'sureforms' ), '+' . $money( 200 ) ), 200, 'pen-nib' ],
+					[ $label_with_price( __( 'A/B test version', 'sureforms' ), '+' . $money( 250 ) ), 250, 'code-compare' ],
+					[ $label_with_price( __( 'Rush delivery', 'sureforms' ), '+' . $money( 300 ) ), 300, 'bolt' ],
+				],
+				true
+			),
+			// Hidden fields count as empty, so only the chosen service's pages and add-ons add up.
+			$result(
+				'estimate',
+				__( 'Estimated price', 'sureforms' ),
+				'{form:service} + {form:pages} * 100 + {form:website-extras} + {form:store-extras} + {form:landing-extras}',
+				0,
+				$symbol,
+				'',
+				[ 'helpText' => __( 'A rough guide. Your detailed quote may differ.', 'sureforms' ) ]
+			),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Tell us about your project', 'sureforms' ), false, [ 'placeholder' => __( 'Deadlines, examples you like, anything that affects the price', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$c['consent'],
 		],
+		// Each service has its own add-ons, and a landing page is always one page.
+		'conditions'    => [
+			'pages'          => [ 'logic' => [ [ [ 'service', '!=', $quote_services['landing'] ] ] ] ],
+			'website-extras' => [ 'logic' => [ [ [ 'service', '==', $quote_services['website'] ] ] ] ],
+			'store-extras'   => [ 'logic' => [ [ [ 'service', '==', $quote_services['store'] ] ] ] ],
+			'landing-extras' => [ 'logic' => [ [ [ 'service', '==', $quote_services['landing'] ] ] ] ],
+		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => sprintf(
 				/* translators: %s: the estimated price. */
 				__( 'Your estimate is %s. We will review your project and send a detailed quote to {form:email} within one business day.', 'sureforms' ),
@@ -164,12 +217,12 @@ return [
 		],
 		'email_subject' => sprintf(
 			/* translators: %s: the estimated price. */
-			__( 'Quote estimate %s: {form:service} for {form:first-name} {form:last-name}', 'sureforms' ),
+			__( 'Quote estimate %s: {form:service} for {form:name}', 'sureforms' ),
 			$amount( 'estimate' )
 		),
 		'email_intro'   => sprintf(
 			/* translators: %s: the estimated price. */
-			__( '{form:first-name} {form:last-name} priced {form:service} with {form:pages} pages and got an estimate of %s. Reply to this email to send them a detailed quote.', 'sureforms' ),
+			__( '{form:name} priced {form:service} and got an estimate of %s. Their pages and add-ons are below. Reply to this email to send them a detailed quote.', 'sureforms' ),
 			$amount( 'estimate' )
 		),
 		'autoresponder' => [
@@ -178,11 +231,11 @@ return [
 				__( 'Your estimate: %s', 'sureforms' ),
 				$amount( 'estimate' )
 			),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				sprintf(
 					/* translators: %s: the estimated price. */
-					__( 'Thanks for using our quote calculator. Your estimate for {form:service} with {form:pages} pages is %s.', 'sureforms' ),
+					__( 'Thanks for using our quote calculator. Your estimate for {form:service} is %s.', 'sureforms' ),
 					$amount( 'estimate' )
 				),
 				__( 'We will review your details and send a detailed quote within one business day. Questions in the meantime? Just reply to this email.', 'sureforms' ),

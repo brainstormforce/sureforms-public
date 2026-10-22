@@ -254,7 +254,8 @@ class Test_Form_Templates extends TestCase {
 				$this->assertSame( 0, $row, "Template {$id} ends with a half-empty row." );
 
 				// An optional answer can be blank, which would leave a gap in the email or thank-you text.
-				$required = wp_list_pluck( array_filter( $fields, static fn( $field ) => ! empty( $field['required'] ) ), 'slug' );
+				// A calculated result is always filled in, from its required inputs.
+				$required = wp_list_pluck( array_filter( $fields, static fn( $field ) => ! empty( $field['required'] ) || ! empty( $field['blockAttributes']['enableCalculation'] ) ), 'slug' );
 				$texts    = [ $template['email_subject'], $template['email_intro'], $template['confirmation']['heading'], $template['confirmation']['text'] ];
 				if ( ! empty( $template['autoresponder'] ) ) {
 					$texts   = array_merge( $texts, $template['autoresponder']['lines'] );

@@ -381,8 +381,10 @@ class Form_Templates {
 		 * A field may carry `pro` (schema keys that replace its own with SureForms
 		 * Pro), `pro_only` (only added with Pro), `pro_tier` (the plan those need,
 		 * `starter` by default; a field with `pro_tier` and no `pro` is only added
-		 * from that plan) and `blockAttributes` (extra block attributes, such as
-		 * `minValue` and `maxValue` on a number field).
+		 * from that plan), `blockAttributes` (extra block attributes, such as
+		 * `minValue` and `maxValue` on a number field) and `no_sample` (the
+		 * library's example answers leave it empty, e.g. a field a condition
+		 * hides for the example's first option).
 		 *
 		 * @since x.x.x
 		 * @param array<int, array<string, mixed>> $templates Templates.
@@ -2545,6 +2547,10 @@ class Form_Templates {
 		if ( null === $field ) {
 			return null;
 		}
+		if ( ! empty( $field['no_sample'] ) ) {
+			// Hidden in the example, so the form's calculator counts it as empty.
+			return 0.0;
+		}
 		if ( '' !== self::get_formula( $field ) ) {
 			return $depth < 5 ? self::evaluate_formula( self::get_formula( $field ), $fields, $depth + 1 ) : null;
 		}
@@ -2837,7 +2843,10 @@ class Form_Templates {
 			'page'            => __( 'Pricing', 'sureforms' ),
 			'recommend-score' => '9',
 		];
-		$slug    = Helper::get_string_value( $field['slug'] ?? '' );
+		if ( ! empty( $field['no_sample'] ) ) {
+			return '';
+		}
+		$slug = Helper::get_string_value( $field['slug'] ?? '' );
 		if ( isset( $by_slug[ $slug ] ) ) {
 			return $by_slug[ $slug ];
 		}

@@ -178,7 +178,7 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 		$attributes = json_decode( $block[1], true );
 		$this->assertSame( $this->symbol(), $attributes['prefix'] );
 		$this->assertTrue( $attributes['enableCalculation'] );
-		$this->assertSame( '{form:service} + {form:pages} * 100 + {form:extras}', $attributes['calculationFormula'] );
+		$this->assertSame( '{form:service} + {form:pages} * 100 + {form:website-extras} + {form:store-extras} + {form:landing-extras}', $attributes['calculationFormula'] );
 		$this->assertSame( 0, $attributes['calculationRound'] );
 		$this->assertStringContainsString( '"showValues":true', $content );
 	}
@@ -234,16 +234,38 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 		}
 	}
 
+	public function test_instant_quote_add_ons_follow_the_service() {
+		$template = Form_Templates::get_template( 'instant-quote-calculator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		$services = wp_list_pluck( $fields['service']['fieldOptions'], 'label' );
+		foreach ( [ 'pages', 'website-extras', 'store-extras', 'landing-extras' ] as $slug ) {
+			$this->assertArrayHasKey( $slug, $template['conditions'], "{$slug} should follow the service." );
+			// The condition compares the dropdown's label, price included.
+			$this->assertContains( $template['conditions'][ $slug ]['logic'][0][0][2], $services );
+		}
+		// The example picks the first service, so only its add-ons count in the sample estimate.
+		$this->assertTrue( empty( $fields['website-extras']['no_sample'] ) );
+		$this->assertTrue( $fields['store-extras']['no_sample'] );
+		$this->assertTrue( $fields['landing-extras']['no_sample'] );
+		$this->assertStringNotContainsString( 'no_sample', Form_Templates::build_content( $template ) );
+	}
+
 	public function test_calculated_inputs_are_required() {
 		foreach ( $this->templates_in( [ 'calculators', 'payments' ] ) as $id => $template ) {
 			$fields   = Form_Templates::resolve_fields( $template, 'business' );
 			$required = wp_list_pluck( array_filter( $fields, static fn( $field ) => ! empty( $field['required'] ) ), 'slug' );
 			foreach ( $this->calculated_fields( $template ) as $field ) {
-				$this->assertContains( $field['slug'], $required );
+				if ( 'calculators' === $template['category'] ) {
+					// Nobody types in a result, so it shows no required mark.
+					$this->assertNotContains( $field['slug'], $required, "{$id}: {$field['slug']} is worked out, so it should not look required." );
+				} else {
+					// A payment takes its amount from the total, which must not be empty.
+					$this->assertContains( $field['slug'], $required );
+				}
 				preg_match_all( '/\{form:([a-z0-9-]+)\}/', $this->formula( $field ), $tags );
 				foreach ( $tags[1] as $slug ) {
 					// Optional add-ons simply add nothing.
-					if ( 'extras' !== $slug ) {
+					if ( ! preg_match( '/(^|-)extras$/', $slug ) ) {
 						$this->assertContains( $slug, $required, "{$id}: {$field['slug']} reads the optional {$slug}." );
 					}
 				}
