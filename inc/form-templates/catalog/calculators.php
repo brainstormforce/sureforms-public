@@ -114,6 +114,46 @@ $growth     = '(1 + ' . $rate . ') ^ ({form:term-years} * 12)';
 $repayment  = '{form:loan-amount} * ' . $rate . ' * ' . $growth . ' / (' . $growth . ' - 1)';
 $disclaimer = __( 'An estimate for guidance only, not financial advice.', 'sureforms' );
 
+// BMI in either unit system. Fields hidden by the unit choice count as empty
+// (0), so each half is 0 for the system not chosen; the tiny 0.0001 keeps it
+// from dividing by zero and changes a real BMI by far less than its rounding.
+$bmi_units   = [
+	'metric'   => __( 'Metric (cm, kg)', 'sureforms' ),
+	'imperial' => __( 'Imperial (ft, in, lbs)', 'sureforms' ),
+];
+$bmi_formula = '{form:weight-kg} / (({form:height-cm} / 100) * ({form:height-cm} / 100) + 0.0001)'
+	. ' + 703 * {form:weight-lbs} / (({form:height-ft} * 12 + {form:height-in}) * ({form:height-ft} * 12 + {form:height-in}) + 0.0001)';
+
+/*
+ * What the BMI visitor gets for sending the form, under a heading that fits
+ * their result. A condition shows the one for their BMI; each range has its
+ * own colours (background, then the left border), so the change stands out.
+ */
+$plan_pitch = static function ( $slug, $heading, $colors ) {
+	$points = [
+		__( 'Built around your goal and your BMI', 'sureforms' ),
+		__( 'Simple steps you can start this week', 'sureforms' ),
+		__( 'Sent to your inbox by a coach, free', 'sureforms' ),
+	];
+	// Sizes on each paragraph: the HTML block sets its own smaller text size.
+	$html  = '<div style="padding: 16px 20px;border-radius: 8px;background: ' . $colors[0] . ';border-left: 4px solid ' . $colors[1] . '">';
+	$html .= '<p style="margin: 0 0 8px;font-size: 17px;line-height: 1.4"><strong>' . esc_html( $heading ) . '</strong></p>';
+	foreach ( $points as $point ) {
+		$html .= '<p style="margin: 0;font-size: 15px;line-height: 1.7">&#10003; ' . esc_html( $point ) . '</p>';
+	}
+	$html .= '</div>';
+	return Catalog::field( 'html', $slug, '', false, [ 'htmlContent' => $html ] );
+};
+// A body measurement with its unit after the input.
+$measure = static fn( $slug, $label, $unit, $min, $max, $placeholder ) => Catalog::attrs(
+	Catalog::field( 'number', $slug, $label, true, [ 'placeholder' => $placeholder ] ),
+	[
+		'minValue' => $min,
+		'maxValue' => $max,
+		'suffix'   => $unit,
+	]
+);
+
 return [
 	[
 		'id'            => 'instant-quote-calculator',
@@ -348,79 +388,98 @@ return [
 		'features'      => [ 'calculation' ],
 		'title'         => __( 'BMI Calculator', 'sureforms' ),
 		'description'   => __( 'Calculate BMI and request a personalized plan instantly.', 'sureforms' ),
-		'submit_text'   => __( 'Send me a plan', 'sureforms' ),
+		'submit_text'   => __( 'Send me my free plan', 'sureforms' ),
 		'fields'        => [
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'units', __( 'Units', 'sureforms' ), true, Catalog::choice_options( [ $bmi_units['metric'], $bmi_units['imperial'] ], true ) ),
+				[ 'choiceWidth' => 50 ]
+			),
+			Catalog::width( $measure( 'height-cm', __( 'Height', 'sureforms' ), 'cm', 50, 250, __( 'e.g. 170', 'sureforms' ) ), 50 ),
+			Catalog::width( $measure( 'weight-kg', __( 'Weight', 'sureforms' ), 'kg', 20, 300, __( 'e.g. 68', 'sureforms' ) ), 50 ),
+			// The example answers are metric, so the imperial fields stay out of the sample BMI.
+			Catalog::width( $measure( 'height-ft', __( 'Height', 'sureforms' ), 'ft', 1, 8, __( 'e.g. 5', 'sureforms' ) ) + [ 'no_sample' => true ], 25 ),
+			// Optional: empty counts as 0, so 5 ft needs no "0".
 			Catalog::width(
-				Catalog::attrs(
-					Catalog::field( 'number', 'height-cm', __( 'Height', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 170', 'sureforms' ) ] ),
+				array_merge(
+					$measure( 'height-in', __( 'Inches', 'sureforms' ), 'in', 0, 11, __( 'e.g. 7', 'sureforms' ) ),
 					[
-						'minValue' => 50,
-						'maxValue' => 250,
-						'suffix'   => 'cm',
+						'required'  => false,
+						'no_sample' => true,
 					]
 				),
-				50
+				25
 			),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::field( 'number', 'weight-kg', __( 'Weight', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 68', 'sureforms' ) ] ),
-					[
-						'minValue' => 20,
-						'maxValue' => 300,
-						'suffix'   => 'kg',
-					]
-				),
-				50
-			),
+			Catalog::width( $measure( 'weight-lbs', __( 'Weight', 'sureforms' ), 'lbs', 40, 660, __( 'e.g. 150', 'sureforms' ) ) + [ 'no_sample' => true ], 50 ),
 			$result(
 				'bmi',
 				__( 'Your BMI', 'sureforms' ),
-				'{form:weight-kg} / (({form:height-cm} / 100) * ({form:height-cm} / 100))',
+				$bmi_formula,
 				1,
 				'',
 				'',
 				[ 'helpText' => __( 'Healthy range for adults: 18.5 to 24.9. An estimate, not medical advice.', 'sureforms' ) ]
 			),
+			// Why it's worth sending the form, in words that fit the result.
+			$plan_pitch( 'plan-under', __( 'Build up healthily, with a plan made for you', 'sureforms' ), [ '#eff6ff', '#3b82f6' ] ),
+			$plan_pitch( 'plan-healthy', __( 'You are in the healthy range. Get a plan to keep it that way', 'sureforms' ), [ '#ecfdf5', '#10b981' ] ),
+			// Amber, not red: an encouraging nudge, not a warning.
+			$plan_pitch( 'plan-over', __( 'Work towards a healthier range, one step at a time', 'sureforms' ), [ '#fffbeb', '#f59e0b' ] ),
 			Catalog::attrs(
 				Catalog::field(
 					'multi-choice',
 					'goal',
-					__( 'Your Goal', 'sureforms' ),
+					__( 'What\'s your goal?', 'sureforms' ),
 					true,
-					Catalog::choice_options( [ __( 'Lose weight', 'sureforms' ), __( 'Maintain my weight', 'sureforms' ), __( 'Gain weight', 'sureforms' ) ], true )
+					Catalog::choice_options( [ __( 'Lose weight', 'sureforms' ), __( 'Maintain weight', 'sureforms' ), __( 'Gain weight', 'sureforms' ) ], true, [ 'arrow-trend-down', 'scale-balanced', 'arrow-trend-up' ] )
 				),
-				[ 'choiceWidth' => 33.33 ]
+				// Icon above the text, so "Maintain weight" fits a third of the row.
+				[
+					'choiceWidth'    => 33.33,
+					'verticalLayout' => true,
+				]
 			),
-			$c['first_name'],
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
 			$c['consent'],
+		],
+		// Only the chosen unit system's fields show.
+		'conditions'    => [
+			'height-cm'    => [ 'logic' => [ [ [ 'units', '==', $bmi_units['metric'] ] ] ] ],
+			'weight-kg'    => [ 'logic' => [ [ [ 'units', '==', $bmi_units['metric'] ] ] ] ],
+			'height-ft'    => [ 'logic' => [ [ [ 'units', '==', $bmi_units['imperial'] ] ] ] ],
+			'height-in'    => [ 'logic' => [ [ [ 'units', '==', $bmi_units['imperial'] ] ] ] ],
+			'weight-lbs'   => [ 'logic' => [ [ [ 'units', '==', $bmi_units['imperial'] ] ] ] ],
+			// The BMI shows 0 until height and weight are in, so no message shows before then.
+			'plan-under'   => [ 'logic' => [ [ [ 'bmi', '>', '0' ], [ 'bmi', '<', '18.5' ] ] ] ],
+			'plan-healthy' => [ 'logic' => [ [ [ 'bmi', '>=', '18.5' ], [ 'bmi', '<', '25' ] ] ] ],
+			'plan-over'    => [ 'logic' => [ [ [ 'bmi', '>=', '25' ] ] ] ],
 		],
 		'confirmations' => [
 			[
 				'name'    => __( 'BMI under 18.5', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, below the usual healthy range. A coach will email you a plan for your goal ({form:goal}), with a focus on healthy, steady gains.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, below the usual healthy range. A coach will email you a plan for your goal ({form:goal}), with a focus on healthy, steady gains.', 'sureforms' ) ),
 				'rules'   => [ [ 'bmi', '_LESSER_', '18.5' ] ],
 			],
 			[
 				'name'    => __( 'BMI 18.5 to 24.9', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, within the usual healthy range. A coach will email you a plan for your goal ({form:goal}).', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, within the usual healthy range. A coach will email you a plan for your goal ({form:goal}).', 'sureforms' ) ),
 				'rules'   => [ [ 'bmi', '_GREATER_OR_EQUAL_', '18.5' ], [ 'bmi', '_LESSER_', '25' ] ],
 			],
 			[
 				'name'    => __( 'BMI 25 and over', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, above the usual healthy range. A coach will email you a realistic plan for your goal ({form:goal}).', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, above the usual healthy range. A coach will email you a realistic plan for your goal ({form:goal}).', 'sureforms' ) ),
 				'rules'   => [ [ 'bmi', '_GREATER_OR_EQUAL_', '25' ] ],
 			],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your BMI is {form:bmi}. A coach will email you a plan for your goal ({form:goal}). BMI is an estimate, not medical advice.', 'sureforms' ),
 		],
-		'email_subject' => __( 'BMI check: {form:first-name} ({form:bmi}), goal: {form:goal}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} checked their BMI ({form:bmi}) and would like a plan for their goal: {form:goal}. Reply to this email to send it.', 'sureforms' ),
+		'email_subject' => __( 'BMI check: {form:name} ({form:bmi}), goal: {form:goal}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} checked their BMI ({form:bmi}) and would like a plan for their goal: {form:goal}. Reply to this email to send it.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Your BMI result', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for checking your BMI with us. Your result: {form:bmi}.', 'sureforms' ),
 				__( 'A coach will be in touch with a plan for your goal ({form:goal}). BMI is a rough guide and doesn\'t account for muscle, age or build, so it is not medical advice.', 'sureforms' ),

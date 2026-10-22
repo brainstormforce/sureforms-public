@@ -251,6 +251,28 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 		$this->assertStringNotContainsString( 'no_sample', Form_Templates::build_content( $template ) );
 	}
 
+	public function test_bmi_fields_follow_the_units_and_the_result() {
+		$template = Form_Templates::get_template( 'bmi-calculator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		$units    = wp_list_pluck( $fields['units']['fieldOptions'], 'optionTitle' );
+		foreach ( [ 'height-cm', 'weight-kg', 'height-ft', 'height-in', 'weight-lbs' ] as $slug ) {
+			$this->assertContains( $template['conditions'][ $slug ]['logic'][0][0][2], $units, "{$slug} should follow the units." );
+		}
+		// One pitch per BMI range, none while the BMI is still 0.
+		$this->assertSame( [ 'bmi', '>', '0' ], $template['conditions']['plan-under']['logic'][0][0] );
+		$this->assertSame( [ 'bmi', '>=', '25' ], $template['conditions']['plan-over']['logic'][0][0] );
+		foreach ( [ 'plan-under', 'plan-healthy', 'plan-over' ] as $slug ) {
+			$this->assertSame( 'html', $fields[ $slug ]['fieldType'] );
+		}
+		// 5 ft 7 in, 150 lb gives the same 23.5 as the metric example.
+		$formula = str_replace(
+			[ '{form:weight-kg}', '{form:height-cm}', '{form:weight-lbs}', '{form:height-ft}', '{form:height-in}' ],
+			[ '0', '0', '150', '5', '7' ],
+			$this->formula( $fields['bmi'] )
+		);
+		$this->assertSame( '23.5', number_format( (float) Formula::evaluate( $formula ), 1 ) );
+	}
+
 	public function test_calculated_inputs_are_required() {
 		foreach ( $this->templates_in( [ 'calculators', 'payments' ] ) as $id => $template ) {
 			$fields   = Form_Templates::resolve_fields( $template, 'business' );
@@ -265,8 +287,8 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 				}
 				preg_match_all( '/\{form:([a-z0-9-]+)\}/', $this->formula( $field ), $tags );
 				foreach ( $tags[1] as $slug ) {
-					// Optional add-ons simply add nothing.
-					if ( ! preg_match( '/(^|-)extras$/', $slug ) ) {
+					// Optional add-ons and inches simply add nothing.
+					if ( ! preg_match( '/(^|-)extras$/', $slug ) && 'height-in' !== $slug ) {
 						$this->assertContains( $slug, $required, "{$id}: {$field['slug']} reads the optional {$slug}." );
 					}
 				}
