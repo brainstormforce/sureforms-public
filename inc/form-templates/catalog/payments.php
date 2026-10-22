@@ -393,8 +393,7 @@ return [
 		'description'     => __( 'Register people for a paid class or a workshop.', 'sureforms' ),
 		'submit_text'     => __( 'Register and pay', 'sureforms' ),
 		'fields'          => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::attrs(
@@ -415,7 +414,22 @@ return [
 			),
 			Catalog::width( Catalog::number_field( 'seats', __( 'Seats', 'sureforms' ), true, 1, 10, [ 'placeholder' => __( 'e.g. 1', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $total( '{form:session} * {form:seats}' ), 50 ),
-			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything the instructor should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Experience level, access needs, names of the other attendees', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			// One row per other person, only when more than one seat is booked. Seats sets the price.
+			Catalog::field(
+				'repeater',
+				'other-attendees',
+				__( 'Other attendees', 'sureforms' ),
+				false,
+				[
+					'minItems'    => 1,
+					'maxItems'    => 9,
+					'innerFields' => [
+						Catalog::width( Catalog::field( 'input', 'attendee-name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Alex Kim', 'sureforms' ) ] ), 50 ),
+						Catalog::width( Catalog::field( 'email', 'attendee-email', __( 'Email (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'alex@example.com', 'sureforms' ) ] ), 50 ),
+					],
+				]
+			),
+			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything the instructor should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Experience level or access needs', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$payment(
 				'payment',
 				__( 'Payment', 'sureforms' ),
@@ -423,21 +437,24 @@ return [
 					'paymentType'         => 'one-time',
 					'amountType'          => 'variable',
 					'variableAmountField' => 'total',
-					'customerNameField'   => 'first-name',
+					'customerNameField'   => 'name',
 					'customerEmailField'  => 'email',
 				]
 			),
 			$c['consent'],
 		],
+		'conditions'      => [
+			'other-attendees' => [ 'logic' => [ [ [ 'seats', '>=', '2' ] ] ] ],
+		],
 		'confirmation'    => [
-			'heading' => __( 'See you in class, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'See you in class, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your {form:seats} seat(s) for the {form:session} session are booked and {form-payment:payment:amount} is paid. The details are on their way to {form:email}.', 'sureforms' ),
 		],
-		'email_subject'   => __( 'Class registration: {form:first-name} {form:last-name}, {form:seats} seat(s), {form:session}', 'sureforms' ),
-		'email_intro'     => __( '{form:first-name} {form:last-name} booked {form:seats} seat(s) for the {form:session} session and paid {form-payment:payment:amount} (order {form-payment:payment:order-id}). Reply to this email to reach them.', 'sureforms' ),
+		'email_subject'   => __( 'Class registration: {form:name}, {form:seats} seat(s), {form:session}', 'sureforms' ),
+		'email_intro'     => __( '{form:name} booked {form:seats} seat(s) for the {form:session} session and paid {form-payment:payment:amount} (order {form-payment:payment:order-id}). Reply to this email to reach them.', 'sureforms' ),
 		'autoresponder'   => [
 			'subject'  => __( 'You are booked in', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for registering. Your {form:seats} seat(s) for the {form:session} session are confirmed and {form-payment:payment:amount} is paid.', 'sureforms' ),
 				__( 'We will send a reminder with the details before the class. Questions? Just reply to this email.', 'sureforms' ),
