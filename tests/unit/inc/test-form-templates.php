@@ -953,7 +953,6 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringNotContainsString( "\n", $clean['email_subject'], 'A subject cannot add email headers.' );
 		$this->assertFalse( $clean['autoresponder']['enabled'] );
 		$this->assertSame( [ 'One', 'Two' ], $clean['autoresponder']['lines'] );
-		$this->assertArrayNotHasKey( 'signoff', $clean['autoresponder'], 'No sign-off was sent.' );
 		$this->assertArrayNotHasKey( 'unknown', $clean );
 		$this->assertSame( [], Form_Templates::sanitize_messages( 'nope' ) );
 	}
@@ -2269,9 +2268,22 @@ class Test_Form_Templates extends TestCase {
 		$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
 		$this->assertStringEndsWith( '<p>Best wishes,<br>The {site_title} team</p>', $emails[1]['email_body'] );
 
-		// Cleared, it falls back to the default.
-		$template['autoresponder']['signoff'] = '  ';
-		$this->assertSame( "Thanks,\n{site_title}", Form_Templates::get_messages( $template, $fields )['autoresponder']['signoff'] );
+		// Cleared in the preview, the email keeps the default.
+		$cleared = Form_Templates::apply_messages( Form_Templates::get_template( 'contact-us' ), Form_Templates::sanitize_messages( [ 'autoresponder' => [ 'signoff' => '' ] ] ) );
+		$emails  = Form_Templates::build_settings_metas( $cleared )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Thanks,<br>{site_title}</p>', $emails[1]['email_body'] );
+
+		// A template's own sign-off wins over the default, and a cleared box keeps it.
+		$own                                  = Form_Templates::get_template( 'contact-us' );
+		$own['autoresponder']['signoff']      = "Cheers,\nThe team";
+		$cleared                              = Form_Templates::apply_messages( $own, Form_Templates::sanitize_messages( [ 'autoresponder' => [ 'signoff' => '' ] ] ) );
+		$emails                               = Form_Templates::build_settings_metas( $cleared )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Cheers,<br>The team</p>', $emails[1]['email_body'] );
+		$this->assertSame( "Cheers,\nThe team", Form_Templates::get_messages( $own, $fields )['autoresponder']['signoff'] );
+
+		// Only spaces count as empty too.
+		$own['autoresponder']['signoff'] = '  ';
+		$this->assertSame( "Thanks,\n{site_title}", Form_Templates::get_messages( $own, $fields )['autoresponder']['signoff'] );
 	}
 
 	public function test_build_settings_metas_holds_the_visitor_email_without_spam_protection() {
