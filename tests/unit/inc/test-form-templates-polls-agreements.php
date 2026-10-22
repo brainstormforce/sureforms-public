@@ -23,7 +23,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		'product-recommender'           => [ 'quizzes', 'starter' ],
 		'conversational-lead-qualifier' => [ 'contact', 'pro' ],
 		'ad-landing-lead-form'          => [ 'contact', 'starter' ],
-		'service-agreement'             => [ 'agreements', 'pro' ],
+		'service-agreement'             => [ 'agreements', 'business' ],
 		'liability-waiver'              => [ 'agreements', 'pro' ],
 		'photo-release-consent'         => [ 'agreements', 'pro' ],
 	];
@@ -54,13 +54,12 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		}
 	}
 
-	public function test_only_pro_and_starter_feature_keys_are_declared() {
+	public function test_declared_feature_keys_need_the_plan_that_builds_them() {
 		foreach ( array_keys( self::TEMPLATES ) as $id ) {
 			$template = $this->template( $id );
 			$keys     = array_intersect_key( $template, Form_Templates::PRO_FEATURE_KEYS );
 			$required = Form_Templates::get_required_tier( $template );
 			foreach ( array_keys( $keys ) as $key ) {
-				$this->assertNotSame( 'business', Form_Templates::PRO_FEATURE_KEYS[ $key ], "Template {$id} declares the Business key {$key}." );
 				// The plan a template asks for builds every feature it declares.
 				$this->assertGreaterThanOrEqual(
 					array_search( Form_Templates::PRO_FEATURE_KEYS[ $key ], Form_Templates::TIERS, true ),

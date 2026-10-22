@@ -54,6 +54,84 @@ $terms = static function ( $slug, $label, $heading, $sections ) {
 	);
 };
 
+// The service agreement's terms, shown on the form and in the signed copy.
+$service_terms = [
+	__( 'This agreement is between you (the client) and us (the provider).', 'sureforms' ),
+	__( 'Services: We will provide the services described in our proposal or quote, which forms part of this agreement.', 'sureforms' ),
+	__( 'Fees and payment: You agree to pay the fees in our proposal. Invoices are due within 14 days unless agreed otherwise in writing.', 'sureforms' ),
+	__( 'Changes: Work outside the agreed scope will be quoted separately and only starts once you approve it.', 'sureforms' ),
+	__( 'Cancellation: Either party may end this agreement with 14 days’ written notice. Work completed up to that date will be invoiced.', 'sureforms' ),
+	__( 'Confidentiality: Both parties will keep each other’s confidential information private.', 'sureforms' ),
+];
+
+/**
+ * The signed copy of an agreement as PDF content, laid out like a contract: a
+ * header, the two parties, numbered terms, the signature block and a footer
+ * recording when and where it was signed. Tables and inline styles only, the
+ * layout mPDF renders reliably.
+ *
+ * @param string                $heading  Document title.
+ * @param array<int, string>    $sections Terms: plain paragraphs (an introduction) or `Title: text`.
+ * @param array<string, string> $client   Client details, label => smart tag; empty answers leave an empty row.
+ * @return string HTML.
+ */
+$signed_copy = static function ( $heading, $sections, $client ) {
+	$muted = 'color: #64748b;font-size: 9pt;';
+	$label = 'color: #64748b;font-size: 8pt;letter-spacing: 1px;text-transform: uppercase;';
+
+	// Header: who it is from, what it is and when it was signed.
+	$html  = '<table width="100%" style="border-collapse: collapse;border-bottom: 2px solid #0f172a"><tr>';
+	$html .= '<td style="padding: 0 0 10px;font-size: 11pt;font-weight: bold;color: #0f172a">{site_title}</td>';
+	/* translators: %s: date the agreement was signed. */
+	$html .= '<td style="padding: 0 0 10px;text-align: right;' . $muted . '">' . sprintf( esc_html__( 'Signed on %s', 'sureforms' ), '{date_mdy}' ) . '</td>';
+	$html .= '</tr></table>';
+	$html .= '<h1 style="margin: 24px 0 4px;font-size: 22pt;color: #0f172a">' . esc_html( $heading ) . '</h1>';
+	$html .= '<p style="margin: 0 0 20px;' . $muted . '">' . esc_html__( 'Signed copy for the records of both parties.', 'sureforms' ) . '</p>';
+
+	// The parties.
+	$html .= '<table width="100%" style="border-collapse: collapse;margin-bottom: 20px"><tr>';
+	$html .= '<td width="50%" style="vertical-align: top;padding: 12px 14px;background: #f8fafc;border: 1px solid #e2e8f0">';
+	$html .= '<div style="' . $label . '">' . esc_html__( 'Provider', 'sureforms' ) . '</div>';
+	$html .= '<div style="margin-top: 6px;font-size: 10.5pt;font-weight: bold">{site_title}</div><div style="' . $muted . '">{site_url}</div></td>';
+	$html .= '<td width="50%" style="vertical-align: top;padding: 12px 14px;background: #f8fafc;border: 1px solid #e2e8f0">';
+	$html .= '<div style="' . $label . '">' . esc_html__( 'Client', 'sureforms' ) . '</div>';
+	$html .= '<table style="margin-top: 6px;border-collapse: collapse;font-size: 10pt">';
+	foreach ( $client as $name => $tag ) {
+		$html .= '<tr><td style="padding: 1px 10px 1px 0;' . $muted . '">' . esc_html( $name ) . '</td><td style="padding: 1px 0">' . $tag . '</td></tr>';
+	}
+	$html .= '</table></td></tr></table>';
+
+	// The terms, numbered.
+	$html  .= '<div style="' . $label . 'margin-bottom: 8px">' . esc_html__( 'Terms', 'sureforms' ) . '</div>';
+	$number = 0;
+	foreach ( $sections as $section ) {
+		$parts = explode( ':', $section, 2 );
+		if ( ! isset( $parts[1] ) ) {
+			$html .= '<p style="margin: 0 0 10px;font-size: 10.5pt;line-height: 1.5">' . esc_html( $section ) . '</p>';
+			continue;
+		}
+		++$number;
+		$html .= '<table width="100%" style="border-collapse: collapse;margin-bottom: 8px"><tr>';
+		$html .= '<td width="24" style="vertical-align: top;font-weight: bold;color: #0f172a;font-size: 10.5pt">' . $number . '.</td>';
+		$html .= '<td style="vertical-align: top;font-size: 10.5pt;line-height: 1.5"><strong>' . esc_html( trim( $parts[0] ) ) . '.</strong> ' . esc_html( trim( $parts[1] ) ) . '</td>';
+		$html .= '</tr></table>';
+	}
+
+	// Signature block.
+	// The lines sit on the cells: mPDF draws a div's border only as wide as its text.
+	$line  = 'vertical-align: top;border-top: 1px solid #0f172a;padding-top: 6px;font-size: 10pt';
+	$html .= '<table width="100%" style="border-collapse: collapse;margin-top: 28px">';
+	$html .= '<tr><td width="55%" style="vertical-align: bottom;height: 70px">{form:signature}</td><td width="8%"></td><td width="37%"></td></tr>';
+	$html .= '<tr><td style="' . $line . '"><strong>{form:full-name}</strong><br><span style="' . $muted . '">' . esc_html__( 'Client signature', 'sureforms' ) . '</span></td>';
+	$html .= '<td></td><td style="' . $line . '"><strong>{date_mdy}</strong><br><span style="' . $muted . '">' . esc_html__( 'Date', 'sureforms' ) . '</span></td></tr>';
+	$html .= '</table>';
+
+	// Footer: how and where it was signed.
+	/* translators: %1$s: date, %2$s: website address, %3$s: entry number. */
+	$html .= '<p style="margin-top: 36px;padding-top: 10px;border-top: 1px solid #e2e8f0;' . $muted . '">' . sprintf( esc_html__( 'Signed electronically on %1$s through %2$s. Entry #%3$s.', 'sureforms' ), '{date_mdy}', '{site_url}', '{entry_id}' ) . '</p>';
+	return $html;
+};
+
 /**
  * A required signature: SureForms Pro and Business, not Starter.
  *
@@ -71,7 +149,7 @@ return [
 		'id'            => 'service-agreement',
 		'preview_image' => 'service-agreement.webp',
 		'category'      => 'agreements',
-		'requires'      => 'pro',
+		'requires'      => 'business',
 		'theme'         => 'ocean',
 		'icon'          => 'file-signature',
 		'title'         => __( 'Service Agreement', 'sureforms' ),
@@ -82,33 +160,45 @@ return [
 				'terms',
 				__( 'Agreement terms', 'sureforms' ),
 				__( 'Service agreement', 'sureforms' ),
-				[
-					__( 'Starter wording, not legal advice: replace it with your own terms before you publish this form.', 'sureforms' ),
-					__( 'This agreement is between you (the client) and us (the provider).', 'sureforms' ),
-					__( 'Services: We will provide the services described in our proposal or quote, which forms part of this agreement.', 'sureforms' ),
-					__( 'Fees and payment: You agree to pay the fees in our proposal. Invoices are due within 14 days unless agreed otherwise in writing.', 'sureforms' ),
-					__( 'Changes: Work outside the agreed scope will be quoted separately and only starts once you approve it.', 'sureforms' ),
-					__( 'Cancellation: Either party may end this agreement with 14 days’ written notice. Work completed up to that date will be invoiced.', 'sureforms' ),
-					__( 'Confidentiality: Both parties will keep each other’s confidential information private.', 'sureforms' ),
-				]
+				array_merge(
+					[ __( 'Starter wording, not legal advice: replace it with your own terms, here and in the signed copy (the form’s PDF settings), before you publish this form.', 'sureforms' ) ],
+					$service_terms
+				)
 			),
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width( Catalog::field( 'input', 'company', __( 'Company (if any)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
-			Catalog::width( Catalog::field( 'input', 'reference', __( 'Proposal or Quote Number', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. #10234', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'reference', __( 'Proposal or quote number', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. #10234', 'sureforms' ) ] ), 50 ),
 			Catalog::field( 'gdpr', 'agree-terms', __( 'I have read and agree to the terms above, and I am authorised to sign on behalf of the client.', 'sureforms' ), true ),
 			$signature( 'signature', __( 'Signature', 'sureforms' ) ),
 		],
+		// A signed copy with the terms, the client's details and signature (Premium PDF).
+		'pdf'           => [
+			[
+				'slug'    => 'agreement',
+				'name'    => __( 'Download your signed agreement', 'sureforms' ),
+				'content' => $signed_copy(
+					__( 'Service agreement', 'sureforms' ),
+					$service_terms,
+					[
+						__( 'Name', 'sureforms' )    => '{form:full-name}',
+						__( 'Company', 'sureforms' ) => '{form:company}',
+						__( 'Email', 'sureforms' )   => '{form:email}',
+						__( 'Proposal or quote', 'sureforms' ) => '{form:reference}',
+					]
+				),
+			],
+		],
 		'confirmation'  => [
 			'heading' => __( 'Signed – thank you, {form:full-name}', 'sureforms' ),
-			'text'    => __( 'A copy of the agreement has been sent to {form:email}. We will be in touch about next steps.', 'sureforms' ),
+			'text'    => __( 'A copy has been sent to {form:email}, and you can download it here: {pdf:agreement}. We will be in touch about next steps.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Service agreement signed by {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} signed the service agreement on {date_mdy}. Their details and signature are below. Reply to this email to contact them.', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} signed the service agreement on {date_mdy}. Signed copy: {pdf:agreement}. Their details and signature are below. Reply to this email to contact them.', 'sureforms' ),
 		'autoresponder' => [
 			'subject' => __( 'Your signed service agreement', 'sureforms' ),
 			'lines'   => [
-				__( 'Thank you for signing our service agreement on {date_mdy}. A copy of what you submitted is below for your records.', 'sureforms' ),
+				__( 'Thank you for signing our service agreement on {date_mdy}. Download your signed copy for your records: {pdf:agreement}', 'sureforms' ),
 				__( 'If anything looks wrong, just reply to this email.', 'sureforms' ),
 			],
 		],
