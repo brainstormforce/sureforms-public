@@ -226,14 +226,56 @@ return [
 		'description'   => __( 'Capture catering orders of any size, available for delivery or pickup.', 'sureforms' ),
 		'submit_text'   => __( 'Send my order', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
-			Catalog::width( Catalog::field( 'input', 'company', __( 'Company or Organization', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'company', __( 'Company or organization (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
+			// The event first: a caterer checks the date and size before the menu.
+			Catalog::width( Catalog::date_field( 'delivery-date', __( 'Date needed', 'sureforms' ), true, true ), 50 ),
+			Catalog::width(
+				Catalog::field(
+					'time-picker',
+					'delivery-time',
+					__( 'Time needed', 'sureforms' ),
+					true,
+					[
+						'increment' => 30,
+						'minTime'   => '07:00',
+						'maxTime'   => '20:00',
+					]
+				),
+				50
+			),
+			Catalog::number_field( 'guests', __( 'Number of guests', 'sureforms' ), true, 1, 5000, [ 'placeholder' => __( 'e.g. 40', 'sureforms' ) ] ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'fulfilment',
+					__( 'Delivery or pickup?', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true )
+				),
+				[ 'choiceWidth' => 50 ]
+			),
+			// Local delivery: no country list, and the region is optional.
+			Catalog::field(
+				'address',
+				'delivery-address',
+				__( 'Delivery address', 'sureforms' ),
+				true,
+				[
+					'innerFields' => [
+						Catalog::attrs( Catalog::field( 'input', 'street-address', __( 'Street address', 'sureforms' ), true ), [ 'addressComponent' => 'line1' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'city', __( 'City', 'sureforms' ), true ), 50 ), [ 'addressComponent' => 'city' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'state', __( 'State or region', 'sureforms' ), false ), 25 ), [ 'addressComponent' => 'state' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'postal-code', __( 'Postal code', 'sureforms' ), true ), 25 ), [ 'addressComponent' => 'postal_code' ] ),
+					],
+				]
+			),
 			Catalog::field(
 				'repeater',
 				'items',
-				__( 'Your Order', 'sureforms' ),
+				__( 'Your order', 'sureforms' ),
 				false,
 				[
 					'minItems'    => 1,
@@ -245,33 +287,7 @@ return [
 				]
 			),
 			Catalog::attrs(
-				Catalog::field(
-					'multi-choice',
-					'fulfilment',
-					__( 'Delivery or Pickup?', 'sureforms' ),
-					true,
-					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true )
-				),
-				[ 'choiceWidth' => 50 ]
-			),
-			Catalog::width( Catalog::date_field( 'delivery-date', __( 'Date Needed', 'sureforms' ), true, true ), 50 ),
-			Catalog::width(
-				Catalog::field(
-					'time-picker',
-					'delivery-time',
-					__( 'Time Needed', 'sureforms' ),
-					true,
-					[
-						'increment' => 30,
-						'minTime'   => '07:00',
-						'maxTime'   => '20:00',
-					]
-				),
-				50
-			),
-			Catalog::field( 'address', 'delivery-address', __( 'Delivery Address', 'sureforms' ), true ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'notes', __( 'Order Notes', 'sureforms' ), false, [ 'placeholder' => __( 'Allergies, dietary needs, packaging or delivery instructions', 'sureforms' ) ] ),
+				Catalog::field( 'textarea', 'notes', __( 'Order notes (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Allergies, dietary needs, packaging or delivery instructions', 'sureforms' ) ] ),
 				[ 'rows' => 3 ]
 			),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can confirm and deliver my order.', 'sureforms' ) ] ),
@@ -284,14 +300,15 @@ return [
 			],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks for your order, {form:full-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks for your order, {form:name}!', 'sureforms' ),
 			'text'    => __( 'We will check availability for {form:delivery-date} and email you at {form:email} to confirm your order and the total.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Bulk order for {form:delivery-date} from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} placed an order for {form:fulfilment} on {form:delivery-date} at {form:delivery-time}. Reply to confirm the order and its total.', 'sureforms' ),
+		'email_subject' => __( 'Catering order for {form:delivery-date} from {form:name} ({form:guests} guests)', 'sureforms' ),
+		'email_intro'   => __( '{form:name} placed a catering order for {form:guests} guests, for {form:fulfilment} on {form:delivery-date} at {form:delivery-time}. Reply to confirm the order and its total.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'We received your order for {form:delivery-date}', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'We received your order for {form:delivery-date}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thank you for your order. Your order details are below.', 'sureforms' ),
 				__( 'This is not a confirmation yet: we will check availability and reply with the total before we confirm.', 'sureforms' ),
 			],
