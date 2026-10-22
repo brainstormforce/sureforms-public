@@ -296,7 +296,8 @@ export const placeTag = ( value, start, end, tag ) => {
 /**
  * Inserting answers at the caret of the field last focused. Each group of
  * fields has its own chips: when the last focused field is not in the
- * group, the tag goes at the end of the group's last field.
+ * group, the tag goes at the end of the field whose key is last in the
+ * group's keys (not always the last field on screen).
  *
  * @param {Object}   values   Current values by key.
  * @param {Function} setValue Called with ( key, value ).
@@ -478,6 +479,7 @@ const AnswerChips = ( { answers, results = [], onInsert } ) => {
  * @param {string}   props.help      Help text.
  * @param {string}   props.warning   Warning text.
  * @param {Object}   props.field     From useAnswerInsertion().fieldProps().
+ * @param {number}   props.maxLength Most characters the server keeps.
  */
 const MessageField = ( {
 	id,
@@ -489,6 +491,7 @@ const MessageField = ( {
 	help,
 	warning,
 	field,
+	maxLength,
 } ) => {
 	const Tag = multiline ? 'textarea' : 'input';
 	const describedBy =
@@ -510,6 +513,7 @@ const MessageField = ( {
 				value={ value }
 				onChange={ ( event ) => onChange( event.target.value ) }
 				aria-describedby={ describedBy }
+				maxLength={ maxLength }
 				spellCheck
 				className={ cn( inputClass, multiline && 'resize-y min-h-16' ) }
 				{ ...field }
@@ -997,6 +1001,11 @@ export const EmailsPanel = ( {
 				}
 				multiline
 				rows={ 2 }
+				maxLength={ 300 }
+				help={ __(
+					"Leave empty to keep the template's sign-off.",
+					'sureforms'
+				) }
 				field={ fieldProps( 'autoresponder.signoff' ) }
 			/>
 		</>
@@ -1098,7 +1107,10 @@ export const EmailsPanel = ( {
 							/>
 							<p className="m-0 text-text-primary whitespace-pre-line">
 								{ renderWithSamples(
-									values[ 'autoresponder.signoff' ],
+									// Left empty, the email keeps the template's sign-off.
+									values[ 'autoresponder.signoff' ]?.trim()
+										? values[ 'autoresponder.signoff' ]
+										: defaults[ 'autoresponder.signoff' ],
 									context
 								) }
 							</p>
