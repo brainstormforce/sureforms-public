@@ -73,7 +73,8 @@ $assessment = static function ( $slug, $label, $options ) {
 		);
 	}
 	$field['fieldOptions'] = $choices;
-	return $field;
+	// One answer per row, like the knowledge quiz.
+	return Catalog::attrs( $field, [ 'choiceWidth' => 100 ] );
 };
 
 // Knowledge quiz: one point per right answer, a pass from this percentage on.
@@ -212,44 +213,53 @@ return [
 			'letterGrades'  => $scorecard_grades,
 			'resultOutput'  => 'default_confirmation',
 		],
+		// One question per step, then the details for the grade.
+		'steps'         => [ __( 'Question 1', 'sureforms' ), __( 'Question 2', 'sureforms' ), __( 'Question 3', 'sureforms' ), __( 'Question 4', 'sureforms' ), __( 'Question 5', 'sureforms' ), __( 'Question 6', 'sureforms' ), __( 'Your results', 'sureforms' ) ],
 		'fields'        => [
 			$assessment(
 				'website',
 				__( 'How would you describe your website?', 'sureforms' ),
 				[ __( 'We don’t have one yet', 'sureforms' ), __( 'A single page with our contact details', 'sureforms' ), __( 'A full website we update now and then', 'sureforms' ), __( 'A fast, mobile-friendly website we keep up to date', 'sureforms' ) ]
 			),
+			Catalog::step( 'question-2', __( 'Question 2', 'sureforms' ) ),
 			$assessment(
 				'new-customers',
 				__( 'How do new customers find you?', 'sureforms' ),
 				[ __( 'Almost only by word of mouth', 'sureforms' ), __( 'Through social media now and then', 'sureforms' ), __( 'Through search, social media and referrals', 'sureforms' ), __( 'Through a planned mix of channels whose results we track', 'sureforms' ) ]
 			),
+			Catalog::step( 'question-3', __( 'Question 3', 'sureforms' ) ),
 			$assessment(
 				'email-list',
 				__( 'Do you collect email addresses from visitors and customers?', 'sureforms' ),
 				[ __( 'No', 'sureforms' ), __( 'Sometimes, but we rarely email them', 'sureforms' ), __( 'Yes, and we email them now and then', 'sureforms' ), __( 'Yes, with a regular newsletter or automated emails', 'sureforms' ) ]
 			),
+			Catalog::step( 'question-4', __( 'Question 4', 'sureforms' ) ),
 			$assessment(
 				'buy-online',
 				__( 'Can customers buy from you or book with you online?', 'sureforms' ),
 				[ __( 'No, only in person or by phone', 'sureforms' ), __( 'They can send a request online', 'sureforms' ), __( 'Yes, for some of what we offer', 'sureforms' ), __( 'Yes, for everything we offer', 'sureforms' ) ]
 			),
+			Catalog::step( 'question-5', __( 'Question 5', 'sureforms' ) ),
 			$assessment(
 				'lead-tracking',
 				__( 'How do you keep track of leads and customers?', 'sureforms' ),
 				[ __( 'We don’t really track them', 'sureforms' ), __( 'In our inbox and notes', 'sureforms' ), __( 'In a spreadsheet', 'sureforms' ), __( 'In a CRM or customer database', 'sureforms' ) ]
 			),
+			Catalog::step( 'question-6', __( 'Question 6', 'sureforms' ) ),
 			$assessment(
 				'numbers',
 				__( 'How often do you look at your website and marketing numbers?', 'sureforms' ),
 				[ __( 'Never', 'sureforms' ), __( 'Once in a while', 'sureforms' ), __( 'Every month', 'sureforms' ), __( 'Every week, and we act on what we see', 'sureforms' ) ]
 			),
-			$c['first_name'],
-			Catalog::width( Catalog::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'Bright Bakery', 'sureforms' ) ] ), 50 ),
+			Catalog::step( 'results-step', __( 'Your results', 'sureforms' ) ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'company', __( 'Company (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Bright Bakery', 'sureforms' ) ] ), 50 ),
 			array_merge(
 				$c['email'],
 				[
-					'label'       => __( 'Work Email (we’ll send your results here)', 'sureforms' ),
+					'label'       => __( 'Work email', 'sureforms' ),
 					'placeholder' => __( 'jane@company.com', 'sureforms' ),
+					'helpText'    => __( 'We’ll send your results here.', 'sureforms' ),
 				]
 			),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my answers and email me my results and tips.', 'sureforms' ) ] ),
@@ -258,34 +268,34 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Grade A', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Your readiness grade: A', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). Your business is ready to grow online. Your next step: put more into the channels that already bring in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: A', 'sureforms' ), __( '{form:name}, you scored {quiz_score} ({quiz_percentage}). Your business is ready to grow online. Your next step: put more into the channels that already bring in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'A' ] ],
 			],
 			[
 				'name'    => __( 'Grade B', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Your readiness grade: B', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). The basics are in place. Your next step: track your leads and numbers each month, so you can see what brings in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: B', 'sureforms' ), __( '{form:name}, you scored {quiz_score} ({quiz_percentage}). The basics are in place. Your next step: track your leads and numbers each month, so you can see what brings in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'B' ] ],
 			],
 			[
 				'name'    => __( 'Grade C', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Your readiness grade: C', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). There is plenty of room to grow. Your next step: start collecting email addresses and let customers buy or book online. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: C', 'sureforms' ), __( '{form:name}, you scored {quiz_score} ({quiz_percentage}). There is plenty of room to grow. Your next step: start collecting email addresses and let customers buy or book online. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'C' ] ],
 			],
 			[
 				'name'    => __( 'Grade D', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Your readiness grade: D', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). Every business starts somewhere. Your next step: a simple, mobile-friendly website with a way to contact you. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: D', 'sureforms' ), __( '{form:name}, you scored {quiz_score} ({quiz_percentage}). Every business starts somewhere. Your next step: a simple, mobile-friendly website with a way to contact you. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'D' ] ],
 			],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Your readiness grade: {quiz_letter_grade}', 'sureforms' ),
-			'text'    => __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). We have emailed your results to {form:email}.', 'sureforms' ),
+			'text'    => __( '{form:name}, you scored {quiz_score} ({quiz_percentage}). We have emailed your results to {form:email}.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Scorecard lead: {form:first-name} – grade {quiz_letter_grade}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} completed the readiness scorecard and got grade {quiz_letter_grade} ({quiz_percentage}). Their answers and company are below; reply to this email to follow up.', 'sureforms' ),
+		'email_subject' => __( 'Scorecard lead: {form:name} – grade {quiz_letter_grade}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} completed the readiness scorecard and got grade {quiz_letter_grade} ({quiz_percentage}). Their answers and company are below; reply to this email to follow up.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Your readiness grade: {quiz_letter_grade}', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for taking our readiness scorecard. You scored {quiz_score} ({quiz_percentage}), which is grade {quiz_letter_grade}.', 'sureforms' ),
 				__( 'Your answers are below. Would you like help with your next step? Just reply to this email.', 'sureforms' ),
