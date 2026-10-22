@@ -93,7 +93,7 @@ return [
 			],
 		],
 		'email_subject' => __( 'New customer feedback – overall: {form:satisfaction}', 'sureforms' ),
-		'email_intro'   => __( 'A customer rated their overall experience: {form:satisfaction}. Their answers are below. If they left an email address, you can follow up there.', 'sureforms' ),
+		'email_intro'   => __( 'A customer rated their overall experience: {form:satisfaction}. If they left an email address, you can follow up there.', 'sureforms' ),
 	],
 	[
 		'id'            => 'satisfaction-survey',
@@ -166,7 +166,7 @@ return [
 		],
 		'survey'        => [ 'show_live_results' => false ],
 		'email_subject' => __( 'New survey response: {form:recommend-score}/10', 'sureforms' ),
-		'email_intro'   => __( 'New recommend score: {form:recommend-score}/10. As a guide, 9–10 are promoters, 7–8 passives and 0–6 detractors. The full response is below.', 'sureforms' ),
+		'email_intro'   => __( 'New recommend score: {form:recommend-score}/10. As a guide, 9–10 are promoters, 7–8 passives and 0–6 detractors.', 'sureforms' ),
 	],
 	[
 		'id'            => 'website-feedback',
@@ -221,7 +221,7 @@ return [
 			],
 		],
 		'email_subject' => __( 'Website feedback: found what they needed? {form:found-it}', 'sureforms' ),
-		'email_intro'   => __( 'A visitor left feedback from {current_page_url}. If they left an email address, you will find it below.', 'sureforms' ),
+		'email_intro'   => __( 'A visitor left feedback from {current_page_url}. If they left an email address, you will find it in the entry.', 'sureforms' ),
 	],
 	[
 		'id'            => 'testimonial',

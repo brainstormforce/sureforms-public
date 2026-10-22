@@ -334,7 +334,7 @@ return [
 		),
 		'email_intro'   => sprintf(
 			/* translators: %s: the estimated price. */
-			__( '{form:name} priced {form:service} and got an estimate of %s. Their pages and add-ons are below. Reply to this email to send them a detailed quote.', 'sureforms' ),
+			__( '{form:name} priced {form:service} and got an estimate of %s. Reply to this email to send them a detailed quote.', 'sureforms' ),
 			$amount( 'estimate' )
 		),
 		'autoresponder' => [

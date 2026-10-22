@@ -209,7 +209,7 @@ return [
 			'text'    => __( 'A copy has been sent to {form:email}. We will be in touch about next steps.', 'sureforms' ) . "\n\n{pdf:agreement}",
 		],
 		'email_subject' => __( 'Service agreement signed by {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} signed the service agreement on {date_mdy}. Their details and signature are below. Reply to this email to contact them.', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} signed the service agreement on {date_mdy}. Reply to this email to contact them.', 'sureforms' ),
 		'autoresponder' => [
 			'subject' => __( 'Your signed service agreement', 'sureforms' ),
 			'lines'   => [
@@ -301,7 +301,7 @@ return [
 			'text'    => __( 'Your release is signed. A copy has been sent to {form:email}.', 'sureforms' ) . "\n\n{pdf:release}",
 		],
 		'email_subject' => __( 'Media release signed by {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} signed the photo and media release. Allowed uses: {form:usage}. Naming: {form:naming}. Their details and signature are below.', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} signed the photo and media release. Allowed uses: {form:usage}. Naming: {form:naming}.', 'sureforms' ),
 		'autoresponder' => [
 			'subject' => __( 'Your signed media release', 'sureforms' ),
 			'lines'   => [

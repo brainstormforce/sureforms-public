@@ -2363,6 +2363,42 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'Sales', $answers[2]['sample'], 'Choices use their first option.' );
 	}
 
+	public function test_apply_messages_can_leave_the_answers_out_of_the_owner_email() {
+		$template = Form_Templates::get_template( 'contact-us' );
+		$fields   = Form_Templates::resolve_fields( $template, 'free' );
+
+		// By default, every answer is listed below the intro.
+		$this->assertTrue( Form_Templates::get_messages( $template, $fields )['email']['all_data'] );
+		$this->assertStringEndsWith( '</p>{all_data}', Form_Templates::build_settings_metas( $template )['_srfm_email_notification'][0]['email_body'] );
+
+		// Switched off in the preview: only the intro is sent.
+		$messages = Form_Templates::sanitize_messages( [ 'email_all_data' => 'false' ] );
+		$this->assertSame( [ 'email_all_data' => false ], $messages );
+		$template = Form_Templates::apply_messages( $template, $messages );
+		$this->assertFalse( Form_Templates::get_messages( $template, $fields )['email']['all_data'] );
+		$body = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'][0]['email_body'];
+		$this->assertStringNotContainsString( '{all_data}', $body );
+		$this->assertStringStartsWith( '<p>', $body, 'The intro is still sent.' );
+
+		// Without an intro the answers stay, so the email is never empty.
+		unset( $template['email_intro'] );
+		$this->assertStringContainsString( '{all_data}', Form_Templates::build_settings_metas( $template )['_srfm_email_notification'][0]['email_body'] );
+
+		// "Off" is read the same way in a template as in the preview.
+		foreach ( [ false, 0, '0', 'false' ] as $off ) {
+			$template = array_merge( Form_Templates::get_template( 'contact-us' ), [ 'email_all_data' => $off ] );
+			$this->assertFalse( Form_Templates::get_messages( $template, $fields )['email']['all_data'], var_export( $off, true ) . ' should turn the answers off.' );
+		}
+
+		// No shipped intro points to answers that may not be there.
+		foreach ( Form_Templates::get_templates() as $id => $shipped ) {
+			$this->assertStringNotContainsString( 'below', $shipped['email_intro'] ?? '', "Template {$id}'s intro mentions answers below." );
+			// The visitor's email never lists the answers.
+			$visitor = implode( ' ', array_map( 'strval', $shipped['autoresponder']['lines'] ?? [] ) );
+			$this->assertStringNotContainsString( 'below', $visitor, "Template {$id}'s confirmation email mentions answers below." );
+		}
+	}
+
 	public function test_apply_messages_merges_edits_and_can_drop_the_visitor_email() {
 		$template = Form_Templates::get_template( 'contact-us' );
 

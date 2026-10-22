@@ -225,7 +225,7 @@ return [
 			'dietary' => [ 'logic' => [ [ [ 'attending', '==', __( 'Yes, I will be there', 'sureforms' ) ] ] ] ],
 		],
 		'email_subject' => __( 'RSVP: {form:first-name} {form:last-name} – {form:attending}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} replied to your invitation: {form:attending}. Their full RSVP is below. Reply to this email to get in touch with them.', 'sureforms' ),
+		'email_intro'   => __( '{form:first-name} {form:last-name} replied to your invitation: {form:attending}. Reply to this email to get in touch with them.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'We got your RSVP', 'sureforms' ),
 			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),

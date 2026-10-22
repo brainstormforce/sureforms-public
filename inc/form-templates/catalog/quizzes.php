@@ -209,7 +209,7 @@ return [
 			'text'    => __( 'You scored {quiz_score} ({quiz_percentage}). Result: {quiz_pass_fail}. We have emailed your results to {form:email}.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Quiz result: {form:name} – {quiz_pass_fail} ({quiz_percentage})', 'sureforms' ),
-		'email_intro'   => __( '{form:name} took the quiz and scored {quiz_score} ({quiz_percentage}). Result: {quiz_pass_fail}. Their answers are below; reply to this email to reach them.', 'sureforms' ),
+		'email_intro'   => __( '{form:name} took the quiz and scored {quiz_score} ({quiz_percentage}). Result: {quiz_pass_fail}. Reply to this email to reach them.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Your quiz results: {quiz_score}', 'sureforms' ),
 			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
@@ -318,13 +318,13 @@ return [
 			'text'    => __( '{form:name}, you scored {quiz_score} ({quiz_percentage}). We have emailed your results to {form:email}.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Scorecard lead: {form:name} – grade {quiz_letter_grade}', 'sureforms' ),
-		'email_intro'   => __( '{form:name} completed the readiness scorecard and got grade {quiz_letter_grade} ({quiz_percentage}). Their answers and company are below; reply to this email to follow up.', 'sureforms' ),
+		'email_intro'   => __( '{form:name} completed the readiness scorecard and got grade {quiz_letter_grade} ({quiz_percentage}). Reply to this email to follow up.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Your readiness grade: {quiz_letter_grade}', 'sureforms' ),
 			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for taking our readiness scorecard. You scored {quiz_score} ({quiz_percentage}), which is grade {quiz_letter_grade}.', 'sureforms' ),
-				__( 'Your answers are below. Would you like help with your next step? Just reply to this email.', 'sureforms' ),
+				__( 'Would you like help with your next step? Just reply to this email.', 'sureforms' ),
 			],
 		],
 	],
@@ -513,7 +513,7 @@ return [
 			'subject'  => __( 'Your plan recommendation', 'sureforms' ),
 			'greeting' => __( 'Hi there,', 'sureforms' ),
 			'lines'    => [
-				__( 'Thanks for using our plan finder. Your answers are below, and we will follow up with the plan that fits you best and how to get started.', 'sureforms' ),
+				__( 'Thanks for using our plan finder. We will follow up with the plan that fits you best and how to get started.', 'sureforms' ),
 				__( 'Have a question before you decide? Just reply to this email.', 'sureforms' ),
 			],
 		],
@@ -717,7 +717,7 @@ return [
 			'text'    => __( 'We have your request and will be in touch at {form:email} within one business day.', 'sureforms' ),
 		],
 		'email_subject' => __( 'New ad lead: {form:name} – {form:interest}', 'sureforms' ),
-		'email_intro'   => __( '{form:name} is interested in: {form:interest}. The ad source, campaign, keyword and click IDs they came with are listed with their answers below (blank when the link had none).', 'sureforms' ),
+		'email_intro'   => __( '{form:name} is interested in: {form:interest}. The entry records the ad source, campaign, keyword and click IDs they came with (blank when the link had none).', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Thanks for your interest', 'sureforms' ),
 			'greeting' => __( 'Hi {form:name},', 'sureforms' ),

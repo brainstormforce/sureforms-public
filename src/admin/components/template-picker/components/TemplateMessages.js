@@ -66,6 +66,7 @@ export const getMessageDefaults = ( messages ) => {
 		'confirmation.text': messages?.confirmation?.text || '',
 		email_subject: messages?.email?.subject || '',
 		email_intro: messages?.email?.intro || '',
+		email_all_data: false !== messages?.email?.all_data,
 		'autoresponder.enabled': true,
 		'autoresponder.subject': autoresponder?.subject || '',
 		'autoresponder.greeting': autoresponder?.greeting || '',
@@ -106,6 +107,9 @@ export const buildMessageChanges = ( messages, values ) => {
 	}
 	if ( changed( 'email_intro' ) ) {
 		changes.email_intro = values.email_intro;
+	}
+	if ( changed( 'email_all_data' ) ) {
+		changes.email_all_data = values.email_all_data;
 	}
 
 	if ( messages.autoresponder ) {
@@ -611,6 +615,43 @@ const EditCard = ( { title, action, className, children } ) => (
 );
 
 /**
+ * A labelled on/off switch.
+ *
+ * @param {Object}   props          Props.
+ * @param {string}   props.label    Label, before the switch.
+ * @param {boolean}  props.checked  Whether it is on.
+ * @param {Function} props.onChange Called with the new state.
+ */
+const Switch = ( { label, checked, onChange } ) => (
+	<button
+		type="button"
+		role="switch"
+		aria-checked={ checked }
+		onClick={ () => onChange( ! checked ) }
+		className={ cn(
+			'flex items-center gap-2 p-0 text-xs font-medium text-text-secondary bg-transparent border-0 cursor-pointer',
+			ringClass
+		) }
+	>
+		{ label }
+		<span
+			className={ cn(
+				'relative inline-flex w-8 h-[18px] shrink-0 rounded-full transition-colors duration-150 motion-reduce:transition-none',
+				checked ? 'bg-toggle-on' : 'bg-toggle-off-hover'
+			) }
+			aria-hidden="true"
+		>
+			<span
+				className={ cn(
+					'absolute top-0.5 left-0.5 size-3.5 rounded-full bg-white shadow-sm transition-transform duration-150 motion-reduce:transition-none',
+					checked ? 'translate-x-3.5' : 'translate-x-0'
+				) }
+			/>
+		</span>
+	</button>
+);
+
+/**
  * Two-column list of the answers, like the {all_data} table in emails.
  *
  * @param {Object} props         Props.
@@ -909,6 +950,9 @@ export const EmailsPanel = ( {
 		keys.some( ( key ) => values[ key ] !== defaults[ key ] );
 
 	const ownerKeys = [ 'email_subject', 'email_intro' ];
+	const ownerResetKeys = [ ...ownerKeys, 'email_all_data' ];
+	// Read-only, values are the template's defaults, which may leave answers out.
+	const allData = values.email_all_data;
 	const visitorKeys = [
 		'autoresponder.subject',
 		'autoresponder.greeting',
@@ -939,11 +983,20 @@ export const EmailsPanel = ( {
 				onChange={ ( value ) => setValue( 'email_intro', value ) }
 				multiline
 				rows={ 2 }
-				help={ __(
-					'All answers are listed below the intro.',
-					'sureforms'
-				) }
+				help={
+					allData
+						? __( 'All answers are listed below the intro.', 'sureforms' )
+						: __(
+							'Only the intro is sent. Every answer stays in Entries.',
+							'sureforms'
+						  )
+				}
 				field={ fieldProps( 'email_intro' ) }
+			/>
+			<Switch
+				label={ __( 'Include all answers', 'sureforms' ) }
+				checked={ values.email_all_data }
+				onChange={ ( value ) => setValue( 'email_all_data', value ) }
 			/>
 		</>
 	);
@@ -1012,32 +1065,11 @@ export const EmailsPanel = ( {
 	);
 
 	const sendToggle = editable && ! held && (
-		<button
-			type="button"
-			role="switch"
-			aria-checked={ isSent }
-			onClick={ () => setValue( 'autoresponder.enabled', ! isSent ) }
-			className={ cn(
-				'flex items-center gap-2 p-0 text-xs font-medium text-text-secondary bg-transparent border-0 cursor-pointer',
-				ringClass
-			) }
-		>
-			{ __( 'Send a confirmation email', 'sureforms' ) }
-			<span
-				className={ cn(
-					'relative inline-flex w-8 h-[18px] shrink-0 rounded-full transition-colors duration-150 motion-reduce:transition-none',
-					isSent ? 'bg-toggle-on' : 'bg-toggle-off-hover'
-				) }
-				aria-hidden="true"
-			>
-				<span
-					className={ cn(
-						'absolute top-0.5 left-0.5 size-3.5 rounded-full bg-white shadow-sm transition-transform duration-150 motion-reduce:transition-none',
-						isSent ? 'translate-x-3.5' : 'translate-x-0'
-					) }
-				/>
-			</span>
-		</button>
+		<Switch
+			label={ __( 'Send a confirmation email', 'sureforms' ) }
+			checked={ isSent }
+			onChange={ ( value ) => setValue( 'autoresponder.enabled', value ) }
+		/>
 	);
 
 	return (
@@ -1051,15 +1083,15 @@ export const EmailsPanel = ( {
 				fields={ ownerFields }
 				reset={
 					editable &&
-					isChanged( ownerKeys ) && (
-						<ResetLink onReset={ () => reset( ownerKeys ) } />
+					isChanged( ownerResetKeys ) && (
+						<ResetLink onReset={ () => reset( ownerResetKeys ) } />
 					)
 				}
 				tag={ __( 'Email notification', 'sureforms' ) }
 				subject={ renderWithSamples( values.email_subject, context ) }
 			>
 				<Paragraphs text={ values.email_intro } context={ context } />
-				<AnswersTable answers={ answers } />
+				{ allData && <AnswersTable answers={ answers } /> }
 				{ autoresponder && (
 					<p className="m-0 flex items-center gap-1.5 text-xs text-text-tertiary">
 						<CornerUpLeft className="size-3.5" aria-hidden="true" />
