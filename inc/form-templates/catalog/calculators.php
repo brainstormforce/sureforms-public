@@ -144,6 +144,43 @@ $plan_pitch = static function ( $slug, $heading, $colors ) {
 	$html .= '</div>';
 	return Catalog::field( 'html', $slug, '', false, [ 'htmlContent' => $html ] );
 };
+// The shipping estimator's destinations. Its conditions match these labels.
+$zones = [
+	/* translators: %s: base shipping price. */
+	'domestic'      => sprintf( __( 'Domestic (%s base)', 'sureforms' ), $money( 8 ) ),
+	/* translators: %s: base shipping price. */
+	'neighbouring'  => sprintf( __( 'Nearby countries (%s base)', 'sureforms' ), $money( 18 ) ),
+	/* translators: %s: base shipping price. */
+	'international' => sprintf( __( 'International (%s base)', 'sureforms' ), $money( 35 ) ),
+];
+
+/*
+ * One destination's delivery speeds: standard at no extra cost, express with
+ * a surcharge. $no_sample keeps it out of the library's example, which picks
+ * the first destination.
+ */
+$speed = static function ( $slug, $standard, $express, $surcharge, $no_sample = false ) use ( $priced_options, $money ) {
+	return Catalog::attrs(
+		Catalog::field(
+			'multi-choice',
+			$slug,
+			__( 'Delivery speed', 'sureforms' ),
+			true,
+			array_merge(
+				$priced_options(
+					[
+						[ $standard, 0 ],
+						/* translators: %1$s: express delivery time, %2$s: its surcharge. */
+						[ sprintf( __( '%1$s (+%2$s)', 'sureforms' ), $express, $money( $surcharge ) ), $surcharge ],
+					]
+				),
+				$no_sample ? [ 'no_sample' => true ] : []
+			)
+		),
+		[ 'choiceWidth' => 50 ]
+	);
+};
+
 // The ROI calculator's two results.
 $roi_hours   = '{form:team-size} * {form:hours-saved} * 48';
 $roi_savings = $roi_hours . ' * {form:hourly-cost}';
@@ -666,6 +703,8 @@ return [
 		'title'         => __( 'Shipping Cost Estimator', 'sureforms' ),
 		'description'   => __( 'Estimate shipping by destination, weight, and speed, then follow up with a booking.', 'sureforms' ),
 		'submit_text'   => __( 'Request a booking', 'sureforms' ),
+		// Premium shows the parcel and the estimate first, then the pickup details.
+		'steps'         => [ __( 'Your parcel', 'sureforms' ), __( 'Book a pickup', 'sureforms' ) ],
 		'fields'        => [
 			Catalog::width(
 				Catalog::attrs(
@@ -677,12 +716,9 @@ return [
 						array_merge(
 							$priced_options(
 								[
-									/* translators: %s: base shipping price. */
-									[ sprintf( __( 'Domestic (%s base)', 'sureforms' ), $money( 8 ) ), 8 ],
-									/* translators: %s: base shipping price. */
-									[ sprintf( __( 'Neighbouring countries (%s base)', 'sureforms' ), $money( 18 ) ), 18 ],
-									/* translators: %s: base shipping price. */
-									[ sprintf( __( 'International (%s base)', 'sureforms' ), $money( 35 ) ), 35 ],
+									[ $zones['domestic'], 8 ],
+									[ $zones['neighbouring'], 18 ],
+									[ $zones['international'], 35 ],
 								],
 								'dropdown'
 							),
@@ -695,7 +731,7 @@ return [
 			),
 			Catalog::width(
 				Catalog::attrs(
-					Catalog::field( 'number', 'weight-kg', __( 'Parcel Weight', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ),
+					Catalog::field( 'number', 'weight-kg', __( 'Parcel weight', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ),
 					[
 						'minValue' => 0.1,
 						'maxValue' => 30,
@@ -707,49 +743,74 @@ return [
 			Catalog::attrs(
 				Catalog::field(
 					'multi-choice',
-					'speed',
-					__( 'Delivery Speed', 'sureforms' ),
+					'size',
+					__( 'Parcel size', 'sureforms' ),
 					true,
-					$priced_options(
-						[
-							[ __( 'Standard (3 to 5 days)', 'sureforms' ), 0 ],
-							/* translators: %s: express surcharge. */
-							[ sprintf( __( 'Express, next day (+%s)', 'sureforms' ), $money( 15 ) ), 15 ],
-						]
+					array_merge(
+						$priced_options(
+							[
+								[ __( 'Small', 'sureforms' ), 0, 'envelope' ],
+								/* translators: %s: size surcharge. */
+								[ sprintf( __( 'Medium (+%s)', 'sureforms' ), $money( 5 ) ), 5, 'box' ],
+								/* translators: %s: size surcharge. */
+								[ sprintf( __( 'Large (+%s)', 'sureforms' ), $money( 12 ) ), 12, 'boxes-stacked' ],
+							]
+						),
+						// Carriers charge more for bulky parcels; this stands in for measuring the box.
+						[ 'helpText' => __( 'Small fits a shoebox, medium a moving box. Large is anything bigger.', 'sureforms' ) ]
 					)
 				),
-				[ 'choiceWidth' => 50 ]
+				[
+					'choiceWidth'    => 33.33,
+					'verticalLayout' => false,
+				]
 			),
+			// Each destination has its own delivery times; a condition shows the one for the chosen destination.
+			$speed( 'speed-domestic', __( 'Standard (3 to 5 days)', 'sureforms' ), __( 'Express, next day', 'sureforms' ), 15 ),
+			$speed( 'speed-neighbouring', __( 'Standard (5 to 7 days)', 'sureforms' ), __( 'Express, 2 to 3 days', 'sureforms' ), 25, true ),
+			$speed( 'speed-international', __( 'Standard (7 to 14 days)', 'sureforms' ), __( 'Express, 3 to 5 days', 'sureforms' ), 45, true ),
 			$result(
 				'shipping-cost',
-				__( 'Estimated Shipping', 'sureforms' ),
-				'{form:zone} + {form:weight-kg} * 2.5 + {form:speed}',
+				__( 'Estimated shipping', 'sureforms' ),
+				'{form:zone} + {form:weight-kg} * 2.5 + {form:size} + {form:speed-domestic} + {form:speed-neighbouring} + {form:speed-international}',
 				2,
 				$symbol,
 				'',
 				/* translators: %s: price per kilogram. */
-				[ 'helpText' => sprintf( __( 'Base price plus %s per kg.', 'sureforms' ), $symbol . number_format_i18n( 2.5, 2 ) ) ]
+				[ 'helpText' => sprintf( __( 'Base price, plus %s per kg, size and speed.', 'sureforms' ), $symbol . number_format_i18n( 2.5, 2 ) ) ]
 			),
-			$c['first_name'],
+			Catalog::step( 'pickup-step', __( 'Book a pickup', 'sureforms' ) ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
+			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
+			Catalog::width( Catalog::date_field( 'pickup-date', __( 'Preferred pickup date', 'sureforms' ), true, true ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'from-postcode', __( 'Collection postcode', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. SW1A 1AA', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'to-postcode', __( 'Delivery postcode or country', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 10115 Berlin', 'sureforms' ) ] ), 50 ),
+			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know? (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. fragile, or collect from reception', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$c['consent'],
 		],
+		// Hidden speeds count as empty, so only the chosen destination's speed adds to the price.
+		'conditions'    => [
+			'speed-domestic'      => [ 'logic' => [ [ [ 'zone', '==', $zones['domestic'] ] ] ] ],
+			'speed-neighbouring'  => [ 'logic' => [ [ [ 'zone', '==', $zones['neighbouring'] ] ] ] ],
+			'speed-international' => [ 'logic' => [ [ [ 'zone', '==', $zones['international'] ] ] ] ],
+		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => sprintf(
 				/* translators: %s: estimated shipping cost. */
-				__( 'Your estimated shipping is %s. Delivery: {form:speed}. We will email {form:email} to confirm the booking and the final price.', 'sureforms' ),
+				__( 'Your estimated shipping is %s. Delivery: {form:speed-domestic}{form:speed-neighbouring}{form:speed-international}. We will email {form:email} to confirm the pickup on {form:pickup-date} and the final price.', 'sureforms' ),
 				$amount( 'shipping-cost' )
 			),
 		],
 		'email_subject' => sprintf(
 			/* translators: %s: estimated shipping cost. */
-			__( 'Shipping request from {form:first-name}: %s, {form:weight-kg} kg', 'sureforms' ),
+			__( 'Pickup request from {form:name}: %s, {form:weight-kg} kg on {form:pickup-date}', 'sureforms' ),
 			$amount( 'shipping-cost' )
 		),
 		'email_intro'   => sprintf(
 			/* translators: %s: estimated shipping cost. */
-			__( '{form:first-name} wants to ship a {form:weight-kg} kg parcel. Destination: {form:zone}. Speed: {form:speed}. Their estimate: %s. Reply to this email to confirm the booking.', 'sureforms' ),
+			__( '{form:name} wants to ship a {form:weight-kg} kg parcel ({form:size}) from {form:from-postcode} to {form:to-postcode}, collected on {form:pickup-date}. Destination: {form:zone}. Speed: {form:speed-domestic}{form:speed-neighbouring}{form:speed-international}. Their estimate: %s. Call them on {form:phone} or reply to this email to confirm.', 'sureforms' ),
 			$amount( 'shipping-cost' )
 		),
 		'autoresponder' => [
@@ -758,14 +819,14 @@ return [
 				__( 'Your shipping estimate: %s', 'sureforms' ),
 				$amount( 'shipping-cost' )
 			),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				sprintf(
 					/* translators: %s: estimated shipping cost. */
-					__( 'Thanks for your request. Shipping a {form:weight-kg} kg parcel comes to about %s. Delivery: {form:speed}.', 'sureforms' ),
+					__( 'Thanks for your request. Shipping a {form:weight-kg} kg parcel comes to about %s. Delivery: {form:speed-domestic}{form:speed-neighbouring}{form:speed-international}.', 'sureforms' ),
 					$amount( 'shipping-cost' )
 				),
-				__( 'We will confirm the booking and the final price shortly. Questions? Just reply to this email.', 'sureforms' ),
+				__( 'We will confirm the pickup on {form:pickup-date} and the final price shortly. Questions? Just reply to this email.', 'sureforms' ),
 			],
 		],
 	],

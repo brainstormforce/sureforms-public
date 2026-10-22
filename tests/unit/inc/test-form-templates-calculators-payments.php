@@ -295,6 +295,19 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 		$this->assertSame( $walkthrough[0], $template['confirmations'][0]['rules'][0][2] );
 	}
 
+	public function test_shipping_speeds_follow_the_destination() {
+		$template = Form_Templates::get_template( 'shipping-cost-estimator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		$zones    = wp_list_pluck( $fields['zone']['fieldOptions'], 'label' );
+		foreach ( [ 'speed-domestic', 'speed-neighbouring', 'speed-international' ] as $index => $slug ) {
+			$this->assertSame( $zones[ $index ], $template['conditions'][ $slug ]['logic'][0][0][2], "{$slug} should follow its destination." );
+			$this->assertStringContainsString( '{form:' . $slug . '}', $this->formula( $fields['shipping-cost'] ) );
+		}
+		// The example picks the first destination, so only its speeds count in the sample.
+		$this->assertTrue( empty( $fields['speed-domestic']['no_sample'] ) );
+		$this->assertTrue( $fields['speed-international']['no_sample'] );
+	}
+
 	public function test_calculated_inputs_are_required() {
 		foreach ( $this->templates_in( [ 'calculators', 'payments' ] ) as $id => $template ) {
 			$fields   = Form_Templates::resolve_fields( $template, 'business' );
