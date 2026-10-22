@@ -141,7 +141,9 @@ class Test_Form_Templates_Accounts extends TestCase {
 		$password = wp_list_filter( Form_Templates::resolve_fields( $template, 'business' ), [ 'fieldType' => 'password' ] );
 		$password = reset( $password );
 		$this->assertTrue( $password['required'] );
-		$this->assertTrue( $password['isConfirmPassword'] );
+		// One box with show/hide instead of a confirm box.
+		$this->assertFalse( $password['isConfirmPassword'] );
+		$this->assertTrue( $password['togglePasswordVisibility'] );
 		$this->assertTrue( $password['checkPasswordStrength'] );
 	}
 

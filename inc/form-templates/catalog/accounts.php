@@ -81,20 +81,38 @@ return [
 		'description'   => __( 'Let visitors create their own account with a password.', 'sureforms' ),
 		'submit_text'   => __( 'Create my account', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
-			Catalog::width( Catalog::field( 'input', 'username', __( 'Username', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. janesmith', 'sureforms' ) ] ), 50 ),
-			Catalog::width( $c['email'], 50 ),
+			// For people who already have an account; the link is this site's own login page.
+			Catalog::field(
+				'html',
+				'sign-in',
+				'',
+				false,
+				/* translators: %s: link to the login page. */
+				[ 'htmlContent' => '<p style="margin: 0;font-size: 15px">' . sprintf( esc_html__( 'Already have an account? %s', 'sureforms' ), '<a href="' . esc_url( wp_login_url() ) . '">' . esc_html__( 'Sign in', 'sureforms' ) . '</a>' ) . '</p>' ]
+			),
+			array_merge( $c['first_name'], [ 'label' => __( 'First name', 'sureforms' ) ] ),
+			array_merge( $c['last_name'], [ 'label' => __( 'Last name', 'sureforms' ) ] ),
+			Catalog::field(
+				'input',
+				'username',
+				__( 'Username', 'sureforms' ),
+				true,
+				[
+					'placeholder' => __( 'e.g. janesmith', 'sureforms' ),
+					'helpText'    => __( 'You can sign in with your username or your email.', 'sureforms' ),
+				]
+			),
+			$c['email'],
 			Catalog::field(
 				'password',
 				'password',
 				__( 'Password', 'sureforms' ),
 				true,
 				[
-					'isConfirmPassword'        => true,
+					// One box: the eye lets people check what they typed, so no confirm box.
+					'isConfirmPassword'        => false,
 					'checkPasswordStrength'    => true,
 					'togglePasswordVisibility' => true,
-					'confirmLabel'             => __( 'Confirm Password', 'sureforms' ),
 				]
 			),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details to create and manage my account.', 'sureforms' ) ] ),
