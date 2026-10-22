@@ -628,6 +628,34 @@ class Test_String_Collector extends TestCase {
 		$this->assertContains( 'form_' . $form_id . '_block_abc123_placeholder', $names );
 	}
 
+	public function test_collect_block_strings_registers_block_json_default_labels() {
+		$stub = $this->install_stub_provider();
+		// Labels left at their block.json default are not serialized into post_content.
+		$content = '<!-- wp:srfm/phone {"block_id":"ph1"} /-->'
+			. '<!-- wp:srfm/email {"block_id":"em1"} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		$stub->registered = [];
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$registered = array_column( $stub->registered, 'value', 'name' );
+		$this->assertSame( 'Phone Number', $registered[ 'form_' . $form_id . '_block_ph1_label' ] ?? null );
+		$this->assertSame( 'Email', $registered[ 'form_' . $form_id . '_block_em1_label' ] ?? null );
+		$this->assertSame( 'Confirm Email', $registered[ 'form_' . $form_id . '_block_em1_confirmLabel' ] ?? null );
+	}
+
+	public function test_collect_block_strings_prefers_saved_value_over_default() {
+		$stub    = $this->install_stub_provider();
+		$content = '<!-- wp:srfm/phone {"block_id":"ph2","label":"Phone Number:"} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		$stub->registered = [];
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$registered = array_column( $stub->registered, 'value', 'name' );
+		$this->assertSame( 'Phone Number:', $registered[ 'form_' . $form_id . '_block_ph2_label' ] ?? null );
+	}
+
 	public function test_collect_block_strings_registers_dropdown_option_labels() {
 		$stub    = $this->install_stub_provider();
 		$content = '<!-- wp:srfm/dropdown {"block_id":"def456","label":"How?","options":[{"label":"Friend"},{"label":"Google"}]} /-->';

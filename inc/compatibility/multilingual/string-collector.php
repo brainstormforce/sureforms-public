@@ -359,10 +359,11 @@ class String_Collector {
 			$this->register_if_non_empty( 'validation_' . $key, $value );
 		}
 
-		// Common strings rendered server-side in field markup that are NOT stored
-		// per-form (so they never reach a form package): JS-validation fallbacks
-		// and shared field defaults such as the dropdown's empty-state placeholder,
-		// which is only serialized into block markup when a site owner overrides it.
+		// Common strings rendered server-side in field markup that are global rather
+		// than per-form: JS-validation fallbacks and shared field defaults such as the
+		// dropdown's empty-state placeholder. The placeholder is also registered per
+		// form (via String_Translator::block_attribute_value()); this global string is
+		// the fallback when the per-form one is untranslated.
 		$common = [
 			'srfm_required_field'       => 'This field is required.',
 			'srfm_unique_field'         => 'Value needs to be unique.',
@@ -463,13 +464,10 @@ class String_Collector {
 
 			if ( $has_attributes ) {
 				foreach ( $attribute_map[ $block_name ] as $attribute_key ) {
-					if ( ! isset( $attrs[ $attribute_key ] ) || ! is_string( $attrs[ $attribute_key ] ) ) {
-						continue;
-					}
 					$this->register_form_string(
 						$form_id,
 						String_Translator::block_attribute_name( $block_id, $attribute_key ),
-						$attrs[ $attribute_key ],
+						String_Translator::block_attribute_value( $block_name, $attrs, $attribute_key ),
 						$field_group . ': ' . $this->attribute_label( $attribute_key )
 					);
 				}
