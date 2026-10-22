@@ -2250,6 +2250,42 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringNotContainsString( '{all_data}', $emails[1]['email_body'] );
 	}
 
+	public function test_autoresponder_signoff_is_editable() {
+		$this->turn_on_spam_protection();
+		$template = Form_Templates::get_template( 'contact-us' );
+		$fields   = Form_Templates::resolve_fields( $template, 'free' );
+
+		// By default, "Thanks," over the site title.
+		$this->assertSame( "Thanks,\n{site_title}", Form_Templates::get_messages( $template, $fields )['autoresponder']['signoff'] );
+		$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Thanks,<br>{site_title}</p>', $emails[1]['email_body'] );
+
+		// Edited in the preview: each line on its own, and no markup gets through.
+		$messages = Form_Templates::sanitize_messages( [ 'autoresponder' => [ 'signoff' => "Best wishes,\n<b>The {site_title} team</b>" ] ] );
+		$this->assertSame( "Best wishes,\nThe {site_title} team", $messages['autoresponder']['signoff'] );
+		$template = Form_Templates::apply_messages( $template, $messages );
+		$this->assertSame( "Best wishes,\nThe {site_title} team", Form_Templates::get_messages( $template, $fields )['autoresponder']['signoff'] );
+		$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Best wishes,<br>The {site_title} team</p>', $emails[1]['email_body'] );
+
+		// Cleared in the preview, the email keeps the default.
+		$cleared = Form_Templates::apply_messages( Form_Templates::get_template( 'contact-us' ), Form_Templates::sanitize_messages( [ 'autoresponder' => [ 'signoff' => '' ] ] ) );
+		$emails  = Form_Templates::build_settings_metas( $cleared )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Thanks,<br>{site_title}</p>', $emails[1]['email_body'] );
+
+		// A template's own sign-off wins over the default, and a cleared box keeps it.
+		$own                                  = Form_Templates::get_template( 'contact-us' );
+		$own['autoresponder']['signoff']      = "Cheers,\nThe team";
+		$cleared                              = Form_Templates::apply_messages( $own, Form_Templates::sanitize_messages( [ 'autoresponder' => [ 'signoff' => '' ] ] ) );
+		$emails                               = Form_Templates::build_settings_metas( $cleared )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Cheers,<br>The team</p>', $emails[1]['email_body'] );
+		$this->assertSame( "Cheers,\nThe team", Form_Templates::get_messages( $own, $fields )['autoresponder']['signoff'] );
+
+		// Only spaces count as empty too.
+		$own['autoresponder']['signoff'] = '  ';
+		$this->assertSame( "Thanks,\n{site_title}", Form_Templates::get_messages( $own, $fields )['autoresponder']['signoff'] );
+	}
+
 	public function test_build_settings_metas_holds_the_visitor_email_without_spam_protection() {
 		delete_option( 'srfm_security_settings_options' );
 

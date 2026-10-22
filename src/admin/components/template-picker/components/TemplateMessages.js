@@ -70,6 +70,7 @@ export const getMessageDefaults = ( messages ) => {
 		'autoresponder.subject': autoresponder?.subject || '',
 		'autoresponder.greeting': autoresponder?.greeting || '',
 		'autoresponder.lines': ( autoresponder?.lines || [] ).join( '\n\n' ),
+		'autoresponder.signoff': autoresponder?.signoff || '',
 	};
 };
 
@@ -117,6 +118,9 @@ export const buildMessageChanges = ( messages, values ) => {
 		}
 		if ( changed( 'autoresponder.greeting' ) ) {
 			autoresponder.greeting = values[ 'autoresponder.greeting' ];
+		}
+		if ( changed( 'autoresponder.signoff' ) ) {
+			autoresponder.signoff = values[ 'autoresponder.signoff' ];
 		}
 		const lines = toLines( values[ 'autoresponder.lines' ] );
 		if (
@@ -292,7 +296,8 @@ export const placeTag = ( value, start, end, tag ) => {
 /**
  * Inserting answers at the caret of the field last focused. Each group of
  * fields has its own chips: when the last focused field is not in the
- * group, the tag goes at the end of the group's last field.
+ * group, the tag goes at the end of the field whose key is last in the
+ * group's keys (not always the last field on screen).
  *
  * @param {Object}   values   Current values by key.
  * @param {Function} setValue Called with ( key, value ).
@@ -474,6 +479,7 @@ const AnswerChips = ( { answers, results = [], onInsert } ) => {
  * @param {string}   props.help      Help text.
  * @param {string}   props.warning   Warning text.
  * @param {Object}   props.field     From useAnswerInsertion().fieldProps().
+ * @param {number}   props.maxLength Most characters the server keeps.
  */
 const MessageField = ( {
 	id,
@@ -485,6 +491,7 @@ const MessageField = ( {
 	help,
 	warning,
 	field,
+	maxLength,
 } ) => {
 	const Tag = multiline ? 'textarea' : 'input';
 	const describedBy =
@@ -506,6 +513,7 @@ const MessageField = ( {
 				value={ value }
 				onChange={ ( event ) => onChange( event.target.value ) }
 				aria-describedby={ describedBy }
+				maxLength={ maxLength }
 				spellCheck
 				className={ cn( inputClass, multiline && 'resize-y min-h-16' ) }
 				{ ...field }
@@ -904,6 +912,8 @@ export const EmailsPanel = ( {
 	const visitorKeys = [
 		'autoresponder.subject',
 		'autoresponder.greeting',
+		'autoresponder.signoff',
+		// Last: answers go to the message when no field had the cursor.
 		'autoresponder.lines',
 	];
 
@@ -981,6 +991,22 @@ export const EmailsPanel = ( {
 					'sureforms'
 				) }
 				field={ fieldProps( 'autoresponder.lines' ) }
+			/>
+			<MessageField
+				id="srfm-template-autoresponder-signoff"
+				label={ __( 'Sign-off', 'sureforms' ) }
+				value={ values[ 'autoresponder.signoff' ] }
+				onChange={ ( value ) =>
+					setValue( 'autoresponder.signoff', value )
+				}
+				multiline
+				rows={ 2 }
+				maxLength={ 300 }
+				help={ __(
+					"Leave empty to keep the template's sign-off.",
+					'sureforms'
+				) }
+				field={ fieldProps( 'autoresponder.signoff' ) }
 			/>
 		</>
 	);
@@ -1079,10 +1105,14 @@ export const EmailsPanel = ( {
 								text={ values[ 'autoresponder.lines' ] }
 								context={ context }
 							/>
-							<p className="m-0 text-text-primary">
-								{ __( 'Thanks,', 'sureforms' ) }
-								<br />
-								{ context.siteTitle }
+							<p className="m-0 text-text-primary whitespace-pre-line">
+								{ renderWithSamples(
+									// Left empty, the email keeps the template's sign-off.
+									values[ 'autoresponder.signoff' ]?.trim()
+										? values[ 'autoresponder.signoff' ]
+										: defaults[ 'autoresponder.signoff' ],
+									context
+								) }
 							</p>
 						</>
 					) : (
