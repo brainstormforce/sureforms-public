@@ -134,6 +134,7 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 			'loan-emi-calculator'      => [
 				'monthly-payment' => '489.15',
 				'total-interest'  => '4,349.22',
+				'total-repayment' => '29,349.22',
 			],
 			// 68 kg, 170 cm.
 			'bmi-calculator'           => [ 'bmi' => '23.5' ],

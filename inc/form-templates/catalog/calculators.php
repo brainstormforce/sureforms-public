@@ -256,7 +256,7 @@ return [
 		'fields'        => [
 			Catalog::width(
 				Catalog::attrs(
-					Catalog::number_field( 'loan-amount', __( 'Loan Amount', 'sureforms' ), true, 100, 10000000, [ 'placeholder' => __( 'e.g. 25,000', 'sureforms' ) ] ),
+					Catalog::number_field( 'loan-amount', __( 'Loan amount', 'sureforms' ), true, 100, 10000000, [ 'placeholder' => __( 'e.g. 25,000', 'sureforms' ) ] ),
 					[ 'prefix' => $symbol ]
 				),
 				100
@@ -266,7 +266,7 @@ return [
 					Catalog::field(
 						'number',
 						'interest-rate',
-						__( 'Interest Rate (% a year)', 'sureforms' ),
+						__( 'Interest rate (% a year)', 'sureforms' ),
 						true,
 						[ 'placeholder' => __( 'e.g. 6.5', 'sureforms' ) ]
 					),
@@ -282,8 +282,9 @@ return [
 				Catalog::number_field( 'term-years', __( 'Term (years)', 'sureforms' ), true, 1, 40, [ 'placeholder' => __( 'e.g. 5', 'sureforms' ) ] ),
 				50
 			),
-			Catalog::width( $result( 'monthly-payment', __( 'Monthly Repayment', 'sureforms' ), $repayment, 2, $symbol ), 50 ),
-			Catalog::width( $result( 'total-interest', __( 'Total Interest', 'sureforms' ), '(' . $repayment . ') * {form:term-years} * 12 - {form:loan-amount}', 2, $symbol ), 50 ),
+			$result( 'monthly-payment', __( 'Monthly repayment', 'sureforms' ), $repayment, 2, $symbol, '', [ 'helpText' => $disclaimer ] ),
+			Catalog::width( $result( 'total-interest', __( 'Total interest', 'sureforms' ), '(' . $repayment . ') * {form:term-years} * 12 - {form:loan-amount}', 2, $symbol ), 50 ),
+			Catalog::width( $result( 'total-repayment', __( 'Total to repay', 'sureforms' ), '(' . $repayment . ') * {form:term-years} * 12', 2, $symbol ), 50 ),
 			Catalog::field(
 				'email',
 				'email',
@@ -299,10 +300,11 @@ return [
 		'confirmation'  => [
 			'heading' => __( 'Your breakdown is on its way', 'sureforms' ),
 			'text'    => sprintf(
-				/* translators: %1$s: monthly repayment, %2$s: total interest. */
-				__( 'Your estimated monthly repayment is %1$s over {form:term-years} years, with %2$s interest in total. We have sent the details to {form:email}.', 'sureforms' ),
+				/* translators: %1$s: monthly repayment, %2$s: total interest, %3$s: total to repay. */
+				__( 'Your estimated monthly repayment is %1$s over {form:term-years} years, with %2$s interest in total (%3$s to repay). We have sent the details to {form:email}.', 'sureforms' ),
 				$amount( 'monthly-payment' ),
-				$amount( 'total-interest' )
+				$amount( 'total-interest' ),
+				$amount( 'total-repayment' )
 			) . ' ' . $disclaimer,
 		],
 		'email_subject' => sprintf(
@@ -326,10 +328,11 @@ return [
 					$amount( 'loan-amount' )
 				),
 				sprintf(
-					/* translators: %1$s: monthly repayment, %2$s: total interest. */
-					__( 'Monthly repayment: %1$s. Total interest: %2$s.', 'sureforms' ),
+					/* translators: %1$s: monthly repayment, %2$s: total interest, %3$s: total to repay. */
+					__( 'Monthly repayment: %1$s. Total interest: %2$s. Total to repay: %3$s.', 'sureforms' ),
 					$amount( 'monthly-payment' ),
-					$amount( 'total-interest' )
+					$amount( 'total-interest' ),
+					$amount( 'total-repayment' )
 				),
 				$disclaimer . ' ' . __( 'Reply to this email if you would like to talk it through.', 'sureforms' ),
 			],
