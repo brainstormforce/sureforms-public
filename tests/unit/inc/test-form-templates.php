@@ -953,6 +953,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringNotContainsString( "\n", $clean['email_subject'], 'A subject cannot add email headers.' );
 		$this->assertFalse( $clean['autoresponder']['enabled'] );
 		$this->assertSame( [ 'One', 'Two' ], $clean['autoresponder']['lines'] );
+		$this->assertArrayNotHasKey( 'signoff', $clean['autoresponder'], 'No sign-off was sent.' );
 		$this->assertArrayNotHasKey( 'unknown', $clean );
 		$this->assertSame( [], Form_Templates::sanitize_messages( 'nope' ) );
 	}
@@ -2248,6 +2249,29 @@ class Test_Form_Templates extends TestCase {
 		$template['autoresponder']['summary'] = true;
 		$emails                               = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
 		$this->assertStringNotContainsString( '{all_data}', $emails[1]['email_body'] );
+	}
+
+	public function test_autoresponder_signoff_is_editable() {
+		$this->turn_on_spam_protection();
+		$template = Form_Templates::get_template( 'contact-us' );
+		$fields   = Form_Templates::resolve_fields( $template, 'free' );
+
+		// By default, "Thanks," over the site title.
+		$this->assertSame( "Thanks,\n{site_title}", Form_Templates::get_messages( $template, $fields )['autoresponder']['signoff'] );
+		$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Thanks,<br>{site_title}</p>', $emails[1]['email_body'] );
+
+		// Edited in the preview: each line on its own, and no markup gets through.
+		$messages = Form_Templates::sanitize_messages( [ 'autoresponder' => [ 'signoff' => "Best wishes,\n<b>The {site_title} team</b>" ] ] );
+		$this->assertSame( "Best wishes,\nThe {site_title} team", $messages['autoresponder']['signoff'] );
+		$template = Form_Templates::apply_messages( $template, $messages );
+		$this->assertSame( "Best wishes,\nThe {site_title} team", Form_Templates::get_messages( $template, $fields )['autoresponder']['signoff'] );
+		$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+		$this->assertStringEndsWith( '<p>Best wishes,<br>The {site_title} team</p>', $emails[1]['email_body'] );
+
+		// Cleared, it falls back to the default.
+		$template['autoresponder']['signoff'] = '  ';
+		$this->assertSame( "Thanks,\n{site_title}", Form_Templates::get_messages( $template, $fields )['autoresponder']['signoff'] );
 	}
 
 	public function test_build_settings_metas_holds_the_visitor_email_without_spam_protection() {

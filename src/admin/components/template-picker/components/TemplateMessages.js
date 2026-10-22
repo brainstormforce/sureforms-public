@@ -70,6 +70,7 @@ export const getMessageDefaults = ( messages ) => {
 		'autoresponder.subject': autoresponder?.subject || '',
 		'autoresponder.greeting': autoresponder?.greeting || '',
 		'autoresponder.lines': ( autoresponder?.lines || [] ).join( '\n\n' ),
+		'autoresponder.signoff': autoresponder?.signoff || '',
 	};
 };
 
@@ -117,6 +118,9 @@ export const buildMessageChanges = ( messages, values ) => {
 		}
 		if ( changed( 'autoresponder.greeting' ) ) {
 			autoresponder.greeting = values[ 'autoresponder.greeting' ];
+		}
+		if ( changed( 'autoresponder.signoff' ) ) {
+			autoresponder.signoff = values[ 'autoresponder.signoff' ];
 		}
 		const lines = toLines( values[ 'autoresponder.lines' ] );
 		if (
@@ -904,6 +908,8 @@ export const EmailsPanel = ( {
 	const visitorKeys = [
 		'autoresponder.subject',
 		'autoresponder.greeting',
+		'autoresponder.signoff',
+		// Last: answers go to the message when no field had the cursor.
 		'autoresponder.lines',
 	];
 
@@ -981,6 +987,17 @@ export const EmailsPanel = ( {
 					'sureforms'
 				) }
 				field={ fieldProps( 'autoresponder.lines' ) }
+			/>
+			<MessageField
+				id="srfm-template-autoresponder-signoff"
+				label={ __( 'Sign-off', 'sureforms' ) }
+				value={ values[ 'autoresponder.signoff' ] }
+				onChange={ ( value ) =>
+					setValue( 'autoresponder.signoff', value )
+				}
+				multiline
+				rows={ 2 }
+				field={ fieldProps( 'autoresponder.signoff' ) }
 			/>
 		</>
 	);
@@ -1079,10 +1096,11 @@ export const EmailsPanel = ( {
 								text={ values[ 'autoresponder.lines' ] }
 								context={ context }
 							/>
-							<p className="m-0 text-text-primary">
-								{ __( 'Thanks,', 'sureforms' ) }
-								<br />
-								{ context.siteTitle }
+							<p className="m-0 text-text-primary whitespace-pre-line">
+								{ renderWithSamples(
+									values[ 'autoresponder.signoff' ],
+									context
+								) }
 							</p>
 						</>
 					) : (

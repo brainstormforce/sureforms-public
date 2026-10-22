@@ -369,7 +369,7 @@ class Form_Templates {
 		 * Each template is an array with `id`, `title`, `description`, `category`,
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
-		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
+		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting', 'signoff' ]),
 		 * `form_title` (the created form's name, when it differs from the library
 		 * card's `title`, e.g. a generic card for an example topic), `steps`
 		 * (step titles for multi-step forms), `features` (extra "Included"
@@ -790,7 +790,7 @@ class Form_Templates {
 		// Every text the messages hold, to find the result tags they use.
 		$texts = array_merge(
 			[ $confirmation['heading'] ?? '', $confirmation['text'] ?? '', $template['email_subject'] ?? '', $template['email_intro'] ?? '' ],
-			null === $autoresponder ? [] : array_merge( [ $autoresponder['subject'] ?? '', $autoresponder['greeting'] ?? '' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) )
+			null === $autoresponder ? [] : array_merge( [ $autoresponder['subject'] ?? '', $autoresponder['greeting'] ?? '', $autoresponder['signoff'] ?? '' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) )
 		);
 
 		return [
@@ -811,6 +811,7 @@ class Form_Templates {
 				'subject'  => Helper::get_string_value( $autoresponder['subject'] ?? '' ),
 				'greeting' => Helper::get_string_value( $autoresponder['greeting'] ?? __( 'Hi {form:full-name},', 'sureforms' ) ),
 				'lines'    => array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) ),
+				'signoff'  => self::autoresponder_signoff( $autoresponder ),
 			],
 		];
 	}
@@ -1033,6 +1034,9 @@ class Form_Templates {
 				if ( isset( $auto[ $key ] ) && is_string( $auto[ $key ] ) ) {
 					$clean['autoresponder'][ $key ] = $line( $auto[ $key ] );
 				}
+			}
+			if ( isset( $auto['signoff'] ) && is_string( $auto['signoff'] ) ) {
+				$clean['autoresponder']['signoff'] = mb_substr( sanitize_textarea_field( $auto['signoff'] ), 0, 300 );
 			}
 			if ( isset( $auto['lines'] ) && is_array( $auto['lines'] ) ) {
 				$clean['autoresponder']['lines'] = array_values( array_filter( array_map( $text, array_slice( $auto['lines'], 0, 10 ) ) ) );
@@ -2973,7 +2977,21 @@ class Form_Templates {
 		foreach ( Helper::get_array_value( $autoresponder['lines'] ?? [] ) as $line ) {
 			$body .= '<p>' . esc_html( Helper::get_string_value( $line ) ) . '</p>';
 		}
-		return $body . '<p>' . esc_html__( 'Thanks,', 'sureforms' ) . '<br>{site_title}</p>';
+		$signoff = array_map( 'esc_html', explode( "\n", self::autoresponder_signoff( $autoresponder ) ) );
+		return $body . '<p>' . implode( '<br>', $signoff ) . '</p>';
+	}
+
+	/**
+	 * The sign-off that closes the confirmation email: the template's or the
+	 * one edited in the preview, else "Thanks," over the site title.
+	 *
+	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
+	 * @since x.x.x
+	 * @return string One line per line of the sign-off.
+	 */
+	private static function autoresponder_signoff( $autoresponder ) {
+		$signoff = trim( Helper::get_string_value( $autoresponder['signoff'] ?? '' ) );
+		return '' === $signoff ? __( 'Thanks,', 'sureforms' ) . "\n{site_title}" : $signoff;
 	}
 
 	/**
