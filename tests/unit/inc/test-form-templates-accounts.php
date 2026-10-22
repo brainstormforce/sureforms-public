@@ -20,12 +20,11 @@ class Test_Form_Templates_Accounts extends TestCase {
 	 * @var array<string, string>
 	 */
 	private const TEMPLATES = [
-		'member-registration'        => 'business',
-		'guest-post-submission'      => 'business',
-		'business-directory-listing' => 'business',
-		'bulk-order-form'            => 'business',
-		'rental-application'         => 'pro',
-		'scholarship-application'    => 'pro',
+		'member-registration'     => 'business',
+		'guest-post-submission'   => 'business',
+		'bulk-order-form'         => 'business',
+		'rental-application'      => 'pro',
+		'scholarship-application' => 'pro',
 	];
 
 	/**
@@ -158,8 +157,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 	}
 
 	public function test_submissions_become_posts_waiting_for_review() {
-		foreach ( [ 'guest-post-submission', 'business-directory-listing' ] as $id ) {
-			$template = Form_Templates::get_template( $id );
+		foreach ( array_filter( Form_Templates::get_templates(), static fn( $template ) => ! empty( $template['cpt'] ) ) as $id => $template ) {
 			$map      = $this->slug_map( $template );
 			$cpt      = $template['cpt'];
 
