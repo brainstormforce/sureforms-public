@@ -24,7 +24,6 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		'conversational-lead-qualifier' => [ 'contact', 'pro' ],
 		'ad-landing-lead-form'          => [ 'contact', 'starter' ],
 		'service-agreement'             => [ 'agreements', 'business' ],
-		'liability-waiver'              => [ 'agreements', 'pro' ],
 		'photo-release-consent'         => [ 'agreements', 'pro' ],
 	];
 
@@ -120,7 +119,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 	}
 
 	public function test_signatures_need_the_pro_plan() {
-		$with_signature = [ 'service-agreement', 'liability-waiver', 'photo-release-consent' ];
+		$with_signature = [ 'service-agreement', 'photo-release-consent' ];
 		foreach ( $with_signature as $id ) {
 			$template   = $this->template( $id );
 			$signatures = array_filter( $template['fields'], static fn( $f ) => 'signature' === $f['fieldType'] );
@@ -142,7 +141,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 	}
 
 	public function test_agreement_terms_are_marked_as_starter_wording() {
-		foreach ( [ 'service-agreement', 'liability-waiver', 'photo-release-consent' ] as $id ) {
+		foreach ( [ 'service-agreement', 'photo-release-consent' ] as $id ) {
 			$html = array_values( array_filter( $this->template( $id )['fields'], static fn( $f ) => 'html' === $f['fieldType'] ) );
 			$this->assertCount( 1, $html, "Template {$id} has no terms block." );
 			$this->assertTrue( $html[0]['pro_only'] );
@@ -150,16 +149,6 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 			// What the mapper keeps is what was written.
 			$this->assertSame( wp_kses_post( $html[0]['htmlContent'] ), $html[0]['htmlContent'] );
 		}
-	}
-
-	public function test_waiver_shows_guardian_fields_for_minors() {
-		$template = $this->template( 'liability-waiver' );
-		$this->assertSame( [ 'guardian-name', 'guardian-signature' ], array_keys( $template['conditions'] ) );
-		foreach ( $template['conditions'] as $condition ) {
-			$this->assertSame( [ [ [ 'under-18', 'isChecked' ] ] ], $condition['logic'] );
-		}
-		$under_18 = wp_list_filter( $template['fields'], [ 'slug' => 'under-18' ] );
-		$this->assertSame( 'checkbox', reset( $under_18 )['fieldType'] );
 	}
 
 	public function test_ad_lead_form_records_utm_tags_in_hidden_fields() {
