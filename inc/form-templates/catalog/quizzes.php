@@ -29,6 +29,11 @@ $no_search = [ 'searchable' => false ];
 
 $team_sizes = [ __( 'Just me', 'sureforms' ), __( '2–10 people', 'sureforms' ), __( '11–50 people', 'sureforms' ), __( 'More than 50', 'sureforms' ) ];
 
+// The plan finder's answers its rules match, and why it recommends a plan.
+$plan_goal_control = __( 'Advanced control and security', 'sureforms' );
+$plan_budget_low   = __( 'Free or low-cost', 'sureforms' );
+$plan_because      = __( 'Based on your answers: {form:team-size} · {form:main-goal} · {form:budget}.', 'sureforms' );
+
 /**
  * A quiz question with one right answer, for correct/incorrect scoring.
  *
@@ -439,40 +444,37 @@ return [
 		'submit_text'   => __( 'Show my plan', 'sureforms' ),
 		'features'      => [ 'conditional_logic' ],
 		'fields'        => [
-			Catalog::attrs( Catalog::field( 'multi-choice', 'team-size', __( 'How many people will use it?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true ) ), [ 'choiceWidth' => 25 ] ),
-			Catalog::attrs( Catalog::field( 'multi-choice', 'main-goal', __( 'What matters most to you?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Getting started quickly', 'sureforms' ), __( 'Growing my business', 'sureforms' ), __( 'Advanced control and security', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 33.33 ] ),
-			Catalog::field(
-				'dropdown',
-				'budget',
-				__( 'What budget do you have in mind?', 'sureforms' ),
-				true,
-				array_merge(
-					Catalog::dropdown_options( [ __( 'Free or low-cost', 'sureforms' ), __( 'Moderate', 'sureforms' ), __( 'Flexible for the right fit', 'sureforms' ), __( 'Not sure yet', 'sureforms' ) ] ),
-					[
-						'placeholder'     => __( 'Select a budget', 'sureforms' ),
-						'blockAttributes' => $no_search,
-					]
-				)
-			),
-			array_merge( $c['email'], [ 'label' => __( 'Email (we’ll send your recommendation here)', 'sureforms' ) ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'team-size', __( 'How many people will use it?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true ) ), [ 'choiceWidth' => 50 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'main-goal', __( 'What matters most to you?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Getting started quickly', 'sureforms' ), __( 'Growing my business', 'sureforms' ), $plan_goal_control ], true ) ), [ 'choiceWidth' => 100 ] ),
+			Catalog::attrs( Catalog::field( 'multi-choice', 'budget', __( 'What budget do you have in mind?', 'sureforms' ), true, Catalog::choice_options( [ $plan_budget_low, __( 'Moderate', 'sureforms' ), __( 'Flexible for the right fit', 'sureforms' ), __( 'Not sure yet', 'sureforms' ) ], true ) ), [ 'choiceWidth' => 50 ] ),
+			array_merge( $c['email'], [ 'helpText' => __( 'We’ll send your recommendation here.', 'sureforms' ) ] ),
 			$c['consent'],
 		],
-		// The first matching message wins; the thank-you message below is the
-		// fallback. Rename the plans and add links to match what you sell.
+		// Checked in order, the first match wins; every answer can change the plan.
+		// The thank-you message below is the fallback. Rename the plans and add
+		// links to match what you sell.
 		'confirmations' => [
 			[
-				'name'    => __( 'Large teams: talk to sales', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'We recommend: Enterprise', 'sureforms' ), __( 'For a team your size, a short call is the quickest way to the right setup. We will email {form:email} to find a time.', 'sureforms' ) ),
-				'rules'   => [ [ 'team-size', '_EQUAL_', __( 'More than 50', 'sureforms' ) ] ],
+				'name'    => __( 'Large teams or advanced needs: Enterprise', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'We recommend: Enterprise', 'sureforms' ), $plan_because . ' ' . __( 'For the setup you need, a short call is the quickest way to get it right. We will email {form:email} to find a time.', 'sureforms' ) ),
+				'logic'   => '_OR_',
+				'rules'   => [
+					[ 'team-size', '_EQUAL_', __( 'More than 50', 'sureforms' ) ],
+					[ 'main-goal', '_EQUAL_', $plan_goal_control ],
+				],
 			],
 			[
-				'name'    => __( 'Solo: Basic plan', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'We recommend: Basic', 'sureforms' ), __( 'Everything one person needs to get going, at the lowest price. We have sent the details to {form:email}.', 'sureforms' ) ),
-				'rules'   => [ [ 'team-size', '_EQUAL_', __( 'Just me', 'sureforms' ) ] ],
+				'name'    => __( 'Solo or a small budget: Basic', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'We recommend: Basic', 'sureforms' ), $plan_because . ' ' . __( 'Our lowest-priced plan, with everything you need to get going. We have sent the details to {form:email}.', 'sureforms' ) ),
+				'logic'   => '_OR_',
+				'rules'   => [
+					[ 'team-size', '_EQUAL_', __( 'Just me', 'sureforms' ) ],
+					[ 'budget', '_EQUAL_', $plan_budget_low ],
+				],
 			],
 			[
-				'name'    => __( 'Teams: Growth plan', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'We recommend: Growth', 'sureforms' ), __( 'Built for growing teams, with room to add people as you go. We have sent the details to {form:email}.', 'sureforms' ) ),
+				'name'    => __( 'Growing teams: Growth', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'We recommend: Growth', 'sureforms' ), $plan_because . ' ' . __( 'Built for growing teams, with room to add people as you go. We have sent the details to {form:email}.', 'sureforms' ) ),
 				'logic'   => '_OR_',
 				'rules'   => [
 					[ 'team-size', '_EQUAL_', __( '2–10 people', 'sureforms' ) ],
