@@ -746,11 +746,11 @@ return [
 					array_merge(
 						$priced_options(
 							[
-								[ _x( 'Small', 'parcel size', 'sureforms' ), 0, 'envelope' ],
+								[ _x( 'Small', 'parcel size', 'sureforms' ), 0 ],
 								/* translators: %s: size surcharge. */
-								[ sprintf( _x( 'Medium (+%s)', 'parcel size', 'sureforms' ), $money( 5 ) ), 5, 'box' ],
+								[ sprintf( _x( 'Medium (+%s)', 'parcel size', 'sureforms' ), $money( 5 ) ), 5 ],
 								/* translators: %s: size surcharge. */
-								[ sprintf( _x( 'Large (+%s)', 'parcel size', 'sureforms' ), $money( 12 ) ), 12, 'boxes-stacked' ],
+								[ sprintf( _x( 'Large (+%s)', 'parcel size', 'sureforms' ), $money( 12 ) ), 12 ],
 							]
 						),
 						// Carriers charge more for bulky parcels; this stands in for measuring the box.
