@@ -144,6 +144,45 @@ $plan_pitch = static function ( $slug, $heading, $colors ) {
 	$html .= '</div>';
 	return Catalog::field( 'html', $slug, '', false, [ 'htmlContent' => $html ] );
 };
+// The ROI calculator's two results.
+$roi_hours   = '{form:team-size} * {form:hours-saved} * 48';
+$roi_savings = $roi_hours . ' * {form:hourly-cost}';
+
+/*
+ * One ROI result as a card that updates as the visitor types (an HTML block
+ * showing a calculation), half the row wide.
+ */
+$roi_card = static function ( $slug, $label, $formula, $round, $prefix, $suffix ) {
+	$html  = '<div style="padding: 14px 18px;border-radius: 8px;background: #f5f3ff;border: 1px solid #ddd6fe">';
+	$html .= '<p style="margin: 0;font-size: 14px;line-height: 1.4">' . esc_html( $label ) . '</p>';
+	$html .= '<p style="margin: 4px 0 0;font-size: 28px;line-height: 1.2;font-weight: 700;color: #5b21b6">' . esc_html( $prefix ) . '{calculation-result}' . esc_html( $suffix ) . '</p>';
+	$html .= '</div>';
+	return Catalog::width(
+		Catalog::attrs(
+			Catalog::field( 'html', $slug, '', false, [ 'htmlContent' => $html ] ),
+			[
+				'enableCalculation'  => true,
+				'calculationFormula' => $formula,
+				'calculationRound'   => $round,
+			]
+		),
+		50
+	);
+};
+
+// A calculated value kept out of sight, for the messages and the entry.
+$roi_hidden = static fn( $slug, $label, $formula ) => Catalog::attrs(
+	Catalog::field( 'hidden', $slug, $label, false ),
+	[
+		'enableCalculation'  => true,
+		'calculationFormula' => $formula,
+		'calculationRound'   => 0,
+	]
+);
+
+// The ROI calculator's walkthrough answer that its thank-you rule matches.
+$walkthrough_yes = __( 'Yes, book me in', 'sureforms' );
+
 // A body measurement with its unit after the input.
 $measure = static fn( $slug, $label, $unit, $min, $max, $placeholder ) => Catalog::attrs(
 	Catalog::field( 'number', $slug, $label, true, [ 'placeholder' => $placeholder ] ),
@@ -497,64 +536,106 @@ return [
 		'title'         => __( 'ROI / Savings Calculator', 'sureforms' ),
 		'description'   => __( 'Show prospects how much time and money your product could save them a year.', 'sureforms' ),
 		'submit_text'   => __( 'Send me the breakdown', 'sureforms' ),
+		// Premium shows the numbers and the result first, then the contact details.
+		'steps'         => [ __( 'Your numbers', 'sureforms' ), __( 'Get your breakdown', 'sureforms' ) ],
 		'fields'        => [
-			Catalog::width( Catalog::number_field( 'team-size', __( 'Team Size', 'sureforms' ), true, 1, 10000, [ 'placeholder' => __( 'e.g. 10', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::number_field( 'team-size', __( 'Team size', 'sureforms' ), true, 1, 10000, [ 'placeholder' => __( 'e.g. 10', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				Catalog::attrs(
-					Catalog::number_field( 'hourly-cost', __( 'Hourly Cost per Person', 'sureforms' ), true, 1, 1000, [ 'placeholder' => __( 'e.g. 40', 'sureforms' ) ] ),
+					Catalog::number_field( 'hourly-cost', __( 'Hourly cost per person', 'sureforms' ), true, 1, 1000, [ 'placeholder' => __( 'e.g. 40', 'sureforms' ) ] ),
 					[ 'prefix' => $symbol ]
 				),
 				50
 			),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::field(
-						'slider',
-						'hours-saved',
-						__( 'Hours Saved per Person Each Week', 'sureforms' ),
-						true,
-						[
-							'min'           => 1,
-							'max'           => 20,
-							'step'          => 1,
-							// The preview's example answer: the slider's starting value.
-							'placeholder'   => '5',
-							'suffixTooltip' => __( 'hrs', 'sureforms' ),
-						]
-					),
-					[ 'numberDefaultValue' => '5' ]
+			Catalog::attrs(
+				Catalog::field(
+					'slider',
+					'hours-saved',
+					__( 'Hours saved per person each week', 'sureforms' ),
+					true,
+					[
+						'min'           => 1,
+						'max'           => 20,
+						'step'          => 1,
+						// The preview's example answer: the slider's starting value.
+						'placeholder'   => '5',
+						'suffixTooltip' => __( 'hrs', 'sureforms' ),
+						'helpText'      => __( 'We count 48 working weeks a year.', 'sureforms' ),
+					]
 				),
-				100
+				[ 'numberDefaultValue' => '5' ]
 			),
-			$result(
-				'yearly-savings',
-				__( 'Estimated Yearly Savings', 'sureforms' ),
-				'{form:team-size} * {form:hours-saved} * {form:hourly-cost} * 48',
-				0,
-				$symbol,
-				'',
-				[ 'helpText' => __( 'Based on 48 working weeks a year.', 'sureforms' ) ]
+			// The results show as cards; hidden fields keep the numbers for the messages and the entry.
+			$roi_card( 'savings-card', __( 'Saved a year', 'sureforms' ), $roi_savings, 0, $symbol, '' ),
+			$roi_card( 'hours-card', __( 'Hours back a year', 'sureforms' ), $roi_hours, 0, '', ' ' . __( 'hrs', 'sureforms' ) ),
+			Catalog::attrs(
+				Catalog::field(
+					'html',
+					'staff-line',
+					'',
+					false,
+					/* translators: %s: number of full-time staff, worked out as the visitor types. */
+					[ 'htmlContent' => '<p style="margin: 0;font-size: 15px;line-height: 1.6">' . sprintf( esc_html__( 'That is about %s full-time staff worth of time, freed up without hiring.', 'sureforms' ), '<strong>{calculation-result}</strong>' ) . '</p>' ]
+				),
+				// 1,920 hours: 40 hours a week over 48 weeks.
+				[
+					'enableCalculation'  => true,
+					'calculationFormula' => '{form:team-size} * {form:hours-saved} * 48 / 1920',
+					'calculationRound'   => 1,
+				]
 			),
-			Catalog::width( Catalog::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'email', 'email', __( 'Work Email', 'sureforms' ), true, [ 'placeholder' => __( 'jane@company.com', 'sureforms' ) ] ), 50 ),
+			$roi_hidden( 'hours-saved-year', __( 'Hours saved a year', 'sureforms' ), $roi_hours ),
+			$roi_hidden( 'yearly-savings', __( 'Yearly savings', 'sureforms' ), $roi_savings ),
+			Catalog::step( 'contact-step', __( 'Get your breakdown', 'sureforms' ) ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'email', 'email', __( 'Work email', 'sureforms' ), true, [ 'placeholder' => __( 'jane@company.com', 'sureforms' ) ] ), 50 ),
+			Catalog::field( 'input', 'company', __( 'Company (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ),
+			// Tells sales which leads want a demo now.
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'walkthrough', __( 'Would you like a short walkthrough?', 'sureforms' ), true, Catalog::choice_options( [ $walkthrough_yes, __( 'Not right now', 'sureforms' ) ], true ) ),
+				[ 'choiceWidth' => 50 ]
+			),
+			// Only asked of people who want a walkthrough.
+			Catalog::field( 'phone', 'phone', __( 'Phone (optional)', 'sureforms' ), false ),
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'best-time', __( 'Best time to call', 'sureforms' ), true, Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ) ),
+				[
+					'choiceWidth'    => 33.33,
+					'verticalLayout' => false,
+				]
+			),
 			$c['consent'],
 		],
+		'conditions'    => [
+			// The staff line waits for the numbers it needs.
+			'staff-line' => [ 'logic' => [ [ [ 'team-size', '>', '0' ] ] ] ],
+			'phone'      => [ 'logic' => [ [ [ 'walkthrough', '==', $walkthrough_yes ] ] ] ],
+			'best-time'  => [ 'logic' => [ [ [ 'walkthrough', '==', $walkthrough_yes ] ] ] ],
+		],
+		// The visitor has just seen the numbers on the form, so the thank-you message doesn't repeat them.
 		'confirmation'  => [
-			'heading' => sprintf(
-				/* translators: %s: yearly savings. */
-				__( 'You could save %s a year', 'sureforms' ),
-				$amount( 'yearly-savings' )
-			),
-			'text'    => __( 'That is {form:hours-saved} hours a week for each of your {form:team-size} people. We have sent the breakdown to {form:email}.', 'sureforms' ),
+			'heading' => __( 'Your breakdown is on its way', 'sureforms' ),
+			'text'    => __( 'We have sent your savings estimate to {form:email}.', 'sureforms' ),
+		],
+		// With Premium, people who asked for a walkthrough are told it is coming.
+		'confirmations' => [
+			[
+				'name'    => __( 'Walkthrough requested', 'sureforms' ),
+				'message' => Catalog::thank_you(
+					__( 'Your breakdown is on its way', 'sureforms' ),
+					__( 'We have sent your savings estimate to {form:email} and will be in touch shortly to book your walkthrough.', 'sureforms' )
+				),
+				'rules'   => [ [ 'walkthrough', '_EQUAL_', $walkthrough_yes ] ],
+			],
 		],
 		'email_subject' => sprintf(
 			/* translators: %s: yearly savings. */
-			__( 'New ROI lead: %s a year for a team of {form:team-size}', 'sureforms' ),
+			__( 'New ROI lead: {form:name}, %s a year (walkthrough: {form:walkthrough})', 'sureforms' ),
 			$amount( 'yearly-savings' )
 		),
 		'email_intro'   => sprintf(
 			/* translators: %s: yearly savings. */
-			__( '{form:email} worked out savings of %s a year for a team of {form:team-size} ({form:hours-saved} hours a week each). Reply to this email to follow up.', 'sureforms' ),
+			__( '{form:name} worked out savings of %s and {form:hours-saved-year} hours a year for a team of {form:team-size} ({form:hours-saved} hours a week each). Walkthrough: {form:walkthrough}. Reply to this email to follow up.', 'sureforms' ),
 			$amount( 'yearly-savings' )
 		),
 		'autoresponder' => [
@@ -563,11 +644,11 @@ return [
 				__( 'Your savings estimate: %s a year', 'sureforms' ),
 				$amount( 'yearly-savings' )
 			),
-			'greeting' => __( 'Hi,', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				sprintf(
 					/* translators: %s: yearly savings. */
-					__( 'Thanks for running the numbers. With {form:team-size} people each saving {form:hours-saved} hours a week, you could save about %s a year.', 'sureforms' ),
+					__( 'Thanks for running the numbers. With {form:team-size} people each saving {form:hours-saved} hours a week, you could save about {form:hours-saved-year} hours and %s a year.', 'sureforms' ),
 					$amount( 'yearly-savings' )
 				),
 				__( 'Want to see how? Reply to this email and we will set up a short walkthrough.', 'sureforms' ),

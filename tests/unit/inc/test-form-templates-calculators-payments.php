@@ -139,7 +139,10 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 			// 68 kg, 170 cm.
 			'bmi-calculator'           => [ 'bmi' => '23.5' ],
 			// 10 people x 5 hours x 40 an hour x 48 weeks.
-			'roi-savings-calculator'   => [ 'yearly-savings' => '96,000' ],
+			'roi-savings-calculator'   => [
+				'hours-saved-year' => '2,400',
+				'yearly-savings'   => '96,000',
+			],
 			// 8 base + 2 kg x 2.50 + standard.
 			'shipping-cost-estimator'  => [ 'shipping-cost' => '13.00' ],
 			'event-ticket-order'       => [ 'total' => '50.00' ],
@@ -271,6 +274,25 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 			$this->formula( $fields['bmi'] )
 		);
 		$this->assertSame( '23.5', number_format( (float) Formula::evaluate( $formula ), 1 ) );
+	}
+
+	public function test_roi_shows_cards_and_asks_walkthrough_details_only_when_wanted() {
+		$template = Form_Templates::get_template( 'roi-savings-calculator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		// Live cards show the results; hidden fields keep them for the messages.
+		foreach ( [ 'savings-card', 'hours-card', 'staff-line' ] as $slug ) {
+			$this->assertSame( 'html', $fields[ $slug ]['fieldType'] );
+			$this->assertTrue( $fields[ $slug ]['blockAttributes']['enableCalculation'] );
+		}
+		foreach ( [ 'hours-saved-year', 'yearly-savings' ] as $slug ) {
+			$this->assertSame( 'hidden', $fields[ $slug ]['fieldType'] );
+		}
+		$this->assertArrayHasKey( 'contact-step', $fields );
+		$walkthrough = wp_list_pluck( $fields['walkthrough']['fieldOptions'], 'optionTitle' );
+		foreach ( [ 'phone', 'best-time' ] as $slug ) {
+			$this->assertSame( $walkthrough[0], $template['conditions'][ $slug ]['logic'][0][0][2] );
+		}
+		$this->assertSame( $walkthrough[0], $template['confirmations'][0]['rules'][0][2] );
 	}
 
 	public function test_calculated_inputs_are_required() {
