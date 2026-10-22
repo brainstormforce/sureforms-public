@@ -28,7 +28,7 @@ $c = Catalog::common_fields();
  * @param string             $slug     Field slug.
  * @param string             $label    Block name in the editor.
  * @param string             $heading  Heading.
- * @param array<int, string> $sections Owner note, then the paragraphs.
+ * @param array<int, string|array<int, string>> $sections Owner note, then paragraphs or [ title, text ] terms.
  * @return array<string, mixed>
  */
 $terms = static function ( $slug, $label, $heading, $sections ) {
@@ -37,8 +37,8 @@ $terms = static function ( $slug, $label, $heading, $sections ) {
 	$html .= '<h3 style="margin-top: 0">' . esc_html( $heading ) . '</h3>';
 	$html .= '<p style="padding: 8px 12px;background: #fef3c7;border-radius: 6px"><em>' . esc_html( (string) array_shift( $sections ) ) . '</em></p>';
 	foreach ( $sections as $section ) {
-		$parts = explode( ':', $section, 2 );
-		$html .= isset( $parts[1] ) ? '<p><strong>' . esc_html( $parts[0] ) . ':</strong>' . esc_html( $parts[1] ) . '</p>' : '<p>' . esc_html( $section ) . '</p>';
+		/* translators: 1: a term's title, 2: its text. */
+		$html .= '<p>' . ( is_array( $section ) ? sprintf( esc_html__( '%1$s: %2$s', 'sureforms' ), '<strong>' . esc_html( $section[0] ) . '</strong>', esc_html( $section[1] ) ) : esc_html( $section ) ) . '</p>';
 	}
 	$html .= '</div>';
 
@@ -57,19 +57,19 @@ $terms = static function ( $slug, $label, $heading, $sections ) {
 // The service agreement's terms, shown on the form and in the signed copy.
 $service_terms = [
 	__( 'This agreement is between you (the client) and us (the provider).', 'sureforms' ),
-	__( 'Services: We will provide the services described in our proposal or quote, which forms part of this agreement.', 'sureforms' ),
-	__( 'Fees and payment: You agree to pay the fees in our proposal. Invoices are due within 14 days unless agreed otherwise in writing.', 'sureforms' ),
-	__( 'Changes: Work outside the agreed scope will be quoted separately and only starts once you approve it.', 'sureforms' ),
-	__( 'Cancellation: Either party may end this agreement with 14 days’ written notice. Work completed up to that date will be invoiced.', 'sureforms' ),
-	__( 'Confidentiality: Both parties will keep each other’s confidential information private.', 'sureforms' ),
+	[ __( 'Services', 'sureforms' ), __( 'We will provide the services described in our proposal or quote, which forms part of this agreement.', 'sureforms' ) ],
+	[ __( 'Fees and payment', 'sureforms' ), __( 'You agree to pay the fees in our proposal. Invoices are due within 14 days unless agreed otherwise in writing.', 'sureforms' ) ],
+	[ __( 'Changes', 'sureforms' ), __( 'Work outside the agreed scope will be quoted separately and only starts once you approve it.', 'sureforms' ) ],
+	[ __( 'Cancellation', 'sureforms' ), __( 'Either party may end this agreement with 14 days’ written notice. Work completed up to that date will be invoiced.', 'sureforms' ) ],
+	[ __( 'Confidentiality', 'sureforms' ), __( 'Both parties will keep each other’s confidential information private.', 'sureforms' ) ],
 ];
 
 // The photo release's terms, shown on the form and in the signed copy.
 $release_terms = [
-	__( 'Permission: I allow the organiser to take and use photos, video and recordings of me in the places I choose below.', 'sureforms' ),
-	__( 'Use: The media may be edited, cropped or captioned. It will not be sold to third parties or used in a way that misrepresents me.', 'sureforms' ),
-	__( 'Payment: I will not be paid for this use.', 'sureforms' ),
-	__( 'Withdrawing: I can withdraw my permission at any time by contacting the organiser. Media already printed or published cannot always be recalled.', 'sureforms' ),
+	[ __( 'Permission', 'sureforms' ), __( 'I allow the organiser to take and use photos, video and recordings of me in the places I choose below.', 'sureforms' ) ],
+	[ __( 'Use', 'sureforms' ), __( 'The media may be edited, cropped or captioned. It will not be sold to third parties or used in a way that misrepresents me.', 'sureforms' ) ],
+	[ __( 'Payment', 'sureforms' ), __( 'I will not be paid for this use.', 'sureforms' ) ],
+	[ __( 'Withdrawing', 'sureforms' ), __( 'I can withdraw my permission at any time by contacting the organiser. Media already printed or published cannot always be recalled.', 'sureforms' ) ],
 ];
 
 /**
@@ -79,7 +79,7 @@ $release_terms = [
  * layout mPDF renders reliably.
  *
  * @param string                          $heading    Document title.
- * @param array<int, string>              $sections   Terms: plain paragraphs (an introduction) or `Title: text`.
+ * @param array<int, string|array<int, string>> $sections   Terms: plain paragraphs (an introduction) or [ title, text ].
  * @param array<int, string>              $parties    Labels of the two parties: the site's side, then the signer's.
  * @param array<string, string>           $details    The signer's details, label => smart tag; empty answers leave an empty row.
  * @param array<int, array<int, string>> $signatures Signature lines: [ signature tag, name, caption, optional detail under the name ].
@@ -115,15 +115,15 @@ $signed_copy = static function ( $heading, $sections, $parties, $details, $signa
 	$html  .= '<div style="' . $label . 'margin-bottom: 8px">' . esc_html__( 'Terms', 'sureforms' ) . '</div>';
 	$number = 0;
 	foreach ( $sections as $section ) {
-		$parts = explode( ':', $section, 2 );
-		if ( ! isset( $parts[1] ) ) {
+		if ( ! is_array( $section ) ) {
 			$html .= '<p style="margin: 0 0 10px;font-size: 10.5pt;line-height: 1.5">' . esc_html( $section ) . '</p>';
 			continue;
 		}
 		++$number;
 		$html .= '<table width="100%" style="border-collapse: collapse;margin-bottom: 8px"><tr>';
 		$html .= '<td width="24" style="vertical-align: top;font-weight: bold;color: #0f172a;font-size: 10.5pt">' . $number . '.</td>';
-		$html .= '<td style="vertical-align: top;font-size: 10.5pt;line-height: 1.5"><strong>' . esc_html( trim( $parts[0] ) ) . '.</strong> ' . esc_html( trim( $parts[1] ) ) . '</td>';
+		/* translators: 1: a term's title, 2: its text. */
+		$html .= '<td style="vertical-align: top;font-size: 10.5pt;line-height: 1.5">' . sprintf( esc_html__( '%1$s: %2$s', 'sureforms' ), '<strong>' . esc_html( $section[0] ) . '</strong>', esc_html( $section[1] ) ) . '</td>';
 		$html .= '</tr></table>';
 	}
 

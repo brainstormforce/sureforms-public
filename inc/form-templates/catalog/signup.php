@@ -34,7 +34,7 @@ return [
 				array_merge(
 					$c['email'],
 					[
-						'label'    => __( 'Email Address', 'sureforms' ),
+						'label'    => __( 'Email address', 'sureforms' ),
 						'helpText' => __( 'News and updates only. Unsubscribe at any time.', 'sureforms' ),
 					]
 				),

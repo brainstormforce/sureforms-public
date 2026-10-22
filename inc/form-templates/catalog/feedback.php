@@ -234,9 +234,9 @@ return [
 		'fields'        => [
 			Catalog::width( Catalog::field( 'input', 'name', __( 'Name (as you\'d like it shown)', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
 			Catalog::width( array_merge( $c['email'], [ 'label' => __( 'Email (never published)', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'role', __( 'Job Title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Owner', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'role', __( 'Job title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Owner', 'sureforms' ) ] ), 50 ),
 			Catalog::width( Catalog::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-			Catalog::field( 'input', 'product', __( 'Product or Service (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Website redesign', 'sureforms' ) ] ),
+			Catalog::field( 'input', 'product', __( 'Product or service (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Website redesign', 'sureforms' ) ] ),
 			Catalog::field(
 				'rating',
 				'rating',

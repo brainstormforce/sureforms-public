@@ -14,7 +14,6 @@
  */
 
 use SRFM\Inc\Form_Templates\Catalog;
-use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,10 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
-$currency  = Payment_Helper::get_currency();
-$symbol    = Payment_Helper::get_currency_symbol( $currency );
-$symbol    = '' === $symbol ? $currency . ' ' : $symbol;
-$money     = static fn( $amount ) => $symbol . number_format_i18n( $amount );
+$symbol    = Catalog::currency_symbol();
+$money     = [ Catalog::class, 'money' ];
 // A calculated amount in a message. The answer is saved without the field's prefix, so the message adds the currency.
 $amount = static fn( $slug ) => $symbol . '{form:' . $slug . '}';
 
@@ -187,12 +184,12 @@ $roi_savings = $roi_hours . ' * {form:hourly-cost}';
 
 /*
  * One ROI result as a card that updates as the visitor types (an HTML block
- * showing a calculation), half the row wide.
+ * showing a calculation), half the row wide. In $format, %s stands for the result.
  */
-$roi_card = static function ( $slug, $label, $formula, $round, $prefix, $suffix ) {
+$roi_card = static function ( $slug, $label, $formula, $round, $format ) {
 	$html  = '<div style="padding: 14px 18px;border-radius: 8px;background: #f5f3ff;border: 1px solid #ddd6fe">';
 	$html .= '<p style="margin: 0;font-size: 14px;line-height: 1.4">' . esc_html( $label ) . '</p>';
-	$html .= '<p style="margin: 4px 0 0;font-size: 28px;line-height: 1.2;font-weight: 700;color: #5b21b6">' . esc_html( $prefix ) . '{calculation-result}' . esc_html( $suffix ) . '</p>';
+	$html .= '<p style="margin: 4px 0 0;font-size: 28px;line-height: 1.2;font-weight: 700;color: #5b21b6">' . str_replace( '%s', '{calculation-result}', esc_html( $format ) ) . '</p>';
 	$html .= '</div>';
 	return Catalog::width(
 		Catalog::attrs(
@@ -603,8 +600,9 @@ return [
 				[ 'numberDefaultValue' => '5' ]
 			),
 			// The results show as cards; hidden fields keep the numbers for the messages and the entry.
-			$roi_card( 'savings-card', __( 'Saved a year', 'sureforms' ), $roi_savings, 0, $symbol, '' ),
-			$roi_card( 'hours-card', __( 'Hours back a year', 'sureforms' ), $roi_hours, 0, '', ' ' . __( 'hrs', 'sureforms' ) ),
+			$roi_card( 'savings-card', __( 'Saved a year', 'sureforms' ), $roi_savings, 0, $symbol . '%s' ),
+			/* translators: %s: number of hours. */
+			$roi_card( 'hours-card', __( 'Hours back a year', 'sureforms' ), $roi_hours, 0, __( '%s hrs', 'sureforms' ) ),
 			Catalog::attrs(
 				Catalog::field(
 					'html',
@@ -749,11 +747,11 @@ return [
 					array_merge(
 						$priced_options(
 							[
-								[ __( 'Small', 'sureforms' ), 0, 'envelope' ],
+								[ _x( 'Small', 'parcel size', 'sureforms' ), 0, 'envelope' ],
 								/* translators: %s: size surcharge. */
-								[ sprintf( __( 'Medium (+%s)', 'sureforms' ), $money( 5 ) ), 5, 'box' ],
+								[ sprintf( _x( 'Medium (+%s)', 'parcel size', 'sureforms' ), $money( 5 ) ), 5, 'box' ],
 								/* translators: %s: size surcharge. */
-								[ sprintf( __( 'Large (+%s)', 'sureforms' ), $money( 12 ) ), 12, 'boxes-stacked' ],
+								[ sprintf( _x( 'Large (+%s)', 'parcel size', 'sureforms' ), $money( 12 ) ), 12, 'boxes-stacked' ],
 							]
 						),
 						// Carriers charge more for bulky parcels; this stands in for measuring the box.

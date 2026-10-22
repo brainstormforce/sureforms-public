@@ -198,7 +198,7 @@ return [
 				Catalog::field(
 					'time-picker',
 					'preferred-time',
-					__( 'Preferred Time', 'sureforms' ),
+					__( 'Preferred time', 'sureforms' ),
 					false,
 					[
 						'pro_only'  => true,
