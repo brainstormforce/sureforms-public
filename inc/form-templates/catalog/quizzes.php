@@ -140,8 +140,7 @@ return [
 		'theme'         => 'ocean',
 		'icon'          => 'graduation-cap',
 		// A generic card name; the form itself is named after the example topic.
-		'title'         => __( 'Knowledge Quiz', 'sureforms' ),
-		'form_title'    => __( 'Cyber Safety Quiz', 'sureforms' ),
+		'title'         => __( 'Knowledge Quiz with Pass or Fail', 'sureforms' ),
 		'description'   => __( 'A five-question cyber safety quiz that scores each answer and shows a pass or fail message. Swap in your own questions.', 'sureforms' ),
 		'submit_text'   => __( 'See my score', 'sureforms' ),
 		'features'      => [ 'quiz' ],
