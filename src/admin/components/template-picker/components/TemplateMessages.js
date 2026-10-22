@@ -943,7 +943,8 @@ export const EmailsPanel = ( {
 
 	const ownerKeys = [ 'email_subject', 'email_intro' ];
 	const ownerResetKeys = [ ...ownerKeys, 'email_all_data' ];
-	const allData = ! editable || values.email_all_data;
+	// Read-only, values are the template's defaults, which may leave answers out.
+	const allData = values.email_all_data;
 	const visitorKeys = [
 		'autoresponder.subject',
 		'autoresponder.greeting',

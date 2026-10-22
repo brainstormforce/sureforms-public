@@ -145,7 +145,7 @@ return [
 			'text'    => __( 'Your gift of {form-payment:donation:amount} makes a real difference. A receipt is on its way to {form:email}.', 'sureforms' ),
 		],
 		'email_subject' => __( 'New donation: {form-payment:donation:amount} from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} donated {form-payment:donation:amount} (order {form-payment:donation:order-id}). Check below whether they asked to stay anonymous before thanking them publicly.', 'sureforms' ),
+		'email_intro'   => __( '{form:first-name} {form:last-name} donated {form-payment:donation:amount} (order {form-payment:donation:order-id}). Check whether they asked to stay anonymous before thanking them publicly.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Thank you for your donation', 'sureforms' ),
 			'greeting' => __( 'Dear {form:first-name},', 'sureforms' ),

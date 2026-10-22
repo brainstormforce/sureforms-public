@@ -301,7 +301,7 @@ return [
 			'subject'  => __( 'We received your order for {form:delivery-date}', 'sureforms' ),
 			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
-				__( 'Thank you for your order. Your order details are below.', 'sureforms' ),
+				__( 'Thank you for your catering order for {form:guests} guests, for {form:fulfilment} on {form:delivery-date} at {form:delivery-time}.', 'sureforms' ),
 				__( 'This is not a confirmation yet: we will check availability and reply with the total before we confirm.', 'sureforms' ),
 			],
 		],
