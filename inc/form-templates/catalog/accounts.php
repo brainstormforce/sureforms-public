@@ -82,14 +82,6 @@ return [
 		'submit_text'   => __( 'Create my account', 'sureforms' ),
 		'fields'        => [
 			// For people who already have an account; the link is this site's own login page.
-			Catalog::field(
-				'html',
-				'sign-in',
-				'',
-				false,
-				/* translators: %s: link to the login page. */
-				[ 'htmlContent' => '<p style="margin: 0;font-size: 15px">' . sprintf( esc_html__( 'Already have an account? %s', 'sureforms' ), '<a href="' . esc_url( wp_login_url() ) . '">' . esc_html__( 'Sign in', 'sureforms' ) . '</a>' ) . '</p>' ]
-			),
 			array_merge( $c['first_name'], [ 'label' => __( 'First name', 'sureforms' ) ] ),
 			array_merge( $c['last_name'], [ 'label' => __( 'Last name', 'sureforms' ) ] ),
 			Catalog::field(

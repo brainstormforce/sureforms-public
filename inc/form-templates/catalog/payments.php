@@ -15,7 +15,6 @@
  */
 
 use SRFM\Inc\Form_Templates\Catalog;
-use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,10 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
-$currency  = Payment_Helper::get_currency();
-$symbol    = Payment_Helper::get_currency_symbol( $currency );
-$symbol    = '' === $symbol ? $currency . ' ' : $symbol;
-$money     = static fn( $amount ) => $symbol . number_format_i18n( $amount );
+$symbol    = Catalog::currency_symbol();
+$money     = [ Catalog::class, 'money' ];
 $setup     = [ 'stripe', 'paypal' ];
 
 /*

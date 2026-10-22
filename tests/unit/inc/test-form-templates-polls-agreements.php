@@ -165,7 +165,6 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 				'gclid'        => '{get_input:gclid}',
 				'fbclid'       => '{get_input:fbclid}',
 				'landing-page' => '{current_page_url}',
-				'referrer'     => '{http_referer}',
 			],
 			$hidden
 		);

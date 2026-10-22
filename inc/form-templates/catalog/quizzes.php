@@ -19,7 +19,6 @@
 
 use SRFM\Inc\Form_Templates\Catalog;
 use SRFM\Inc\Helper;
-use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -34,9 +33,7 @@ $team_sizes = [ __( 'Just me', 'sureforms' ), __( '2–10 people', 'sureforms' )
 $lead_soon      = __( 'This month', 'sureforms' );
 $lead_quarter   = __( 'In 1–3 months', 'sureforms' );
 $lead_exploring = __( 'Just exploring', 'sureforms' );
-$lead_symbol    = Payment_Helper::get_currency_symbol( Payment_Helper::get_currency() );
-$lead_symbol    = '' === $lead_symbol ? Payment_Helper::get_currency() . ' ' : $lead_symbol;
-$lead_money     = static fn( $amount ) => $lead_symbol . number_format_i18n( $amount );
+$lead_money     = [ Catalog::class, 'money' ];
 $lead_budgets   = [
 	/* translators: %s: an amount, e.g. "$1,000". */
 	sprintf( __( 'Under %s', 'sureforms' ), $lead_money( 1000 ) ),
@@ -694,17 +691,6 @@ return [
 				[
 					'pro_only'     => true,
 					'defaultValue' => '{current_page_url}',
-				]
-			),
-			// The page they came from, for visitors who arrive without UTM tags.
-			Catalog::field(
-				'hidden',
-				'referrer',
-				__( 'Referrer', 'sureforms' ),
-				false,
-				[
-					'pro_only'     => true,
-					'defaultValue' => '{http_referer}',
 				]
 			),
 		],
