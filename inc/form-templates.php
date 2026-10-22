@@ -369,7 +369,8 @@ class Form_Templates {
 		 * Each template is an array with `id`, `title`, `description`, `category`,
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
-		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
+		 * `email_intro`, `email_all_data` (false leaves the answers out of the
+		 * site owner's email), `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
 		 * `form_title` (the created form's name, when it differs from the library
 		 * card's `title`, e.g. a generic card for an example topic), `steps`
 		 * (step titles for multi-step forms), `features` (extra "Included"
@@ -804,8 +805,10 @@ class Form_Templates {
 				'text'    => Helper::get_string_value( $confirmation['text'] ?? '' ),
 			],
 			'email'         => [
-				'subject' => Helper::get_string_value( $template['email_subject'] ?? '' ),
-				'intro'   => Helper::get_string_value( $template['email_intro'] ?? '' ),
+				'subject'  => Helper::get_string_value( $template['email_subject'] ?? '' ),
+				'intro'    => Helper::get_string_value( $template['email_intro'] ?? '' ),
+				// Whether every answer is listed below the intro.
+				'all_data' => self::includes_all_data( $template ),
 			],
 			'autoresponder' => null === $autoresponder ? null : [
 				'subject'  => Helper::get_string_value( $autoresponder['subject'] ?? '' ),
@@ -1024,6 +1027,9 @@ class Form_Templates {
 		if ( isset( $raw['email_intro'] ) && is_string( $raw['email_intro'] ) ) {
 			$clean['email_intro'] = $text( $raw['email_intro'] );
 		}
+		if ( isset( $raw['email_all_data'] ) ) {
+			$clean['email_all_data'] = rest_sanitize_boolean( $raw['email_all_data'] );
+		}
 		if ( isset( $raw['autoresponder'] ) && is_array( $raw['autoresponder'] ) ) {
 			$auto = $raw['autoresponder'];
 			if ( isset( $auto['enabled'] ) ) {
@@ -1052,6 +1058,9 @@ class Form_Templates {
 	public static function apply_messages( $template, $messages ) {
 		if ( ! empty( $messages['confirmation'] ) ) {
 			$template['confirmation'] = array_merge( Helper::get_array_value( $template['confirmation'] ?? [] ), Helper::get_array_value( $messages['confirmation'] ) );
+		}
+		if ( isset( $messages['email_all_data'] ) ) {
+			$template['email_all_data'] = (bool) $messages['email_all_data'];
 		}
 		foreach ( [ 'email_subject', 'email_intro' ] as $key ) {
 			if ( isset( $messages[ $key ] ) && '' !== $messages[ $key ] ) {
@@ -2769,8 +2778,11 @@ class Form_Templates {
 			if ( ! empty( $template['email_subject'] ) ) {
 				$admin['subject'] = Helper::get_string_value( $template['email_subject'] );
 			}
+			$all_data = self::includes_all_data( $template ) ? '{all_data}' : '';
 			if ( ! empty( $template['email_intro'] ) ) {
-				$admin['email_body'] = '<p>' . esc_html( Helper::get_string_value( $template['email_intro'] ) ) . '</p>{all_data}';
+				$admin['email_body'] = '<p>' . esc_html( Helper::get_string_value( $template['email_intro'] ) ) . '</p>' . $all_data;
+			} elseif ( '' === $all_data ) {
+				$admin['email_body'] = '';
 			}
 			// Replying should reach the person who filled in the form, and the
 			// owner does not need copies of their own notification.
@@ -2954,6 +2966,18 @@ class Form_Templates {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Whether the site owner's email lists every answer ({all_data}) below its
+	 * intro. On unless the template, or the preview, turns it off.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function includes_all_data( $template ) {
+		return false !== ( $template['email_all_data'] ?? true );
 	}
 
 	/**

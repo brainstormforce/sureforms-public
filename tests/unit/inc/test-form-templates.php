@@ -2327,6 +2327,28 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'Sales', $answers[2]['sample'], 'Choices use their first option.' );
 	}
 
+	public function test_apply_messages_can_leave_the_answers_out_of_the_owner_email() {
+		$template = Form_Templates::get_template( 'contact-us' );
+		$fields   = Form_Templates::resolve_fields( $template, 'free' );
+
+		// By default, every answer is listed below the intro.
+		$this->assertTrue( Form_Templates::get_messages( $template, $fields )['email']['all_data'] );
+		$this->assertStringEndsWith( '</p>{all_data}', Form_Templates::build_settings_metas( $template )['_srfm_email_notification'][0]['email_body'] );
+
+		// Switched off in the preview: only the intro is sent.
+		$messages = Form_Templates::sanitize_messages( [ 'email_all_data' => 'false' ] );
+		$this->assertSame( [ 'email_all_data' => false ], $messages );
+		$template = Form_Templates::apply_messages( $template, $messages );
+		$this->assertFalse( Form_Templates::get_messages( $template, $fields )['email']['all_data'] );
+		$body = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'][0]['email_body'];
+		$this->assertStringNotContainsString( '{all_data}', $body );
+		$this->assertStringStartsWith( '<p>', $body, 'The intro is still sent.' );
+
+		// With no intro either, the email is not left with the default answers table.
+		unset( $template['email_intro'] );
+		$this->assertSame( '', Form_Templates::build_settings_metas( $template )['_srfm_email_notification'][0]['email_body'] );
+	}
+
 	public function test_apply_messages_merges_edits_and_can_drop_the_visitor_email() {
 		$template = Form_Templates::get_template( 'contact-us' );
 
