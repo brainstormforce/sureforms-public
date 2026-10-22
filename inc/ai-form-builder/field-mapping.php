@@ -289,6 +289,8 @@ class Field_Mapping {
 							foreach ( $question['fieldOptions'] as &$option ) {
 								$option['icon'] = '';
 							}
+							// Drop the reference, so a later $option loop can't overwrite the last option.
+							unset( $option );
 						}
 
 						// Set options if they are valid.

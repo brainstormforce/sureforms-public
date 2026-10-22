@@ -90,6 +90,9 @@ class Test_Field_Mapping extends TestCase {
 
 		$this->assertStringContainsString( '"showDescriptions":true', $result );
 		$this->assertStringContainsString( '"description":"$149 until 1 March"', $result );
+		// Every option keeps its own title.
+		$this->assertStringContainsString( '"optionTitle":"Standard"', $result );
+		$this->assertSame( 1, substr_count( $result, '"optionTitle":"Early Bird"' ) );
 	}
 
 	/**
