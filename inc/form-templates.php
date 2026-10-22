@@ -376,7 +376,8 @@ class Form_Templates {
 		 * feature ids, such as `calculation`) and the Pro keys in PRO_FEATURE_KEYS.
 		 *
 		 * `email_all_data => false` leaves the answers out of the site owner's
-		 * email, so it only sends `email_intro`.
+		 * email, so it only sends `email_intro` (a template without an intro
+		 * keeps them).
 		 *
 		 * `requires` is the plan a template needs: `free` (default), `starter`,
 		 * `pro` or `business`; `is_pro => true` is read as `starter`. A paid
@@ -2780,11 +2781,9 @@ class Form_Templates {
 			if ( ! empty( $template['email_subject'] ) ) {
 				$admin['subject'] = Helper::get_string_value( $template['email_subject'] );
 			}
-			$all_data = self::includes_all_data( $template ) ? '{all_data}' : '';
+			// Without an intro the answers stay, so the owner never gets an empty email.
 			if ( ! empty( $template['email_intro'] ) ) {
-				$admin['email_body'] = '<p>' . esc_html( Helper::get_string_value( $template['email_intro'] ) ) . '</p>' . $all_data;
-			} elseif ( '' === $all_data ) {
-				$admin['email_body'] = '';
+				$admin['email_body'] = '<p>' . esc_html( Helper::get_string_value( $template['email_intro'] ) ) . '</p>' . ( self::includes_all_data( $template ) ? '{all_data}' : '' );
 			}
 			// Replying should reach the person who filled in the form, and the
 			// owner does not need copies of their own notification.
@@ -2972,14 +2971,16 @@ class Form_Templates {
 
 	/**
 	 * Whether the site owner's email lists every answer ({all_data}) below its
-	 * intro. On unless the template, or the preview, turns it off.
+	 * intro. On unless the template, or the preview, turns it off; read like
+	 * the preview's value, so `0`, `'0'` and `'false'` are off too.
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @since x.x.x
 	 * @return bool
 	 */
 	private static function includes_all_data( $template ) {
-		return false !== ( $template['email_all_data'] ?? true );
+		$value = $template['email_all_data'] ?? true;
+		return is_bool( $value ) || is_int( $value ) || is_string( $value ) ? rest_sanitize_boolean( $value ) : ! empty( $value );
 	}
 
 	/**

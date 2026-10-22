@@ -178,7 +178,7 @@ return [
 		'attach_uploads' => [ 'cv' ],
 		'save_resume'    => true,
 		'email_subject'  => __( 'Application for {form:position} from {form:name}', 'sureforms' ),
-		'email_intro'    => __( '{form:name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
+		'email_intro'    => __( '{form:name} applied for {form:position}.', 'sureforms' ),
 		'autoresponder'  => [
 			'subject'  => __( 'We received your application for {form:position}', 'sureforms' ),
 			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
