@@ -202,11 +202,15 @@ const ChangeTemplate = () => {
 		} );
 
 		// Keep a title the user typed; replace one that came from a template.
+		const formTitle = template.form_title || template.title;
 		const changeTitle =
-			title !== template.title &&
-			( ! title || templates.some( ( t ) => t.title === title ) );
+			title !== formTitle &&
+			( ! title ||
+				templates.some(
+					( t ) => t.title === title || t.form_title === title
+				) );
 		if ( changeTitle ) {
-			editPost( { title: template.title } );
+			editPost( { title: formTitle } );
 		}
 
 		if ( rootClientIds.length ) {

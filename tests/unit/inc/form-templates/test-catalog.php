@@ -39,6 +39,34 @@ class Test_Catalog extends TestCase {
 		return $fields[ $slug ];
 	}
 
+	/**
+	 * Runs a callback with the payment settings set to a currency, then restores it.
+	 *
+	 * @param string   $currency Currency code.
+	 * @param callable $callback Callback.
+	 */
+	private function with_currency( $currency, $callback ) {
+		$saved = \SRFM\Inc\Payments\Payment_Helper::get_currency();
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', $currency );
+		try {
+			$callback();
+		} finally {
+			\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', $saved );
+		}
+	}
+
+	public function test_currency_symbol() {
+		$this->with_currency( 'USD', fn() => $this->assertSame( '$', Catalog::currency_symbol() ) );
+		$this->with_currency( 'EUR', fn() => $this->assertSame( '€', Catalog::currency_symbol() ) );
+		// A code without a known symbol is shown as the code and a space.
+		$this->with_currency( 'XYZ', fn() => $this->assertSame( 'XYZ ', Catalog::currency_symbol() ) );
+	}
+
+	public function test_money() {
+		$this->with_currency( 'USD', fn() => $this->assertSame( '$1,500', Catalog::money( 1500 ) ) );
+		$this->with_currency( 'EUR', fn() => $this->assertSame( '€25', Catalog::money( 25 ) ) );
+	}
+
 	public function test_thank_you() {
 		$this->assertSame(
 			Form_Templates::confirmation_message( 'Thanks!', 'We will be in touch.' ),
@@ -74,9 +102,9 @@ class Test_Catalog extends TestCase {
 	public function test_attrs_set_the_width_of_the_pro_appointment_date() {
 		$date = $this->field( $this->catalog_template( 'appointment-request' ), 'preferred-date' );
 
-		// Free: a text field on its own row. Pro: a future-only date picker sharing the row with a time.
+		// Free: a text field beside the service. Pro: a future-only date picker sharing the row with a time.
 		$this->assertSame( 'input', $date['fieldType'] );
-		$this->assertArrayNotHasKey( 'blockAttributes', $date );
+		$this->assertSame( [ 'fieldWidth' => 50 ], $date['blockAttributes'] );
 		$this->assertSame( 'date-picker', $date['pro']['fieldType'] );
 		$this->assertSame(
 			[

@@ -134,11 +134,15 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 			'loan-emi-calculator'      => [
 				'monthly-payment' => '489.15',
 				'total-interest'  => '4,349.22',
+				'total-repayment' => '29,349.22',
 			],
 			// 68 kg, 170 cm.
 			'bmi-calculator'           => [ 'bmi' => '23.5' ],
 			// 10 people x 5 hours x 40 an hour x 48 weeks.
-			'roi-savings-calculator'   => [ 'yearly-savings' => '96,000' ],
+			'roi-savings-calculator'   => [
+				'hours-saved-year' => '2,400',
+				'yearly-savings'   => '96,000',
+			],
 			// 8 base + 2 kg x 2.50 + standard.
 			'shipping-cost-estimator'  => [ 'shipping-cost' => '13.00' ],
 			'event-ticket-order'       => [ 'total' => '50.00' ],
@@ -154,7 +158,7 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 
 	public function test_payment_amount_samples_follow_the_amount_source() {
 		$samples = [
-			'donation-form'           => [ '{form-payment:donation:amount}', $this->symbol() . '10.00' ],
+			'donation-form'           => [ '{form-payment:donation:amount}', $this->symbol() . '25.00' ],
 			'booking-deposit'         => [ '{form-payment:deposit:amount}', $this->symbol() . '50.00' ],
 			'membership-subscription' => [ '{form-payment:membership:amount}', $this->symbol() . '9.00' ],
 			'event-ticket-order'      => [ '{form-payment:payment:amount}', $this->symbol() . '50.00' ],
@@ -178,7 +182,7 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 		$attributes = json_decode( $block[1], true );
 		$this->assertSame( $this->symbol(), $attributes['prefix'] );
 		$this->assertTrue( $attributes['enableCalculation'] );
-		$this->assertSame( '{form:service} + {form:pages} * 100 + {form:extras}', $attributes['calculationFormula'] );
+		$this->assertSame( '{form:service} + {form:pages} * 100 + {form:website-extras} + {form:store-extras} + {form:landing-extras}', $attributes['calculationFormula'] );
 		$this->assertSame( 0, $attributes['calculationRound'] );
 		$this->assertStringContainsString( '"showValues":true', $content );
 	}
@@ -234,16 +238,92 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 		}
 	}
 
+	public function test_instant_quote_add_ons_follow_the_service() {
+		$template = Form_Templates::get_template( 'instant-quote-calculator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		$services = wp_list_pluck( $fields['service']['fieldOptions'], 'label' );
+		foreach ( [ 'pages', 'website-extras', 'store-extras', 'landing-extras' ] as $slug ) {
+			$this->assertArrayHasKey( $slug, $template['conditions'], "{$slug} should follow the service." );
+			// The condition compares the dropdown's label, price included.
+			$this->assertContains( $template['conditions'][ $slug ]['logic'][0][0][2], $services );
+		}
+		// The example picks the first service, so only its add-ons count in the sample estimate.
+		$this->assertTrue( empty( $fields['website-extras']['no_sample'] ) );
+		$this->assertTrue( $fields['store-extras']['no_sample'] );
+		$this->assertTrue( $fields['landing-extras']['no_sample'] );
+		$this->assertStringNotContainsString( 'no_sample', Form_Templates::build_content( $template ) );
+	}
+
+	public function test_bmi_fields_follow_the_units_and_the_result() {
+		$template = Form_Templates::get_template( 'bmi-calculator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		$units    = wp_list_pluck( $fields['units']['fieldOptions'], 'optionTitle' );
+		foreach ( [ 'height-cm', 'weight-kg', 'height-ft', 'height-in', 'weight-lbs' ] as $slug ) {
+			$this->assertContains( $template['conditions'][ $slug ]['logic'][0][0][2], $units, "{$slug} should follow the units." );
+		}
+		// One pitch per BMI range, none while the BMI is still 0.
+		$this->assertSame( [ 'bmi', '>', '0' ], $template['conditions']['plan-under']['logic'][0][0] );
+		$this->assertSame( [ 'bmi', '>=', '25' ], $template['conditions']['plan-over']['logic'][0][0] );
+		foreach ( [ 'plan-under', 'plan-healthy', 'plan-over' ] as $slug ) {
+			$this->assertSame( 'html', $fields[ $slug ]['fieldType'] );
+		}
+		// 5 ft 7 in, 150 lb gives the same 23.5 as the metric example.
+		$formula = str_replace(
+			[ '{form:weight-kg}', '{form:height-cm}', '{form:weight-lbs}', '{form:height-ft}', '{form:height-in}' ],
+			[ '0', '0', '150', '5', '7' ],
+			$this->formula( $fields['bmi'] )
+		);
+		$this->assertSame( '23.5', number_format( (float) Formula::evaluate( $formula ), 1 ) );
+	}
+
+	public function test_roi_shows_cards_and_asks_walkthrough_details_only_when_wanted() {
+		$template = Form_Templates::get_template( 'roi-savings-calculator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		// Live cards show the results; hidden fields keep them for the messages.
+		foreach ( [ 'savings-card', 'hours-card', 'staff-line' ] as $slug ) {
+			$this->assertSame( 'html', $fields[ $slug ]['fieldType'] );
+			$this->assertTrue( $fields[ $slug ]['blockAttributes']['enableCalculation'] );
+		}
+		foreach ( [ 'hours-saved-year', 'yearly-savings' ] as $slug ) {
+			$this->assertSame( 'hidden', $fields[ $slug ]['fieldType'] );
+		}
+		$this->assertArrayHasKey( 'contact-step', $fields );
+		$walkthrough = wp_list_pluck( $fields['walkthrough']['fieldOptions'], 'optionTitle' );
+		foreach ( [ 'phone', 'best-time' ] as $slug ) {
+			$this->assertSame( $walkthrough[0], $template['conditions'][ $slug ]['logic'][0][0][2] );
+		}
+		$this->assertSame( $walkthrough[0], $template['confirmations'][0]['rules'][0][2] );
+	}
+
+	public function test_shipping_speeds_follow_the_destination() {
+		$template = Form_Templates::get_template( 'shipping-cost-estimator' );
+		$fields   = array_column( Form_Templates::resolve_fields( $template, 'business' ), null, 'slug' );
+		$zones    = wp_list_pluck( $fields['zone']['fieldOptions'], 'label' );
+		foreach ( [ 'speed-domestic', 'speed-neighbouring', 'speed-international' ] as $index => $slug ) {
+			$this->assertSame( $zones[ $index ], $template['conditions'][ $slug ]['logic'][0][0][2], "{$slug} should follow its destination." );
+			$this->assertStringContainsString( '{form:' . $slug . '}', $this->formula( $fields['shipping-cost'] ) );
+		}
+		// The example picks the first destination, so only its speeds count in the sample.
+		$this->assertTrue( empty( $fields['speed-domestic']['no_sample'] ) );
+		$this->assertTrue( $fields['speed-international']['no_sample'] );
+	}
+
 	public function test_calculated_inputs_are_required() {
 		foreach ( $this->templates_in( [ 'calculators', 'payments' ] ) as $id => $template ) {
 			$fields   = Form_Templates::resolve_fields( $template, 'business' );
 			$required = wp_list_pluck( array_filter( $fields, static fn( $field ) => ! empty( $field['required'] ) ), 'slug' );
 			foreach ( $this->calculated_fields( $template ) as $field ) {
-				$this->assertContains( $field['slug'], $required );
+				if ( 'calculators' === $template['category'] ) {
+					// Nobody types in a result, so it shows no required mark.
+					$this->assertNotContains( $field['slug'], $required, "{$id}: {$field['slug']} is worked out, so it should not look required." );
+				} else {
+					// A payment takes its amount from the total, which must not be empty.
+					$this->assertContains( $field['slug'], $required );
+				}
 				preg_match_all( '/\{form:([a-z0-9-]+)\}/', $this->formula( $field ), $tags );
 				foreach ( $tags[1] as $slug ) {
-					// Optional add-ons simply add nothing.
-					if ( 'extras' !== $slug ) {
+					// Optional add-ons and inches simply add nothing.
+					if ( ! preg_match( '/(^|-)extras$/', $slug ) && 'height-in' !== $slug ) {
 						$this->assertContains( $slug, $required, "{$id}: {$field['slug']} reads the optional {$slug}." );
 					}
 				}

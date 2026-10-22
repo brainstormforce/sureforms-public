@@ -15,7 +15,6 @@
  */
 
 use SRFM\Inc\Form_Templates\Catalog;
-use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,10 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
-$currency  = Payment_Helper::get_currency();
-$symbol    = Payment_Helper::get_currency_symbol( $currency );
-$symbol    = '' === $symbol ? $currency . ' ' : $symbol;
-$money     = static fn( $amount ) => $symbol . number_format_i18n( $amount );
+$symbol    = Catalog::currency_symbol();
+$money     = [ Catalog::class, 'money' ];
 $setup     = [ 'stripe', 'paypal' ];
 
 /*
@@ -52,7 +49,8 @@ $payment = static function ( $slug, $label, $schema ) {
 
 /*
  * A choice whose options carry a price: the label shows it, the option value
- * is the amount the payment field or the calculation uses.
+ * is the amount the payment field or the calculation uses. An optional third
+ * item is the option's icon.
  */
 $priced_options = static function ( $options ) {
 	$list = [];
@@ -60,7 +58,7 @@ $priced_options = static function ( $options ) {
 		$list[] = [
 			'optionTitle' => $option[0],
 			'value'       => (string) $option[1],
-			'icon'        => '',
+			'icon'        => $option[2] ?? '',
 		];
 	}
 	return [
@@ -109,15 +107,15 @@ return [
 				Catalog::field(
 					'multi-choice',
 					'amount',
-					__( 'Choose an Amount', 'sureforms' ),
+					__( 'Choose an amount', 'sureforms' ),
 					true,
-					$priced_options( [ [ $money( 10 ), 10 ], [ $money( 25 ), 25 ], [ $money( 50 ), 50 ], [ $money( 100 ), 100 ] ] )
+					$priced_options( [ [ $money( 25 ), 25 ], [ $money( 50 ), 50 ], [ $money( 100 ), 100 ], [ $money( 250 ), 250 ] ] )
 				),
 				[ 'choiceWidth' => 25 ]
 			),
 			$payment(
 				'donation',
-				__( 'Your Donation', 'sureforms' ),
+				__( 'Your donation', 'sureforms' ),
 				[
 					'paymentType'                     => 'both',
 					'oneTimeLabel'                    => __( 'Give once', 'sureforms' ),
@@ -138,7 +136,7 @@ return [
 					'customerEmailField'              => 'email',
 				]
 			),
-			Catalog::attrs( Catalog::field( 'textarea', 'dedication', __( 'Dedicate Your Gift', 'sureforms' ), false, [ 'placeholder' => __( 'Optional: in honor or memory of someone, or a note for our team', 'sureforms' ) ] ), [ 'rows' => 2 ] ),
+			Catalog::attrs( Catalog::field( 'textarea', 'dedication', __( 'Dedicate your gift', 'sureforms' ), false, [ 'placeholder' => __( 'Optional: in honor or memory of someone, or a note for our team', 'sureforms' ) ] ), [ 'rows' => 2 ] ),
 			Catalog::field( 'checkbox', 'anonymous', __( 'Keep my donation anonymous', 'sureforms' ) ),
 			$c['consent'],
 		],
@@ -167,37 +165,82 @@ return [
 		'description'   => __( 'Take a deposit when clients book so you get paid for the slots you hold.', 'sureforms' ),
 		'submit_text'   => __( 'Pay deposit and book', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'service', __( 'Service', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'Consultation', 'sureforms' ), __( 'Standard session', 'sureforms' ), __( 'Extended session', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a service', 'sureforms' ) ] ) ), $no_search ), 50 ),
-			Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true ),
-			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. preferred time of day, access needs', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			// With Premium the date and time pickers share a row, so the
+			// service takes the full row above them.
+			Catalog::width(
+				Catalog::attrs(
+					Catalog::field(
+						'dropdown',
+						'service',
+						__( 'Service', 'sureforms' ),
+						true,
+						array_merge(
+							Catalog::dropdown_options( [ __( 'Consultation', 'sureforms' ), __( 'Standard session', 'sureforms' ), __( 'Extended session', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ),
+							[
+								'placeholder' => __( 'Select a service', 'sureforms' ),
+								'pro'         => [ 'blockAttributes' => [ 'fieldWidth' => 100 ] ],
+							]
+						)
+					),
+					$no_search
+				),
+				50
+			),
+			Catalog::width( Catalog::date_field( 'preferred-date', __( 'Preferred date', 'sureforms' ), true, true ), 50 ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'preferred-time',
+					__( 'Preferred time', 'sureforms' ),
+					true,
+					array_merge(
+						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ),
+						[
+							'pro' => [
+								'fieldType'       => 'time-picker',
+								'minTime'         => '09:00',
+								'maxTime'         => '18:00',
+								'increment'       => 30,
+								'blockAttributes' => [ 'fieldWidth' => 50 ],
+							],
+						]
+					)
+				),
+				[
+					'choiceWidth'    => 33.33,
+					'verticalLayout' => false,
+				]
+			),
+			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. access needs, or questions before your visit', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$payment(
 				'deposit',
-				__( 'Booking Deposit', 'sureforms' ),
+				__( 'Booking deposit', 'sureforms' ),
 				[
 					'paymentType'        => 'one-time',
 					'amountType'         => 'fixed',
 					'fixedAmount'        => 50,
-					'customerNameField'  => 'full-name',
+					'customerNameField'  => 'name',
 					'customerEmailField' => 'email',
 					/* translators: %s: deposit amount. */
-					'helpText'           => sprintf( __( 'A %s deposit holds your booking and comes off the final price.', 'sureforms' ), $money( 50 ) ),
+					'helpText'           => sprintf( __( 'A %s deposit holds your booking and comes off the final price. If we can\'t offer your date, we\'ll refund it in full.', 'sureforms' ), $money( 50 ) ),
 				]
 			),
 			$c['consent'],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Deposit received', 'sureforms' ),
-			'text'    => __( 'Thanks, {form:full-name}. Your deposit of {form-payment:deposit:amount} is paid. We will confirm your {form:service} on {form:preferred-date} by email shortly.', 'sureforms' ),
+			'text'    => __( 'Thanks, {form:name}. Your deposit of {form-payment:deposit:amount} is paid. We will confirm your {form:service} on {form:preferred-date}, {form:preferred-time} by email shortly.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Deposit paid: {form:service} for {form:full-name} on {form:preferred-date}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} paid a {form-payment:deposit:amount} deposit (order {form-payment:deposit:order-id}) for {form:service} on {form:preferred-date}. Reply to this email to confirm the booking, or call them on {form:phone}.', 'sureforms' ),
+		'email_subject' => __( 'Deposit paid: {form:service} for {form:name} on {form:preferred-date}, {form:preferred-time}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} paid a {form-payment:deposit:amount} deposit (order {form-payment:deposit:order-id}) for {form:service} on {form:preferred-date}, {form:preferred-time}. Reply to this email to confirm the booking, or call them on {form:phone}.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'Your deposit is paid', 'sureforms' ),
-			'lines'   => [
-				__( 'Thanks for your booking. We have received your deposit of {form-payment:deposit:amount} for {form:service} on {form:preferred-date}.', 'sureforms' ),
+			'subject'  => __( 'Your deposit is paid', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
+				__( 'Thanks for your booking. We have received your deposit of {form-payment:deposit:amount} for {form:service} on {form:preferred-date}, {form:preferred-time}.', 'sureforms' ),
 				__( 'We will confirm the exact time shortly. The deposit comes off your final price. Order reference: {form-payment:deposit:order-id}.', 'sureforms' ),
 			],
 		],
@@ -212,28 +255,33 @@ return [
 		'description'   => __( 'Sign members up for a monthly recurring plan until they cancel.', 'sureforms' ),
 		'submit_text'   => __( 'Start my membership', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			$c['email'],
 			Catalog::attrs(
 				Catalog::field(
 					'multi-choice',
 					'plan',
-					__( 'Choose Your Plan', 'sureforms' ),
+					__( 'Choose your plan', 'sureforms' ),
 					true,
-					$priced_options(
-						[
-							[ $label_with_price( __( 'Basic', 'sureforms' ), $per_month( $money( 9 ) ) ), 9 ],
-							[ $label_with_price( __( 'Plus', 'sureforms' ), $per_month( $money( 19 ) ) ), 19 ],
-							[ $label_with_price( __( 'Premium', 'sureforms' ), $per_month( $money( 39 ) ) ), 39 ],
-						]
+					array_merge(
+						$priced_options(
+							[
+								[ $label_with_price( __( 'Basic', 'sureforms' ), $per_month( $money( 9 ) ) ), 9, 'leaf' ],
+								[ $label_with_price( __( 'Plus', 'sureforms' ), $per_month( $money( 19 ) ) ), 19, 'star' ],
+								[ $label_with_price( __( 'Premium', 'sureforms' ), $per_month( $money( 39 ) ) ), 39, 'crown' ],
+							]
+						),
+						[ 'helpText' => __( 'Billed monthly. Cancel any time.', 'sureforms' ) ]
 					)
 				),
-				[ 'choiceWidth' => 33.33 ]
+				[
+					'choiceWidth'    => 100,
+					'verticalLayout' => false,
+				]
 			),
 			$payment(
 				'membership',
-				__( 'Payment', 'sureforms' ),
+				__( 'Payment details', 'sureforms' ),
 				[
 					'paymentType'         => 'subscription',
 					'amountType'          => 'variable',
@@ -243,21 +291,21 @@ return [
 						'interval'      => 'month',
 						'billingCycles' => 'ongoing',
 					],
-					'customerNameField'   => 'first-name',
+					'customerNameField'   => 'name',
 					'customerEmailField'  => 'email',
 				]
 			),
 			$c['consent'],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Welcome aboard, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Welcome aboard, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your {form:plan} membership is active. We have sent the details to {form:email}. You can cancel any time by replying to that email.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New member: {form:first-name} {form:last-name} ({form:plan})', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} joined on the {form:plan} plan. First payment: {form-payment:membership:amount}, order {form-payment:membership:order-id}.', 'sureforms' ),
+		'email_subject' => __( 'New member: {form:name} ({form:plan})', 'sureforms' ),
+		'email_intro'   => __( '{form:name} joined on the {form:plan} plan. First payment: {form-payment:membership:amount}, order {form-payment:membership:order-id}.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Welcome to your membership', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for joining. Your {form:plan} membership is active, and your first payment of {form-payment:membership:amount} has gone through.', 'sureforms' ),
 				__( 'You will be billed monthly until you cancel. To change or cancel your plan, just reply to this email.', 'sureforms' ),
@@ -342,8 +390,7 @@ return [
 		'description'     => __( 'Register people for a paid class or a workshop.', 'sureforms' ),
 		'submit_text'     => __( 'Register and pay', 'sureforms' ),
 		'fields'          => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::attrs(
@@ -364,7 +411,22 @@ return [
 			),
 			Catalog::width( Catalog::number_field( 'seats', __( 'Seats', 'sureforms' ), true, 1, 10, [ 'placeholder' => __( 'e.g. 1', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $total( '{form:session} * {form:seats}' ), 50 ),
-			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything the instructor should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Experience level, access needs, names of the other attendees', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			// One row per other person, only when more than one seat is booked. Seats sets the price.
+			Catalog::field(
+				'repeater',
+				'other-attendees',
+				__( 'Other attendees', 'sureforms' ),
+				false,
+				[
+					'minItems'    => 1,
+					'maxItems'    => 9,
+					'innerFields' => [
+						Catalog::width( Catalog::field( 'input', 'attendee-name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Alex Kim', 'sureforms' ) ] ), 50 ),
+						Catalog::width( Catalog::field( 'email', 'attendee-email', __( 'Email (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'alex@example.com', 'sureforms' ) ] ), 50 ),
+					],
+				]
+			),
+			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything the instructor should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Experience level or access needs', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$payment(
 				'payment',
 				__( 'Payment', 'sureforms' ),
@@ -372,21 +434,24 @@ return [
 					'paymentType'         => 'one-time',
 					'amountType'          => 'variable',
 					'variableAmountField' => 'total',
-					'customerNameField'   => 'first-name',
+					'customerNameField'   => 'name',
 					'customerEmailField'  => 'email',
 				]
 			),
 			$c['consent'],
 		],
+		'conditions'      => [
+			'other-attendees' => [ 'logic' => [ [ [ 'seats', '>=', '2' ] ] ] ],
+		],
 		'confirmation'    => [
-			'heading' => __( 'See you in class, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'See you in class, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your {form:seats} seat(s) for the {form:session} session are booked and {form-payment:payment:amount} is paid. The details are on their way to {form:email}.', 'sureforms' ),
 		],
-		'email_subject'   => __( 'Class registration: {form:first-name} {form:last-name}, {form:seats} seat(s), {form:session}', 'sureforms' ),
-		'email_intro'     => __( '{form:first-name} {form:last-name} booked {form:seats} seat(s) for the {form:session} session and paid {form-payment:payment:amount} (order {form-payment:payment:order-id}). Reply to this email to reach them.', 'sureforms' ),
+		'email_subject'   => __( 'Class registration: {form:name}, {form:seats} seat(s), {form:session}', 'sureforms' ),
+		'email_intro'     => __( '{form:name} booked {form:seats} seat(s) for the {form:session} session and paid {form-payment:payment:amount} (order {form-payment:payment:order-id}). Reply to this email to reach them.', 'sureforms' ),
 		'autoresponder'   => [
 			'subject'  => __( 'You are booked in', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for registering. Your {form:seats} seat(s) for the {form:session} session are confirmed and {form-payment:payment:amount} is paid.', 'sureforms' ),
 				__( 'We will send a reminder with the details before the class. Questions? Just reply to this email.', 'sureforms' ),

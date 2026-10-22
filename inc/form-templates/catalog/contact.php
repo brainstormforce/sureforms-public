@@ -41,8 +41,7 @@ return [
 		'description'   => __( 'A simple form for visitors to send you a message.', 'sureforms' ),
 		'submit_text'   => __( 'Send message', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::field( 'input', 'subject', __( 'Subject', 'sureforms' ), false, [ 'placeholder' => __( 'What is this about?', 'sureforms' ) ] ),
@@ -51,14 +50,14 @@ return [
 			$source_page,
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your message is with us. We will reply to {form:email} as soon as we can.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New message from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} sent a message through your contact form. Reply to this email to answer them directly.', 'sureforms' ),
+		'email_subject' => __( 'New message from {form:name}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} sent a message through your contact form. Reply to this email to answer them directly.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Thanks for contacting {site_title}', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [ __( 'Thanks for reaching out. Your message has reached us and we will get back to you as soon as we can.', 'sureforms' ) ],
 		],
 	],
@@ -72,8 +71,7 @@ return [
 		'submit_text'    => __( 'Request my quote', 'sureforms' ),
 		'steps'          => [ __( 'Your details', 'sureforms' ), __( 'Your project', 'sureforms' ) ],
 		'fields'         => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
 			Catalog::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'If you are asking for a business', 'sureforms' ) ] ),
@@ -114,14 +112,14 @@ return [
 		// With SureForms Pro, the files arrive with the notification.
 		'attach_uploads' => [ 'attachments' ],
 		'confirmation'   => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your quote request is in. We will review your project details and send your estimate to {form:email}.', 'sureforms' ),
 		],
-		'email_subject'  => __( 'Quote request: {form:service} from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'    => __( '{form:first-name} {form:last-name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
+		'email_subject'  => __( 'Quote request: {form:service} from {form:name}', 'sureforms' ),
+		'email_intro'    => __( '{form:name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
 		'autoresponder'  => [
 			'subject'  => __( 'We received your quote request', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [ __( 'Thanks for telling us about your project. We will review the details and get back to you with an estimate.', 'sureforms' ) ],
 		],
 	],
@@ -187,13 +185,20 @@ return [
 				),
 				[ 'rows' => 4 ]
 			),
-			Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true ) ),
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true, [ 'video', 'phone', 'handshake' ] ) ),
+				// Icon beside the text, the three choices side by side.
+				[
+					'verticalLayout' => false,
+					'choiceWidth'    => 33.33,
+				]
+			),
 			Catalog::width( Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), false, true ) + [ 'pro_only' => true ], 50 ),
 			Catalog::width(
 				Catalog::field(
 					'time-picker',
 					'preferred-time',
-					__( 'Preferred Time', 'sureforms' ),
+					__( 'Preferred time', 'sureforms' ),
 					false,
 					[
 						'pro_only'  => true,
@@ -229,8 +234,17 @@ return [
 		'description'   => __( 'Answer questions about a product before someone buys.', 'sureforms' ),
 		'submit_text'   => __( 'Send my question', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
+			Catalog::width( $c['phone'], 50 ),
+			Catalog::attrs(
+				Catalog::field( 'multi-choice', 'topic', __( 'What would you like to know?', 'sureforms' ), true, Catalog::choice_options( [ __( 'Price & bulk orders', 'sureforms' ), __( 'Stock & delivery', 'sureforms' ), __( 'Product details', 'sureforms' ), __( 'Something else', 'sureforms' ) ], true, [ 'tags', 'truck', 'circle-info', 'circle-question' ] ) ),
+				// Icon beside the text, two choices per row.
+				[
+					'verticalLayout' => false,
+					'choiceWidth'    => 50,
+				]
+			),
 			Catalog::width( Catalog::field( 'input', 'product', __( 'Product', 'sureforms' ), true, [ 'placeholder' => __( 'Product name or code', 'sureforms' ) ] ), 66.66 ),
 			Catalog::width( Catalog::number_field( 'quantity', __( 'Quantity', 'sureforms' ), false, 1, 10000, [ 'placeholder' => '1' ] ), 33.33 ),
 			Catalog::attrs( Catalog::field( 'textarea', 'question', __( 'Your Question', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Is it in stock? Does it come in other sizes? Do you offer bulk pricing?', 'sureforms' ) ] ), [ 'rows' => 4 ] ),
@@ -254,11 +268,12 @@ return [
 				'rules'   => [ [ 'quantity', '_REGEX_', '^([5-9][0-9]|[1-9][0-9]{2,}|[1-9][0-9]{0,2}[.,][0-9]{3})$' ] ],
 			],
 		],
-		'email_subject' => __( 'Product question: {form:product} from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} has a question about {form:product}. Reply to this email to answer them directly.', 'sureforms' ),
+		'email_subject' => __( 'Product question ({form:topic}): {form:product} from {form:name}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} has a question about {form:product} ({form:topic}). Reply to this email to answer them directly.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'We got your question about {form:product}', 'sureforms' ),
-			'lines'   => [ __( 'Thanks for your interest in {form:product}. We have received your question and will get back to you with an answer soon.', 'sureforms' ) ],
+			'subject'  => __( 'We got your question about {form:product}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [ __( 'Thanks for your interest in {form:product}. We have received your question and will get back to you with an answer soon.', 'sureforms' ) ],
 		],
 	],
 	[

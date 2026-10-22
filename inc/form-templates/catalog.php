@@ -14,6 +14,7 @@ namespace SRFM\Inc\Form_Templates;
 
 use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -194,6 +195,29 @@ class Catalog {
 	 */
 	public static function thank_you( $heading, $text ) {
 		return Form_Templates::confirmation_message( $heading, $text );
+	}
+
+	/**
+	 * The site's currency symbol, or its code and a space when it has no symbol.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function currency_symbol() {
+		$currency = Payment_Helper::get_currency();
+		$symbol   = Payment_Helper::get_currency_symbol( $currency );
+		return '' === $symbol ? $currency . ' ' : $symbol;
+	}
+
+	/**
+	 * An amount in the site's currency, e.g. "$1,500".
+	 *
+	 * @param float|int $amount Amount.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function money( $amount ) {
+		return self::currency_symbol() . number_format_i18n( $amount );
 	}
 
 	/**

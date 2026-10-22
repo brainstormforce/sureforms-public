@@ -417,7 +417,7 @@ class Test_Form_Templates_UI extends TestCase {
 			$this->assertNotContains( 'hidden', $types, $id );
 			$this->assertNotContains( 'page-break', $types, $id );
 		}
-		$this->assertSame( 'First Name', $cards['contact-us'][0]['l'] );
+		$this->assertSame( 'Name', $cards['contact-us'][0]['l'] );
 	}
 
 	public function test_card_fields_show_a_locked_template_as_its_premium_version() {

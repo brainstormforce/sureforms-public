@@ -21,22 +21,24 @@ class Test_Form_Templates_Enhancements extends TestCase {
 	 * @var array<string, string>
 	 */
 	private const FREE_FIELDS = [
-		'contact-us'           => 'first-name:input last-name:input email:email phone:phone subject:input message:textarea consent:gdpr',
-		'quote-request'        => 'first-name:input last-name:input email:email phone:phone company:input service:dropdown budget:dropdown timeline:dropdown project-details:textarea consent:gdpr',
+		'contact-us'           => 'name:input email:email phone:phone subject:input message:textarea consent:gdpr',
+		'quote-request'        => 'name:input email:email phone:phone company:input service:dropdown budget:dropdown timeline:dropdown project-details:textarea consent:gdpr',
 		'consultation-request' => 'first-name:input last-name:input email:email phone:phone company:input website:url goals:textarea meeting-type:multi-choice how-heard:dropdown consent:gdpr',
-		'product-inquiry'      => 'full-name:input email:email product:input quantity:number question:textarea consent:gdpr',
+		'product-inquiry'      => 'name:input email:email phone:phone topic:multi-choice product:input quantity:number question:textarea consent:gdpr',
 		'partnership-inquiry'  => 'full-name:input email:email company:input job-title:input website:url partnership-type:dropdown proposal:textarea consent:gdpr',
-		'appointment-request'  => 'full-name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice notes:textarea consent:gdpr',
-		'event-registration'   => 'full-name:input email:email phone:phone attendees:number organization:input dietary:multi-choice questions:textarea event-updates:checkbox consent:gdpr',
+		'appointment-request'  => 'name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice meeting-type:multi-choice notes:textarea consent:gdpr',
+		'event-registration'   => 'name:input email:email phone:phone attendees:number organization:input questions:textarea event-updates:checkbox consent:gdpr',
 		'rsvp'                 => 'first-name:input last-name:input email:email attending:multi-choice guests:number dietary:input message:textarea consent:gdpr',
-		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea full-name:input email:email',
-		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email',
-		'website-feedback'     => 'found-it:multi-choice ease:multi-choice improve:textarea page:input email:email',
-		'complaint'            => 'full-name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
-		'support-request'      => 'full-name:input email:email topic:dropdown order-number:input subject:input priority:multi-choice description:textarea link:url consent:gdpr',
-		'bug-report'           => 'full-name:input email:email summary:input severity:multi-choice what-happened:textarea steps:textarea page-url:url browser:dropdown device:dropdown screenshot:url consent:gdpr',
-		'volunteer-signup'     => 'full-name:input email:email phone:phone availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
-		'job-application'      => 'full-name:input email:email phone:phone position:input cv:url linkedin:url portfolio:url years-experience:number start-date:dropdown cover-letter:textarea consent:gdpr',
+		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea name:input email:email consent:gdpr',
+		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email consent:gdpr',
+		'website-feedback'     => 'found-it:multi-choice ease:multi-choice improve:textarea page:input email:email consent:gdpr',
+		'complaint'            => 'name:input email:email phone:phone reference:input complaint-type:dropdown incident-date:input details:textarea evidence:url resolution:textarea consent:gdpr',
+		'support-request'      => 'name:input email:email topic:dropdown order-number:input subject:input priority:multi-choice description:textarea link:url consent:gdpr',
+		'bug-report'           => 'name:input email:email summary:input severity:multi-choice what-happened:textarea steps:textarea page-url:url browser:dropdown device:dropdown screenshot:url consent:gdpr',
+		'volunteer-signup'     => 'name:input email:email phone:phone over-18:multi-choice availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
+		'job-application'      => 'name:input email:email phone:phone position:input cv:url linkedin:url portfolio:url years-experience:number start-date:dropdown cover-letter:textarea how-heard:dropdown consent:gdpr',
+		'booking-deposit'      => 'name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice notes:textarea deposit:payment consent:gdpr',
+		'membership-subscription' => 'name:input email:email plan:multi-choice membership:payment consent:gdpr',
 	];
 
 	public function tear_down() {
@@ -97,11 +99,26 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		$this->assertTrue( $appointment['preferred-time']['required'] );
 		$this->assertSame( '09:00', $appointment['preferred-time']['minTime'] );
 		$this->assertSame( '18:00', $appointment['preferred-time']['maxTime'] );
-		// Date and time share a row with Pro; each fills its own row without it.
+		// Date and time share a row with Pro, under a full-width service. Without
+		// it the date sits beside the service.
+		$this->assertEquals( 100, $appointment['service']['blockAttributes']['fieldWidth'] );
 		$this->assertEquals( 50, $appointment['preferred-date']['blockAttributes']['fieldWidth'] );
 		$this->assertEquals( 50, $appointment['preferred-time']['blockAttributes']['fieldWidth'] );
 		$this->assertTrue( $appointment['preferred-date']['blockAttributes']['disablePastDates'] );
-		$this->assertArrayNotHasKey( 'fieldWidth', $this->fields( 'appointment-request', 'free' )['preferred-date']['blockAttributes'] ?? [] );
+		$free = $this->fields( 'appointment-request', 'free' );
+		$this->assertEquals( 50, $free['service']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $free['preferred-date']['blockAttributes']['fieldWidth'] );
+
+		$deposit = $this->fields( 'booking-deposit', 'business' );
+		$this->assertSame( 'time-picker', $deposit['preferred-time']['fieldType'] );
+		$this->assertSame( 'date-picker', $deposit['preferred-date']['fieldType'] );
+		$this->assertEquals( 100, $deposit['service']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $deposit['preferred-date']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $deposit['preferred-time']['blockAttributes']['fieldWidth'] );
+		$free = $this->fields( 'booking-deposit', 'free' );
+		$this->assertEquals( 50, $free['service']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $free['preferred-date']['blockAttributes']['fieldWidth'] );
+		$this->assertFalse( $free['preferred-time']['blockAttributes']['verticalLayout'] );
 
 		$consultation = $this->fields( 'consultation-request', 'starter' );
 		$this->assertSame( 'time-picker', $consultation['preferred-time']['fieldType'] );
@@ -111,7 +128,6 @@ class Test_Form_Templates_Enhancements extends TestCase {
 
 	public function test_signatures_need_the_pro_plan() {
 		$cases = [
-			'complaint'        => [ 'declaration-signature' ],
 			'volunteer-signup' => [ 'waiver-agreement', 'waiver-signature' ],
 		];
 		foreach ( $cases as $id => $slugs ) {
@@ -122,10 +138,6 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		}
 		$this->assertSame( 'signature', $this->fields( 'volunteer-signup', 'pro' )['waiver-signature']['fieldType'] );
 		$this->assertSame( 'checkbox', $this->fields( 'volunteer-signup', 'pro' )['waiver-agreement']['fieldType'] );
-
-		// The declaration sits on the complaint step, right before consent.
-		$complaint = array_keys( $this->fields( 'complaint', 'pro' ) );
-		$this->assertSame( 'consent', $complaint[ array_search( 'declaration-signature', $complaint, true ) + 1 ] );
 	}
 
 	public function test_declarations_point_at_fields_of_the_plan_that_builds_them() {
@@ -231,7 +243,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		$this->assertContains( 'conditional_logic', $items['website-feedback']['pro_features'] );
 		$this->assertContains( 'survey', $items['satisfaction-survey']['pro_features'] );
 		$this->assertContains( 'save_resume', $items['job-application']['pro_features'] );
-		$this->assertContains( 'signature', $items['complaint']['pro_features'] );
+		$this->assertNotContains( 'signature', $items['complaint']['pro_features'] );
 		$this->assertContains( 'signature', $items['volunteer-signup']['pro_features'] );
 
 		foreach ( [ 'rsvp', 'satisfaction-survey', 'job-application', 'complaint' ] as $id ) {

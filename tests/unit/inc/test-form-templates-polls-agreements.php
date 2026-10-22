@@ -3,8 +3,8 @@
  * Class Test_Form_Templates_Polls_Agreements
  *
  * The Premium poll, survey, lead and agreement templates: their plans, the Pro
- * features they declare and the fields those declarations name. The rental and
- * scholarship applications are covered by Test_Form_Templates_Accounts.
+ * features they declare and the fields those declarations name. The rental
+ * application is covered by Test_Form_Templates_Accounts.
  *
  * @package sureforms
  */
@@ -23,9 +23,8 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		'product-recommender'           => [ 'quizzes', 'starter' ],
 		'conversational-lead-qualifier' => [ 'contact', 'pro' ],
 		'ad-landing-lead-form'          => [ 'contact', 'starter' ],
-		'service-agreement'             => [ 'agreements', 'pro' ],
-		'liability-waiver'              => [ 'agreements', 'pro' ],
-		'photo-release-consent'         => [ 'agreements', 'pro' ],
+		'service-agreement'             => [ 'agreements', 'business' ],
+		'photo-release-consent'         => [ 'agreements', 'business' ],
 	];
 
 	public function tear_down() {
@@ -54,13 +53,12 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		}
 	}
 
-	public function test_only_pro_and_starter_feature_keys_are_declared() {
+	public function test_declared_feature_keys_need_the_plan_that_builds_them() {
 		foreach ( array_keys( self::TEMPLATES ) as $id ) {
 			$template = $this->template( $id );
 			$keys     = array_intersect_key( $template, Form_Templates::PRO_FEATURE_KEYS );
 			$required = Form_Templates::get_required_tier( $template );
 			foreach ( array_keys( $keys ) as $key ) {
-				$this->assertNotSame( 'business', Form_Templates::PRO_FEATURE_KEYS[ $key ], "Template {$id} declares the Business key {$key}." );
 				// The plan a template asks for builds every feature it declares.
 				$this->assertGreaterThanOrEqual(
 					array_search( Form_Templates::PRO_FEATURE_KEYS[ $key ], Form_Templates::TIERS, true ),
@@ -121,7 +119,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 	}
 
 	public function test_signatures_need_the_pro_plan() {
-		$with_signature = [ 'service-agreement', 'liability-waiver', 'photo-release-consent' ];
+		$with_signature = [ 'service-agreement', 'photo-release-consent' ];
 		foreach ( $with_signature as $id ) {
 			$template   = $this->template( $id );
 			$signatures = array_filter( $template['fields'], static fn( $f ) => 'signature' === $f['fieldType'] );
@@ -143,7 +141,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 	}
 
 	public function test_agreement_terms_are_marked_as_starter_wording() {
-		foreach ( [ 'service-agreement', 'liability-waiver', 'photo-release-consent' ] as $id ) {
+		foreach ( [ 'service-agreement', 'photo-release-consent' ] as $id ) {
 			$html = array_values( array_filter( $this->template( $id )['fields'], static fn( $f ) => 'html' === $f['fieldType'] ) );
 			$this->assertCount( 1, $html, "Template {$id} has no terms block." );
 			$this->assertTrue( $html[0]['pro_only'] );
@@ -151,16 +149,6 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 			// What the mapper keeps is what was written.
 			$this->assertSame( wp_kses_post( $html[0]['htmlContent'] ), $html[0]['htmlContent'] );
 		}
-	}
-
-	public function test_waiver_shows_guardian_fields_for_minors() {
-		$template = $this->template( 'liability-waiver' );
-		$this->assertSame( [ 'guardian-name', 'guardian-signature' ], array_keys( $template['conditions'] ) );
-		foreach ( $template['conditions'] as $condition ) {
-			$this->assertSame( [ [ [ 'under-18', 'isChecked' ] ] ], $condition['logic'] );
-		}
-		$under_18 = wp_list_filter( $template['fields'], [ 'slug' => 'under-18' ] );
-		$this->assertSame( 'checkbox', reset( $under_18 )['fieldType'] );
 	}
 
 	public function test_ad_lead_form_records_utm_tags_in_hidden_fields() {
@@ -173,6 +161,9 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 				'utm-medium'   => '{get_input:utm_medium}',
 				'utm-campaign' => '{get_input:utm_campaign}',
 				'utm-content'  => '{get_input:utm_content}',
+				'utm-term'     => '{get_input:utm_term}',
+				'gclid'        => '{get_input:gclid}',
+				'fbclid'       => '{get_input:fbclid}',
 				'landing-page' => '{current_page_url}',
 			],
 			$hidden

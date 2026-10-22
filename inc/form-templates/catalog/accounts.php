@@ -81,20 +81,30 @@ return [
 		'description'   => __( 'Let visitors create their own account with a password.', 'sureforms' ),
 		'submit_text'   => __( 'Create my account', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
-			Catalog::width( Catalog::field( 'input', 'username', __( 'Username', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. janesmith', 'sureforms' ) ] ), 50 ),
-			Catalog::width( $c['email'], 50 ),
+			// For people who already have an account; the link is this site's own login page.
+			array_merge( $c['first_name'], [ 'label' => __( 'First name', 'sureforms' ) ] ),
+			array_merge( $c['last_name'], [ 'label' => __( 'Last name', 'sureforms' ) ] ),
+			Catalog::field(
+				'input',
+				'username',
+				__( 'Username', 'sureforms' ),
+				true,
+				[
+					'placeholder' => __( 'e.g. janesmith', 'sureforms' ),
+					'helpText'    => __( 'You can sign in with your username or your email.', 'sureforms' ),
+				]
+			),
+			$c['email'],
 			Catalog::field(
 				'password',
 				'password',
 				__( 'Password', 'sureforms' ),
 				true,
 				[
-					'isConfirmPassword'        => true,
+					// One box: the eye lets people check what they typed, so no confirm box.
+					'isConfirmPassword'        => false,
 					'checkPasswordStrength'    => true,
 					'togglePasswordVisibility' => true,
-					'confirmLabel'             => __( 'Confirm Password', 'sureforms' ),
 				]
 			),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details to create and manage my account.', 'sureforms' ) ] ),
@@ -126,26 +136,49 @@ return [
 		'title'         => __( 'Guest Post Submission', 'sureforms' ),
 		'description'   => __( 'Accept guest post submissions for your review.', 'sureforms' ),
 		'submit_text'   => __( 'Submit my post', 'sureforms' ),
+		// About the writer first, then the post on a screen of its own.
+		'steps'         => [ __( 'About you', 'sureforms' ), __( 'Your post', 'sureforms' ) ],
 		'fields'        => [
-			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your Name', 'sureforms' ) ] ), 50 ),
+			// What you accept, before anyone writes a whole article. Edit it to match your site.
+			Catalog::field(
+				'html',
+				'guidelines',
+				'',
+				false,
+				[ 'htmlContent' => '<div style="padding: 12px 16px;border-radius: 8px;background: #f5f3ff"><p style="margin: 0 0 4px;font-size: 15px"><strong>' . esc_html__( 'Before you submit', 'sureforms' ) . '</strong></p><p style="margin: 0;font-size: 15px;line-height: 1.6">' . esc_html__( 'Original work only, around 800 to 2,000 words, with at most two links. We may edit for length and style.', 'sureforms' ) . '</p></div>' ]
+			),
+			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your name', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
-			Catalog::field( 'input', 'post-title', __( 'Post Title', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 5 Simple Ways to Cut Your Energy Bill', 'sureforms' ) ] ),
+			Catalog::field( 'url', 'website', __( 'Your website or a link to your work (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'https://', 'sureforms' ) ] ),
 			Catalog::attrs(
-				Catalog::field( 'textarea', 'post-content', __( 'Your Post', 'sureforms' ), true, [ 'helpText' => __( 'Write or paste your article. You can add headings, links and lists.', 'sureforms' ) ] ),
+				Catalog::field( 'textarea', 'author-bio', __( 'About you (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Jane writes about saving energy at home and runs the blog Small Green Steps.', 'sureforms' ) ] ),
+				[ 'rows' => 3 ]
+			),
+			Catalog::step( 'post-step', __( 'Your post', 'sureforms' ) ),
+			Catalog::field( 'input', 'post-title', __( 'Post title', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 5 Simple Ways to Cut Your Energy Bill', 'sureforms' ) ] ),
+			// Filled with the site's own categories when the form loads (dynamic options). It tells
+			// the editor where the post belongs; the post itself is filed when it is published.
+			Catalog::attrs(
+				Catalog::field( 'dropdown', 'category', __( 'Category', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'General', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a category', 'sureforms' ) ] ) ),
+				[
+					'searchable'        => false,
+					'optionsSource'     => 'dynamic',
+					'dynamicSourceType' => 'taxonomy',
+					'dynamicSource'     => 'category',
+				]
+			),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'post-content', __( 'Your post', 'sureforms' ), true, [ 'helpText' => __( 'Write or paste your article. You can add headings, links and lists.', 'sureforms' ) ] ),
 				[
 					'isRichText' => true,
 					'rows'       => 12,
 				]
 			),
 			Catalog::attrs(
-				Catalog::field( 'textarea', 'excerpt', __( 'Short Summary', 'sureforms' ), false, [ 'helpText' => __( 'One or two sentences shown in post listings.', 'sureforms' ) ] ),
+				Catalog::field( 'textarea', 'excerpt', __( 'Short summary (optional)', 'sureforms' ), false, [ 'helpText' => __( 'One or two sentences shown in post listings.', 'sureforms' ) ] ),
 				[ 'rows' => 2 ]
 			),
-			$image_upload( 'featured-image', __( 'Featured Image', 'sureforms' ), __( 'A landscape JPG, PNG or WebP image, up to 5 MB.', 'sureforms' ) ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'author-bio', __( 'About You', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Jane writes about saving energy at home and runs the blog Small Green Steps.', 'sureforms' ) ] ),
-				[ 'rows' => 3 ]
-			),
+			$image_upload( 'featured-image', __( 'Featured image (optional)', 'sureforms' ), __( 'A landscape JPG, PNG or WebP image, up to 5 MB.', 'sureforms' ) ),
 			Catalog::field( 'checkbox', 'original-work', __( 'This is my original work and has not been published elsewhere.', 'sureforms' ), true ),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can review my post and contact me about it.', 'sureforms' ) ] ),
 		],
@@ -164,102 +197,12 @@ return [
 			'text'    => __( 'Your post “{form:post-title}” is waiting for review. We will email you at {form:email} once we have read it.', 'sureforms' ),
 		],
 		'email_subject' => __( 'New guest post for review: {form:post-title}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} submitted “{form:post-title}”. It is waiting for review under Posts, marked Pending.', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} submitted “{form:post-title}” for the category {form:category}. It is waiting for review under Posts, marked Pending.', 'sureforms' ),
 		'autoresponder' => [
 			'subject' => __( 'We received your post “{form:post-title}”', 'sureforms' ),
 			'lines'   => [
 				__( 'Thank you for writing for {site_title}. Your post is now waiting for review.', 'sureforms' ),
 				__( 'We read every submission and will let you know whether it is accepted or needs changes.', 'sureforms' ),
-			],
-		],
-	],
-	[
-		'id'            => 'business-directory-listing',
-		'preview_image' => 'business-directory-listing.webp',
-		'category'      => 'accounts',
-		'theme'         => 'mint',
-		'icon'          => 'store',
-		'requires'      => 'business',
-		'title'         => __( 'Business Directory Listing', 'sureforms' ),
-		'description'   => __( 'Businesses submit a directory listing with their logo for approval.', 'sureforms' ),
-		'submit_text'   => __( 'Submit my listing', 'sureforms' ),
-		'fields'        => [
-			Catalog::width( Catalog::field( 'input', 'business-name', __( 'Business Name', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::field(
-						'dropdown',
-						'category',
-						__( 'Category', 'sureforms' ),
-						true,
-						array_merge(
-							Catalog::dropdown_options( [ __( 'Food and drink', 'sureforms' ), __( 'Shops and retail', 'sureforms' ), __( 'Health and beauty', 'sureforms' ), __( 'Home and garden services', 'sureforms' ), __( 'Professional services', 'sureforms' ), __( 'Other', 'sureforms' ) ] ),
-							[ 'placeholder' => __( 'Choose a category', 'sureforms' ) ]
-						)
-					),
-					$no_search
-				),
-				50
-			),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'description', __( 'About the Business', 'sureforms' ), true, [ 'helpText' => __( 'What you offer and what makes you different. This appears on your listing.', 'sureforms' ) ] ),
-				[ 'rows' => 5 ]
-			),
-			// Named sub-fields, so the post can show the address: the address block itself has no single value.
-			Catalog::field(
-				'address',
-				'address',
-				__( 'Business Address', 'sureforms' ),
-				true,
-				[
-					'innerFields' => [
-						Catalog::attrs( Catalog::field( 'input', 'street-address', __( 'Street Address', 'sureforms' ), true ), [ 'addressComponent' => 'line1' ] ),
-						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'city', __( 'City', 'sureforms' ), true ), 50 ), [ 'addressComponent' => 'city' ] ),
-						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'state', __( 'State or Region', 'sureforms' ), false ), 25 ), [ 'addressComponent' => 'state' ] ),
-						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'postal-code', __( 'Postal Code', 'sureforms' ), true ), 25 ), [ 'addressComponent' => 'postal_code' ] ),
-					],
-				]
-			),
-			Catalog::width(
-				array_merge(
-					$c['phone'],
-					[
-						'label'    => __( 'Business Phone', 'sureforms' ),
-						'required' => true,
-					]
-				),
-				50
-			),
-			Catalog::width( Catalog::field( 'url', 'website', __( 'Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'opening-hours', __( 'Opening Hours', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Mon–Fri 8am–6pm, Sat 9am–2pm, closed Sunday', 'sureforms' ) ] ),
-				[ 'rows' => 2 ]
-			),
-			$image_upload( 'logo', __( 'Logo', 'sureforms' ), __( 'A square JPG, PNG or WebP image, up to 5 MB.', 'sureforms' ) ),
-			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your Name', 'sureforms' ) ] ), 50 ),
-			Catalog::width( array_merge( $c['email'], [ 'label' => __( 'Your Email', 'sureforms' ) ] ), 50 ),
-			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store these details and publish the business details in its directory.', 'sureforms' ) ] ),
-		],
-		// The listing waits in Posts as Pending; the logo becomes its featured image.
-		'cpt'           => [
-			'name'           => __( 'Directory listing', 'sureforms' ),
-			'title'          => 'business-name',
-			'content'        => '<p>{form:description}</p><p>{form:street-address}, {form:city} {form:state} {form:postal-code}</p><p>{form:phone}<br>{form:website}</p><p>{form:opening-hours}</p>',
-			'featured_image' => 'logo',
-			'post_type'      => 'post',
-			'status'         => 'pending',
-		],
-		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:full-name}!', 'sureforms' ),
-			'text'    => __( 'We have received the listing for {form:business-name}. We will review it and email you at {form:email} once it is live.', 'sureforms' ),
-		],
-		'email_subject' => __( 'New directory listing for review: {form:business-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} submitted a listing for {form:business-name} ({form:category}). It is waiting for review under Posts, marked Pending.', 'sureforms' ),
-		'autoresponder' => [
-			'subject' => __( 'We received the listing for {form:business-name}', 'sureforms' ),
-			'lines'   => [
-				__( 'Thank you for adding {form:business-name} to the {site_title} directory.', 'sureforms' ),
-				__( 'We check every listing before it goes live, and will let you know when it is published.', 'sureforms' ),
 			],
 		],
 	],
@@ -275,14 +218,56 @@ return [
 		'description'   => __( 'Capture catering orders of any size, available for delivery or pickup.', 'sureforms' ),
 		'submit_text'   => __( 'Send my order', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
-			Catalog::width( Catalog::field( 'input', 'company', __( 'Company or Organization', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'company', __( 'Company or organization (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
+			// The event first: a caterer checks the date and size before the menu.
+			Catalog::width( Catalog::date_field( 'delivery-date', __( 'Date needed', 'sureforms' ), true, true ), 50 ),
+			Catalog::width(
+				Catalog::field(
+					'time-picker',
+					'delivery-time',
+					__( 'Time needed', 'sureforms' ),
+					true,
+					[
+						'increment' => 30,
+						'minTime'   => '07:00',
+						'maxTime'   => '20:00',
+					]
+				),
+				50
+			),
+			Catalog::number_field( 'guests', __( 'Number of guests', 'sureforms' ), true, 1, 5000, [ 'placeholder' => __( 'e.g. 40', 'sureforms' ) ] ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'fulfilment',
+					__( 'Delivery or pickup?', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true )
+				),
+				[ 'choiceWidth' => 50 ]
+			),
+			// Local delivery: no country list, and the region is optional.
+			Catalog::field(
+				'address',
+				'delivery-address',
+				__( 'Delivery address', 'sureforms' ),
+				true,
+				[
+					'innerFields' => [
+						Catalog::attrs( Catalog::field( 'input', 'street-address', __( 'Street address', 'sureforms' ), true ), [ 'addressComponent' => 'line1' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'city', __( 'City', 'sureforms' ), true ), 50 ), [ 'addressComponent' => 'city' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'state', __( 'State or region', 'sureforms' ), false ), 25 ), [ 'addressComponent' => 'state' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'postal-code', __( 'Postal code', 'sureforms' ), true ), 25 ), [ 'addressComponent' => 'postal_code' ] ),
+					],
+				]
+			),
 			Catalog::field(
 				'repeater',
 				'items',
-				__( 'Your Order', 'sureforms' ),
+				__( 'Your order', 'sureforms' ),
 				false,
 				[
 					'minItems'    => 1,
@@ -294,33 +279,7 @@ return [
 				]
 			),
 			Catalog::attrs(
-				Catalog::field(
-					'multi-choice',
-					'fulfilment',
-					__( 'Delivery or Pickup?', 'sureforms' ),
-					true,
-					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true )
-				),
-				[ 'choiceWidth' => 50 ]
-			),
-			Catalog::width( Catalog::date_field( 'delivery-date', __( 'Date Needed', 'sureforms' ), true, true ), 50 ),
-			Catalog::width(
-				Catalog::field(
-					'time-picker',
-					'delivery-time',
-					__( 'Time Needed', 'sureforms' ),
-					true,
-					[
-						'increment' => 30,
-						'minTime'   => '07:00',
-						'maxTime'   => '20:00',
-					]
-				),
-				50
-			),
-			Catalog::field( 'address', 'delivery-address', __( 'Delivery Address', 'sureforms' ), true ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'notes', __( 'Order Notes', 'sureforms' ), false, [ 'placeholder' => __( 'Allergies, dietary needs, packaging or delivery instructions', 'sureforms' ) ] ),
+				Catalog::field( 'textarea', 'notes', __( 'Order notes (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Allergies, dietary needs, packaging or delivery instructions', 'sureforms' ) ] ),
 				[ 'rows' => 3 ]
 			),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can confirm and deliver my order.', 'sureforms' ) ] ),
@@ -333,14 +292,15 @@ return [
 			],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks for your order, {form:full-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks for your order, {form:name}!', 'sureforms' ),
 			'text'    => __( 'We will check availability for {form:delivery-date} and email you at {form:email} to confirm your order and the total.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Bulk order for {form:delivery-date} from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} placed an order for {form:fulfilment} on {form:delivery-date} at {form:delivery-time}. Reply to confirm the order and its total.', 'sureforms' ),
+		'email_subject' => __( 'Catering order for {form:delivery-date} from {form:name} ({form:guests} guests)', 'sureforms' ),
+		'email_intro'   => __( '{form:name} placed a catering order for {form:guests} guests, for {form:fulfilment} on {form:delivery-date} at {form:delivery-time}. Reply to confirm the order and its total.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'We received your order for {form:delivery-date}', 'sureforms' ),
-			'lines'   => [
+			'subject'  => __( 'We received your order for {form:delivery-date}', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
 				__( 'Thank you for your order. Your order details are below.', 'sureforms' ),
 				__( 'This is not a confirmation yet: we will check availability and reply with the total before we confirm.', 'sureforms' ),
 			],
@@ -359,26 +319,38 @@ return [
 		'submit_text'     => __( 'Submit application', 'sureforms' ),
 		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Work and income', 'sureforms' ), __( 'References', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
 		'fields'          => [
-			Catalog::field( 'input', 'property', __( 'Property You Are Applying For', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 12 Oak Street, Apartment 4', 'sureforms' ) ] ),
+			Catalog::field( 'input', 'property', __( 'Property you are applying for', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 12 Oak Street, Apartment 4', 'sureforms' ) ] ),
 			$c['first_name'],
 			$c['last_name'],
-			Catalog::width( $c['email'], 50 ),
+			// Phone before email, so the save-for-later checkbox that follows the email sits under a full row.
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::field( 'address', 'current-address', __( 'Current Address', 'sureforms' ), true ),
-			Catalog::width( Catalog::date_field( 'move-in-date', __( 'Preferred Move-in Date', 'sureforms' ), true, true ), 50 ),
-			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of Occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::field(
-						'dropdown',
-						'pets',
-						__( 'Pets', 'sureforms' ),
-						true,
-						array_merge( Catalog::dropdown_options( [ __( 'No pets', 'sureforms' ), __( 'Cat', 'sureforms' ), __( 'Dog', 'sureforms' ), __( 'Other pet', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] )
-					),
-					$no_search
+			Catalog::width( $c['email'], 50 ),
+			Catalog::field( 'address', 'current-address', __( 'Current address', 'sureforms' ), true ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'time-at-address',
+					__( 'How long have you lived at your current address?', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'Less than 6 months', 'sureforms' ), __( '6–12 months', 'sureforms' ), __( '1–3 years', 'sureforms' ), __( 'More than 3 years', 'sureforms' ) ], true )
 				),
-				100
+				[ 'choiceWidth' => 50 ]
+			),
+			Catalog::width( Catalog::date_field( 'move-in-date', __( 'Preferred move-in date', 'sureforms' ), true, true ), 50 ),
+			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 50 ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'pets',
+					__( 'Pets', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'No pets', 'sureforms' ), __( 'Cat', 'sureforms' ), __( 'Dog', 'sureforms' ), __( 'Other pets', 'sureforms' ) ], true )
+				),
+				[ 'choiceWidth' => 25 ]
+			),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'pet-details', __( 'Tell us about your pets', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. one small dog, house-trained and vaccinated', 'sureforms' ) ] ),
+				[ 'rows' => 2 ]
 			),
 			Catalog::step( 'work-step', __( 'Work and income', 'sureforms' ) ),
 			Catalog::width(
@@ -386,7 +358,7 @@ return [
 					Catalog::field(
 						'dropdown',
 						'employment-status',
-						__( 'Employment Status', 'sureforms' ),
+						__( 'Employment status', 'sureforms' ),
 						true,
 						array_merge( Catalog::dropdown_options( [ __( 'Employed full-time', 'sureforms' ), __( 'Employed part-time', 'sureforms' ), __( 'Self-employed', 'sureforms' ), __( 'Student', 'sureforms' ), __( 'Retired', 'sureforms' ), __( 'Not working', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] )
 					),
@@ -395,41 +367,49 @@ return [
 				50
 			),
 			Catalog::width( Catalog::field( 'input', 'employer', __( 'Employer', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'job-title', __( 'Job Title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Store Manager', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::number_field( 'monthly-income', __( 'Monthly Income Before Tax', 'sureforms' ), true, 0, 1000000, [ 'placeholder' => __( 'e.g. 3,200', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'job-title', __( 'Job title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Store Manager', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::number_field( 'monthly-income', __( 'Monthly income before tax', 'sureforms' ), true, 0, 1000000, [ 'placeholder' => __( 'e.g. 3,200', 'sureforms' ) ] ), 50 ),
 			Catalog::step( 'references-step', __( 'References', 'sureforms' ) ),
-			Catalog::width( Catalog::field( 'input', 'landlord-name', __( 'Current Landlord or Reference', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Sam Patel', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'landlord-name', __( 'Current landlord or reference', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Sam Patel', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				array_merge(
 					$c['phone'],
 					[
 						'slug'     => 'landlord-phone',
-						'label'    => __( 'Their Phone', 'sureforms' ),
+						'label'    => __( 'Their phone', 'sureforms' ),
 						'required' => true,
 					]
 				),
 				50
 			),
-			Catalog::width( Catalog::field( 'input', 'reference-name', __( 'Second Reference', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. your employer or a previous landlord', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'reference-name', __( 'Second reference', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. your employer or a previous landlord', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				array_merge(
 					$c['phone'],
 					[
 						'slug'  => 'reference-phone',
-						'label' => __(
-							'Their Phone',
-							'sureforms'
-						),
+						'label' => __( 'Their phone', 'sureforms' ),
 					]
 				),
 				50
 			),
-			Catalog::field( 'textarea', 'anything-else', __( 'Anything Else We Should Know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a guarantor, a parking space you need, or why you are moving', 'sureforms' ) ] ),
+			Catalog::field( 'textarea', 'anything-else', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a guarantor, a parking space you need, or why you are moving', 'sureforms' ) ] ),
 			Catalog::step( 'documents-step', __( 'Documents and signature', 'sureforms' ) ),
 			$document_upload( 'id-proof', __( 'Photo ID', 'sureforms' ), true, __( 'Passport, driving licence or national ID card. PDF, JPG or PNG, up to 5 MB.', 'sureforms' ) ),
-			$document_upload( 'proof-of-income', __( 'Proof of Income', 'sureforms' ), false, __( 'Your last three payslips or a recent bank statement. Up to 3 files.', 'sureforms' ), 3 ),
+			$document_upload( 'proof-of-income', __( 'Proof of income', 'sureforms' ), false, __( 'Your last three payslips or a recent bank statement. Up to 3 files.', 'sureforms' ), 3 ),
 			array_merge( $c['consent'], [ 'label' => __( 'I confirm these details are true, and agree to have this website store them and contact my references to assess my application.', 'sureforms' ) ] ),
 			$signature( __( 'Signature', 'sureforms' ) ),
+		],
+		// Pet details are only asked once the applicant says they have a pet.
+		'conditions'      => [
+			'pet-details' => [
+				'action' => 'show',
+				'logic'  => [
+					[ [ 'pets', '==', __( 'Cat', 'sureforms' ) ] ],
+					[ [ 'pets', '==', __( 'Dog', 'sureforms' ) ] ],
+					[ [ 'pets', '==', __( 'Other pets', 'sureforms' ) ] ],
+				],
+			],
 		],
 		'save_resume'     => true,
 		// SureForms Business also keeps unfinished applications and reminds the applicant to finish.
@@ -451,84 +431,6 @@ return [
 			'lines'    => [
 				__( 'Thank you for applying. We will review your application and contact your references.', 'sureforms' ),
 				__( 'We aim to reply within a few working days. If anything is missing, we will ask you for it by email.', 'sureforms' ),
-			],
-			'summary'  => false,
-		],
-	],
-	// Library category: Sign-ups & Applications.
-	[
-		'id'              => 'scholarship-application',
-		'preview_image'   => 'scholarship-application.webp',
-		'category'        => 'signup',
-		'theme'           => 'lavender',
-		'icon'            => 'graduation-cap',
-		'requires'        => 'pro',
-		'title'           => __( 'Scholarship Application', 'sureforms' ),
-		'description'     => __( 'Capture students\' essays, transcripts, and signatures for scholarship applications.', 'sureforms' ),
-		'submit_text'     => __( 'Submit application', 'sureforms' ),
-		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Your studies', 'sureforms' ), __( 'Your essay', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
-		'fields'          => [
-			$c['first_name'],
-			$c['last_name'],
-			Catalog::width( $c['email'], 50 ),
-			Catalog::width( $c['phone'], 50 ),
-			Catalog::field( 'address', 'home-address', __( 'Home Address', 'sureforms' ), true ),
-			Catalog::step( 'studies-step', __( 'Your studies', 'sureforms' ) ),
-			Catalog::width( Catalog::field( 'input', 'school', __( 'School, College or University', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Riverside High School', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'program', __( 'Course or Program', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. BSc Computer Science', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::field(
-						'dropdown',
-						'study-level',
-						__( 'Level of Study', 'sureforms' ),
-						true,
-						array_merge( Catalog::dropdown_options( [ __( 'High school', 'sureforms' ), __( 'Undergraduate', 'sureforms' ), __( 'Postgraduate', 'sureforms' ), __( 'Vocational or trade', 'sureforms' ), __( 'Other', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] )
-					),
-					$no_search
-				),
-				50
-			),
-			Catalog::width( Catalog::field( 'input', 'grades', __( 'Current Grade Average', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. 3.6 GPA or 78%', 'sureforms' ) ] ), 50 ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'achievements', __( 'Achievements and Activities', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. awards, volunteering, sports, clubs or part-time work', 'sureforms' ) ] ),
-				[ 'rows' => 4 ]
-			),
-			Catalog::step( 'essay-step', __( 'Your essay', 'sureforms' ) ),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'essay', __( 'Why should you receive this scholarship?', 'sureforms' ), true, [ 'helpText' => __( 'Tell us about your goals, what you have achieved and how this support would help. Around 300–500 words.', 'sureforms' ) ] ),
-				[ 'rows' => 10 ]
-			),
-			Catalog::attrs(
-				Catalog::field( 'textarea', 'funding-use', __( 'How would you use the funding?', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. tuition fees, books and a laptop for my course', 'sureforms' ) ] ),
-				[ 'rows' => 3 ]
-			),
-			Catalog::step( 'documents-step', __( 'Documents and signature', 'sureforms' ) ),
-			$document_upload( 'transcript', __( 'Transcript or Latest Grades', 'sureforms' ), true, __( 'PDF, JPG or PNG, up to 5 MB.', 'sureforms' ) ),
-			$document_upload( 'recommendation-letter', __( 'Letter of Recommendation', 'sureforms' ), false, __( 'Optional. From a teacher, tutor or employer.', 'sureforms' ) ),
-			array_merge( $c['consent'], [ 'label' => __( 'I confirm these details are true and the essay is my own work, and agree to have this website store them to assess my application.', 'sureforms' ) ] ),
-			$signature( __( 'Signature', 'sureforms' ) ),
-		],
-		'save_resume'     => true,
-		// SureForms Business also keeps unfinished applications and reminds the applicant to finish.
-		'partial_entries' => [
-			'resume'   => true,
-			'reminder' => true,
-			'email'    => 'email',
-		],
-		'attach_uploads'  => [ 'transcript', 'recommendation-letter' ],
-		'confirmation'    => [
-			'heading' => __( 'Application received, {form:first-name}', 'sureforms' ),
-			'text'    => __( 'Thanks for applying. Our panel reviews every application after the deadline, and we will email you at {form:email} with the decision.', 'sureforms' ),
-		],
-		'email_subject'   => __( 'Scholarship application from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'     => __( '{form:first-name} {form:last-name} ({form:program} at {form:school}) applied for the scholarship. Their transcript is attached.', 'sureforms' ),
-		'autoresponder'   => [
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-			'subject'  => __( 'We received your scholarship application', 'sureforms' ),
-			'lines'    => [
-				__( 'Thank you for applying for a scholarship with {site_title}.', 'sureforms' ),
-				__( 'Our panel reviews every application after the deadline. We will email you with the decision, and may ask for more information first.', 'sureforms' ),
 			],
 			'summary'  => false,
 		],

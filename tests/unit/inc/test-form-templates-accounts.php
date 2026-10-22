@@ -20,12 +20,10 @@ class Test_Form_Templates_Accounts extends TestCase {
 	 * @var array<string, string>
 	 */
 	private const TEMPLATES = [
-		'member-registration'        => 'business',
-		'guest-post-submission'      => 'business',
-		'business-directory-listing' => 'business',
-		'bulk-order-form'            => 'business',
-		'rental-application'         => 'pro',
-		'scholarship-application'    => 'pro',
+		'member-registration'   => 'business',
+		'guest-post-submission' => 'business',
+		'bulk-order-form'       => 'business',
+		'rental-application'    => 'pro',
 	];
 
 	/**
@@ -141,7 +139,9 @@ class Test_Form_Templates_Accounts extends TestCase {
 		$password = wp_list_filter( Form_Templates::resolve_fields( $template, 'business' ), [ 'fieldType' => 'password' ] );
 		$password = reset( $password );
 		$this->assertTrue( $password['required'] );
-		$this->assertTrue( $password['isConfirmPassword'] );
+		// One box with show/hide instead of a confirm box.
+		$this->assertFalse( $password['isConfirmPassword'] );
+		$this->assertTrue( $password['togglePasswordVisibility'] );
 		$this->assertTrue( $password['checkPasswordStrength'] );
 	}
 
@@ -156,8 +156,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 	}
 
 	public function test_submissions_become_posts_waiting_for_review() {
-		foreach ( [ 'guest-post-submission', 'business-directory-listing' ] as $id ) {
-			$template = Form_Templates::get_template( $id );
+		foreach ( array_filter( Form_Templates::get_templates(), static fn( $template ) => ! empty( $template['cpt'] ) ) as $id => $template ) {
 			$map      = $this->slug_map( $template );
 			$cpt      = $template['cpt'];
 
@@ -185,7 +184,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 	}
 
 	public function test_applications_save_progress_and_attach_their_documents() {
-		foreach ( [ 'rental-application', 'scholarship-application' ] as $id ) {
+		foreach ( [ 'rental-application' ] as $id ) {
 			$template = Form_Templates::get_template( $id );
 			$map      = $this->slug_map( $template );
 			$fields   = Form_Templates::resolve_fields( $template, 'business' );
@@ -215,7 +214,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 		remove_all_filters( 'srfm_pro_tier' );
 		add_filter( 'srfm_pro_tier', static fn() => 'pro' );
 
-		foreach ( [ 'rental-application', 'scholarship-application' ] as $id ) {
+		foreach ( [ 'rental-application' ] as $id ) {
 			$item = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => $id ] );
 			$item = reset( $item );
 
