@@ -24,7 +24,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		'conversational-lead-qualifier' => [ 'contact', 'pro' ],
 		'ad-landing-lead-form'          => [ 'contact', 'starter' ],
 		'service-agreement'             => [ 'agreements', 'business' ],
-		'photo-release-consent'         => [ 'agreements', 'pro' ],
+		'photo-release-consent'         => [ 'agreements', 'business' ],
 	];
 
 	public function tear_down() {

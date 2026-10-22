@@ -2224,6 +2224,10 @@ class Form_Templates {
 	 * Thank-you message in the same layout as the default confirmation. Catalog
 	 * files use it through Catalog::thank_you() for conditional messages.
 	 *
+	 * A blank line in the text starts a new paragraph. A paragraph holding only a
+	 * `{pdf:…}` link is dropped whole by SureForms Pro when it builds no PDF, so
+	 * the message still reads well without it.
+	 *
 	 * @param string $heading Heading.
 	 * @param string $text    Body text.
 	 * @since x.x.x
@@ -2234,7 +2238,12 @@ class Form_Templates {
 		// which strips the data: scheme and would leave a broken image.
 		$check_icon = SRFM_URL . 'images/check-icon.svg';
 
-		return '<p style="text-align: center;"><img src="' . esc_url( $check_icon ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
+		$message    = '<p style="text-align: center;"><img src="' . esc_url( $check_icon ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2>';
+		$paragraphs = preg_split( '/\n\s*\n/', $text );
+		foreach ( false === $paragraphs ? [ $text ] : $paragraphs as $paragraph ) {
+			$message .= '<p style="text-align: center;">' . esc_html( trim( $paragraph ) ) . '</p>';
+		}
+		return $message;
 	}
 
 	/**
