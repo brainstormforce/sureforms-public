@@ -2979,7 +2979,8 @@ class Form_Templates {
 	 * @return bool
 	 */
 	private static function includes_all_data( $template ) {
-		return rest_sanitize_boolean( $template['email_all_data'] ?? true );
+		$value = $template['email_all_data'] ?? true;
+		return is_bool( $value ) || is_int( $value ) || is_string( $value ) ? rest_sanitize_boolean( $value ) : ! empty( $value );
 	}
 
 	/**
