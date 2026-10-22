@@ -352,18 +352,13 @@ return [
 		// so colleagues never see each other's answers.
 		'survey'        => true,
 		'fields'        => [
+			// Said before the first question, so people answer honestly.
 			Catalog::field(
-				'dropdown',
-				'team',
-				__( 'Which team are you in?', 'sureforms' ),
+				'html',
+				'anonymous-note',
+				'',
 				false,
-				array_merge(
-					Catalog::dropdown_options( [ __( 'Operations', 'sureforms' ), __( 'Sales and marketing', 'sureforms' ), __( 'Product and engineering', 'sureforms' ), __( 'Customer support', 'sureforms' ), __( 'Finance and admin', 'sureforms' ), __( 'Prefer not to say', 'sureforms' ) ] ),
-					[
-						'placeholder'     => __( 'Select your team', 'sureforms' ),
-						'blockAttributes' => $no_search,
-					]
-				)
+				[ 'htmlContent' => '<div style="padding: 12px 16px;border-radius: 8px;background: #ecfdf5"><p style="margin: 0;font-size: 15px;line-height: 1.6">' . esc_html__( 'This survey is anonymous. We don’t ask for your name or email, so please leave personal details out of your answers too.', 'sureforms' ) . '</p></div>' ]
 			),
 			Catalog::field(
 				'rating',
@@ -401,8 +396,29 @@ return [
 				true,
 				[ 'pro_only' => true ]
 			),
-			Catalog::attrs( Catalog::field( 'textarea', 'one-change', __( 'If you could change one thing, what would it be?', 'sureforms' ), false, [ 'placeholder' => __( 'Anything about your work, your team or how we do things.', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-			Catalog::field( 'gdpr', 'anonymous', __( 'I understand this survey does not ask for my name or email, and I will not include personal details in my answers.', 'sureforms' ), true ),
+			// The follow-up depends on the score, so every score gets a useful "why".
+			Catalog::attrs( Catalog::field( 'textarea', 'enps-improve', __( 'What would make it a 9 or 10?', 'sureforms' ), false, [ 'placeholder' => __( 'Anything about your work, your team or how we do things.', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			Catalog::attrs( Catalog::field( 'textarea', 'enps-like', __( 'What do you like most about working here?', 'sureforms' ), false ), [ 'rows' => 3 ] ),
+			// Asked last, so a small team doesn't feel identifiable before answering.
+			Catalog::field(
+				'dropdown',
+				'team',
+				__( 'Which team are you in? (optional)', 'sureforms' ),
+				false,
+				array_merge(
+					Catalog::dropdown_options( [ __( 'Operations', 'sureforms' ), __( 'Sales and marketing', 'sureforms' ), __( 'Product and engineering', 'sureforms' ), __( 'Customer support', 'sureforms' ), __( 'Finance and admin', 'sureforms' ), __( 'Prefer not to say', 'sureforms' ) ] ),
+					[
+						'placeholder'     => __( 'Select your team', 'sureforms' ),
+						'blockAttributes' => $no_search,
+					]
+				)
+			),
+		],
+		'conditions'    => [
+			// Patterns, not number comparisons: they never match an empty score, so
+			// neither follow-up shows before a score is picked.
+			'enps-improve' => [ 'logic' => [ [ [ 'enps', 'matchesPattern', '^[0-8]$' ] ] ] ],
+			'enps-like'    => [ 'logic' => [ [ [ 'enps', 'matchesPattern', '^(9|10)$' ] ] ] ],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thank you', 'sureforms' ),
