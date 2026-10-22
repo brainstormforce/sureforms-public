@@ -359,10 +359,11 @@ class String_Collector {
 			$this->register_if_non_empty( 'validation_' . $key, $value );
 		}
 
-		// Common strings rendered server-side in field markup that are NOT stored
-		// per-form (so they never reach a form package): JS-validation fallbacks
-		// and shared field defaults such as the dropdown's empty-state placeholder,
-		// which is only serialized into block markup when a site owner overrides it.
+		// Common strings rendered server-side in field markup that are global rather
+		// than per-form: JS-validation fallbacks and shared field defaults such as the
+		// dropdown's empty-state placeholder. The placeholder is also registered per
+		// form (via String_Translator::block_attribute_value()); this global string is
+		// the fallback when the per-form one is untranslated.
 		$common = [
 			'srfm_required_field'       => 'This field is required.',
 			'srfm_unique_field'         => 'Value needs to be unique.',
