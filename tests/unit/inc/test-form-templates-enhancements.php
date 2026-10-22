@@ -37,6 +37,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'bug-report'           => 'name:input email:email summary:input severity:multi-choice what-happened:textarea steps:textarea page-url:url browser:dropdown device:dropdown screenshot:url consent:gdpr',
 		'volunteer-signup'     => 'name:input email:email phone:phone over-18:multi-choice availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
 		'job-application'      => 'name:input email:email phone:phone position:input cv:url linkedin:url portfolio:url years-experience:number start-date:dropdown cover-letter:textarea how-heard:dropdown consent:gdpr',
+		'booking-deposit'      => 'name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice notes:textarea deposit:payment consent:gdpr',
 	];
 
 	public function tear_down() {
@@ -106,6 +107,17 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		$free = $this->fields( 'appointment-request', 'free' );
 		$this->assertEquals( 50, $free['service']['blockAttributes']['fieldWidth'] );
 		$this->assertEquals( 50, $free['preferred-date']['blockAttributes']['fieldWidth'] );
+
+		$deposit = $this->fields( 'booking-deposit', 'business' );
+		$this->assertSame( 'time-picker', $deposit['preferred-time']['fieldType'] );
+		$this->assertSame( 'date-picker', $deposit['preferred-date']['fieldType'] );
+		$this->assertEquals( 100, $deposit['service']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $deposit['preferred-date']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $deposit['preferred-time']['blockAttributes']['fieldWidth'] );
+		$free = $this->fields( 'booking-deposit', 'free' );
+		$this->assertEquals( 50, $free['service']['blockAttributes']['fieldWidth'] );
+		$this->assertEquals( 50, $free['preferred-date']['blockAttributes']['fieldWidth'] );
+		$this->assertFalse( $free['preferred-time']['blockAttributes']['verticalLayout'] );
 
 		$consultation = $this->fields( 'consultation-request', 'starter' );
 		$this->assertSame( 'time-picker', $consultation['preferred-time']['fieldType'] );

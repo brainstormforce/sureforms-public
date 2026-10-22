@@ -167,37 +167,82 @@ return [
 		'description'   => __( 'Take a deposit when clients book so you get paid for the slots you hold.', 'sureforms' ),
 		'submit_text'   => __( 'Pay deposit and book', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( $c['name'], 50 ),
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'service', __( 'Service', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'Consultation', 'sureforms' ), __( 'Standard session', 'sureforms' ), __( 'Extended session', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a service', 'sureforms' ) ] ) ), $no_search ), 50 ),
-			Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true ),
-			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. preferred time of day, access needs', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			// With Premium the date and time pickers share a row, so the
+			// service takes the full row above them.
+			Catalog::width(
+				Catalog::attrs(
+					Catalog::field(
+						'dropdown',
+						'service',
+						__( 'Service', 'sureforms' ),
+						true,
+						array_merge(
+							Catalog::dropdown_options( [ __( 'Consultation', 'sureforms' ), __( 'Standard session', 'sureforms' ), __( 'Extended session', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ),
+							[
+								'placeholder' => __( 'Select a service', 'sureforms' ),
+								'pro'         => [ 'blockAttributes' => [ 'fieldWidth' => 100 ] ],
+							]
+						)
+					),
+					$no_search
+				),
+				50
+			),
+			Catalog::width( Catalog::date_field( 'preferred-date', __( 'Preferred date', 'sureforms' ), true, true ), 50 ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'preferred-time',
+					__( 'Preferred time', 'sureforms' ),
+					true,
+					array_merge(
+						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ),
+						[
+							'pro' => [
+								'fieldType'       => 'time-picker',
+								'minTime'         => '09:00',
+								'maxTime'         => '18:00',
+								'increment'       => 30,
+								'blockAttributes' => [ 'fieldWidth' => 50 ],
+							],
+						]
+					)
+				),
+				[
+					'choiceWidth'    => 33.33,
+					'verticalLayout' => false,
+				]
+			),
+			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. access needs, or questions before your visit', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$payment(
 				'deposit',
-				__( 'Booking Deposit', 'sureforms' ),
+				__( 'Booking deposit', 'sureforms' ),
 				[
 					'paymentType'        => 'one-time',
 					'amountType'         => 'fixed',
 					'fixedAmount'        => 50,
-					'customerNameField'  => 'full-name',
+					'customerNameField'  => 'name',
 					'customerEmailField' => 'email',
 					/* translators: %s: deposit amount. */
-					'helpText'           => sprintf( __( 'A %s deposit holds your booking and comes off the final price.', 'sureforms' ), $money( 50 ) ),
+					'helpText'           => sprintf( __( 'A %s deposit holds your booking and comes off the final price. If we can\'t offer your date, we\'ll refund it in full.', 'sureforms' ), $money( 50 ) ),
 				]
 			),
 			$c['consent'],
 		],
 		'confirmation'  => [
 			'heading' => __( 'Deposit received', 'sureforms' ),
-			'text'    => __( 'Thanks, {form:full-name}. Your deposit of {form-payment:deposit:amount} is paid. We will confirm your {form:service} on {form:preferred-date} by email shortly.', 'sureforms' ),
+			'text'    => __( 'Thanks, {form:name}. Your deposit of {form-payment:deposit:amount} is paid. We will confirm your {form:service} on {form:preferred-date}, {form:preferred-time} by email shortly.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Deposit paid: {form:service} for {form:full-name} on {form:preferred-date}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} paid a {form-payment:deposit:amount} deposit (order {form-payment:deposit:order-id}) for {form:service} on {form:preferred-date}. Reply to this email to confirm the booking, or call them on {form:phone}.', 'sureforms' ),
+		'email_subject' => __( 'Deposit paid: {form:service} for {form:name} on {form:preferred-date}, {form:preferred-time}', 'sureforms' ),
+		'email_intro'   => __( '{form:name} paid a {form-payment:deposit:amount} deposit (order {form-payment:deposit:order-id}) for {form:service} on {form:preferred-date}, {form:preferred-time}. Reply to this email to confirm the booking, or call them on {form:phone}.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'Your deposit is paid', 'sureforms' ),
-			'lines'   => [
-				__( 'Thanks for your booking. We have received your deposit of {form-payment:deposit:amount} for {form:service} on {form:preferred-date}.', 'sureforms' ),
+			'subject'  => __( 'Your deposit is paid', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
+			'lines'    => [
+				__( 'Thanks for your booking. We have received your deposit of {form-payment:deposit:amount} for {form:service} on {form:preferred-date}, {form:preferred-time}.', 'sureforms' ),
 				__( 'We will confirm the exact time shortly. The deposit comes off your final price. Order reference: {form-payment:deposit:order-id}.', 'sureforms' ),
 			],
 		],
