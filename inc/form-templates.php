@@ -369,12 +369,14 @@ class Form_Templates {
 		 * Each template is an array with `id`, `title`, `description`, `category`,
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
-		 * `email_intro`, `email_all_data` (false leaves the answers out of the
-		 * site owner's email), `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
+		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
 		 * `form_title` (the created form's name, when it differs from the library
 		 * card's `title`, e.g. a generic card for an example topic), `steps`
 		 * (step titles for multi-step forms), `features` (extra "Included"
 		 * feature ids, such as `calculation`) and the Pro keys in PRO_FEATURE_KEYS.
+		 *
+		 * `email_all_data => false` leaves the answers out of the site owner's
+		 * email, so it only sends `email_intro`.
 		 *
 		 * `requires` is the plan a template needs: `free` (default), `starter`,
 		 * `pro` or `business`; `is_pro => true` is read as `starter`. A paid
