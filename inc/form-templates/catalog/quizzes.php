@@ -45,7 +45,8 @@ $question = static function ( $slug, $label, $options, $correct ) {
 		$choices[ $index ] = array_merge( Helper::get_array_value( $option ), [ 'isCorrect' => $correct === $index ] );
 	}
 	$field['fieldOptions'] = $choices;
-	return $field;
+	// One answer per row: answers are sentences, which wrap unevenly in half-width cards.
+	return Catalog::attrs( $field, [ 'choiceWidth' => 100 ] );
 };
 
 /**
@@ -107,8 +108,10 @@ return [
 		'requires'      => 'business',
 		'theme'         => 'ocean',
 		'icon'          => 'graduation-cap',
-		'title'         => __( 'Knowledge Quiz with Pass or Fail', 'sureforms' ),
-		'description'   => __( 'A scored online safety quiz with a pass-or-fail message.', 'sureforms' ),
+		// A generic card name; the form itself is named after the example topic.
+		'title'         => __( 'Knowledge Quiz', 'sureforms' ),
+		'form_title'    => __( 'Cyber Safety Quiz', 'sureforms' ),
+		'description'   => __( 'A five-question cyber safety quiz that scores each answer and shows a pass or fail message. Swap in your own questions.', 'sureforms' ),
 		'submit_text'   => __( 'See my score', 'sureforms' ),
 		'features'      => [ 'quiz' ],
 		// The thank-you messages below show the score; the quiz adds nothing to them.
@@ -119,63 +122,70 @@ return [
 			'correctAnswerScore' => 1,
 			'resultOutput'       => 'default_confirmation',
 		],
+		// One question per step, then the details for the results; the score is worth asking for them.
+		'steps'         => [ __( 'Question 1', 'sureforms' ), __( 'Question 2', 'sureforms' ), __( 'Question 3', 'sureforms' ), __( 'Question 4', 'sureforms' ), __( 'Question 5', 'sureforms' ), __( 'Your results', 'sureforms' ) ],
 		'fields'        => [
-			$c['first_name'],
-			Catalog::width( $c['email'], 50 ),
 			$question(
 				'q1-password',
 				__( 'Which of these makes the strongest password?', 'sureforms' ),
 				[ __( 'Your pet’s name and the year you were born', 'sureforms' ), __( 'Password123!', 'sureforms' ), __( 'A long phrase of four or more random words', 'sureforms' ), __( 'The password you already use on other sites', 'sureforms' ) ],
 				2
 			),
+			Catalog::step( 'question-2', __( 'Question 2', 'sureforms' ) ),
 			$question(
 				'q2-phishing',
 				__( 'An email says your account will be closed unless you click its link and sign in within the hour. What should you do?', 'sureforms' ),
 				[ __( 'Click the link and sign in quickly', 'sureforms' ), __( 'Reply with your password so they can check your account', 'sureforms' ), __( 'Open the website yourself, without using the link', 'sureforms' ), __( 'Forward the email to friends to warn them', 'sureforms' ) ],
 				2
 			),
+			Catalog::step( 'question-3', __( 'Question 3', 'sureforms' ) ),
 			$question(
 				'q3-two-factor',
 				__( 'What does two-factor authentication add when you sign in?', 'sureforms' ),
 				[ __( 'A second check, such as a code sent to your phone', 'sureforms' ), __( 'A reminder to change your password', 'sureforms' ), __( 'Automatic sign-in on all your devices', 'sureforms' ), __( 'A backup copy of your files', 'sureforms' ) ],
 				0
 			),
+			Catalog::step( 'question-4', __( 'Question 4', 'sureforms' ) ),
 			$question(
 				'q4-padlock',
 				__( 'What does the padlock next to a website’s address tell you?', 'sureforms' ),
 				[ __( 'The website is honest and safe to buy from', 'sureforms' ), __( 'Your connection to the website is encrypted', 'sureforms' ), __( 'Your browser has checked the website for scams', 'sureforms' ), __( 'Only you can see the website', 'sureforms' ) ],
 				1
 			),
+			Catalog::step( 'question-5', __( 'Question 5', 'sureforms' ) ),
 			$question(
 				'q5-updates',
 				__( 'When should you install updates for your phone and computer?', 'sureforms' ),
 				[ __( 'Only when something stops working', 'sureforms' ), __( 'Once a year is enough', 'sureforms' ), __( 'Never, because updates slow devices down', 'sureforms' ), __( 'As soon as you can, since many fix security holes', 'sureforms' ) ],
 				3
 			),
+			Catalog::step( 'results-step', __( 'Your results', 'sureforms' ) ),
+			Catalog::width( Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
+			Catalog::width( $c['email'], 50 ),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my answers and email me my results.', 'sureforms' ) ] ),
 		],
 		// Pass from passPercent on; the quiz settings and these rules must agree.
 		'confirmations' => [
 			[
 				'name'    => __( 'Passed', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Well done, {form:first-name}!', 'sureforms' ), __( 'You scored {quiz_score} ({quiz_percentage}) and passed the quiz. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Well done, {form:name}!', 'sureforms' ), __( 'You scored {quiz_score} ({quiz_percentage}) and passed the quiz. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_percentage}', '_GREATER_OR_EQUAL_', (string) $quiz_pass ] ],
 			],
 			[
 				'name'    => __( 'Not passed yet', 'sureforms' ),
-				'message' => Catalog::thank_you( __( 'Nice try, {form:first-name}', 'sureforms' ), sprintf( /* translators: %d: pass mark, a percentage. */ __( 'You scored {quiz_score} ({quiz_percentage}). You need %d%% to pass, so have another go. We have emailed the right answers to {form:email}.', 'sureforms' ), $quiz_pass ) ),
+				'message' => Catalog::thank_you( __( 'Nice try, {form:name}', 'sureforms' ), sprintf( /* translators: %d: pass mark, a percentage. */ __( 'You scored {quiz_score} ({quiz_percentage}). You need %d%% to pass, so have another go. We have emailed the right answers to {form:email}.', 'sureforms' ), $quiz_pass ) ),
 				'rules'   => [ [ '{quiz_percentage}', '_LESSER_', (string) $quiz_pass ] ],
 			],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Thanks, {form:name}!', 'sureforms' ),
 			'text'    => __( 'You scored {quiz_score} ({quiz_percentage}). Result: {quiz_pass_fail}. We have emailed your results to {form:email}.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Quiz result: {form:first-name} – {quiz_pass_fail} ({quiz_percentage})', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} took the quiz and scored {quiz_score} ({quiz_percentage}). Result: {quiz_pass_fail}. Their answers are below; reply to this email to reach them.', 'sureforms' ),
+		'email_subject' => __( 'Quiz result: {form:name} – {quiz_pass_fail} ({quiz_percentage})', 'sureforms' ),
+		'email_intro'   => __( '{form:name} took the quiz and scored {quiz_score} ({quiz_percentage}). Result: {quiz_pass_fail}. Their answers are below; reply to this email to reach them.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Your quiz results: {quiz_score}', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for taking our quiz. Here is how you did, with the right answer to each question:', 'sureforms' ),
 				'{quiz_result}',

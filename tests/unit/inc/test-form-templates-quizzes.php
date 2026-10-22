@@ -30,6 +30,14 @@ class Test_Form_Templates_Quizzes extends TestCase {
 		return $template;
 	}
 
+	public function test_knowledge_quiz_card_is_generic_and_the_form_is_named_after_its_topic() {
+		$template = $this->template( 'knowledge-quiz' );
+		$this->assertSame( 'Knowledge Quiz', $template['title'] );
+		$this->assertSame( 'Cyber Safety Quiz', Form_Templates::get_form_title( $template ) );
+		// Without a form_title, the form takes the card's title.
+		$this->assertSame( 'Contact Us', Form_Templates::get_form_title( Form_Templates::get_template( 'contact-us' ) ) );
+	}
+
 	/**
 	 * Every text of a template that becomes a message or email.
 	 */

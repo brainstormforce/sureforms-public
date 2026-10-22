@@ -370,7 +370,9 @@ class Form_Templates {
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
 		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
-		 * `steps` (step titles for multi-step forms), `features` (extra "Included"
+		 * `form_title` (the created form's name, when it differs from the library
+		 * card's `title`, e.g. a generic card for an example topic), `steps`
+		 * (step titles for multi-step forms), `features` (extra "Included"
 		 * feature ids, such as `calculation`) and the Pro keys in PRO_FEATURE_KEYS.
 		 *
 		 * `requires` is the plan a template needs: `free` (default), `starter`,
@@ -448,6 +450,7 @@ class Form_Templates {
 				'id'              => $template['id'],
 				'preview_url'     => self::get_preview_url( Helper::get_string_value( $template['id'] ) ),
 				'title'           => Helper::get_string_value( $template['title'] ?? '' ),
+				'form_title'      => self::get_form_title( $template ),
 				'description'     => Helper::get_string_value( $template['description'] ?? '' ),
 				'category'        => Helper::get_string_value( $template['category'] ?? 'other' ),
 				'icon'            => Helper::get_string_value( $template['icon'] ?? '' ),
@@ -1375,6 +1378,19 @@ class Form_Templates {
 	}
 
 	/**
+	 * The name of a form created from a template: its `form_title`, or the
+	 * library card's `title` when it has none.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function get_form_title( $template ) {
+		$title = Helper::get_string_value( $template['form_title'] ?? '' );
+		return '' !== $title ? $title : Helper::get_string_value( $template['title'] ?? '' );
+	}
+
+	/**
 	 * Block markup for a template.
 	 *
 	 * @param array<string, mixed> $template Template.
@@ -1388,7 +1404,7 @@ class Form_Templates {
 			'form_data',
 			[
 				'form' => [
-					'formTitle'  => $template['title'] ?? '',
+					'formTitle'  => self::get_form_title( $template ),
 					'formFields' => $fields,
 				],
 			]
@@ -1565,7 +1581,7 @@ class Form_Templates {
 		$post_id = wp_insert_post(
 			wp_slash(
 				[
-					'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
+					'post_title'   => self::get_form_title( $template ),
 					'post_content' => $built['content'],
 					'post_status'  => 'draft',
 					'post_type'    => SRFM_FORMS_POST_TYPE,
@@ -1749,7 +1765,7 @@ class Form_Templates {
 		return new WP_REST_Response(
 			[
 				'id'           => $template['id'],
-				'title'        => Helper::get_string_value( $template['title'] ?? '' ),
+				'title'        => self::get_form_title( $template ),
 				'content'      => $built['content'],
 				'has_entries'  => $has_entries,
 				// Applied over the open form's own settings in the editor.
@@ -3020,7 +3036,7 @@ class Form_Templates {
 			'post_date'         => current_time( 'mysql' ),
 			'post_date_gmt'     => current_time( 'mysql', true ),
 			'post_content'      => $content,
-			'post_title'        => Helper::get_string_value( $template['title'] ?? '' ),
+			'post_title'        => self::get_form_title( $template ),
 			'post_excerpt'      => '',
 			'post_status'       => 'publish',
 			'comment_status'    => 'closed',
