@@ -1177,6 +1177,15 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
+	public function test_get_form_title() {
+		// A form_title names the created form; the card keeps its title.
+		$this->assertSame( 'Cyber Safety Quiz', Form_Templates::get_form_title( [ 'title' => 'Knowledge Quiz', 'form_title' => 'Cyber Safety Quiz' ] ) );
+		// Without one, or with an empty one, the form takes the card's title.
+		$this->assertSame( 'Knowledge Quiz', Form_Templates::get_form_title( [ 'title' => 'Knowledge Quiz', 'form_title' => '' ] ) );
+		$this->assertSame( 'Contact Us', Form_Templates::get_form_title( Form_Templates::get_template( 'contact-us' ) ) );
+		$this->assertSame( '', Form_Templates::get_form_title( [] ) );
+	}
+
 	public function test_get_messages() {
 		$template = [
 			'confirmation'  => [

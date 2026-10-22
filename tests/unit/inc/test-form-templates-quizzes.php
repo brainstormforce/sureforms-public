@@ -30,13 +30,6 @@ class Test_Form_Templates_Quizzes extends TestCase {
 		return $template;
 	}
 
-	public function test_form_title_overrides_the_card_title() {
-		$template = [ 'title' => 'Knowledge Quiz', 'form_title' => 'Cyber Safety Quiz' ];
-		$this->assertSame( 'Cyber Safety Quiz', Form_Templates::get_form_title( $template ) );
-		// Without a form_title, the form takes the card's title.
-		$this->assertSame( 'Knowledge Quiz with Pass or Fail', Form_Templates::get_form_title( $this->template( 'knowledge-quiz' ) ) );
-	}
-
 	/**
 	 * Every text of a template that becomes a message or email.
 	 */
