@@ -19,6 +19,7 @@
 
 use SRFM\Inc\Form_Templates\Catalog;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -28,6 +29,25 @@ $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
 
 $team_sizes = [ __( 'Just me', 'sureforms' ), __( '2–10 people', 'sureforms' ), __( '11–50 people', 'sureforms' ), __( 'More than 50', 'sureforms' ) ];
+
+// The lead qualifier's timelines its rules match, and its budget ranges in the site's currency.
+$lead_soon      = __( 'This month', 'sureforms' );
+$lead_quarter   = __( 'In 1–3 months', 'sureforms' );
+$lead_exploring = __( 'Just exploring', 'sureforms' );
+$lead_symbol    = Payment_Helper::get_currency_symbol( Payment_Helper::get_currency() );
+$lead_symbol    = '' === $lead_symbol ? Payment_Helper::get_currency() . ' ' : $lead_symbol;
+$lead_money     = static fn( $amount ) => $lead_symbol . number_format_i18n( $amount );
+$lead_budgets   = [
+	/* translators: %s: an amount, e.g. "$1,000". */
+	sprintf( __( 'Under %s', 'sureforms' ), $lead_money( 1000 ) ),
+	/* translators: %1$s: lower amount, %2$s: upper amount. */
+	sprintf( __( '%1$s–%2$s', 'sureforms' ), $lead_money( 1000 ), $lead_money( 5000 ) ),
+	/* translators: %1$s: lower amount, %2$s: upper amount. */
+	sprintf( __( '%1$s–%2$s', 'sureforms' ), $lead_money( 5000 ), $lead_money( 20000 ) ),
+	/* translators: %s: an amount, e.g. "$20,000". */
+	sprintf( __( 'More than %s', 'sureforms' ), $lead_money( 20000 ) ),
+	__( 'Not sure yet', 'sureforms' ),
+];
 
 // The plan finder's answers its rules match, and why it recommends a plan.
 $plan_goal_control = __( 'Advanced control and security', 'sureforms' );
@@ -519,9 +539,13 @@ return [
 			Catalog::field( 'input', 'first-name', __( 'First, what’s your name?', 'sureforms' ), true, [ 'placeholder' => __( 'Jane', 'sureforms' ) ] ),
 			Catalog::field( 'input', 'company', __( 'Which company are you with?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ),
 			Catalog::field( 'multi-choice', 'role', __( 'What best describes your role?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Owner or founder', 'sureforms' ), __( 'Manager', 'sureforms' ), __( 'Team member', 'sureforms' ), __( 'Something else', 'sureforms' ) ], true ) ),
+			// The "need" in budget, authority, need and timeline: why they got in touch.
+			Catalog::attrs( Catalog::field( 'textarea', 'need', __( 'In a sentence, what are you looking for help with?', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. We want more leads from our website', 'sureforms' ) ] ), [ 'rows' => 2 ] ),
 			Catalog::field( 'multi-choice', 'team-size', __( 'How big is your team?', 'sureforms' ), true, Catalog::choice_options( $team_sizes, true ) ),
-			Catalog::field( 'multi-choice', 'timeline', __( 'When would you like to get started?', 'sureforms' ), true, Catalog::choice_options( [ __( 'This month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later this year', 'sureforms' ), __( 'Just exploring', 'sureforms' ) ], true ) ),
-			Catalog::field( 'multi-choice', 'budget', __( 'Roughly what budget do you have?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Small', 'sureforms' ), __( 'Medium', 'sureforms' ), __( 'Large', 'sureforms' ), __( 'Not sure yet', 'sureforms' ) ], true ) ),
+			Catalog::field( 'multi-choice', 'timeline', __( 'When would you like to get started?', 'sureforms' ), true, Catalog::choice_options( [ $lead_soon, $lead_quarter, __( 'Later this year', 'sureforms' ), $lead_exploring ], true ) ),
+			// Only leads who want to start soon are asked for a number.
+			Catalog::field( 'phone', 'phone', __( 'Want a quick call? Leave your number (optional)', 'sureforms' ), false ),
+			Catalog::field( 'multi-choice', 'budget', __( 'Roughly what budget do you have?', 'sureforms' ), false, Catalog::choice_options( $lead_budgets, true ) ),
 			array_merge(
 				$c['email'],
 				[
@@ -531,12 +555,32 @@ return [
 			),
 			$c['consent'],
 		],
+		'conditions'     => [
+			'phone' => [ 'logic' => [ [ [ 'timeline', '==', $lead_soon ] ], [ [ 'timeline', '==', $lead_quarter ] ] ] ],
+		],
+		// With Premium, warm leads and people just looking get their own message.
+		'confirmations'  => [
+			[
+				'name'    => __( 'Ready to start soon', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'We will be in touch within one business day at {form:email} to talk about next steps.', 'sureforms' ) ),
+				'logic'   => '_OR_',
+				'rules'   => [
+					[ 'timeline', '_EQUAL_', $lead_soon ],
+					[ 'timeline', '_EQUAL_', $lead_quarter ],
+				],
+			],
+			[
+				'name'    => __( 'Just exploring', 'sureforms' ),
+				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'No rush. We will send a few useful resources to {form:email} first, and you can reply whenever you are ready.', 'sureforms' ) ),
+				'rules'   => [ [ 'timeline', '_EQUAL_', $lead_exploring ] ],
+			],
+		],
 		'confirmation'   => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
 			'text'    => __( 'We have everything we need. Someone from our team will email you at {form:email} soon.', 'sureforms' ),
 		],
 		'email_subject'  => __( 'New lead: {form:first-name} – timeline: {form:timeline}', 'sureforms' ),
-		'email_intro'    => __( '{form:first-name} (team size: {form:team-size}) wants to get started: {form:timeline}. Reply to this email to reach them.', 'sureforms' ),
+		'email_intro'    => __( '{form:first-name} (team size: {form:team-size}) wants to get started: {form:timeline}. They are looking for help with: {form:need} Reply to this email to reach them.', 'sureforms' ),
 		'autoresponder'  => [
 			'subject'  => __( 'Thanks for getting in touch', 'sureforms' ),
 			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),

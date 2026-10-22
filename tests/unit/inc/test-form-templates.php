@@ -343,14 +343,21 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_no_template_ships_placeholder_options() {
+		// Amounts follow the currency in the payment settings: with euros, no dollar sign is left.
+		$currency = \SRFM\Inc\Payments\Payment_Helper::get_currency();
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', 'EUR' );
+		$property = new ReflectionProperty( Form_Templates::class, 'templates' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
 			$json = wp_json_encode( $template['fields'] );
 			$this->assertDoesNotMatchRegularExpression( '/(Service|Course) [ABC]\b/', $json, "Template {$id} still has placeholder options." );
-			// Calculator and payment prices use the currency in the payment settings.
-			if ( ! in_array( $template['category'], [ 'calculators', 'payments' ], true ) ) {
-				$this->assertStringNotContainsString( '$', $json, "Template {$id} assumes a currency." );
-			}
+			$this->assertStringNotContainsString( '$', $json, "Template {$id} assumes a currency." );
 		}
+
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', $currency );
+		$property->setValue( null, null );
 	}
 
 	public function test_resolve_fields_replaces_free_ones_only_with_pro() {
