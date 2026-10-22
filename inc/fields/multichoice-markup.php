@@ -195,7 +195,7 @@ class Multichoice_Markup extends Base {
 											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values.
 											The markup should remain unchanged.
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
-											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" data-option-text="<?php echo isset( $option['optionTitle'] ) ? esc_attr( $option['optionTitle'] ) : ''; ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
+											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" data-option-text="<?php echo isset( $option['optionTitle'] ) ? esc_attr( $option['optionTitle'] ) : ''; ?>"><?php echo esc_html( $this->get_option_display_title( $option ) ); ?></label>
 											<?php if ( '' !== $option_description ) { ?>
 												<span class="srfm-option-description" id="<?php echo esc_attr( $description_id ); ?>"><?php echo esc_html( $option_description ); ?></span>
 											</div>

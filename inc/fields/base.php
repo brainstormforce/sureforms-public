@@ -571,6 +571,28 @@ class Base {
 	}
 
 	/**
+	 * Visible text for a multi-choice option.
+	 *
+	 * Uses the multilingual translation when the render pass added one, and the
+	 * entered optionTitle otherwise. data-option-text keeps the optionTitle, so
+	 * the submitted value and conditional logic stay in the source language.
+	 *
+	 * @param mixed $option Option array from the block attributes.
+	 * @since x.x.x
+	 * @return string
+	 */
+	protected function get_option_display_title( $option ) {
+		if ( ! is_array( $option ) ) {
+			return '';
+		}
+		if ( isset( $option['translatedTitle'] ) && is_string( $option['translatedTitle'] ) && '' !== $option['translatedTitle'] ) {
+			return $option['translatedTitle'];
+		}
+
+		return isset( $option['optionTitle'] ) && is_scalar( $option['optionTitle'] ) ? (string) $option['optionTitle'] : '';
+	}
+
+	/**
 	 * Build the aria-describedby attribute for a single option's control.
 	 *
 	 * The first option also carries the field-level ids (help text, and the error

@@ -474,17 +474,27 @@ class String_Collector {
 			}
 
 			if ( $has_options ) {
+				// Descriptions render only while showDescriptions is on, so hidden
+				// ones are not registered.
+				$option_fields = ! empty( $attrs['showDescriptions'] ) ? [ 'label', 'optionTitle', 'description' ] : [ 'label', 'optionTitle' ];
 				foreach ( $attrs['options'] as $option_index => $option ) {
-					if ( ! is_array( $option ) || ! isset( $option['label'] ) || ! is_string( $option['label'] ) ) {
+					if ( ! is_array( $option ) ) {
 						continue;
 					}
-					$this->register_form_string(
-						$form_id,
-						String_Translator::block_option_name( $block_id, (int) $option_index ),
-						$option['label'],
-						/* translators: %d is the option number. */
-						$field_group . ': ' . sprintf( __( 'Option %d', 'sureforms' ), (int) $option_index + 1 )
-					);
+					/* translators: %d is the option number. */
+					$option_title = $field_group . ': ' . sprintf( __( 'Option %d', 'sureforms' ), (int) $option_index + 1 );
+					foreach ( $option_fields as $option_field ) {
+						if ( ! isset( $option[ $option_field ] ) || ! is_string( $option[ $option_field ] ) ) {
+							continue;
+						}
+						$this->register_form_string(
+							$form_id,
+							String_Translator::block_option_name( $block_id, (int) $option_index, $option_field ),
+							$option[ $option_field ],
+							'description' === $option_field ? $option_title . ' ' . __( 'description', 'sureforms' ) : $option_title,
+							'description' === $option_field ? 'AREA' : 'LINE'
+						);
+					}
 				}
 			}
 

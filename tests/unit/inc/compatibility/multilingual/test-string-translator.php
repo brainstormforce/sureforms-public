@@ -494,6 +494,30 @@ class Test_String_Translator extends TestCase {
 		remove_all_filters( 'srfm_multilingual_provider' );
 	}
 
+	public function test_translate_form_content_translates_multi_choice_display_text_but_not_the_value() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		$content = '<!-- wp:srfm/multi-choice {"block_id":"mcxl1","label":"Ticket","showDescriptions":true,"options":[{"optionTitle":"Early Bird","description":"Until 1 March"}]} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4245, $content );
+
+		// The title is the submitted value and conditional-logic key, so it stays as entered.
+		$this->assertStringContainsString( '"optionTitle":"Early Bird"', $out );
+		$this->assertStringContainsString( '"translatedTitle":"DE:Early Bird"', $out );
+		$this->assertStringContainsString( '"description":"DE:Until 1 March"', $out );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
 	public function test_translate_form_content_noops_when_provider_inactive() {
 		// Replace stub with an inactive provider.
 		remove_filter( 'srfm_multilingual_provider', $this->filter, 10 );

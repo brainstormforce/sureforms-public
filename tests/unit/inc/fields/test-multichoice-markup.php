@@ -146,6 +146,31 @@ class Test_Multichoice_Markup extends TestCase {
 	/**
 	 * Test markup contains checkbox inputs for multi-select mode.
 	 */
+	public function test_markup_shows_the_translated_title_but_keeps_the_value() {
+		$field = new Multichoice_Markup(
+			[
+				'label'           => 'Ticket',
+				'block_id'        => 'mc003',
+				'formId'          => '1',
+				'slug'            => 'ticket',
+				'singleSelection' => true,
+				'optionType'      => 'icon',
+				'options'         => [
+					[
+						'optionTitle'     => 'Early Bird',
+						'translatedTitle' => 'Frühbucher',
+						'icon'            => '',
+					],
+				],
+			]
+		);
+		$markup = $field->markup();
+
+		$this->assertStringContainsString( 'data-option-text="Early Bird"', $markup );
+		$this->assertStringContainsString( '>Frühbucher</label>', $markup );
+		$this->assertStringNotContainsString( '>Early Bird</label>', $markup );
+	}
+
 	public function test_markup_contains_checkbox_options() {
 		$markup = $this->multichoice_markup->markup();
 		$this->assertStringContainsString( 'type="checkbox"', $markup );
