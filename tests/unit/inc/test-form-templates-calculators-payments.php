@@ -154,7 +154,7 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 
 	public function test_payment_amount_samples_follow_the_amount_source() {
 		$samples = [
-			'donation-form'           => [ '{form-payment:donation:amount}', $this->symbol() . '10.00' ],
+			'donation-form'           => [ '{form-payment:donation:amount}', $this->symbol() . '25.00' ],
 			'booking-deposit'         => [ '{form-payment:deposit:amount}', $this->symbol() . '50.00' ],
 			'membership-subscription' => [ '{form-payment:membership:amount}', $this->symbol() . '9.00' ],
 			'event-ticket-order'      => [ '{form-payment:payment:amount}', $this->symbol() . '50.00' ],

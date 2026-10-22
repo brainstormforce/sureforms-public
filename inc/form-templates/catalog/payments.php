@@ -109,15 +109,15 @@ return [
 				Catalog::field(
 					'multi-choice',
 					'amount',
-					__( 'Choose an Amount', 'sureforms' ),
+					__( 'Choose an amount', 'sureforms' ),
 					true,
-					$priced_options( [ [ $money( 10 ), 10 ], [ $money( 25 ), 25 ], [ $money( 50 ), 50 ], [ $money( 100 ), 100 ] ] )
+					$priced_options( [ [ $money( 25 ), 25 ], [ $money( 50 ), 50 ], [ $money( 100 ), 100 ], [ $money( 250 ), 250 ] ] )
 				),
 				[ 'choiceWidth' => 25 ]
 			),
 			$payment(
 				'donation',
-				__( 'Your Donation', 'sureforms' ),
+				__( 'Your donation', 'sureforms' ),
 				[
 					'paymentType'                     => 'both',
 					'oneTimeLabel'                    => __( 'Give once', 'sureforms' ),
@@ -138,7 +138,7 @@ return [
 					'customerEmailField'              => 'email',
 				]
 			),
-			Catalog::attrs( Catalog::field( 'textarea', 'dedication', __( 'Dedicate Your Gift', 'sureforms' ), false, [ 'placeholder' => __( 'Optional: in honor or memory of someone, or a note for our team', 'sureforms' ) ] ), [ 'rows' => 2 ] ),
+			Catalog::attrs( Catalog::field( 'textarea', 'dedication', __( 'Dedicate your gift', 'sureforms' ), false, [ 'placeholder' => __( 'Optional: in honor or memory of someone, or a note for our team', 'sureforms' ) ] ), [ 'rows' => 2 ] ),
 			Catalog::field( 'checkbox', 'anonymous', __( 'Keep my donation anonymous', 'sureforms' ) ),
 			$c['consent'],
 		],
