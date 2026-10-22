@@ -118,8 +118,7 @@ $bmi_units   = [
 	'metric'   => __( 'Metric (cm, kg)', 'sureforms' ),
 	'imperial' => __( 'Imperial (ft, in, lbs)', 'sureforms' ),
 ];
-$bmi_formula = '{form:weight-kg} / (({form:height-cm} / 100) * ({form:height-cm} / 100) + 0.0001)'
-	. ' + 703 * {form:weight-lbs} / (({form:height-ft} * 12 + {form:height-in}) * ({form:height-ft} * 12 + {form:height-in}) + 0.0001)';
+$bmi_formula = '{form:weight-kg} / (({form:height-cm} / 100) * ({form:height-cm} / 100) + 0.0001) + 703 * {form:weight-lbs} / (({form:height-ft} * 12 + {form:height-in}) * ({form:height-ft} * 12 + {form:height-in}) + 0.0001)';
 
 /*
  * What the BMI visitor gets for sending the form, under a heading that fits
