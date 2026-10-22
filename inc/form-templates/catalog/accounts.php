@@ -327,26 +327,38 @@ return [
 		'submit_text'     => __( 'Submit application', 'sureforms' ),
 		'steps'           => [ __( 'About you', 'sureforms' ), __( 'Work and income', 'sureforms' ), __( 'References', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
 		'fields'          => [
-			Catalog::field( 'input', 'property', __( 'Property You Are Applying For', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 12 Oak Street, Apartment 4', 'sureforms' ) ] ),
+			Catalog::field( 'input', 'property', __( 'Property you are applying for', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. 12 Oak Street, Apartment 4', 'sureforms' ) ] ),
 			$c['first_name'],
 			$c['last_name'],
-			Catalog::width( $c['email'], 50 ),
+			// Phone before email, so the save-for-later checkbox that follows the email sits under a full row.
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::field( 'address', 'current-address', __( 'Current Address', 'sureforms' ), true ),
-			Catalog::width( Catalog::date_field( 'move-in-date', __( 'Preferred Move-in Date', 'sureforms' ), true, true ), 50 ),
-			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of Occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::field(
-						'dropdown',
-						'pets',
-						__( 'Pets', 'sureforms' ),
-						true,
-						array_merge( Catalog::dropdown_options( [ __( 'No pets', 'sureforms' ), __( 'Cat', 'sureforms' ), __( 'Dog', 'sureforms' ), __( 'Other pet', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] )
-					),
-					$no_search
+			Catalog::width( $c['email'], 50 ),
+			Catalog::field( 'address', 'current-address', __( 'Current address', 'sureforms' ), true ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'time-at-address',
+					__( 'How long have you lived at your current address?', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'Less than 6 months', 'sureforms' ), __( '6–12 months', 'sureforms' ), __( '1–3 years', 'sureforms' ), __( 'More than 3 years', 'sureforms' ) ], true )
 				),
-				100
+				[ 'choiceWidth' => 50 ]
+			),
+			Catalog::width( Catalog::date_field( 'move-in-date', __( 'Preferred move-in date', 'sureforms' ), true, true ), 50 ),
+			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 50 ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'pets',
+					__( 'Pets', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'No pets', 'sureforms' ), __( 'Cat', 'sureforms' ), __( 'Dog', 'sureforms' ), __( 'Other pets', 'sureforms' ) ], true )
+				),
+				[ 'choiceWidth' => 25 ]
+			),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'pet-details', __( 'Tell us about your pets', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. one small dog, house-trained and vaccinated', 'sureforms' ) ] ),
+				[ 'rows' => 2 ]
 			),
 			Catalog::step( 'work-step', __( 'Work and income', 'sureforms' ) ),
 			Catalog::width(
@@ -354,7 +366,7 @@ return [
 					Catalog::field(
 						'dropdown',
 						'employment-status',
-						__( 'Employment Status', 'sureforms' ),
+						__( 'Employment status', 'sureforms' ),
 						true,
 						array_merge( Catalog::dropdown_options( [ __( 'Employed full-time', 'sureforms' ), __( 'Employed part-time', 'sureforms' ), __( 'Self-employed', 'sureforms' ), __( 'Student', 'sureforms' ), __( 'Retired', 'sureforms' ), __( 'Not working', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] )
 					),
@@ -363,41 +375,49 @@ return [
 				50
 			),
 			Catalog::width( Catalog::field( 'input', 'employer', __( 'Employer', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'job-title', __( 'Job Title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Store Manager', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::number_field( 'monthly-income', __( 'Monthly Income Before Tax', 'sureforms' ), true, 0, 1000000, [ 'placeholder' => __( 'e.g. 3,200', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'job-title', __( 'Job title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Store Manager', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::number_field( 'monthly-income', __( 'Monthly income before tax', 'sureforms' ), true, 0, 1000000, [ 'placeholder' => __( 'e.g. 3,200', 'sureforms' ) ] ), 50 ),
 			Catalog::step( 'references-step', __( 'References', 'sureforms' ) ),
-			Catalog::width( Catalog::field( 'input', 'landlord-name', __( 'Current Landlord or Reference', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Sam Patel', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'landlord-name', __( 'Current landlord or reference', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Sam Patel', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				array_merge(
 					$c['phone'],
 					[
 						'slug'     => 'landlord-phone',
-						'label'    => __( 'Their Phone', 'sureforms' ),
+						'label'    => __( 'Their phone', 'sureforms' ),
 						'required' => true,
 					]
 				),
 				50
 			),
-			Catalog::width( Catalog::field( 'input', 'reference-name', __( 'Second Reference', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. your employer or a previous landlord', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'reference-name', __( 'Second reference', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. your employer or a previous landlord', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				array_merge(
 					$c['phone'],
 					[
 						'slug'  => 'reference-phone',
-						'label' => __(
-							'Their Phone',
-							'sureforms'
-						),
+						'label' => __( 'Their phone', 'sureforms' ),
 					]
 				),
 				50
 			),
-			Catalog::field( 'textarea', 'anything-else', __( 'Anything Else We Should Know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a guarantor, a parking space you need, or why you are moving', 'sureforms' ) ] ),
+			Catalog::field( 'textarea', 'anything-else', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a guarantor, a parking space you need, or why you are moving', 'sureforms' ) ] ),
 			Catalog::step( 'documents-step', __( 'Documents and signature', 'sureforms' ) ),
 			$document_upload( 'id-proof', __( 'Photo ID', 'sureforms' ), true, __( 'Passport, driving licence or national ID card. PDF, JPG or PNG, up to 5 MB.', 'sureforms' ) ),
-			$document_upload( 'proof-of-income', __( 'Proof of Income', 'sureforms' ), false, __( 'Your last three payslips or a recent bank statement. Up to 3 files.', 'sureforms' ), 3 ),
+			$document_upload( 'proof-of-income', __( 'Proof of income', 'sureforms' ), false, __( 'Your last three payslips or a recent bank statement. Up to 3 files.', 'sureforms' ), 3 ),
 			array_merge( $c['consent'], [ 'label' => __( 'I confirm these details are true, and agree to have this website store them and contact my references to assess my application.', 'sureforms' ) ] ),
 			$signature( __( 'Signature', 'sureforms' ) ),
+		],
+		// Pet details are only asked once the applicant says they have a pet.
+		'conditions'      => [
+			'pet-details' => [
+				'action' => 'show',
+				'logic'  => [
+					[ [ 'pets', '==', __( 'Cat', 'sureforms' ) ] ],
+					[ [ 'pets', '==', __( 'Dog', 'sureforms' ) ] ],
+					[ [ 'pets', '==', __( 'Other pets', 'sureforms' ) ] ],
+				],
+			],
 		],
 		'save_resume'     => true,
 		// SureForms Business also keeps unfinished applications and reminds the applicant to finish.
