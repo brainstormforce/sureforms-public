@@ -38,6 +38,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'volunteer-signup'     => 'name:input email:email phone:phone over-18:multi-choice availability:multi-choice interests:multi-choice skills:textarea consent:gdpr',
 		'job-application'      => 'name:input email:email phone:phone position:input cv:url linkedin:url portfolio:url years-experience:number start-date:dropdown cover-letter:textarea how-heard:dropdown consent:gdpr',
 		'booking-deposit'      => 'name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice notes:textarea deposit:payment consent:gdpr',
+		'membership-subscription' => 'name:input email:email plan:multi-choice membership:payment consent:gdpr',
 	];
 
 	public function tear_down() {

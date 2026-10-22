@@ -52,7 +52,8 @@ $payment = static function ( $slug, $label, $schema ) {
 
 /*
  * A choice whose options carry a price: the label shows it, the option value
- * is the amount the payment field or the calculation uses.
+ * is the amount the payment field or the calculation uses. An optional third
+ * item is the option's icon.
  */
 $priced_options = static function ( $options ) {
 	$list = [];
@@ -60,7 +61,7 @@ $priced_options = static function ( $options ) {
 		$list[] = [
 			'optionTitle' => $option[0],
 			'value'       => (string) $option[1],
-			'icon'        => '',
+			'icon'        => $option[2] ?? '',
 		];
 	}
 	return [
@@ -257,28 +258,33 @@ return [
 		'description'   => __( 'Sign members up for a monthly recurring plan until they cancel.', 'sureforms' ),
 		'submit_text'   => __( 'Start my membership', 'sureforms' ),
 		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
+			Catalog::field( 'input', 'name', __( 'Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
 			$c['email'],
 			Catalog::attrs(
 				Catalog::field(
 					'multi-choice',
 					'plan',
-					__( 'Choose Your Plan', 'sureforms' ),
+					__( 'Choose your plan', 'sureforms' ),
 					true,
-					$priced_options(
-						[
-							[ $label_with_price( __( 'Basic', 'sureforms' ), $per_month( $money( 9 ) ) ), 9 ],
-							[ $label_with_price( __( 'Plus', 'sureforms' ), $per_month( $money( 19 ) ) ), 19 ],
-							[ $label_with_price( __( 'Premium', 'sureforms' ), $per_month( $money( 39 ) ) ), 39 ],
-						]
+					array_merge(
+						$priced_options(
+							[
+								[ $label_with_price( __( 'Basic', 'sureforms' ), $per_month( $money( 9 ) ) ), 9, 'leaf' ],
+								[ $label_with_price( __( 'Plus', 'sureforms' ), $per_month( $money( 19 ) ) ), 19, 'star' ],
+								[ $label_with_price( __( 'Premium', 'sureforms' ), $per_month( $money( 39 ) ) ), 39, 'crown' ],
+							]
+						),
+						[ 'helpText' => __( 'Billed monthly. Cancel any time.', 'sureforms' ) ]
 					)
 				),
-				[ 'choiceWidth' => 33.33 ]
+				[
+					'choiceWidth'    => 100,
+					'verticalLayout' => false,
+				]
 			),
 			$payment(
 				'membership',
-				__( 'Payment', 'sureforms' ),
+				__( 'Payment details', 'sureforms' ),
 				[
 					'paymentType'         => 'subscription',
 					'amountType'          => 'variable',
@@ -288,21 +294,21 @@ return [
 						'interval'      => 'month',
 						'billingCycles' => 'ongoing',
 					],
-					'customerNameField'   => 'first-name',
+					'customerNameField'   => 'name',
 					'customerEmailField'  => 'email',
 				]
 			),
 			$c['consent'],
 		],
 		'confirmation'  => [
-			'heading' => __( 'Welcome aboard, {form:first-name}!', 'sureforms' ),
+			'heading' => __( 'Welcome aboard, {form:name}!', 'sureforms' ),
 			'text'    => __( 'Your {form:plan} membership is active. We have sent the details to {form:email}. You can cancel any time by replying to that email.', 'sureforms' ),
 		],
-		'email_subject' => __( 'New member: {form:first-name} {form:last-name} ({form:plan})', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} joined on the {form:plan} plan. First payment: {form-payment:membership:amount}, order {form-payment:membership:order-id}.', 'sureforms' ),
+		'email_subject' => __( 'New member: {form:name} ({form:plan})', 'sureforms' ),
+		'email_intro'   => __( '{form:name} joined on the {form:plan} plan. First payment: {form-payment:membership:amount}, order {form-payment:membership:order-id}.', 'sureforms' ),
 		'autoresponder' => [
 			'subject'  => __( 'Welcome to your membership', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
+			'greeting' => __( 'Hi {form:name},', 'sureforms' ),
 			'lines'    => [
 				__( 'Thanks for joining. Your {form:plan} membership is active, and your first payment of {form-payment:membership:amount} has gone through.', 'sureforms' ),
 				__( 'You will be billed monthly until you cancel. To change or cancel your plan, just reply to this email.', 'sureforms' ),
