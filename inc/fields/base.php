@@ -301,7 +301,7 @@ class Base {
 	 * Whether per-option descriptions should be rendered for this field.
 	 *
 	 * @var bool
-	 * @since 2.13.0
+	 * @since x.x.x
 	 */
 	protected $show_descriptions = false;
 
@@ -559,7 +559,7 @@ class Base {
 	 * setting and an option left blank both render exactly as they did before.
 	 *
 	 * @param mixed $option Single entry from the block's options array.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	protected function get_option_description( $option ) {
@@ -581,7 +581,7 @@ class Base {
 	 *
 	 * @param int    $index          Zero-based option index.
 	 * @param string $description_id Element id of this option's description, empty when it has none.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return string Attribute markup including a trailing space, or an empty string.
 	 */
 	protected function get_option_described_by( $index, $description_id ) {

@@ -87,7 +87,10 @@ trait Form_Field_Schema {
 					'properties' => [
 						'optionTitle' => [ 'type' => 'string' ],
 						'label'       => [ 'type' => 'string' ],
-						'description' => [ 'type' => 'string' ],
+						'description' => [
+							'type'        => 'string',
+							'description' => __( 'Text shown under the option. Multiple Choice only; Dropdown ignores it.', 'sureforms' ),
+						],
 					],
 				],
 			],

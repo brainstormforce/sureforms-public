@@ -47,6 +47,70 @@ class Test_Field_Mapping extends TestCase {
 	}
 
 	/**
+	 * Builds Multiple Choice markup from the given fieldOptions.
+	 *
+	 * @param array $field_options fieldOptions for one multi-choice field.
+	 * @return string
+	 */
+	private function multi_choice_markup( array $field_options ) {
+		$request = new WP_REST_Request();
+		$request->set_param(
+			'form_data',
+			[
+				'form' => [
+					'formFields' => [
+						[
+							'label'        => 'Ticket',
+							'fieldType'    => 'multi-choice',
+							'required'     => false,
+							'fieldOptions' => $field_options,
+						],
+					],
+				],
+			]
+		);
+
+		return Field_Mapping::generate_gutenberg_fields_from_questions( $request );
+	}
+
+	/**
+	 * A description sent by the AI builder or the Abilities API turns the
+	 * descriptions on, or it is stored but never rendered.
+	 */
+	public function test_generate_gutenberg_fields_from_questions_enables_option_descriptions() {
+		$result = $this->multi_choice_markup(
+			[
+				[
+					'optionTitle' => 'Early Bird',
+					'description' => '$149 until 1 March<script>x</script>',
+				],
+				[ 'optionTitle' => 'Standard' ],
+			]
+		);
+
+		$this->assertStringContainsString( '"showDescriptions":true', $result );
+		$this->assertStringContainsString( '"description":"$149 until 1 March"', $result );
+	}
+
+	/**
+	 * Blank or whitespace-only descriptions leave the toggle at its default.
+	 */
+	public function test_generate_gutenberg_fields_from_questions_ignores_blank_option_descriptions() {
+		$result = $this->multi_choice_markup(
+			[
+				[
+					'optionTitle' => 'Early Bird',
+					'description' => '   ',
+				],
+				[ 'optionTitle' => 'Standard' ],
+			]
+		);
+
+		$this->assertStringContainsString( 'wp:srfm/multi-choice', $result );
+		$this->assertStringNotContainsString( 'showDescriptions', $result );
+	}
+
+	/**
 	 * Test generate_gutenberg_fields includes helpText when provided.
 	 */
 	public function test_generate_gutenberg_fields_with_help_text() {

@@ -176,21 +176,16 @@
 			.srfm-block-wrap {
 				pointer-events: initial;
 			}
+
+			// With option descriptions on, clicking an option of the selected
+			// block opens its description in the inspector.
+			.srfm-descriptions-on .srfm-block-content-wrap {
+				cursor: pointer;
+			}
 		}
 
 		.srfm-block-wrap {
 			@include srfm-multi-choice-wrap-styles;
-
-			// With option descriptions on, clicking an option opens its
-			// description in the inspector, so the options take clicks even
-			// before the block is selected.
-			&.srfm-descriptions-on {
-				pointer-events: initial;
-
-				.srfm-block-content-wrap {
-					cursor: pointer;
-				}
-			}
 
 			// Same equal-height rule as the front end, which is scoped to
 			// .srfm-form and so never reaches the canvas.

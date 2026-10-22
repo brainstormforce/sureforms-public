@@ -15,6 +15,7 @@ import {
 	useErrMessage,
 	checkInvalidCharacter,
 	updateSelectedIndicesAfterReorder,
+	indexAfterDelete,
 } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
@@ -70,8 +71,9 @@ const Edit = ( props ) => {
 		dynamicDefaultValue,
 	} = attributes;
 
+	// Turning the toggle off closes the open description, like deselecting.
 	const { openDescription, setOpenDescription, openDescriptionRef } =
-		useOptionDescription( isSelected );
+		useOptionDescription( isSelected && showDescriptions );
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState();
@@ -86,13 +88,15 @@ const Edit = ( props ) => {
 
 		// Update preselected options when an option is deleted
 		const newPreselected = preselectedOptions
-			.filter( ( i ) => i !== index ) // Remove deleted option
-			.map( ( i ) => ( i > index ? i - 1 : i ) ); // Adjust indices
+			.map( ( i ) => indexAfterDelete( i, index ) )
+			.filter( ( i ) => i !== null );
 
 		setAttributes( {
 			options: newOptions,
 			preselectedOptions: newPreselected,
 		} );
+		// Keep the open description on the option it was opened for.
+		setOpenDescription( indexAfterDelete( openDescription, index ) );
 	};
 
 	const changeOption = ( option, index ) => {
@@ -433,6 +437,15 @@ const Edit = ( props ) => {
 									options: newOptions,
 									preselectedOptions: updatedPreselected,
 								} );
+								if ( openDescription !== null ) {
+									setOpenDescription(
+										updateSelectedIndicesAfterReorder(
+											[ openDescription ],
+											srcI,
+											destI
+										)[ 0 ]
+									);
+								}
 							}
 						} }
 					>

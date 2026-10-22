@@ -10,6 +10,7 @@ export const MultiChoiceComponent = ( {
 	attributes,
 	blockID,
 	setAttributes,
+	isSelected,
 	openDescription,
 	setOpenDescription,
 } ) => {
@@ -70,9 +71,15 @@ export const MultiChoiceComponent = ( {
 								// same option's description in the inspector,
 								// so the author can click what they see instead
 								// of counting rows. Same gesture as the row's
-								// menu button.
+								// menu button. Only once the block is selected,
+								// so the click that selects it doesn't also
+								// open a description and move focus.
 								onClick={ () => {
-									if ( showDescriptions && setOpenDescription ) {
+									if (
+										isSelected &&
+										showDescriptions &&
+										setOpenDescription
+									) {
 										setOpenDescription( key );
 									}
 								} }
@@ -101,7 +108,7 @@ export const MultiChoiceComponent = ( {
 									     PHP, and an option without a description
 									     renders the bare <p> it always did. */ }
 									{ showDescriptions &&
-									option.description ? (
+									option.description?.trim() ? (
 											<div className="srfm-option-text">
 												<p>{ option.optionTitle }</p>
 												<span className="srfm-option-description">

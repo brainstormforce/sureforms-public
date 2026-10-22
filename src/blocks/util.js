@@ -184,6 +184,22 @@ const updateSelectedIndicesAfterReorder = (
 	} );
 };
 
+/**
+ * Where an option index ends up after another option is deleted.
+ *
+ * @since x.x.x
+ *
+ * @param {?number} index        Index to update, or null.
+ * @param {number}  deletedIndex Index of the deleted option.
+ * @return {?number} Updated index, or null when it was the deleted option.
+ */
+const indexAfterDelete = ( index, deletedIndex ) => {
+	if ( index === null || index === deletedIndex ) {
+		return null;
+	}
+	return index > deletedIndex ? index - 1 : index;
+};
+
 export {
 	stripHTML,
 	getSpacingPresetCssVar,
@@ -194,12 +210,13 @@ export {
 	decodeHtmlEntities,
 	checkInvalidCharacter,
 	updateSelectedIndicesAfterReorder,
+	indexAfterDelete,
 };
 
 /**
  * Maximum length of a single option description. Enforced as a native
  * `maxlength`, which also truncates pastes.
  *
- * @since 2.13.0
+ * @since x.x.x
  */
 export const OPTION_DESCRIPTION_MAX_LENGTH = 120;

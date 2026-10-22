@@ -6,7 +6,7 @@
  * open at a time, a 120 character cap with a live counter, focus moved into the
  * field when it opens, and the row closed again when the block is deselected.
  *
- * @since 2.13.0
+ * @since x.x.x
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
@@ -70,7 +70,7 @@ export const OptionDescriptionToggle = ( {
 	<div className="srfm-option-description-menu">
 		<Button
 			className={ `srfm-option-description-toggle${
-				description ? ' srfm-has-description' : ''
+				description?.trim() ? ' srfm-has-description' : ''
 			}` }
 			onClick={ () =>
 				setOpenDescription( openDescription === index ? null : index )

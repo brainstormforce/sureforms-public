@@ -311,6 +311,15 @@ class Field_Mapping {
 							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
 						}
 
+						// Descriptions only render while showDescriptions is on, so
+						// turn it on when any option carries one.
+						foreach ( $merged_attributes['options'] ?? [] as $option ) {
+							if ( is_array( $option ) && '' !== trim( Helper::get_string_value( $option['description'] ?? '' ) ) ) {
+								$merged_attributes['showDescriptions'] = true;
+								break;
+							}
+						}
+
 						// Set single selection if provided.
 						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );

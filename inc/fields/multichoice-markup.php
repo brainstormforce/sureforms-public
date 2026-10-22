@@ -163,7 +163,7 @@ class Multichoice_Markup extends Base {
 									 * <label> so the accessible name, the conditional-logic value
 									 * and the URL pre-fill match stay the option title alone.
 									 * Nothing extra is emitted for an option without a description,
-									 * so an existing form renders byte-identical markup.
+									 * so an existing form gets no extra elements or attributes.
 									 */
 									$option_description = $this->get_option_description( $option );
 									$description_id     = '' === $option_description ? '' : 'srfm-' . $this->slug . '-' . $this->block_id . '-' . $i . '-description';
