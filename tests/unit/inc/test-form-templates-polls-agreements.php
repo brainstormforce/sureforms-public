@@ -3,8 +3,8 @@
  * Class Test_Form_Templates_Polls_Agreements
  *
  * The Premium poll, survey, lead and agreement templates: their plans, the Pro
- * features they declare and the fields those declarations name. The rental and
- * scholarship applications are covered by Test_Form_Templates_Accounts.
+ * features they declare and the fields those declarations name. The rental
+ * application is covered by Test_Form_Templates_Accounts.
  *
  * @package sureforms
  */
