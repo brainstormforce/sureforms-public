@@ -383,6 +383,11 @@ class Field_Validation {
 	 * here too; the allowlist already contains repeater children because the collector
 	 * recurses into `innerBlocks`.
 	 *
+	 * SECURITY INVARIANT — a slug names exactly one field, so each slug may reach the
+	 * submission under at most one key (per level: top-level, and each repeater row).
+	 * Downstream readers resolve a field by its slug and do not agree on which of several
+	 * keys wins, so a repeated slug is dropped entirely: see drop_repeated_slug_keys().
+	 *
 	 * @param array<mixed> $form_data The submitted form data (sanitized).
 	 * @param int|mixed    $form_id   The ID of the form being submitted.
 	 * @since 2.12.3
@@ -392,6 +397,8 @@ class Field_Validation {
 		if ( ! is_array( $form_data ) ) {
 			return [];
 		}
+
+		$form_data = self::drop_repeated_slug_keys( $form_data );
 
 		$form_id_int     = Helper::get_integer_value( $form_id );
 		$known_block_ids = self::get_known_field_block_ids( $form_id_int );
@@ -669,6 +676,38 @@ class Field_Validation {
 	}
 
 	/**
+	 * Drop every field key whose slug is submitted under more than one key.
+	 *
+	 * The form renders one input name per field, so a slug that arrives under two keys
+	 * (a different block_id, prefix or label segment) did not come from the rendered form.
+	 * No single key can be trusted over another, so all of them are dropped; a required
+	 * field then fails validation instead of being resolved to an arbitrary copy.
+	 *
+	 * @param array<mixed> $fields Submitted fields at one level (top-level or a repeater row).
+	 * @since 2.12.10
+	 * @return array<mixed> The fields with every repeated-slug key removed.
+	 */
+	private static function drop_repeated_slug_keys( $fields ) {
+		$keys_by_slug = [];
+		foreach ( array_keys( $fields ) as $key ) {
+			$slug = self::get_slug_from_key( $key );
+			if ( '' !== $slug ) {
+				$keys_by_slug[ $slug ][] = $key;
+			}
+		}
+
+		foreach ( $keys_by_slug as $keys ) {
+			if ( count( $keys ) > 1 ) {
+				foreach ( $keys as $key ) {
+					unset( $fields[ $key ] );
+				}
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
 	 * Extract a field's slug from its submitted key.
 	 *
 	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
@@ -680,7 +719,7 @@ class Field_Validation {
 	 * @since 2.12.7
 	 * @return string The slug, or '' when it cannot be derived.
 	 */
-	private static function get_slug_from_key( $key ) {
+	public static function get_slug_from_key( $key ) {
 		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
 			return '';
 		}
@@ -717,7 +756,7 @@ class Field_Validation {
 				}
 			}
 
-			$rows[ $index ] = $row;
+			$rows[ $index ] = self::drop_repeated_slug_keys( $row );
 		}
 
 		return $rows;

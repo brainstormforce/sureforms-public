@@ -677,6 +677,53 @@ class Test_Field_Validation extends TestCase {
 	}
 
 	/**
+	 * A slug identifies exactly one field, so it may arrive under only one key. When it
+	 * arrives under more than one, there is no trustworthy way to choose between them, so
+	 * every key carrying that slug is dropped. Covers a duplicate whose block_id is unknown
+	 * (slug-only match) and one that reuses the real block_id with a different label.
+	 */
+	public function test_strip_unknown_field_keys_drops_every_key_of_a_repeated_slug() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Repeated Slug Form',
+				'post_content' => '<!-- wp:srfm/repeater {"block_id":"rrrr1111","slug":"rows"} --><!-- wp:srfm/dropdown {"block_id":"planreal","slug":"plan"} /--><!-- /wp:srfm/repeater --><!-- wp:srfm/input {"block_id":"name0001","slug":"full-name"} /-->',
+			]
+		);
+
+		$real  = 'srfm-dropdown-planreal-lbl-UGxhbg-plan';
+		$name  = 'srfm-input-name0001-lbl-TmFtZQ-full-name';
+		$cases = [
+			'unknown block_id' => 'srfm-dropdown-planfake-lbl-UGxhbg-plan',
+			'reused block_id'  => 'srfm-dropdown-1-planreal-lbl-T3RoZXI-plan',
+		];
+
+		foreach ( $cases as $case => $duplicate ) {
+			$kept = Field_Validation::strip_unknown_field_keys(
+				[
+					$duplicate => 'Basic',
+					$real      => 'Premium',
+					$name      => 'Jane',
+					'form-id'  => $form_id,
+				],
+				$form_id
+			);
+
+			$this->assertArrayNotHasKey( $duplicate, $kept, "$case: duplicate key is dropped" );
+			$this->assertArrayNotHasKey( $real, $kept, "$case: the field the duplicate shadows is dropped too" );
+			$this->assertSame( 'Jane', $kept[ $name ] ?? null, "$case: unrelated fields are untouched" );
+			$this->assertSame( $form_id, $kept['form-id'] ?? null, "$case: non-field keys are untouched" );
+		}
+
+		// The same rule applies inside each repeater row.
+		$repeater = Field_Validation::strip_unknown_field_keys( [ 'srfm-repeater-rrrr1111-lbl-Um93cw-rows' => [ [ $cases['unknown block_id'] => 'Basic', $real => 'Premium' ] ] ], $form_id );
+		$this->assertSame( [], $repeater['srfm-repeater-rrrr1111-lbl-Um93cw-rows'][0] ?? null, 'a slug repeated inside a repeater row is dropped' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * The slug fallback must not weaken the anti-injection guard: a key with neither a
 	 * known block_id nor a known slug is still foreign and dropped.
 	 */

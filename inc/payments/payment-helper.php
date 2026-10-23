@@ -1859,19 +1859,22 @@ class Payment_Helper {
 		// Here is the structure of the form data name.
 		// srfm-input-multi-choice-398dbcfe-lbl-UGxlYXNlIGNob29zZSBvcHRpb24-multi-choice
 		// {block_name}-{block_id}-lbl-{combined-id}-{slug}.
+		// The amount source must resolve to exactly one submitted key. With more than one
+		// there is no single value to price against, so return null and let the caller reject.
 		$submitted_field_value = null;
+		$matches               = 0;
 		foreach ( $form_data as $field_key => $field_value ) {
-			// Check if field key starts with block_name- and ends with -slug.
+			// Check if field key starts with block_name- and carries exactly this slug (a
+			// suffix match would also take a different field such as `my-plan` for `plan`).
 			$is_start_with_block_name = strpos( $field_key, $block_name . '-' ) === 0;
-			$is_last_with_slug        = substr( $field_key, -strlen( '-' . $variable_amount_field_slug ) ) === '-' . $variable_amount_field_slug;
 
-			if ( $is_start_with_block_name && $is_last_with_slug ) {
+			if ( $is_start_with_block_name && Field_Validation::get_slug_from_key( $field_key ) === $variable_amount_field_slug ) {
 				$submitted_field_value = $field_value;
-				break;
+				++$matches;
 			}
 		}
 
-		return $submitted_field_value;
+		return 1 === $matches ? $submitted_field_value : null;
 	}
 
 	/**
