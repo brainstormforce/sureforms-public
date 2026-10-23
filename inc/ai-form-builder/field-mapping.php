@@ -38,6 +38,13 @@ class Field_Mapping {
 	public const REPEATER_INNER_TYPES = [ 'input', 'email', 'textarea', 'number', 'url', 'phone', 'date-picker', 'time-picker', 'dropdown' ];
 
 	/**
+	 * Field types allowed inside a register block (Pro editor `allowedBlocks`).
+	 *
+	 * @since x.x.x
+	 */
+	public const REGISTER_INNER_TYPES = [ 'input', 'email', 'password' ];
+
+	/**
 	 * Generate Gutenberg Fields from AI data.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -113,7 +120,7 @@ class Field_Mapping {
 	/**
 	 * Block markup for one AI-schema question.
 	 *
-	 * Also used for the inner fields of container blocks (address, repeater),
+	 * Also used for the inner fields of container blocks (address, repeater, register),
 	 * where `$allowed_types` limits which field types may be emitted.
 	 *
 	 * @param mixed                   $question          Field schema.
@@ -519,6 +526,29 @@ class Field_Mapping {
 				$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
 
 				$post_content .= '<!-- wp:srfm/' . $field_type . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
+				break;
+			case 'register':
+				// SureForms Business's sign-up block: the account fields inside it.
+				// Its User Registration settings need it, so without Business the
+				// fields go into the form on their own instead of being dropped.
+				$inner_content = self::map_inner_fields( $question, self::REGISTER_INNER_TYPES, $is_conversational, $form_type, $skip_fields );
+				if ( is_wp_error( $inner_content ) ) {
+					return $inner_content;
+				}
+				if ( '' === $inner_content || ! self::has_business_fields() ) {
+					$post_content .= $inner_content;
+					break;
+				}
+
+				// A container with no input of its own: no label, required flag, help text or placeholder.
+				unset( $merged_attributes['label'], $merged_attributes['required'], $merged_attributes['help'], $merged_attributes['placeholder'] );
+				if ( '' === $merged_attributes['slug'] ) {
+					$merged_attributes['slug'] = 'register';
+				}
+
+				$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
+
+				$post_content .= self::wrap_inner_blocks( $field_type, $merged_attributes, $inner_content );
 				break;
 			case 'html':
 			case 'password':

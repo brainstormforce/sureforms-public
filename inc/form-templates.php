@@ -1418,7 +1418,7 @@ class Form_Templates {
 			[
 				'form' => [
 					'formTitle'  => self::get_form_title( $template ),
-					'formFields' => $fields,
+					'formFields' => self::group_register_fields( $template, $fields ),
 				],
 			]
 		);
@@ -1442,6 +1442,56 @@ class Form_Templates {
 		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
 		 */
 		return Helper::get_string_value( apply_filters( 'srfm_form_template_content', Helper::get_string_value( $content ), $template, $fields ) );
+	}
+
+	/**
+	 * The fields to build, with the ones a `registration` template signs people
+	 * up with (email, username, password, names) inside one register block, at
+	 * the place of the first. SureForms Business's User Registration settings
+	 * only work with that block in the form: without it, opening them turns the
+	 * registration off. The template's own field list stays flat, so messages,
+	 * answers and checks see every field.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function group_register_fields( $template, $fields ) {
+		if ( empty( $template['registration'] ) || ! is_array( $template['registration'] ) ) {
+			return $fields;
+		}
+		$slugs = array_filter( array_map( [ Helper::class, 'get_string_value' ], array_values( $template['registration'] ) ) );
+
+		$grouped = [];
+		$inner   = [];
+		$at      = null;
+		foreach ( $fields as $field ) {
+			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
+			if ( in_array( Helper::get_string_value( $field['slug'] ?? '' ), $slugs, true ) && in_array( $type, Field_Mapping::REGISTER_INNER_TYPES, true ) ) {
+				$at      = $at ?? count( $grouped );
+				$inner[] = $field;
+				continue;
+			}
+			$grouped[] = $field;
+		}
+		if ( null === $at ) {
+			return $fields;
+		}
+
+		array_splice(
+			$grouped,
+			$at,
+			0,
+			[
+				[
+					'fieldType'   => 'register',
+					'slug'        => 'register',
+					'innerFields' => $inner,
+				],
+			]
+		);
+		return $grouped;
 	}
 
 	/**
