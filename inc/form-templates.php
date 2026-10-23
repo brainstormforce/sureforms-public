@@ -87,7 +87,6 @@ class Form_Templates {
 		'cpt'              => 'business',
 		'registration'     => 'business',
 		'entry_limit'      => 'business',
-		'pdf'              => 'business',
 	];
 
 	/**
@@ -112,7 +111,6 @@ class Form_Templates {
 		'cpt'              => 2,
 		'registration'     => 2,
 		'entry_limit'      => 2,
-		'pdf'              => 2,
 	];
 
 	/**
@@ -146,7 +144,6 @@ class Form_Templates {
 		'partial_entries'  => 'partial_entries',
 		'cpt'              => 'post_submission',
 		'registration'     => 'user_registration',
-		'pdf'              => 'pdf',
 	];
 
 	/**
@@ -758,9 +755,9 @@ class Form_Templates {
 
 	/**
 	 * What a template needs set up on the site to work fully, from its `setup`
-	 * key: a list of `stripe`, `paypal`, `pdf_library` and `google_maps`.
-	 * Unknown ids, and PayPal and the PDF library without the SureForms Pro
-	 * that provides them, are left out. Setup never stops a form being created.
+	 * key: a list of `stripe`, `paypal` and `google_maps`.
+	 * Unknown ids, and PayPal without the SureForms Pro that provides it, are
+	 * left out. Setup never stops a form being created.
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @since x.x.x
@@ -1421,7 +1418,7 @@ class Form_Templates {
 			[
 				'form' => [
 					'formTitle'  => self::get_form_title( $template ),
-					'formFields' => $fields,
+					'formFields' => self::group_register_fields( $template, $fields ),
 				],
 			]
 		);
@@ -1445,6 +1442,83 @@ class Form_Templates {
 		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
 		 */
 		return Helper::get_string_value( apply_filters( 'srfm_form_template_content', Helper::get_string_value( $content ), $template, $fields ) );
+	}
+
+	/**
+	 * The fields to build, with the ones a `registration` template signs people
+	 * up with (email, username, password, names, website) inside one register
+	 * block. SureForms Business's User Registration settings only work with that
+	 * block in the form: without it, opening them turns the registration off.
+	 * The template's own field list stays flat, so messages, answers and checks
+	 * see every field.
+	 *
+	 * The fields are the ones SureForms Pro signs people up with: the declared
+	 * slugs, else the first email and password fields (`'registration' => true`
+	 * declares none). Only a run of them next to each other is wrapped, from the
+	 * first one, so no field moves past another or across a step; a field
+	 * further on stays where it is and still works.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function group_register_fields( $template, $fields ) {
+		if ( empty( $template['registration'] ) ) {
+			return $fields;
+		}
+		$options = is_array( $template['registration'] ) ? $template['registration'] : [];
+		$first   = static function ( $type ) use ( $fields ) {
+			foreach ( $fields as $field ) {
+				if ( ( $field['fieldType'] ?? '' ) === $type ) {
+					return Helper::get_string_value( $field['slug'] ?? '' );
+				}
+			}
+			return '';
+		};
+
+		// Like SureForms Pro's registration builder: the first email and password fields when not declared.
+		$slugs = [
+			isset( $options['email'] ) ? Helper::get_string_value( $options['email'] ) : $first( 'email' ),
+			isset( $options['password'] ) ? Helper::get_string_value( $options['password'] ) : $first( 'password' ),
+		];
+		foreach ( [ 'username', 'first_name', 'last_name', 'website' ] as $key ) {
+			if ( isset( $options[ $key ] ) && is_string( $options[ $key ] ) ) {
+				$slugs[] = $options[ $key ];
+			}
+		}
+		$slugs = array_filter( $slugs );
+
+		$register = static fn( $inner ) => [
+			'fieldType'   => 'register',
+			'slug'        => 'register',
+			'innerFields' => $inner,
+		];
+
+		$grouped = [];
+		$inner   = [];
+		$state   = 'before'; // Then 'in' the run, then 'after' it.
+		foreach ( $fields as $field ) {
+			$type     = Helper::get_string_value( $field['fieldType'] ?? '' );
+			$is_inner = in_array( Helper::get_string_value( $field['slug'] ?? '' ), $slugs, true ) && in_array( $type, Field_Mapping::REGISTER_INNER_TYPES, true );
+			if ( $is_inner && 'after' !== $state ) {
+				$state   = 'in';
+				$inner[] = $field;
+				continue;
+			}
+			if ( 'in' === $state ) {
+				$grouped[] = $register( $inner );
+				$state     = 'after';
+			}
+			$grouped[] = $field;
+		}
+		if ( 'before' === $state ) {
+			return $fields;
+		}
+		if ( 'in' === $state ) {
+			$grouped[] = $register( $inner );
+		}
+		return $grouped;
 	}
 
 	/**
@@ -2240,9 +2314,7 @@ class Form_Templates {
 	 * Thank-you message in the same layout as the default confirmation. Catalog
 	 * files use it through Catalog::thank_you() for conditional messages.
 	 *
-	 * A blank line in the text starts a new paragraph. A paragraph holding only a
-	 * `{pdf:…}` link is dropped whole by SureForms Pro when it builds no PDF, so
-	 * the message still reads well without it.
+	 * A blank line in the text starts a new paragraph.
 	 *
 	 * @param string $heading Heading.
 	 * @param string $text    Body text.
@@ -2333,7 +2405,7 @@ class Form_Templates {
 	/**
 	 * One setup step and whether it is done.
 	 *
-	 * @param string $id `stripe`, `paypal`, `pdf_library` or `google_maps`.
+	 * @param string $id `stripe`, `paypal` or `google_maps`.
 	 * @since x.x.x
 	 * @return array{id: string, label: string, done: bool, url: string}|null Null for an unknown id or one this site can't do.
 	 */
@@ -2359,19 +2431,6 @@ class Form_Templates {
 					'label' => __( 'Connect PayPal', 'sureforms' ),
 					'done'  => (bool) call_user_func( $connected ),
 					'url'   => $settings_url( 'payments-settings&subpage=payment-methods&gateway=paypal' ),
-				];
-
-			case 'pdf_library':
-				$installed = [ '\SRFM_Pro\Inc\Business\Pdf\Utils', 'check_if_library_exists' ];
-				if ( ! class_exists( $installed[0] ) || ! is_callable( $installed ) ) {
-					return null;
-				}
-				return [
-					'id'    => $id,
-					// The library is installed from a form's PDF settings, so there is no page to link to.
-					'label' => __( 'Install the PDF library (in the form’s PDF settings)', 'sureforms' ),
-					'done'  => (bool) call_user_func( $installed ),
-					'url'   => '',
 				];
 
 			case 'google_maps':
@@ -3137,7 +3196,8 @@ class Form_Templates {
 				return $classes;
 			}
 		);
-		add_action( 'wp_head', [ self::class, 'remove_third_party_hooks' ], 0 );
+		// A closure: the hook passes its own (empty) argument, which would replace the hook list.
+		add_action( 'wp_head', static fn() => self::remove_third_party_hooks(), 0 );
 		add_action(
 			'wp_head',
 			static function () {
@@ -3152,7 +3212,7 @@ class Form_Templates {
 			},
 			99
 		);
-		add_action( 'wp_footer', [ self::class, 'remove_third_party_hooks' ], 0 );
+		add_action( 'wp_footer', static fn() => self::remove_third_party_hooks(), 0 );
 		add_action(
 			'wp_footer',
 			static function () {

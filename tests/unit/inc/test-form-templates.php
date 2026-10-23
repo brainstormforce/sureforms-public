@@ -114,6 +114,91 @@ class Test_Form_Templates extends TestCase {
 		$this->assertCount( count( $ids ), $templates );
 	}
 
+	public function test_no_template_makes_a_pdf() {
+		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			$this->assertArrayNotHasKey( 'pdf', $template, "Template {$id} makes a PDF." );
+			$this->assertStringNotContainsString( '{pdf:', (string) wp_json_encode( $template ), "Template {$id} links a PDF." );
+		}
+	}
+
+	public function test_group_register_fields_leaves_templates_without_registration_alone() {
+		$fields = [ [ 'fieldType' => 'email', 'slug' => 'email' ] ];
+		$this->assertSame( $fields, Form_Templates::group_register_fields( [], $fields ) );
+		$this->assertSame( $fields, Form_Templates::group_register_fields( [ 'registration' => false ], $fields ) );
+	}
+
+	public function test_group_register_fields_uses_pros_defaults_for_the_short_form() {
+		// `'registration' => true`: SureForms Pro signs up with the first email and password fields.
+		$grouped = Form_Templates::group_register_fields(
+			[ 'registration' => true ],
+			[
+				[ 'fieldType' => 'input', 'slug' => 'name' ],
+				[ 'fieldType' => 'email', 'slug' => 'work-email' ],
+				[ 'fieldType' => 'password', 'slug' => 'pass' ],
+				[ 'fieldType' => 'gdpr', 'slug' => 'consent' ],
+			]
+		);
+		$this->assertSame( [ 'input', 'register', 'gdpr' ], wp_list_pluck( $grouped, 'fieldType' ) );
+		$this->assertSame( [ 'work-email', 'pass' ], wp_list_pluck( $grouped[1]['innerFields'], 'slug' ) );
+
+		// A partial declaration still gets the default email and password.
+		$grouped = Form_Templates::group_register_fields(
+			[ 'registration' => [ 'username' => 'login' ] ],
+			[
+				[ 'fieldType' => 'input', 'slug' => 'login' ],
+				[ 'fieldType' => 'email', 'slug' => 'email' ],
+				[ 'fieldType' => 'password', 'slug' => 'password' ],
+			]
+		);
+		$this->assertSame( [ 'register' ], wp_list_pluck( $grouped, 'fieldType' ) );
+		$this->assertSame( [ 'login', 'email', 'password' ], wp_list_pluck( $grouped[0]['innerFields'], 'slug' ) );
+	}
+
+	public function test_group_register_fields_reads_only_the_field_options() {
+		// Options that aren't fields (flags, the role) never pull a field in.
+		$grouped = Form_Templates::group_register_fields(
+			[
+				'registration' => [
+					'email'      => 'email',
+					'auto_login' => true,
+					'role'       => 'subscriber',
+				],
+			],
+			[
+				[ 'fieldType' => 'input', 'slug' => '1' ],
+				[ 'fieldType' => 'input', 'slug' => 'subscriber' ],
+				[ 'fieldType' => 'email', 'slug' => 'email' ],
+			]
+		);
+		$this->assertSame( [ 'input', 'input', 'register' ], wp_list_pluck( $grouped, 'fieldType' ) );
+		$this->assertSame( [ 'email' ], wp_list_pluck( $grouped[2]['innerFields'], 'slug' ) );
+
+		// Only the types the register block allows go inside it.
+		$grouped = Form_Templates::group_register_fields(
+			[ 'registration' => [ 'email' => 'email', 'first_name' => 'role' ] ],
+			[
+				[ 'fieldType' => 'dropdown', 'slug' => 'role' ],
+				[ 'fieldType' => 'email', 'slug' => 'email' ],
+			]
+		);
+		$this->assertSame( [ 'dropdown', 'register' ], wp_list_pluck( $grouped, 'fieldType' ) );
+	}
+
+	public function test_group_register_fields_moves_no_field() {
+		// Only the run of account fields next to each other is wrapped: the
+		// password after the step break stays on its step, in its place.
+		$fields  = [
+			[ 'fieldType' => 'email', 'slug' => 'email' ],
+			[ 'fieldType' => 'input', 'slug' => 'username' ],
+			[ 'fieldType' => 'page-break', 'slug' => 'step-2' ],
+			[ 'fieldType' => 'password', 'slug' => 'password' ],
+		];
+		$grouped = Form_Templates::group_register_fields( [ 'registration' => [ 'username' => 'username' ] ], $fields );
+
+		$this->assertSame( [ 'register', 'page-break', 'password' ], wp_list_pluck( $grouped, 'fieldType' ) );
+		$this->assertSame( [ 'email', 'username' ], wp_list_pluck( $grouped[0]['innerFields'], 'slug' ) );
+	}
+
 	public function test_get_categories_hides_categories_without_templates() {
 		$used = array_unique( array_column( Form_Templates::get_templates(), 'category' ) );
 		$ids  = wp_list_pluck( Form_Templates::get_categories(), 'id' );
@@ -1944,7 +2029,7 @@ class Test_Form_Templates extends TestCase {
 			Form_Templates::get_required_pro_template_api(
 				[
 					'conditions' => [],
-					'pdf'        => [],
+					'quiz'       => [],
 				]
 			),
 			'The highest version a key needs wins.'

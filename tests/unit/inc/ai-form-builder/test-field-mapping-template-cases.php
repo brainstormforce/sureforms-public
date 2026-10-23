@@ -689,6 +689,92 @@ class Test_Field_Mapping_Template_Cases extends TestCase {
 		$this->assert_unique_block_ids( $blocks );
 	}
 
+	public function test_register_holds_the_account_fields_on_business() {
+		$this->tier( true, true );
+
+		$blocks = $this->blocks(
+			$this->map(
+				[
+					[
+						'label'       => 'Account',
+						'fieldType'   => 'register',
+						'required'    => true,
+						'innerFields' => [
+							[
+								'label'     => 'Email',
+								'fieldType' => 'email',
+								'slug'      => 'email',
+							],
+							[
+								'label'     => 'Password',
+								'fieldType' => 'password',
+								'slug'      => 'password',
+							],
+							[
+								// Not allowed in the register block: dropped.
+								'label'     => 'Bio',
+								'fieldType' => 'textarea',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertSame( [ 'srfm/register' ], array_column( $blocks, 'blockName' ) );
+		$this->assertSame( 'register', $blocks[0]['attrs']['slug'] );
+		$this->assertArrayNotHasKey( 'label', $blocks[0]['attrs'] );
+		$this->assertArrayNotHasKey( 'required', $blocks[0]['attrs'] );
+		$this->assertSame( [ 'srfm/email', 'srfm/password' ], array_column( $blocks[0]['innerBlocks'], 'blockName' ) );
+		$this->assert_unique_block_ids( $blocks );
+	}
+
+	public function test_register_without_account_fields_falls_back_to_input() {
+		$this->tier( true, true );
+
+		$blocks = $this->blocks(
+			$this->map(
+				[
+					[
+						'label'     => 'Register',
+						'fieldType' => 'register',
+					],
+				]
+			)
+		);
+
+		// Like any type the mapper can't build: kept as a text field, not dropped.
+		$this->assertSame( [ 'srfm/input' ], array_column( $blocks, 'blockName' ) );
+		$this->assertSame( 'Register', $blocks[0]['attrs']['label'] );
+	}
+
+	public function test_register_is_skipped_with_the_skip_list() {
+		$this->tier( true, true );
+		$this->filter( 'srfm_ai_field_map_skip_fields', static fn() => [ 'register' ] );
+
+		$blocks = $this->blocks(
+			$this->map(
+				[
+					[
+						'label'     => 'Name',
+						'fieldType' => 'input',
+					],
+					[
+						'fieldType'   => 'register',
+						'innerFields' => [
+							[
+								'label'     => 'Email',
+								'fieldType' => 'email',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertSame( [ 'srfm/input' ], array_column( $blocks, 'blockName' ) );
+	}
+
 	public function test_default_address_sub_fields_get_slugs_from_the_address() {
 		$blocks = $this->blocks(
 			$this->map(

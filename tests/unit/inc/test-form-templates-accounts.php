@@ -31,7 +31,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 	 *
 	 * @var array<int, string>
 	 */
-	private const BUSINESS_KEYS = [ 'registration', 'cpt', 'entry_limit', 'pdf', 'quiz' ];
+	private const BUSINESS_KEYS = [ 'registration', 'cpt', 'entry_limit', 'quiz' ];
 
 	/**
 	 * Field types only the Business build of SureForms Pro renders.
@@ -85,16 +85,18 @@ class Test_Form_Templates_Accounts extends TestCase {
 	}
 
 	/**
-	 * Assert a declared slug is a top-level field of one of the given blocks.
+	 * Assert a declared slug is a field of one of the given blocks, at the top
+	 * level or inside the given container.
 	 *
 	 * @param array<string, array{block: string, parent: string}> $map    From slug_map().
 	 * @param string                                              $slug   Declared slug.
 	 * @param array<int, string>                                  $blocks Allowed block names; empty for any.
 	 * @param string                                              $where  Message prefix.
+	 * @param string                                              $parent Container block it sits in; '' for the top level.
 	 */
-	private function assert_field( $map, $slug, $blocks, $where ) {
+	private function assert_field( $map, $slug, $blocks, $where, $parent = '' ) {
 		$this->assertArrayHasKey( $slug, $map, "{$where}: {$slug} is not a field of the template." );
-		$this->assertSame( '', $map[ $slug ]['parent'], "{$where}: {$slug} is not a top-level field." );
+		$this->assertSame( $parent, $map[ $slug ]['parent'], "{$where}: {$slug} is not in " . ( '' === $parent ? 'the top level' : $parent ) . '.' );
 		if ( ! empty( $blocks ) ) {
 			$this->assertContains( $map[ $slug ]['block'], $blocks, "{$where}: {$slug} is a {$map[ $slug ]['block']}." );
 		}
@@ -119,8 +121,14 @@ class Test_Form_Templates_Accounts extends TestCase {
 			$content  = Form_Templates::build_content( $template );
 			$fields   = Form_Templates::resolve_fields( $template, 'business' );
 
-			$top = array_filter( parse_blocks( $content ), static fn( $block ) => null !== $block['blockName'] );
-			$this->assertCount( count( $fields ), $top, "Template {$id} lost a field while building." );
+			// A register block holds fields of the template's own list.
+			$built = 0;
+			foreach ( parse_blocks( $content ) as $block ) {
+				if ( null !== $block['blockName'] ) {
+					$built += 'srfm/register' === $block['blockName'] ? count( $block['innerBlocks'] ) : 1;
+				}
+			}
+			$this->assertSame( count( $fields ), $built, "Template {$id} lost a field while building." );
 		}
 	}
 
@@ -130,11 +138,12 @@ class Test_Form_Templates_Accounts extends TestCase {
 		$options  = $template['registration'];
 
 		$this->assertArrayNotHasKey( 'role', $options, 'Templates never choose the role.' );
-		$this->assert_field( $map, $options['email'], [ 'srfm/email' ], 'registration email' );
-		$this->assert_field( $map, $options['username'], [ 'srfm/input', 'srfm/email' ], 'registration username' );
-		$this->assert_field( $map, $options['password'], [ 'srfm/password' ], 'registration password' );
-		$this->assert_field( $map, $options['first_name'], [], 'registration first name' );
-		$this->assert_field( $map, $options['last_name'], [], 'registration last name' );
+		// Inside SureForms Business's register block, which its User Registration settings need.
+		$this->assert_field( $map, $options['email'], [ 'srfm/email' ], 'registration email', 'srfm/register' );
+		$this->assert_field( $map, $options['username'], [ 'srfm/input', 'srfm/email' ], 'registration username', 'srfm/register' );
+		$this->assert_field( $map, $options['password'], [ 'srfm/password' ], 'registration password', 'srfm/register' );
+		$this->assert_field( $map, $options['first_name'], [], 'registration first name', 'srfm/register' );
+		$this->assert_field( $map, $options['last_name'], [], 'registration last name', 'srfm/register' );
 
 		$password = wp_list_filter( Form_Templates::resolve_fields( $template, 'business' ), [ 'fieldType' => 'password' ] );
 		$password = reset( $password );
@@ -143,6 +152,32 @@ class Test_Form_Templates_Accounts extends TestCase {
 		$this->assertFalse( $password['isConfirmPassword'] );
 		$this->assertTrue( $password['togglePasswordVisibility'] );
 		$this->assertTrue( $password['checkPasswordStrength'] );
+	}
+
+	public function test_registration_fields_sit_in_one_register_block_in_their_order() {
+		$content = Form_Templates::build_content( Form_Templates::get_template( 'member-registration' ) );
+		$blocks  = array_values( array_filter( parse_blocks( $content ), static fn( $block ) => null !== $block['blockName'] ) );
+		$names   = wp_list_pluck( $blocks, 'blockName' );
+
+		$this->assertSame( [ 'srfm/register', 'srfm/gdpr' ], $names, 'The account fields come first, the consent after them.' );
+		$this->assertSame( 'register', $blocks[0]['attrs']['slug'] );
+		$this->assertArrayNotHasKey( 'label', $blocks[0]['attrs'] );
+		$this->assertSame(
+			[ 'first-name', 'last-name', 'username', 'email', 'password' ],
+			array_map( static fn( $block ) => $block['attrs']['slug'], $blocks[0]['innerBlocks'] )
+		);
+		// Inner fields keep their widths: first and last name share a row.
+		$this->assertSame( 50, $blocks[0]['innerBlocks'][0]['attrs']['fieldWidth'] );
+	}
+
+	public function test_without_business_the_account_fields_stay_in_the_form() {
+		add_filter( 'srfm_ai_field_mapping_has_business', '__return_false' );
+		$content = Form_Templates::build_content( Form_Templates::get_template( 'member-registration' ) );
+		remove_filter( 'srfm_ai_field_mapping_has_business', '__return_false' );
+
+		$this->assertStringNotContainsString( 'wp:srfm/register', $content );
+		$this->assertStringContainsString( '"slug":"username"', $content );
+		$this->assertStringContainsString( '"slug":"email"', $content );
 	}
 
 	public function test_every_registration_template_has_a_password_field() {

@@ -68,7 +68,7 @@ const renderToStaticMarkup = ( element ) => {
 describe( 'CardPicture', () => {
 	const look = { primary: '#2563EB', onPrimary: '#FFFFFF' };
 
-	it( 'shows the screenshot, lazily and as decoration', () => {
+	it( 'shows the screenshot lazily, named by its alt text', () => {
 		const html = renderToStaticMarkup(
 			createElement( CardPicture, {
 				template: {
@@ -80,7 +80,9 @@ describe( 'CardPicture', () => {
 			} )
 		);
 		expect( html ).toContain( 'src="https://example.com/contact-us.webp"' );
-		expect( html ).toContain( 'alt=""' );
+		// The template's name, like Starter Templates' cards: shown if the picture
+		// doesn't load. Screen readers name the card by its button's aria-label.
+		expect( html ).toContain( 'alt="Contact Us"' );
 		expect( html ).toContain( 'loading="lazy"' );
 		// Fitted to the width from the top, never zoomed to fill the tile.
 		expect( html ).toContain( 'top-0 w-full h-auto' );
