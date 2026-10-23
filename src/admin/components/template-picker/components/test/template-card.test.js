@@ -80,6 +80,8 @@ describe( 'CardPicture', () => {
 			} )
 		);
 		expect( html ).toContain( 'src="https://example.com/contact-us.webp"' );
+		// The template's name, like Starter Templates' cards: shown if the picture
+		// doesn't load. Screen readers name the card by its button's aria-label.
 		expect( html ).toContain( 'alt="Contact Us"' );
 		expect( html ).toContain( 'loading="lazy"' );
 		// Fitted to the width from the top, never zoomed to fill the tile.

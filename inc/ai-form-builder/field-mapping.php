@@ -531,11 +531,21 @@ class Field_Mapping {
 				// SureForms Business's sign-up block: the account fields inside it.
 				// Its User Registration settings need it, so without Business the
 				// fields go into the form on their own instead of being dropped.
+				if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, true ) ) {
+					break;
+				}
 				$inner_content = self::map_inner_fields( $question, self::REGISTER_INNER_TYPES, $is_conversational, $form_type, $skip_fields );
 				if ( is_wp_error( $inner_content ) ) {
 					return $inner_content;
 				}
-				if ( '' === $inner_content || ! self::has_business_fields() ) {
+				if ( '' === $inner_content ) {
+					// No account fields to hold: a text field, as an unknown type gets.
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
+
+					$post_content .= self::block_markup( 'input', $merged_attributes );
+					break;
+				}
+				if ( ! self::has_business_fields() ) {
 					$post_content .= $inner_content;
 					break;
 				}

@@ -1446,11 +1446,17 @@ class Form_Templates {
 
 	/**
 	 * The fields to build, with the ones a `registration` template signs people
-	 * up with (email, username, password, names) inside one register block, at
-	 * the place of the first. SureForms Business's User Registration settings
-	 * only work with that block in the form: without it, opening them turns the
-	 * registration off. The template's own field list stays flat, so messages,
-	 * answers and checks see every field.
+	 * up with (email, username, password, names, website) inside one register
+	 * block. SureForms Business's User Registration settings only work with that
+	 * block in the form: without it, opening them turns the registration off.
+	 * The template's own field list stays flat, so messages, answers and checks
+	 * see every field.
+	 *
+	 * The fields are the ones SureForms Pro signs people up with: the declared
+	 * slugs, else the first email and password fields (`'registration' => true`
+	 * declares none). Only a run of them next to each other is wrapped, from the
+	 * first one, so no field moves past another or across a step; a field
+	 * further on stays where it is and still works.
 	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
@@ -1458,39 +1464,60 @@ class Form_Templates {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function group_register_fields( $template, $fields ) {
-		if ( empty( $template['registration'] ) || ! is_array( $template['registration'] ) ) {
+		if ( empty( $template['registration'] ) ) {
 			return $fields;
 		}
-		$slugs = array_filter( array_map( [ Helper::class, 'get_string_value' ], array_values( $template['registration'] ) ) );
+		$options = is_array( $template['registration'] ) ? $template['registration'] : [];
+		$first   = static function ( $type ) use ( $fields ) {
+			foreach ( $fields as $field ) {
+				if ( ( $field['fieldType'] ?? '' ) === $type ) {
+					return Helper::get_string_value( $field['slug'] ?? '' );
+				}
+			}
+			return '';
+		};
+
+		// Like SureForms Pro's registration builder: the first email and password fields when not declared.
+		$slugs = [
+			isset( $options['email'] ) ? Helper::get_string_value( $options['email'] ) : $first( 'email' ),
+			isset( $options['password'] ) ? Helper::get_string_value( $options['password'] ) : $first( 'password' ),
+		];
+		foreach ( [ 'username', 'first_name', 'last_name', 'website' ] as $key ) {
+			if ( isset( $options[ $key ] ) && is_string( $options[ $key ] ) ) {
+				$slugs[] = $options[ $key ];
+			}
+		}
+		$slugs = array_filter( $slugs );
+
+		$register = static fn( $inner ) => [
+			'fieldType'   => 'register',
+			'slug'        => 'register',
+			'innerFields' => $inner,
+		];
 
 		$grouped = [];
 		$inner   = [];
-		$at      = null;
+		$state   = 'before'; // Then 'in' the run, then 'after' it.
 		foreach ( $fields as $field ) {
-			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
-			if ( in_array( Helper::get_string_value( $field['slug'] ?? '' ), $slugs, true ) && in_array( $type, Field_Mapping::REGISTER_INNER_TYPES, true ) ) {
-				$at      = $at ?? count( $grouped );
+			$type     = Helper::get_string_value( $field['fieldType'] ?? '' );
+			$is_inner = in_array( Helper::get_string_value( $field['slug'] ?? '' ), $slugs, true ) && in_array( $type, Field_Mapping::REGISTER_INNER_TYPES, true );
+			if ( $is_inner && 'after' !== $state ) {
+				$state   = 'in';
 				$inner[] = $field;
 				continue;
 			}
+			if ( 'in' === $state ) {
+				$grouped[] = $register( $inner );
+				$state     = 'after';
+			}
 			$grouped[] = $field;
 		}
-		if ( null === $at ) {
+		if ( 'before' === $state ) {
 			return $fields;
 		}
-
-		array_splice(
-			$grouped,
-			$at,
-			0,
-			[
-				[
-					'fieldType'   => 'register',
-					'slug'        => 'register',
-					'innerFields' => $inner,
-				],
-			]
-		);
+		if ( 'in' === $state ) {
+			$grouped[] = $register( $inner );
+		}
 		return $grouped;
 	}
 

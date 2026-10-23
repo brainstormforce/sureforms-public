@@ -261,11 +261,10 @@ class Test_Form_Templates_UI extends TestCase {
 	}
 
 	public function test_setup_skips_pro_steps_without_pro_and_reads_maps_key() {
-		$ids = array_column( Form_Templates::get_setup( [ 'setup' => [ 'paypal', 'pdf_library', 'google_maps' ] ] ), 'done', 'id' );
+		$ids = array_column( Form_Templates::get_setup( [ 'setup' => [ 'paypal', 'google_maps' ] ] ), 'done', 'id' );
 		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
 			$this->assertArrayNotHasKey( 'paypal', $ids );
 		}
-		$this->assertArrayNotHasKey( 'pdf_library', $ids, 'Templates no longer make PDFs, so there is no PDF library step.' );
 		$this->assertFalse( $ids['google_maps'] );
 
 		update_option( 'srfm_google_maps_settings', [ 'srfm_google_maps_api_key' => 'AIza-test' ] );

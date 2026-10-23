@@ -114,7 +114,7 @@ return [
 		],
 		'confirmation'  => [
 			'heading' => __( 'Signed – thank you, {form:full-name}', 'sureforms' ),
-			'text'    => __( 'A confirmation has been sent to {form:email}. We will be in touch about next steps.', 'sureforms' ),
+			'text'    => __( 'We will be in touch at {form:email} about next steps.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Service agreement signed by {form:full-name}', 'sureforms' ),
 		'email_intro'   => __( '{form:full-name} signed the service agreement on {date_mdy}. Reply to this email to contact them.', 'sureforms' ),
@@ -183,7 +183,7 @@ return [
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thank you, {form:full-name}', 'sureforms' ),
-			'text'    => __( 'Your release is signed. A confirmation has been sent to {form:email}.', 'sureforms' ),
+			'text'    => __( 'Your release is signed. We will only use your photos and videos in the ways you chose.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Media release signed by {form:full-name}', 'sureforms' ),
 		'email_intro'   => __( '{form:full-name} signed the photo and media release. Allowed uses: {form:usage}. Naming: {form:naming}.', 'sureforms' ),
