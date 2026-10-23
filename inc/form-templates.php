@@ -3119,7 +3119,8 @@ class Form_Templates {
 				return $classes;
 			}
 		);
-		add_action( 'wp_head', [ self::class, 'remove_third_party_hooks' ], 0 );
+		// A closure: the hook passes its own (empty) argument, which would replace the hook list.
+		add_action( 'wp_head', static fn() => self::remove_third_party_hooks(), 0 );
 		add_action(
 			'wp_head',
 			static function () {
@@ -3134,7 +3135,7 @@ class Form_Templates {
 			},
 			99
 		);
-		add_action( 'wp_footer', [ self::class, 'remove_third_party_hooks' ], 0 );
+		add_action( 'wp_footer', static fn() => self::remove_third_party_hooks(), 0 );
 		add_action(
 			'wp_footer',
 			static function () {
