@@ -87,7 +87,6 @@ class Form_Templates {
 		'cpt'              => 'business',
 		'registration'     => 'business',
 		'entry_limit'      => 'business',
-		'pdf'              => 'business',
 	];
 
 	/**
@@ -112,7 +111,6 @@ class Form_Templates {
 		'cpt'              => 2,
 		'registration'     => 2,
 		'entry_limit'      => 2,
-		'pdf'              => 2,
 	];
 
 	/**
@@ -146,7 +144,6 @@ class Form_Templates {
 		'partial_entries'  => 'partial_entries',
 		'cpt'              => 'post_submission',
 		'registration'     => 'user_registration',
-		'pdf'              => 'pdf',
 	];
 
 	/**
@@ -758,9 +755,9 @@ class Form_Templates {
 
 	/**
 	 * What a template needs set up on the site to work fully, from its `setup`
-	 * key: a list of `stripe`, `paypal`, `pdf_library` and `google_maps`.
-	 * Unknown ids, and PayPal and the PDF library without the SureForms Pro
-	 * that provides them, are left out. Setup never stops a form being created.
+	 * key: a list of `stripe`, `paypal` and `google_maps`.
+	 * Unknown ids, and PayPal without the SureForms Pro that provides it, are
+	 * left out. Setup never stops a form being created.
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @since x.x.x
@@ -2240,9 +2237,7 @@ class Form_Templates {
 	 * Thank-you message in the same layout as the default confirmation. Catalog
 	 * files use it through Catalog::thank_you() for conditional messages.
 	 *
-	 * A blank line in the text starts a new paragraph. A paragraph holding only a
-	 * `{pdf:…}` link is dropped whole by SureForms Pro when it builds no PDF, so
-	 * the message still reads well without it.
+	 * A blank line in the text starts a new paragraph.
 	 *
 	 * @param string $heading Heading.
 	 * @param string $text    Body text.
@@ -2333,7 +2328,7 @@ class Form_Templates {
 	/**
 	 * One setup step and whether it is done.
 	 *
-	 * @param string $id `stripe`, `paypal`, `pdf_library` or `google_maps`.
+	 * @param string $id `stripe`, `paypal` or `google_maps`.
 	 * @since x.x.x
 	 * @return array{id: string, label: string, done: bool, url: string}|null Null for an unknown id or one this site can't do.
 	 */
@@ -2359,19 +2354,6 @@ class Form_Templates {
 					'label' => __( 'Connect PayPal', 'sureforms' ),
 					'done'  => (bool) call_user_func( $connected ),
 					'url'   => $settings_url( 'payments-settings&subpage=payment-methods&gateway=paypal' ),
-				];
-
-			case 'pdf_library':
-				$installed = [ '\SRFM_Pro\Inc\Business\Pdf\Utils', 'check_if_library_exists' ];
-				if ( ! class_exists( $installed[0] ) || ! is_callable( $installed ) ) {
-					return null;
-				}
-				return [
-					'id'    => $id,
-					// The library is installed from a form's PDF settings, so there is no page to link to.
-					'label' => __( 'Install the PDF library (in the form’s PDF settings)', 'sureforms' ),
-					'done'  => (bool) call_user_func( $installed ),
-					'url'   => '',
 				];
 
 			case 'google_maps':

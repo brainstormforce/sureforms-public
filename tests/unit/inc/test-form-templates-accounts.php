@@ -31,7 +31,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 	 *
 	 * @var array<int, string>
 	 */
-	private const BUSINESS_KEYS = [ 'registration', 'cpt', 'entry_limit', 'pdf', 'quiz' ];
+	private const BUSINESS_KEYS = [ 'registration', 'cpt', 'entry_limit', 'quiz' ];
 
 	/**
 	 * Field types only the Business build of SureForms Pro renders.

@@ -6,7 +6,6 @@ import {
 	Clock,
 	CreditCard,
 	FilePlus,
-	FileText,
 	Gauge,
 	GitBranch,
 	GraduationCap,
@@ -83,10 +82,6 @@ const getFeatureMap = () => ( {
 	signature: {
 		label: __( 'Signature', 'sureforms' ),
 		Icon: PenTool,
-	},
-	pdf: {
-		label: __( 'PDF copy', 'sureforms' ),
-		Icon: FileText,
 	},
 	save_resume: {
 		label: __( 'Save and resume', 'sureforms' ),

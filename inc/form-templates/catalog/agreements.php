@@ -54,7 +54,7 @@ $terms = static function ( $slug, $label, $heading, $sections ) {
 	);
 };
 
-// The service agreement's terms, shown on the form and in the signed copy.
+// The service agreement's terms, shown on the form.
 $service_terms = [
 	__( 'This agreement is between you (the client) and us (the provider).', 'sureforms' ),
 	[ __( 'Services', 'sureforms' ), __( 'We will provide the services described in our proposal or quote, which forms part of this agreement.', 'sureforms' ) ],
@@ -64,86 +64,13 @@ $service_terms = [
 	[ __( 'Confidentiality', 'sureforms' ), __( 'Both parties will keep each other’s confidential information private.', 'sureforms' ) ],
 ];
 
-// The photo release's terms, shown on the form and in the signed copy.
+// The photo release's terms, shown on the form.
 $release_terms = [
 	[ __( 'Permission', 'sureforms' ), __( 'I allow the organiser to take and use photos, video and recordings of me in the places I choose below.', 'sureforms' ) ],
 	[ __( 'Use', 'sureforms' ), __( 'The media may be edited, cropped or captioned. It will not be sold to third parties or used in a way that misrepresents me.', 'sureforms' ) ],
 	[ __( 'Payment', 'sureforms' ), __( 'I will not be paid for this use.', 'sureforms' ) ],
 	[ __( 'Withdrawing', 'sureforms' ), __( 'I can withdraw my permission at any time by contacting the organiser. Media already printed or published cannot always be recalled.', 'sureforms' ) ],
 ];
-
-/**
- * The signed copy of an agreement as PDF content, laid out like a contract: a
- * header, the two parties, numbered terms, the signature block and a footer
- * recording when and where it was signed. Tables and inline styles only, the
- * layout mPDF renders reliably.
- *
- * @param string                          $heading    Document title.
- * @param array<int, string|array<int, string>> $sections   Terms: plain paragraphs (an introduction) or [ title, text ].
- * @param array<int, string>              $parties    Labels of the two parties: the site's side, then the signer's.
- * @param array<string, string>           $details    The signer's details, label => smart tag; empty answers leave an empty row.
- * @param array<int, array<int, string>> $signatures Signature lines: [ signature tag, name, caption, optional detail under the name ].
- * @return string HTML.
- */
-$signed_copy = static function ( $heading, $sections, $parties, $details, $signatures ) {
-	$muted = 'color: #64748b;font-size: 9pt;';
-	$label = 'color: #64748b;font-size: 8pt;letter-spacing: 1px;text-transform: uppercase;';
-
-	// Header: who it is from, what it is and when it was signed.
-	$html  = '<table width="100%" style="border-collapse: collapse;border-bottom: 2px solid #0f172a"><tr>';
-	$html .= '<td style="padding: 0 0 10px;font-size: 11pt;font-weight: bold;color: #0f172a">{site_title}</td>';
-	/* translators: %s: date the agreement was signed. */
-	$html .= '<td style="padding: 0 0 10px;text-align: right;' . $muted . '">' . sprintf( esc_html__( 'Signed on %s', 'sureforms' ), '{date_mdy}' ) . '</td>';
-	$html .= '</tr></table>';
-	$html .= '<h1 style="margin: 24px 0 4px;font-size: 22pt;color: #0f172a">' . esc_html( $heading ) . '</h1>';
-	$html .= '<p style="margin: 0 0 20px;' . $muted . '">' . esc_html__( 'Signed copy for the records of both parties.', 'sureforms' ) . '</p>';
-
-	// The parties.
-	$html .= '<table width="100%" style="border-collapse: collapse;margin-bottom: 20px"><tr>';
-	$html .= '<td width="50%" style="vertical-align: top;padding: 12px 14px;background: #f8fafc;border: 1px solid #e2e8f0">';
-	$html .= '<div style="' . $label . '">' . esc_html( $parties[0] ) . '</div>';
-	$html .= '<div style="margin-top: 6px;font-size: 10.5pt;font-weight: bold">{site_title}</div><div style="' . $muted . '">{site_url}</div></td>';
-	$html .= '<td width="50%" style="vertical-align: top;padding: 12px 14px;background: #f8fafc;border: 1px solid #e2e8f0">';
-	$html .= '<div style="' . $label . '">' . esc_html( $parties[1] ) . '</div>';
-	$html .= '<table style="margin-top: 6px;border-collapse: collapse;font-size: 10pt">';
-	foreach ( $details as $name => $tag ) {
-		$html .= '<tr><td style="vertical-align: top;padding: 1px 10px 1px 0;' . $muted . '">' . esc_html( $name ) . '</td><td style="vertical-align: top;padding: 1px 0">' . $tag . '</td></tr>';
-	}
-	$html .= '</table></td></tr></table>';
-
-	// The terms, numbered.
-	$html  .= '<div style="' . $label . 'margin-bottom: 8px">' . esc_html__( 'Terms', 'sureforms' ) . '</div>';
-	$number = 0;
-	foreach ( $sections as $section ) {
-		if ( ! is_array( $section ) ) {
-			$html .= '<p style="margin: 0 0 10px;font-size: 10.5pt;line-height: 1.5">' . esc_html( $section ) . '</p>';
-			continue;
-		}
-		++$number;
-		$html .= '<table width="100%" style="border-collapse: collapse;margin-bottom: 8px"><tr>';
-		$html .= '<td width="24" style="vertical-align: top;font-weight: bold;color: #0f172a;font-size: 10.5pt">' . $number . '.</td>';
-		/* translators: 1: a term's title, 2: its text. */
-		$html .= '<td style="vertical-align: top;font-size: 10.5pt;line-height: 1.5">' . sprintf( esc_html__( '%1$s: %2$s', 'sureforms' ), '<strong>' . esc_html( $section[0] ) . '</strong>', esc_html( $section[1] ) ) . '</td>';
-		$html .= '</tr></table>';
-	}
-
-	// Signature block.
-	// The lines sit on the cells: mPDF draws a div's border only as wide as its text.
-	$line = 'vertical-align: top;border-top: 1px solid #0f172a;padding-top: 6px;font-size: 10pt';
-	foreach ( $signatures as $signature ) {
-		$detail = isset( $signature[3] ) ? '<br>' . $signature[3] : '';
-		$html  .= '<table width="100%" style="border-collapse: collapse;margin-top: 28px">';
-		$html  .= '<tr><td width="55%" style="vertical-align: bottom;height: 70px">' . $signature[0] . '</td><td width="8%"></td><td width="37%"></td></tr>';
-		$html  .= '<tr><td style="' . $line . '"><strong>' . $signature[1] . '</strong>' . $detail . '<br><span style="' . $muted . '">' . esc_html( $signature[2] ) . '</span></td>';
-		$html  .= '<td></td><td style="' . $line . '"><strong>{date_mdy}</strong><br><span style="' . $muted . '">' . esc_html__( 'Date', 'sureforms' ) . '</span></td></tr>';
-		$html  .= '</table>';
-	}
-
-	// Footer: how and where it was signed.
-	/* translators: %1$s: date, %2$s: website address, %3$s: entry number. */
-	$html .= '<p style="margin-top: 36px;padding-top: 10px;border-top: 1px solid #e2e8f0;' . $muted . '">' . sprintf( esc_html__( 'Signed electronically on %1$s through %2$s. Entry #%3$s.', 'sureforms' ), '{date_mdy}', '{site_url}', '{entry_id}' ) . '</p>';
-	return $html;
-};
 
 /**
  * A required signature: SureForms Pro and Business, not Starter.
@@ -174,7 +101,7 @@ return [
 				__( 'Agreement terms', 'sureforms' ),
 				__( 'Service agreement', 'sureforms' ),
 				array_merge(
-					[ __( 'Starter wording, not legal advice: replace it with your own terms, here and in the signed copy (the form’s PDF settings), before you publish this form.', 'sureforms' ) ],
+					[ __( 'Starter wording, not legal advice: replace it with your own terms before you publish this form.', 'sureforms' ) ],
 					$service_terms
 				)
 			),
@@ -185,37 +112,16 @@ return [
 			Catalog::field( 'gdpr', 'agree-terms', __( 'I have read and agree to the terms above, and I am authorised to sign on behalf of the client.', 'sureforms' ), true ),
 			$signature( 'signature', __( 'Signature', 'sureforms' ) ),
 		],
-		// A signed copy with the terms, the client's details and signature (Premium PDF).
-		'pdf'           => [
-			[
-				'slug'    => 'agreement',
-				'name'    => __( 'Download your signed agreement', 'sureforms' ),
-				'content' => $signed_copy(
-					__( 'Service agreement', 'sureforms' ),
-					$service_terms,
-					[ __( 'Provider', 'sureforms' ), __( 'Client', 'sureforms' ) ],
-					[
-						__( 'Name', 'sureforms' )    => '{form:full-name}',
-						__( 'Company', 'sureforms' ) => '{form:company}',
-						__( 'Email', 'sureforms' )   => '{form:email}',
-						__( 'Proposal or quote', 'sureforms' ) => '{form:reference}',
-					],
-					[ [ '{form:signature}', '{form:full-name}', __( 'Client signature', 'sureforms' ) ] ]
-				),
-			],
-		],
 		'confirmation'  => [
 			'heading' => __( 'Signed – thank you, {form:full-name}', 'sureforms' ),
-			'text'    => __( 'A copy has been sent to {form:email}. We will be in touch about next steps.', 'sureforms' ) . "\n\n{pdf:agreement}",
+			'text'    => __( 'A confirmation has been sent to {form:email}. We will be in touch about next steps.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Service agreement signed by {form:full-name}', 'sureforms' ),
 		'email_intro'   => __( '{form:full-name} signed the service agreement on {date_mdy}. Reply to this email to contact them.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'Your signed service agreement', 'sureforms' ),
+			'subject' => __( 'You signed our service agreement', 'sureforms' ),
 			'lines'   => [
 				__( 'Thank you for signing our service agreement on {date_mdy}.', 'sureforms' ),
-				// On its own line: without the PDF library, SureForms Pro drops the whole line.
-				'{pdf:agreement}',
 				__( 'If anything looks wrong, just reply to this email.', 'sureforms' ),
 			],
 		],
@@ -236,7 +142,7 @@ return [
 				__( 'Release terms', 'sureforms' ),
 				__( 'Photo and media release', 'sureforms' ),
 				array_merge(
-					[ __( 'Starter wording, not legal advice: replace it with your own release, here and in the signed copy (the form’s PDF settings), before you publish this form.', 'sureforms' ) ],
+					[ __( 'Starter wording, not legal advice: replace it with your own release before you publish this form.', 'sureforms' ) ],
 					$release_terms
 				)
 			),
@@ -275,39 +181,16 @@ return [
 				'logic'  => [ [ [ 'under-18', 'isChecked' ] ] ],
 			],
 		],
-		// A signed copy with the release, what was allowed and who signed (Premium PDF).
-		'pdf'           => [
-			[
-				'slug'    => 'release',
-				'name'    => __( 'Download your signed release', 'sureforms' ),
-				'content' => $signed_copy(
-					__( 'Photo and media release', 'sureforms' ),
-					$release_terms,
-					[ __( 'Organiser', 'sureforms' ), __( 'Person in the photos', 'sureforms' ) ],
-					[
-						__( 'Name', 'sureforms' )         => '{form:full-name}',
-						__( 'Email', 'sureforms' )        => '{form:email}',
-						__( 'Event', 'sureforms' )        => '{form:event}',
-						__( 'Allowed uses', 'sureforms' ) => '{form:usage}',
-						__( 'Naming', 'sureforms' )       => '{form:naming}',
-					],
-					// One line: only one of the two signatures is ever given.
-					[ [ '{form:signature}{form:guardian-signature}', '{form:full-name}', __( 'Signature (a parent or guardian signs for under-18s)', 'sureforms' ), '{form:guardian-relationship} {form:guardian-name}' ] ]
-				),
-			],
-		],
 		'confirmation'  => [
 			'heading' => __( 'Thank you, {form:full-name}', 'sureforms' ),
-			'text'    => __( 'Your release is signed. A copy has been sent to {form:email}.', 'sureforms' ) . "\n\n{pdf:release}",
+			'text'    => __( 'Your release is signed. A confirmation has been sent to {form:email}.', 'sureforms' ),
 		],
 		'email_subject' => __( 'Media release signed by {form:full-name}', 'sureforms' ),
 		'email_intro'   => __( '{form:full-name} signed the photo and media release. Allowed uses: {form:usage}. Naming: {form:naming}.', 'sureforms' ),
 		'autoresponder' => [
-			'subject' => __( 'Your signed media release', 'sureforms' ),
+			'subject' => __( 'You signed our media release', 'sureforms' ),
 			'lines'   => [
 				__( 'Thank you for signing our photo and media release. You allowed us to use your photos and video on: {form:usage}.', 'sureforms' ),
-				// On its own line: without the PDF library, SureForms Pro drops the whole line.
-				'{pdf:release}',
 				__( 'You can change your mind at any time. Just reply to this email.', 'sureforms' ),
 			],
 		],

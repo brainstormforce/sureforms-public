@@ -114,6 +114,13 @@ class Test_Form_Templates extends TestCase {
 		$this->assertCount( count( $ids ), $templates );
 	}
 
+	public function test_no_template_makes_a_pdf() {
+		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			$this->assertArrayNotHasKey( 'pdf', $template, "Template {$id} makes a PDF." );
+			$this->assertStringNotContainsString( '{pdf:', (string) wp_json_encode( $template ), "Template {$id} links a PDF." );
+		}
+	}
+
 	public function test_get_categories_hides_categories_without_templates() {
 		$used = array_unique( array_column( Form_Templates::get_templates(), 'category' ) );
 		$ids  = wp_list_pluck( Form_Templates::get_categories(), 'id' );
@@ -1944,7 +1951,7 @@ class Test_Form_Templates extends TestCase {
 			Form_Templates::get_required_pro_template_api(
 				[
 					'conditions' => [],
-					'pdf'        => [],
+					'quiz'       => [],
 				]
 			),
 			'The highest version a key needs wins.'

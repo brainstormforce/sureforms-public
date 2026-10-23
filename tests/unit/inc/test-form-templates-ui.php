@@ -265,9 +265,7 @@ class Test_Form_Templates_UI extends TestCase {
 		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
 			$this->assertArrayNotHasKey( 'paypal', $ids );
 		}
-		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Pdf\Utils' ) ) {
-			$this->assertArrayNotHasKey( 'pdf_library', $ids );
-		}
+		$this->assertArrayNotHasKey( 'pdf_library', $ids, 'Templates no longer make PDFs, so there is no PDF library step.' );
 		$this->assertFalse( $ids['google_maps'] );
 
 		update_option( 'srfm_google_maps_settings', [ 'srfm_google_maps_api_key' => 'AIza-test' ] );
