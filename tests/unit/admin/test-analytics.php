@@ -2286,4 +2286,118 @@ class Test_Analytics extends TestCase {
 			$wpdb->delete( $entries, [ 'form_id' => $form_id ] );
 		}
 	}
+
+	/**
+	 * Create an administrator.
+	 *
+	 * This class extends the polyfill TestCase rather than WP_UnitTestCase, so
+	 * there is no self::factory() to reach for.
+	 *
+	 * @return int
+	 */
+	private function create_admin() {
+		return (int) wp_insert_user(
+			[
+				'user_login' => 'srfm_uninstall_pref_' . wp_rand(),
+				'user_pass'  => wp_generate_password(),
+				'user_email' => 'srfm_uninstall_pref_' . wp_rand() . '@example.test',
+				'role'       => 'administrator',
+			]
+		);
+	}
+
+	/**
+	 * register_analytics_entity() hands the library a survey carrying the
+	 * uninstall checkbox, for an administrator in the admin.
+	 *
+	 * The config is built here rather than in the constructor because
+	 * current_user_can() and wp_create_nonce() both call the pluggable
+	 * wp_get_current_user(), which does not exist until wp-includes/pluggable.php
+	 * is loaded - after every plugin file has been required. See
+	 * tests/unit/admin/test-analytics-uninstall-pref.php for the capability,
+	 * nonce and stored-value cases.
+	 *
+	 * @return void
+	 */
+	public function test_register_analytics_entity() {
+		$analytics = Analytics::get_instance();
+
+		$this->assertSame(
+			0,
+			has_action( 'init', [ $analytics, 'register_analytics_entity' ] ),
+			'it runs on init at priority 0, before the library reads its entities at 10'
+		);
+
+		$captured = [];
+		$capture  = static function ( $survey ) use ( &$captured ) {
+			$captured = $survey;
+			return $survey;
+		};
+
+		$admin_id = $this->create_admin();
+		wp_set_current_user( $admin_id );
+		add_filter( 'srfm_deactivation_survey_data', $capture );
+		set_current_screen( 'plugins' );
+
+		$analytics->register_analytics_entity();
+
+		set_current_screen( 'front' );
+		remove_filter( 'srfm_deactivation_survey_data', $capture );
+		wp_set_current_user( 0 );
+		wp_delete_user( $admin_id );
+
+		$this->assertSame( 'sureforms', $captured[0]['plugin_slug'] );
+		$this->assertSame( SRFM_VER, $captured[0]['plugin_version'] );
+		$this->assertSame(
+			Analytics::UNINSTALL_PREF_KEY,
+			$captured[0]['extra_options'][0]['name'],
+			'the checkbox has to post the key uninstall.php reads'
+		);
+	}
+
+	/**
+	 * save_uninstall_preference() round-trips the checkbox into srfm_options as
+	 * a real boolean, which is the only form uninstall.php accepts as consent.
+	 *
+	 * The rejection paths - bad nonce, no manage_options, logged out - and the
+	 * full set of posted values live in
+	 * tests/unit/admin/test-analytics-uninstall-pref.php.
+	 *
+	 * @return void
+	 */
+	public function test_save_uninstall_preference() {
+		$analytics = Analytics::get_instance();
+
+		$admin_id = $this->create_admin();
+		wp_set_current_user( $admin_id );
+
+		$_POST['security']    = wp_create_nonce( Analytics::UNINSTALL_PREF_ACTION );
+		$_REQUEST['security'] = $_POST['security'];
+
+		// 'no' is the one that matters: a (bool) cast in place of the strict
+		// comparison reads it as consent, while '0' is falsy either way and so
+		// proves nothing on its own.
+		foreach ( [ '1' => true, '0' => false, 'no' => false ] as $posted => $expected ) {
+			$_POST['checked'] = (string) $posted;
+
+			ob_start();
+
+			try {
+				$analytics->save_uninstall_preference();
+				ob_end_clean();
+				$this->fail( 'the handler must always answer with wp_send_json_*()' );
+			} catch ( \WPDieException $e ) {
+				unset( $e );
+				$response = (array) json_decode( (string) ob_get_clean(), true );
+			}
+
+			$this->assertTrue( $response['success'] );
+			$this->assertSame( $expected, Helper::get_srfm_option( Analytics::UNINSTALL_PREF_KEY ) );
+		}
+
+		unset( $_POST['security'], $_POST['checked'], $_REQUEST['security'] );
+		Helper::update_srfm_option( Analytics::UNINSTALL_PREF_KEY, false );
+		wp_set_current_user( 0 );
+		wp_delete_user( $admin_id );
+	}
 }

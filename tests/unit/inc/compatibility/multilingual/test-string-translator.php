@@ -472,6 +472,28 @@ class Test_String_Translator extends TestCase {
 		remove_all_filters( 'srfm_multilingual_provider' );
 	}
 
+	public function test_translate_form_content_translates_block_json_default_label() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		// No "label" attribute: the field renders its block.json default ("Phone Number").
+		$content = '<!-- wp:srfm/phone {"block_id":"phdef1"} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4244, $content );
+
+		$this->assertStringContainsString( '"label":"DE:Phone Number"', $out );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
 	public function test_translate_form_content_noops_when_provider_inactive() {
 		// Replace stub with an inactive provider.
 		remove_filter( 'srfm_multilingual_provider', $this->filter, 10 );
@@ -525,6 +547,29 @@ class Test_String_Translator extends TestCase {
 		// Pure pass-through: markup unchanged and no parsed blocks returned (render path parses once itself).
 		$this->assertSame( $content, $markup );
 		$this->assertSame( [], $blocks );
+	}
+
+	public function test_block_attribute_value_prefers_saved_string() {
+		$this->assertSame(
+			'Phone Number:',
+			String_Translator::block_attribute_value( 'srfm/phone', [ 'label' => 'Phone Number:' ], 'label' )
+		);
+	}
+
+	public function test_block_attribute_value_falls_back_to_block_json_default() {
+		$this->assertSame( 'Phone Number', String_Translator::block_attribute_value( 'srfm/phone', [], 'label' ) );
+		$this->assertSame( 'Confirm Email', String_Translator::block_attribute_value( 'srfm/email', [], 'confirmLabel' ) );
+	}
+
+	public function test_block_attribute_value_keeps_explicitly_saved_empty_or_non_string() {
+		// A label the site owner deliberately cleared must not be replaced by the default.
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/phone', [ 'label' => '' ], 'label' ) );
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/phone', [ 'label' => [ 'x' ] ], 'label' ) );
+	}
+
+	public function test_block_attribute_value_returns_empty_without_a_string_default() {
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/not-registered', [], 'label' ) );
+		$this->assertSame( '', String_Translator::block_attribute_value( 'srfm/phone', [], 'help' ) );
 	}
 
 	public function test_translatable_block_attributes_filter_extends_and_falls_back() {
