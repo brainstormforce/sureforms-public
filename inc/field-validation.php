@@ -605,6 +605,30 @@ class Field_Validation {
 	}
 
 	/**
+	 * Extract a field's slug from its submitted key.
+	 *
+	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
+	 * padding-stripped standard base64 and never contains a hyphen, so the slug is
+	 * everything after the first hyphen that follows `-lbl-` (the slug itself may
+	 * contain hyphens, which is why only the first is used as the boundary).
+	 *
+	 * @param string $key Submitted field key.
+	 * @since 2.12.7
+	 * @return string The slug, or '' when it cannot be derived.
+	 */
+	public static function get_slug_from_key( $key ) {
+		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
+			return '';
+		}
+
+		$parts = explode( '-lbl-', $key );
+		$after = $parts[1] ?? '';
+		$pos   = strpos( $after, '-' );
+
+		return false === $pos ? '' : substr( $after, $pos + 1 );
+	}
+
+	/**
 	 * The walked allowlists for one form, memoised for the request.
 	 *
 	 * One cache, not one per getter. Both public getters need the same walk, and each
@@ -705,30 +729,6 @@ class Field_Validation {
 		}
 
 		return $fields;
-	}
-
-	/**
-	 * Extract a field's slug from its submitted key.
-	 *
-	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
-	 * padding-stripped standard base64 and never contains a hyphen, so the slug is
-	 * everything after the first hyphen that follows `-lbl-` (the slug itself may
-	 * contain hyphens, which is why only the first is used as the boundary).
-	 *
-	 * @param string $key Submitted field key.
-	 * @since 2.12.7
-	 * @return string The slug, or '' when it cannot be derived.
-	 */
-	public static function get_slug_from_key( $key ) {
-		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
-			return '';
-		}
-
-		$parts = explode( '-lbl-', $key );
-		$after = $parts[1] ?? '';
-		$pos   = strpos( $after, '-' );
-
-		return false === $pos ? '' : substr( $after, $pos + 1 );
 	}
 
 	/**
