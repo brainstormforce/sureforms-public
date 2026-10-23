@@ -427,13 +427,17 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 ## Changelog ##
 ### 2.13.0 - 26th October 2026 ###
-* New: A new option in the deactivation survey removes SureForms usage-analytics data when the plugin is deleted. Forms, entries, and settings are always kept.
-* New: Add New Form now opens on a start screen, so you can create a form with AI, choose a template, or start from scratch.
-* New: Choose from 43 ready-made form templates, including Premium templates for SureForms Pro. Preview each one live, adjust its style, and edit its thank-you message and emails before you create the form.
-* Fix: AI-generated forms now keep Dropdown and Multiple Choice options with a value of 0, and respect the 12-hour time format.
-* Fix: Field labels left at their default, such as Email or Phone Number, now appear in the WPML Translation Editor and show translated on the form.
-* Fix: The form success message is now readable on forms with dark backgrounds.
-* Fix: The whole SureForms logo tile in the form editor header is now clickable on WordPress 7.1.
+* New: Add New Form now opens on a start screen, so you can build with AI, pick a template, or start from scratch.
+* New: Change the sign-off in the visitor's confirmation email, and choose whether the submitted answers appear in your own notification email.
+* New: Conversational templates now preview in their one-question-at-a-time layout, so you see exactly what visitors will get.
+* New: Deleting SureForms can now remove its usage data, if you opt in from the deactivation survey. Your forms, entries and settings are always kept.
+* New: Preview any template live before using it. Adjust its style, background and colours, and edit its thank-you message and emails.
+* New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more. Premium templates are included with SureForms Pro.
+* Improvement: With SureForms Pro, the AI form builder can now add HTML blocks, password fields, repeaters and address sub-fields.
+* Fix: AI-built forms no longer drop Dropdown and Multiple Choice options with a value of 0, and time fields now respect the 12-hour format.
+* Fix: Field labels left at their default, such as "Email" or "Phone Number", now appear in the WPML Translation Editor and show translated on the form.
+* Fix: On WordPress 7.1, clicking anywhere on the SureForms logo in the editor header now takes you back to your forms.
+* Fix: The success message is now readable on forms with dark backgrounds.
 ### 2.12.9 - 13th October 2026 ###
 * New: Added the `srfm_submission_accepted` developer action, fired as soon as a submission is accepted.
 * New: Forms that do not store entries now warn you when a failed notification loses a submission.
