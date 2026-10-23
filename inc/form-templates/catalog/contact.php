@@ -6,7 +6,7 @@
  * Catalog::templates(); see Form_Templates::get_templates() for the schema.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 use SRFM\Inc\Form_Templates\Catalog;

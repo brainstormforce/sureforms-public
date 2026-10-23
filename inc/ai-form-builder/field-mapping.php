@@ -26,21 +26,21 @@ class Field_Mapping {
 	/**
 	 * Field types allowed inside an address block (editor `allowedBlocks`).
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const ADDRESS_INNER_TYPES = [ 'input', 'dropdown' ];
 
 	/**
 	 * Field types allowed inside a repeater block (Pro editor `allowedBlocks`).
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const REPEATER_INNER_TYPES = [ 'input', 'email', 'textarea', 'number', 'url', 'phone', 'date-picker', 'time-picker', 'dropdown' ];
 
 	/**
 	 * Field types allowed inside a register block (Pro editor `allowedBlocks`).
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const REGISTER_INNER_TYPES = [ 'input', 'email', 'password' ];
 
@@ -128,7 +128,7 @@ class Field_Mapping {
 	 * @param string                  $form_type         Form type.
 	 * @param array<mixed>            $skip_fields       Field types to skip.
 	 * @param array<int, string>|null $allowed_types     Field types allowed here, or null for any.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string|WP_Error Block markup, empty when the field is skipped.
 	 */
 	private static function map_question( $question, $is_conversational, $form_type, $skip_fields, $allowed_types = null ) {
@@ -651,7 +651,7 @@ class Field_Mapping {
 	/**
 	 * Whether Pro fields (any tier) can be emitted.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	private static function has_pro_fields() {
@@ -659,7 +659,7 @@ class Field_Mapping {
 		 * Filters whether the field mapper emits SureForms Pro fields.
 		 *
 		 * @param bool $has_pro True when SureForms Pro is active.
-		 * @since x.x.x
+		 * @since 2.13.0
 		 */
 		return (bool) apply_filters( 'srfm_ai_field_mapping_has_pro', defined( 'SRFM_PRO_VER' ) );
 	}
@@ -667,7 +667,7 @@ class Field_Mapping {
 	/**
 	 * Whether Business-tier fields (password, repeater) can be emitted.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	private static function has_business_fields() {
@@ -675,7 +675,7 @@ class Field_Mapping {
 		 * Filters whether the field mapper emits SureForms Business fields.
 		 *
 		 * @param bool $has_business True when the Business build of SureForms Pro is active.
-		 * @since x.x.x
+		 * @since 2.13.0
 		 */
 		return (bool) apply_filters( 'srfm_ai_field_mapping_has_business', defined( 'SRFM_PRO_VER' ) && class_exists( 'SRFM_Pro\Inc\Business\Init' ) );
 	}
@@ -689,7 +689,7 @@ class Field_Mapping {
 	 * @param bool               $is_conversational Whether the form is conversational.
 	 * @param string             $form_type         Form type.
 	 * @param array<mixed>       $skip_fields       Field types to skip.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string|WP_Error Inner block markup, empty when there are no usable inner fields.
 	 */
 	private static function map_inner_fields( $question, $allowed_types, $is_conversational, $form_type, $skip_fields ) {
@@ -724,7 +724,7 @@ class Field_Mapping {
 	 *
 	 * @param bool   $required Whether the address is required.
 	 * @param string $slug     The address block's slug; '' leaves the sub-field slugs to the save.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Inner block markup.
 	 */
 	private static function default_address_fields( $required, $slug = '' ) {
@@ -763,7 +763,7 @@ class Field_Mapping {
 	/**
 	 * Country dropdown options, in the shape the address editor template uses.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, string>>
 	 */
 	private static function country_options() {
@@ -796,7 +796,7 @@ class Field_Mapping {
 	 *
 	 * @param string               $field_type Block name without the `srfm/` prefix.
 	 * @param array<string, mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function block_markup( $field_type, $attributes ) {
@@ -809,7 +809,7 @@ class Field_Mapping {
 	 * @param string               $field_type    Block name without the `srfm/` prefix.
 	 * @param array<string, mixed> $attributes    Block attributes.
 	 * @param string               $inner_content Inner block markup.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function wrap_inner_blocks( $field_type, $attributes, $inner_content ) {
@@ -819,7 +819,7 @@ class Field_Mapping {
 	/**
 	 * A random 8-character block id.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function new_block_id() {

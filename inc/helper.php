@@ -2151,7 +2151,7 @@ class Helper {
 	 * features a site has; the licence does not. Detected once per request,
 	 * as checking a class loads it, so call it on `init` or later.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function get_pro_tier() {
@@ -2173,7 +2173,7 @@ class Helper {
 		 * Filters the SureForms Pro plan tier. Applied on every call, after the
 		 * detection is cached, so tests and custom builds can change it.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param string $tier 'free', 'starter', 'pro' or 'business'.
 		 */
 		$tier = self::get_string_value( apply_filters( 'srfm_pro_tier', $detected ) );
@@ -2185,7 +2185,7 @@ class Helper {
 	 * Rank of a plan tier, for comparing tiers. Unknown tiers rank as 'free'.
 	 *
 	 * @param string $tier 'free', 'starter', 'pro' or 'business'.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return int 0 to 3.
 	 */
 	public static function tier_rank( $tier ) {
@@ -2202,7 +2202,7 @@ class Helper {
 	 * Whether this site's plan includes a tier.
 	 *
 	 * @param string $required 'free', 'starter', 'pro' or 'business'.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function has_tier( $required ) {

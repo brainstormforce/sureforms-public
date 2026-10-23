@@ -14,7 +14,7 @@ import { getScratchUrl } from '@Utils/form-start';
  * Whether AI form generation can run now. Out of generations, or an error
  * from the AI service, means the AI shortcuts are left out.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @return {boolean} AI can generate a form.
  */
 export const canGenerateWithAi = () => {
@@ -418,7 +418,7 @@ export const NotQuiteCard = ( { onAi } ) => (
 /**
  * Calls `onChange` with whether an element is in view below the header.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object}   ref      Ref of the element.
  * @param {Function} onChange Called with true or false.
  * @param {number}   offset   Height of the fixed header.

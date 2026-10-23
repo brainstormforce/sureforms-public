@@ -14,7 +14,7 @@
  * form as a question, so quiz templates ask for nothing else with one.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 use SRFM\Inc\Form_Templates\Catalog;

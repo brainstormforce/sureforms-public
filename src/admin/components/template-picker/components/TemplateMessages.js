@@ -33,7 +33,7 @@ const inputClass =
 /**
  * Whether a template has messages that can be previewed.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  * @return {boolean} Has messages.
  */
@@ -55,7 +55,7 @@ const toLines = ( text ) =>
 /**
  * The template's own text for every editable message, by key.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} messages `template.messages`.
  * @return {Object} Values by key.
  */
@@ -79,7 +79,7 @@ export const getMessageDefaults = ( messages ) => {
  * What the user changed, in the shape the create endpoint takes. Unchanged
  * values are left out; nothing changed gives undefined.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} messages `template.messages`.
  * @param {Object} values   Current values by key.
  * @return {Object|undefined} Changes.
@@ -263,7 +263,7 @@ const optionalAnswersIn = ( text, answers ) =>
  * tag (it moves past that tag's closing brace), with a space added when it
  * would otherwise touch a word.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} value Text.
  * @param {number} start Selection start.
  * @param {number} end   Selection end.
@@ -717,7 +717,7 @@ const Paragraphs = ( { text, context } ) =>
  * The "Thank-you page" tab: the message shown after submitting, as the
  * visitor will see it, and (when editable) the fields to change it.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
  * @param {Object}   props.values   Message values by key.
@@ -917,7 +917,7 @@ const EmailCard = ( {
  * template has one, the confirmation to the visitor, with the fields to
  * change them when editable.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object}   props          Props.
  * @param {Object}   props.template Template.
  * @param {Object}   props.values   Message values by key.

@@ -8,7 +8,7 @@
  * through `eval`.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 namespace SRFM\Inc\Form_Templates;
@@ -23,13 +23,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * `^` binds tightest and to the right (`2^3^2` is 512, `-2^2` is -4), `%` is
  * the remainder, like `*` and `/` in precedence, as in the form's calculator.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Formula {
 	/**
 	 * Deepest nesting of parentheses and signs that is parsed.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const MAX_DEPTH = 32;
 
@@ -58,7 +58,7 @@ class Formula {
 	 * Evaluate an arithmetic expression.
 	 *
 	 * @param string $expression Numbers, `+ - * / ^ %`, parentheses and spaces.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null The result, or null when the expression is invalid
 	 *                    (letters, unbalanced parentheses, division by zero, …).
 	 */
@@ -79,7 +79,7 @@ class Formula {
 	 * Split an expression into numbers and operators.
 	 *
 	 * @param string $expression Expression.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, float|string> Tokens; empty when a character isn't allowed.
 	 */
 	private static function tokenize( $expression ) {
@@ -99,7 +99,7 @@ class Formula {
 	/**
 	 * The next token, or null at the end.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|string|null
 	 */
 	private function peek() {
@@ -109,7 +109,7 @@ class Formula {
 	/**
 	 * Sum: product (('+'|'-') product)*.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null
 	 */
 	private function parse_sum() {
@@ -129,7 +129,7 @@ class Formula {
 	/**
 	 * Product: unary (('*'|'/'|'%') unary)*.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null
 	 */
 	private function parse_product() {
@@ -156,7 +156,7 @@ class Formula {
 	/**
 	 * Signed value: ('+'|'-') unary | power.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null
 	 */
 	private function parse_unary() {
@@ -180,7 +180,7 @@ class Formula {
 	/**
 	 * Power: primary ('^' unary)?, so it binds to the right.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null
 	 */
 	private function parse_power() {
@@ -200,7 +200,7 @@ class Formula {
 	/**
 	 * Number or a parenthesized sum.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null
 	 */
 	private function parse_primary() {

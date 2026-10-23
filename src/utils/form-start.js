@@ -3,7 +3,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * The ways to start a new form on the Add New Form start screen.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 export const START_CHOICES = [ 'ai', 'template', 'scratch' ];
 
@@ -18,7 +18,7 @@ const CARRY_KEY = 'srfm_start_carry';
 /**
  * Whether the start screen is shown, or skipped straight to the AI screen.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @return {boolean} Shown.
  */
 export const isStartScreenEnabled = () =>
@@ -31,7 +31,7 @@ const AI_PARAMS = [ 'access_key', 'srfm_ai_dashboard_prompt', 'form_type' ];
 /**
  * Which Add New Form screen a query string opens.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {URLSearchParams} params Query args.
  * @return {string} `templates`, `ai` or `start`.
  */
@@ -53,7 +53,7 @@ export const getAddNewFormScreen = ( params ) => {
 /**
  * The start screen choice still in play in this tab, if any.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @return {string} `ai`, `template`, `scratch`, or '' when none.
  */
 export const getStartChoice = () => {
@@ -83,7 +83,7 @@ export const getStartChoice = () => {
  * (reloadAddNewForm()), and on a reload or Back / Forward, which return to
  * the same visit.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {URLSearchParams} params     Query args the page opened with.
  * @param {string}          navigation How the page was loaded: `navigate`, `reload` or `back_forward`.
  */
@@ -114,7 +114,7 @@ export const scopeStartChoiceToVisit = (
  * screen after the AI sign-in or a "Try Again". A plain page load would look
  * like a new visit and drop the start screen choice.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} url Add New Form URL.
  */
 export const reloadAddNewForm = ( url ) => {
@@ -129,7 +129,7 @@ export const reloadAddNewForm = ( url ) => {
 /**
  * Remember the choice made on the start screen.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} choice `ai`, `template` or `scratch`.
  */
 export const setStartChoice = ( choice ) => {
@@ -146,7 +146,7 @@ export const setStartChoice = ( choice ) => {
 /**
  * Forget the choice, e.g. when the start screen is shown again.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 export const clearStartChoice = () => {
 	try {
@@ -163,7 +163,7 @@ let queue = Promise.resolve();
  * blocks or breaks creating a form. Path steps are only counted while a
  * start screen choice is in play.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} action `view`, `choose` or a path step (see PHP Form_Start::STEPS).
  * @param {Object} data   Extra data: `choice` and `position` for `choose`.
  * @return {Promise} Settles once the count is sent (or skipped); never rejects.
@@ -203,7 +203,7 @@ export const trackStartStep = ( action, data = {} ) => {
  * form is counted for that path (a user who picked AI and then built from
  * scratch counts as AI → scratch).
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} choice Choice to tag, defaults to the one in play.
  * @return {string} URL.
  */

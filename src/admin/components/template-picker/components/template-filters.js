@@ -4,7 +4,7 @@ import { getFeatures, isPremiumTemplate } from './template-features.js';
  * Templates shown first while no filter or search is active, in this order.
  * The rest follow in catalog order.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 export const FEATURED_TEMPLATES = [
 	'contact-us',
@@ -24,7 +24,7 @@ export const FEATURED_TEMPLATES = [
 /**
  * Filters with nothing chosen.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 export const DEFAULT_FILTERS = {
 	category: 'all',
@@ -39,7 +39,7 @@ const UNSEARCHED_FEATURES = [ 'notification' ];
  * Text a search looks through: name, description, category, field labels and
  * features.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template       Template.
  * @param {Object} categoryLabels Category labels by id.
  * @return {string} Lowercase text.
@@ -63,7 +63,7 @@ export const getSearchText = ( template, categoryLabels = {} ) =>
 /**
  * Whether search words all appear in a template's search text.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} text   Search text from getSearchText().
  * @param {string} search What was typed.
  * @return {boolean} Matches.
@@ -79,7 +79,7 @@ export const matchesSearch = ( text, search ) =>
  * Whether a template passes the filters. Every filter combines with the
  * others and with the search.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object}  template Template.
  * @param {Object}  filters  { category, formType, plan }.
  * @param {boolean} matched  Whether it matches the search.
@@ -115,7 +115,7 @@ export const passesFilters = ( template, filters, matched, skip = '' ) => {
  * How many templates each option of a filter would show, given the other
  * filters and the search.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Array}    templates Templates.
  * @param {Object}   filters   { category, formType, plan }.
  * @param {Function} isMatched Whether a template matches the search.
@@ -139,7 +139,7 @@ export const countOptions = ( templates, filters, isMatched, filter ) => {
 /**
  * Whether any filter or a search is active.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} filters { category, formType, plan }.
  * @param {string} search  Search text.
  * @return {boolean} Narrowed.
@@ -154,7 +154,7 @@ export const isNarrowed = ( filters, search ) =>
  * Templates in the order the grid shows them: the featured ones first while
  * nothing narrows the list, else catalog order.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Array}   templates Templates in catalog order.
  * @param {boolean} narrowed  A filter or search is active.
  * @return {Array} Templates.

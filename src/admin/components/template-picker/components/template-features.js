@@ -35,7 +35,7 @@ import { trackTemplateAction } from '@Utils/form-templates';
  * `pro_features`. Listed in the order cards pick from: the most telling first,
  * since almost every template sends a notification.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @return {Object<string, {label: string, Icon: Function}>} Features by id.
  */
 const getFeatureMap = () => ( {
@@ -146,7 +146,7 @@ let featureMap = null;
 /**
  * Known features of a list of ids, most telling first. Unknown ids are skipped.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string[]} ids Feature ids.
  * @return {Array<{id: string, label: string, Icon: Function}>} Features.
  */
@@ -164,7 +164,7 @@ export const getFeatures = ( ids ) => {
  * Labels for a locked template. The badge always reads "Premium", whatever
  * plan the template needs.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  * @return {{badge: string, button: string, notice: string}} Labels; `notice` is '' unless SureForms Pro needs an update.
  */
@@ -184,7 +184,7 @@ export const getLockLabels = ( template ) => {
 /**
  * Whether a template needs a paid plan, whether or not this site has it.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  * @return {boolean} Paid template.
  */
@@ -195,7 +195,7 @@ export const isPremiumTemplate = ( template ) =>
  * Whether a locked template's preview shows its picture instead of the live
  * form, which can't render the blocks it is built on here.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  * @return {boolean} Show the picture.
  */
@@ -206,7 +206,7 @@ export const showsPreviewImage = ( template ) =>
  * Setup steps a template still needs on this site, e.g. connecting Stripe.
  * Only for templates that can be used: a locked one can't be created yet.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  * @return {Array<{id: string, label: string, url: string}>} Steps not done.
  */
@@ -218,7 +218,7 @@ export const getMissingSetup = ( template ) =>
 /**
  * "Premium" badge on a locked template. Always text, never only an icon.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} props           Props.
  * @param {Object} props.template  Template.
  * @param {string} props.className Extra classes.
@@ -239,7 +239,7 @@ export const PremiumBadge = ( { template, className } ) => (
  * Open where a locked template is unlocked: the pricing page for that
  * template, or the plugin updates when SureForms Pro is too old.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  */
 export const openTemplateUnlock = ( template ) => {

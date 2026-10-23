@@ -6,7 +6,7 @@
 /**
  * First hex color in a CSS value, e.g. the start of a gradient.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} value CSS color or gradient.
  * @return {string} Hex color, '' when there is none.
  */
@@ -21,7 +21,7 @@ export const firstHex = ( value ) => {
  * Whether a color is dark enough to need light text on it. Same formula as
  * Form_Templates::is_dark().
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {string} hex Hex color.
  * @return {boolean} Dark.
  */
@@ -55,7 +55,7 @@ export const isDark = ( hex ) => {
  * primary color and text colors. With no preset chosen it is the template's
  * own look, where a dark theme starts light (its `default`).
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} style   { preset?, background?, accent? }.
  * @param {string} theme   The template's own preset id.
  * @param {Array}  presets Presets: { id, page, background, accent, text, onPrimary, default? }.
@@ -104,7 +104,7 @@ const restyleSources = new WeakMap();
 /**
  * The form's own <style> blocks: the ones that set its color scheme.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Document} doc Preview document.
  * @return {HTMLStyleElement[]} Style blocks.
  */
@@ -120,7 +120,7 @@ export const getFormStyleBlocks = ( doc ) =>
  * once more and see which of its CSS follows the theme. Its own colors all
  * differ too, so each one in its CSS can only be one thing.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} look    Look from resolveLook().
  * @param {Array}  presets Presets.
  * @return {string} Preset id, '' when none differs in every color.
@@ -232,7 +232,7 @@ const fill = ( text, look ) =>
  * SureForms' dark-background handling sets a class and a menu color for a
  * dark form, and they have to follow it from light to dark and back.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Document} doc          Preview document.
  * @param {Object}   from         Look the page was rendered with, from resolveLook().
  * @param {Object}   to           Look to show, from resolveLook().
