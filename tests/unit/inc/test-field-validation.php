@@ -677,6 +677,18 @@ class Test_Field_Validation extends TestCase {
 	}
 
 	/**
+	 * The slug is everything after the first hyphen that follows `-lbl-`, so hyphenated
+	 * slugs survive whole and a key without the label marker has no slug.
+	 */
+	public function test_get_slug_from_key() {
+		$this->assertSame( 'plan', Field_Validation::get_slug_from_key( 'srfm-dropdown-planreal-lbl-UGxhbg-plan' ) );
+		$this->assertSame( 'my-plan', Field_Validation::get_slug_from_key( 'srfm-dropdown-1-planreal-lbl-UGxhbg-my-plan' ) );
+		$this->assertSame( '', Field_Validation::get_slug_from_key( 'srfm-input-multi-choice-abc123' ), 'no -lbl- marker' );
+		$this->assertSame( '', Field_Validation::get_slug_from_key( 'srfm-input-abc-lbl-TmFtZQ' ), 'no slug after the label' );
+		$this->assertSame( '', Field_Validation::get_slug_from_key( 0 ), 'non-string key' );
+	}
+
+	/**
 	 * A slug identifies exactly one field, so it may arrive under only one key. When it
 	 * arrives under more than one, there is no trustworthy way to choose between them, so
 	 * every key carrying that slug is dropped. Covers a duplicate whose block_id is unknown
