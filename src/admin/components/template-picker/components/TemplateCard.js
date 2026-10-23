@@ -141,7 +141,7 @@ const MiniForm = ( { template, look } ) => (
  * The card's picture: a screenshot of the template's preview, the white form
  * on its page color, cropped to the tile from the top. A template without
  * one (added through `srfm_form_templates`) gets its first fields drawn
- * instead. Decorative; the card's text names the template.
+ * instead. Its alt text is the template's name, already translated.
  *
  * @param {Object} props          Props.
  * @param {Object} props.template Template.
@@ -155,7 +155,7 @@ export const CardPicture = ( { template, look } ) => {
 	return (
 		<img
 			src={ template.thumbnail }
-			alt=""
+			alt={ template.title }
 			loading="lazy"
 			decoding="async"
 			// Twice the tile's width at its widest; the tile's fixed height
