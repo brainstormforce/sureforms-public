@@ -121,6 +121,21 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
+	public function test_group_register_fields_leaves_templates_without_registration_alone() {
+		$fields = [ [ 'fieldType' => 'email', 'slug' => 'email' ] ];
+		$this->assertSame( $fields, Form_Templates::group_register_fields( [], $fields ) );
+		// Only the types the register block allows go inside it.
+		$grouped = Form_Templates::group_register_fields(
+			[ 'registration' => [ 'email' => 'email', 'first_name' => 'role' ] ],
+			[
+				[ 'fieldType' => 'dropdown', 'slug' => 'role' ],
+				[ 'fieldType' => 'email', 'slug' => 'email' ],
+			]
+		);
+		$this->assertSame( [ 'dropdown', 'register' ], wp_list_pluck( $grouped, 'fieldType' ) );
+		$this->assertSame( [ 'email' ], wp_list_pluck( $grouped[1]['innerFields'], 'slug' ) );
+	}
+
 	public function test_get_categories_hides_categories_without_templates() {
 		$used = array_unique( array_column( Form_Templates::get_templates(), 'category' ) );
 		$ids  = wp_list_pluck( Form_Templates::get_categories(), 'id' );

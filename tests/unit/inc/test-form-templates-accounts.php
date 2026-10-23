@@ -170,21 +170,6 @@ class Test_Form_Templates_Accounts extends TestCase {
 		$this->assertSame( 50, $blocks[0]['innerBlocks'][0]['attrs']['fieldWidth'] );
 	}
 
-	public function test_group_register_fields_leaves_templates_without_registration_alone() {
-		$fields = [ [ 'fieldType' => 'email', 'slug' => 'email' ] ];
-		$this->assertSame( $fields, Form_Templates::group_register_fields( [], $fields ) );
-		// Only the types the register block allows go inside it.
-		$grouped = Form_Templates::group_register_fields(
-			[ 'registration' => [ 'email' => 'email', 'first_name' => 'role' ] ],
-			[
-				[ 'fieldType' => 'dropdown', 'slug' => 'role' ],
-				[ 'fieldType' => 'email', 'slug' => 'email' ],
-			]
-		);
-		$this->assertSame( [ 'dropdown', 'register' ], wp_list_pluck( $grouped, 'fieldType' ) );
-		$this->assertSame( [ 'email' ], wp_list_pluck( $grouped[1]['innerFields'], 'slug' ) );
-	}
-
 	public function test_without_business_the_account_fields_stay_in_the_form() {
 		add_filter( 'srfm_ai_field_mapping_has_business', '__return_false' );
 		$content = Form_Templates::build_content( Form_Templates::get_template( 'member-registration' ) );
