@@ -19,7 +19,7 @@ const Chip = ( { icon, label } ) => (
 /**
  * A prompt box with form type chips and a Generate button.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 export const AiArt = () => (
 	<div className="w-[84%] max-w-[300px]">
@@ -79,7 +79,7 @@ const MiniForm = ( { className, children } ) => (
 /**
  * Three small forms fanned out, mirrored in right-to-left languages.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 export const TemplateArt = () => (
 	<div className="relative w-[82%] max-w-[300px] h-40">

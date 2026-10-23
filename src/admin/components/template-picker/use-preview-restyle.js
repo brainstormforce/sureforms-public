@@ -29,7 +29,7 @@ export const PREVIEW_TIMEOUT = 10000;
 /**
  * Preview URL for a template with a chosen style.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object} template Template.
  * @param {Object} style    Chosen style.
  * @return {string} URL.
@@ -60,7 +60,7 @@ const readDocument = ( frame ) => {
  * e.g. a PHP error, a login screen, or the browser's "refused to connect"
  * page. A frame from another origin can't be read, so it is trusted.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {HTMLIFrameElement} iframe Frame that fired `load`.
  * @return {boolean} The preview is broken.
  */
@@ -115,7 +115,7 @@ const withFrame = ( frames, index, src ) => {
  * second frame behind the shown one, which swaps in once it has loaded, so
  * the preview never goes blank.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object}  args              Arguments.
  * @param {Object}  args.template     Template.
  * @param {Object}  args.style        Chosen style.

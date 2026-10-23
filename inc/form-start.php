@@ -9,7 +9,7 @@
  * (created, published, receiving entries) can be read from the warehouse.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 namespace SRFM\Inc;
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Add New Form start screen.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Form_Start {
 	use Get_Instance;
@@ -37,35 +37,35 @@ class Form_Start {
 	 * The way it was actually created can differ (picked AI, ran out of
 	 * credits, used a template), which `_srfm_created_via` records.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const START_CHOICE_META = '_srfm_start_choice';
 
 	/**
 	 * Ways to start a form.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const CHOICES = [ 'ai', 'template', 'scratch' ];
 
 	/**
 	 * Steps inside a path that are counted while a choice is in play.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const STEPS = [ 'ai_generate', 'ai_error', 'ai_limit', 'template_open', 'template_preview' ];
 
 	/**
 	 * Query arg on post-new.php carrying the start screen choice for a blank form.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const SCRATCH_QUERY_ARG = 'srfm_start';
 
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
@@ -76,7 +76,7 @@ class Form_Start {
 	/**
 	 * Register the REST route the start screen reports its steps to.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function register_routes() {
@@ -110,7 +110,7 @@ class Form_Start {
 	 * Whether Add New Form opens on the start screen. When filtered off it
 	 * opens on the AI screen, as before the start screen existed.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_enabled() {
@@ -118,7 +118,7 @@ class Form_Start {
 		 * Filters whether Add New Form opens on the start screen.
 		 *
 		 * @param bool $enabled Whether the start screen is shown.
-		 * @since x.x.x
+		 * @since 2.13.0
 		 */
 		return (bool) apply_filters( 'srfm_show_form_start_screen', true );
 	}
@@ -126,7 +126,7 @@ class Form_Start {
 	/**
 	 * Start screen settings for the Add New Form script.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{enabled: bool, tracking: bool}
 	 */
 	public static function get_settings_for_js() {
@@ -140,7 +140,7 @@ class Form_Start {
 	 * A known choice, or '' for anything else.
 	 *
 	 * @param mixed $choice Raw choice.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function sanitize_choice( $choice ) {
@@ -155,7 +155,7 @@ class Form_Start {
 	 * shown in), or a step inside a path.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response
 	 */
 	public function rest_track( $request ) {
@@ -179,7 +179,7 @@ class Form_Start {
 	 * @param int    $post_id     New form ID.
 	 * @param mixed  $choice      Start screen choice sent with the request.
 	 * @param string $created_via How the form was actually created (`ai`, `template`).
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function record_created( $post_id, $choice, $created_via ) {
@@ -203,7 +203,7 @@ class Form_Start {
 	 * @param int     $post_id Post ID.
 	 * @param WP_Post $post    Post.
 	 * @param bool    $update  Whether this is an update.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function tag_blank_form( $post_id, $post, $update ) {
@@ -231,7 +231,7 @@ class Form_Start {
 	 * @param string  $new_status New status.
 	 * @param string  $old_status Old status.
 	 * @param WP_Post $post       Post.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function count_blank_form( $new_status, $old_status, $post ) {

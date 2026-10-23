@@ -34,7 +34,7 @@ const getTabbable = ( node ) =>
  * is brought back. Focus moving into another dialog, such as a confirmation
  * opened on top, is left alone.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {HTMLElement|null} node   Dialog element.
  * @param {boolean}          active Whether the trap is on.
  */

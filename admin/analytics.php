@@ -32,7 +32,7 @@ class Analytics {
 	/**
 	 * Option holding the Add New Form start funnel totals.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const FORM_START_FUNNEL_OPTION = 'srfm_form_start_funnel';
 
@@ -42,7 +42,7 @@ class Analytics {
 	 * Shared between the survey config that declares it and the handler that
 	 * serves it, so the two cannot drift.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const UNINSTALL_PREF_ACTION = 'srfm_set_uninstall_pref';
 
@@ -52,7 +52,7 @@ class Analytics {
 	 * The uninstall script reads this key straight out of the row, since the
 	 * plugin is not loaded by then and this class does not exist.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const UNINSTALL_PREF_KEY = 'remove_analytics_data_on_uninstall';
 
@@ -119,7 +119,7 @@ class Analytics {
 	 * is also late enough that an add-on filtering srfm_deactivation_survey_data
 	 * from plugins_loaded is in time.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function register_analytics_entity() {
@@ -193,7 +193,7 @@ class Analytics {
 	 * compares strictly and stores a real boolean. A cast would read 'no' as
 	 * consent, and uninstall.php's gate only accepts boolean true.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function save_uninstall_preference() {
@@ -921,7 +921,7 @@ class Analytics {
 	 *
 	 * @param mixed  $template_id Template id (sanitized here).
 	 * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function track_form_template_usage( $template_id, $action = 'create' ) {
@@ -967,7 +967,7 @@ class Analytics {
 	 * forms each cycle instead of being added up. Sites that never used a
 	 * template send nothing.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function refresh_form_template_usage() {
@@ -996,7 +996,7 @@ class Analytics {
 	 *
 	 * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
 	 * @param string $template_id Template id, for every action but `library_open`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool Whether the action was counted.
 	 */
 	public static function track_form_template_action( $action, $template_id = '' ) {
@@ -1043,7 +1043,7 @@ class Analytics {
 	 * Number of forms per template id that have received at least one entry,
 	 * the sign a template form is actually working on the site.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, int> Template id => forms with entries, at most 40 ids.
 	 */
 	public static function template_forms_with_entries() {
@@ -1095,7 +1095,7 @@ class Analytics {
 	 * themselves (forms created from a template carry `_srfm_created_via` =
 	 * `template` and `_srfm_template_id`).
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, int> Template id => published forms, at most 40 ids.
 	 */
 	public static function published_template_forms() {
@@ -1142,7 +1142,7 @@ class Analytics {
 	 * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
 	 * @param string $choice   Choice, required for `choose`.
 	 * @param string $position Card position (`1`, `2`) or `link`, for `choose`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool Whether the action was counted.
 	 */
 	public static function track_form_start_action( $action, $choice = '', $position = '' ) {
@@ -1191,7 +1191,7 @@ class Analytics {
 	 *
 	 * @param string $choice      Start screen choice.
 	 * @param string $created_via How the form was created: `ai`, `template` or `scratch`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function track_form_start_created( $choice, $created_via ) {
@@ -1223,7 +1223,7 @@ class Analytics {
 	 * stored totals, but its forms still carry the choice, so their outcomes
 	 * are sent once it is turned on.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function refresh_form_start_funnel() {
@@ -1252,7 +1252,7 @@ class Analytics {
 	 * Forms created after each start screen choice, by status, counted from
 	 * the forms themselves.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, array<string, int>> Choice => [ `draft`, `published`, `with_entries` ].
 	 */
 	public static function form_start_outcomes() {
@@ -1340,7 +1340,7 @@ class Analytics {
 	 *
 	 * @param string $query Cleaned request text. Ignored for `search`.
 	 * @param string $type  `request` for an explicit request, `search` for a search with no results.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function track_form_template_demand( $query, $type = 'request' ) {
@@ -1518,7 +1518,7 @@ class Analytics {
 	 *
 	 * @param array<string, mixed> $usage Stored usage totals.
 	 * @param string               $key   Map key.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, int>
 	 */
 	private static function usage_counts( $usage, $key ) {
@@ -1538,7 +1538,7 @@ class Analytics {
 	 * totals plus the forms published right now, per template.
 	 *
 	 * @param array<string, mixed> $usage Stored usage totals.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function send_form_template_usage( $usage ) {
@@ -1583,7 +1583,7 @@ class Analytics {
 	/**
 	 * Stored start funnel totals.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	private static function get_form_start_funnel() {
@@ -1599,7 +1599,7 @@ class Analytics {
 	 * and requests rewriting one shared row would drop each other's counts.
 	 *
 	 * @param array<string, mixed> $funnel Totals.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function update_form_start_funnel( $funnel ) {
@@ -1615,7 +1615,7 @@ class Analytics {
 	 * the other card is two choices on one view, so choices can exceed views.
 	 *
 	 * @param array<string, mixed> $funnel Stored totals.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function send_form_start_funnel( $funnel ) {

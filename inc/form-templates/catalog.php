@@ -7,7 +7,7 @@
  * and holds the helpers the catalog files build their fields with.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 namespace SRFM\Inc\Form_Templates;
@@ -23,13 +23,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Template catalog loader and field helpers.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Catalog {
 	/**
 	 * Catalog files, one per category, in the order they are loaded.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const FILES = [ 'contact', 'booking', 'feedback', 'signup', 'support', 'calculators', 'quizzes', 'payments', 'agreements', 'accounts' ];
 
@@ -37,7 +37,7 @@ class Catalog {
 	 * Display order of the templates in the library. Templates not listed here
 	 * follow, in the order of FILES and then of each file.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const ORDER = [
 		'contact-us',
@@ -76,7 +76,7 @@ class Catalog {
 	 * The files are required on every call, not once, so the strings are
 	 * translated in the language active at the time.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function templates() {
@@ -109,7 +109,7 @@ class Catalog {
 	 * @param string               $label    Label.
 	 * @param bool                 $required Required.
 	 * @param array<string, mixed> $extra    Extra schema keys (placeholder, helpText, fieldOptions, ...).
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function field( $type, $slug, $label, $required = false, $extra = [] ) {
@@ -128,7 +128,7 @@ class Catalog {
 	 * Options for a dropdown field.
 	 *
 	 * @param array<int, string> $labels Option labels.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function dropdown_options( $labels ) {
@@ -142,7 +142,7 @@ class Catalog {
 	 * @param bool               $single Single selection.
 	 * @param array<int, string> $icons  Optional icon per option (Font Awesome names). With
 	 *                                   an icon on every option the choices show as cards.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function choice_options( $labels, $single = true, $icons = [] ) {
@@ -164,7 +164,7 @@ class Catalog {
 	 *
 	 * @param array<string, mixed> $field Field schema.
 	 * @param float|int            $width 100, 75, 66.66, 50, 33.33 or 25, as in the editor.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function width( $field, $width ) {
@@ -176,7 +176,7 @@ class Catalog {
 	 *
 	 * @param array<string, mixed> $field      Field schema.
 	 * @param array<string, mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function attrs( $field, $attributes ) {
@@ -190,7 +190,7 @@ class Catalog {
 	 *
 	 * @param string $heading Heading.
 	 * @param string $text    Text.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string HTML.
 	 */
 	public static function thank_you( $heading, $text ) {
@@ -200,7 +200,7 @@ class Catalog {
 	/**
 	 * The site's currency symbol, or its code and a space when it has no symbol.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function currency_symbol() {
@@ -213,7 +213,7 @@ class Catalog {
 	 * An amount in the site's currency, e.g. "$1,500".
 	 *
 	 * @param float|int $amount Amount.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function money( $amount ) {
@@ -223,7 +223,7 @@ class Catalog {
 	/**
 	 * Name, email and consent fields most templates share.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, array<string, mixed>>
 	 */
 	public static function common_fields() {
@@ -244,7 +244,7 @@ class Catalog {
 	 * @param string $label    Label.
 	 * @param bool   $required Required.
 	 * @param bool   $future   Only dates from today on (bookings), not past ones.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function date_field( $slug, $label, $required = false, $future = false ) {
@@ -271,7 +271,7 @@ class Catalog {
 	 *
 	 * @param string $slug  Field slug.
 	 * @param string $label Title of the step that starts here.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function step( $slug, $label ) {
@@ -287,7 +287,7 @@ class Catalog {
 	 * @param int                  $min      Lowest value.
 	 * @param int                  $max      Highest value.
 	 * @param array<string, mixed> $extra    Extra schema keys.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function number_field( $slug, $label, $required, $min, $max, $extra = [] ) {
@@ -304,7 +304,7 @@ class Catalog {
 	 * The site's country from its language (en_GB gives gb), used when the
 	 * phone field cannot detect the visitor's country.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Two-letter country code, or empty when the language has none.
 	 */
 	private static function site_country() {

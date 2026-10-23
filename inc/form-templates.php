@@ -9,7 +9,7 @@
  * an AI form and only uses blocks the free plugin can render.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 namespace SRFM\Inc;
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Form templates registry and REST routes.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Form_Templates {
 	use Get_Instance;
@@ -41,28 +41,28 @@ class Form_Templates {
 	/**
 	 * Meta key recording how a form was created (`template`, `ai`).
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const CREATED_VIA_META = '_srfm_created_via';
 
 	/**
 	 * Meta key recording which template a form was created from.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const TEMPLATE_ID_META = '_srfm_template_id';
 
 	/**
 	 * Query var that renders a template preview page.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const PREVIEW_QUERY_VAR = 'srfm_template_preview';
 
 	/**
 	 * Plan tiers a template can require, lowest first.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const TIERS = [ 'free', 'starter', 'pro', 'business' ];
 
@@ -71,7 +71,7 @@ class Form_Templates {
 	 * `srfm_form_template_content` and `srfm_form_template_metas` filters),
 	 * with the tier whose Pro build handles each.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const PRO_FEATURE_KEYS = [
 		'conditions'       => 'starter',
@@ -95,7 +95,7 @@ class Form_Templates {
 	 * ones. A paid template declaring a key is locked (reason `update`) while
 	 * the active SureForms Pro reports a lower version.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const PRO_FEATURE_API = [
 		'conditions'       => 1,
@@ -116,21 +116,21 @@ class Form_Templates {
 	/**
 	 * Example result of a calculated field whose formula can't be worked out.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public const CALCULATION_FALLBACK = '123.45';
 
 	/**
 	 * Post ID of the in-memory form a preview renders. Never written to the database.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const PREVIEW_POST_ID = 2147483600;
 
 	/**
 	 * The "Included" feature each Pro template key adds.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const FEATURE_BY_KEY = [
 		'conditions'       => 'conditional_logic',
@@ -152,14 +152,14 @@ class Form_Templates {
 	 * signatures), a secret (passwords), rows of values (repeaters), or a
 	 * payment, whose details come with the `{form-payment:…}` result tags.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const NO_ANSWER_TYPES = [ 'gdpr', 'page-break', 'inline-button', 'upload', 'html', 'signature', 'payment', 'password', 'repeater' ];
 
 	/**
 	 * Hooks whose callbacks print or enqueue assets on the preview page.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const PREVIEW_ASSET_HOOKS = [ 'wp_enqueue_scripts', 'wp_head', 'wp_print_styles', 'wp_print_scripts', 'wp_body_open', 'wp_footer', 'wp_print_footer_scripts' ];
 
@@ -167,14 +167,14 @@ class Form_Templates {
 	 * Core styles the preview keeps besides the form's own: block and global
 	 * styles, which give the form the theme's fonts and colors.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const PREVIEW_CORE_STYLES = [ 'wp-block-library', 'global-styles', 'classic-theme-styles', 'core-block-supports', 'core-block-supports-duotone', 'wp-img-auto-sizes-contain' ];
 
 	/**
 	 * Spam-protection scripts SureForms loads under their providers' handles.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	private const PREVIEW_CAPTCHA_SCRIPTS = [ 'google-recaptcha', 'google-recaptcha-invisible', 'hcaptcha' ];
 
@@ -195,7 +195,7 @@ class Form_Templates {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
@@ -205,7 +205,7 @@ class Form_Templates {
 	/**
 	 * Register the template REST routes.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function register_routes() {
@@ -352,7 +352,7 @@ class Form_Templates {
 	/**
 	 * All templates, keyed by id.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, array<string, mixed>>
 	 */
 	public static function get_templates() {
@@ -389,7 +389,7 @@ class Form_Templates {
 		 * library's example answers leave it empty, e.g. a field a condition
 		 * hides for the example's first option).
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param array<int, array<string, mixed>> $templates Templates.
 		 */
 		$templates = apply_filters( 'srfm_form_templates', self::default_templates() );
@@ -411,7 +411,7 @@ class Form_Templates {
 	 * One template by id.
 	 *
 	 * @param string $template_id Template id.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>|null
 	 */
 	public static function get_template( $template_id ) {
@@ -422,7 +422,7 @@ class Form_Templates {
 	/**
 	 * Template summaries for the picker: everything except the field schema.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_templates_for_js() {
@@ -491,7 +491,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string `conversational`, `multistep` or `single`.
 	 */
 	public static function get_form_type( $template, $fields ) {
@@ -514,7 +514,7 @@ class Form_Templates {
 	 * HTML blocks are left out; works for any template, added ones too.
 	 *
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array{t: string, l: string, p: string, o: array<int, string>, w: string}>
 	 */
 	public static function get_card_fields( $fields ) {
@@ -562,7 +562,7 @@ class Form_Templates {
 	 * `is_pro` flag, or `free`.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string 'free', 'starter', 'pro' or 'business'.
 	 */
 	public static function get_required_tier( $template ) {
@@ -577,7 +577,7 @@ class Form_Templates {
 	 * Why a template can't be used on this site.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string '' when it can be used, `tier` when it needs a higher plan,
 	 *                `update` when it needs a newer SureForms Pro.
 	 */
@@ -595,7 +595,7 @@ class Form_Templates {
 		 * Filters whether a template can be used on this site. Returning false
 		 * locks it, for example to hide a broken template in a hotfix.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param bool                 $available Whether the template can be used.
 		 * @param array<string, mixed> $template  Template.
 		 * @param string               $reason    Lock reason: '', `tier` or `update`.
@@ -612,7 +612,7 @@ class Form_Templates {
 	 * Whether a template can be used on this site.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_template_available( $template ) {
@@ -623,7 +623,7 @@ class Form_Templates {
 	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds every Pro key a template declares.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return int 0 when the template declares no Pro keys.
 	 */
 	public static function get_required_pro_template_api( $template ) {
@@ -637,7 +637,7 @@ class Form_Templates {
 	/**
 	 * Version of the template builder in the active SureForms Pro, 0 without one.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return int
 	 */
 	public static function get_pro_template_api() {
@@ -650,7 +650,7 @@ class Form_Templates {
 	 *
 	 * @param string $template_id Template id.
 	 * @param string $lock_reason From lock_reason().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Unescaped URL, or '' when the template isn't locked.
 	 */
 	public static function get_unlock_url( $template_id, $lock_reason ) {
@@ -680,7 +680,7 @@ class Form_Templates {
 	 * may give a full http(s) URL instead.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Unescaped URL, '' when the template has none.
 	 */
 	public static function get_preview_image_url( $template ) {
@@ -710,7 +710,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param string               $tier     Plan tier, defaults to this site's (Helper::get_pro_tier()).
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Unescaped URL, '' when the template has no picture.
 	 */
 	public static function get_thumbnail_url( $template, $tier = '' ) {
@@ -734,7 +734,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $resolved Fields from resolve_fields() for this site.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return int
 	 */
 	public static function count_missing_preview_fields( $template, $resolved ) {
@@ -760,7 +760,7 @@ class Form_Templates {
 	 * left out. Setup never stops a form being created.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array{id: string, label: string, done: bool, url: string}>
 	 */
 	public static function get_setup( $template ) {
@@ -780,7 +780,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function get_messages( $template, $fields ) {
@@ -827,7 +827,7 @@ class Form_Templates {
 	 * are useful in the site owner's email.
 	 *
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array{slug: string, label: string, required: bool, sample: string}>
 	 */
 	public static function get_answers( $fields ) {
@@ -854,7 +854,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array{tag: string, label: string}>
 	 */
 	public static function get_result_tags( $template, $fields ) {
@@ -905,7 +905,7 @@ class Form_Templates {
 	 * @param array<int, array{tag: string, label: string}> $result_tags From get_result_tags().
 	 * @param array<int, array<string, mixed>>              $fields      Fields from resolve_fields().
 	 * @param array<string, mixed>                          $template    Template, for its quiz settings.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, string> Sample by tag, e.g. `{quiz_score}` => '4 / 5'.
 	 */
 	public static function get_tag_samples( $text, $result_tags, $fields, $template = [] ) {
@@ -929,7 +929,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $field  Field schema.
 	 * @param array<int, array<string, mixed>> $fields All fields, for the answers the formula uses.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string|null Null for a field that isn't calculated.
 	 */
 	public static function calculated_sample( $field, $fields ) {
@@ -942,7 +942,7 @@ class Form_Templates {
 		 * Filters the example result of a calculated field in the template
 		 * library, e.g. so SureForms Pro can work it out with its own calculator.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param float|null                       $value   Result from the free evaluator, null when it couldn't work it out.
 		 * @param string                           $formula Formula, with `{form:slug}` tags.
 		 * @param array<string, mixed>             $field   Calculated field.
@@ -967,7 +967,7 @@ class Form_Templates {
 	 * @param string                           $formula Formula with `{form:slug}` tags.
 	 * @param array<int, array<string, mixed>> $fields  Fields.
 	 * @param int                              $depth   Calculated fields already being worked out, against loops.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null Null when a tag has no number or the arithmetic is invalid.
 	 */
 	public static function evaluate_formula( $formula, $fields, $depth = 0 ) {
@@ -1001,7 +1001,7 @@ class Form_Templates {
 	 * Clean up the thank-you message and email text edited in the preview.
 	 *
 	 * @param mixed $raw `messages` from the create request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed> Only the keys that were sent, as plain text.
 	 */
 	public static function sanitize_messages( $raw ) {
@@ -1056,7 +1056,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param array<string, mixed> $messages From sanitize_messages().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function apply_messages( $template, $messages ) {
@@ -1094,7 +1094,7 @@ class Form_Templates {
 	 * also carries a light `default`: a template on it starts light, and the
 	 * dark look is there to pick in the preview.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, array<string, mixed>>
 	 */
 	public static function get_themes() {
@@ -1158,7 +1158,7 @@ class Form_Templates {
 	 * A dark preset also carries the light look a template on it starts
 	 * with (`default`), so the card and the preview start out the same.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_themes_for_js() {
@@ -1186,7 +1186,7 @@ class Form_Templates {
 	 * the background and accent.
 	 *
 	 * @param mixed $raw Style from the request or the preview URL.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{preset?:string,background?:string,accent?:string}
 	 */
 	public static function sanitize_style( $raw ) {
@@ -1221,7 +1221,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param array<string, mixed> $style    Style from sanitize_style().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function resolve_theme( $template, $style = [] ) {
@@ -1258,7 +1258,7 @@ class Form_Templates {
 	/**
 	 * Template categories that have at least one template, in display order.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, string>>
 	 */
 	public static function get_categories() {
@@ -1280,7 +1280,7 @@ class Form_Templates {
 	 * @param array<string, mixed> $template Template.
 	 * @param string|bool          $tier     Plan tier from Helper::get_pro_tier(). `true` is
 	 *                                       read as `business` and `false` as `free`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function resolve_fields( $template, $tier ) {
@@ -1322,7 +1322,7 @@ class Form_Templates {
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
 	 * @param string                           $tier     Plan the fields were resolved for. Defaults to this site's.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, string>
 	 */
 	public static function get_features( $template, $fields, $tier = '' ) {
@@ -1363,7 +1363,7 @@ class Form_Templates {
 		/**
 		 * Filters what a template sets up, for the "Included" chips in the library.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param array<int, string>               $features Feature ids, such as `multi_step` or `quiz`.
 		 * @param array<string, mixed>             $template Template.
 		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
@@ -1380,7 +1380,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $attributes Block attributes from the mapper.
 	 * @param array<string, mixed> $question   Field schema.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function apply_block_attributes( $attributes, $question ) {
@@ -1395,7 +1395,7 @@ class Form_Templates {
 	 * library card's `title` when it has none.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function get_form_title( $template ) {
@@ -1407,7 +1407,7 @@ class Form_Templates {
 	 * Block markup for a template.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string|WP_Error
 	 */
 	public static function build_content( $template ) {
@@ -1436,7 +1436,7 @@ class Form_Templates {
 		 * previewed or swapped into a form. SureForms Pro uses it to add the block
 		 * attributes its template features need.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param string                           $content  Block markup.
 		 * @param array<string, mixed>             $template Template.
 		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
@@ -1460,7 +1460,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function group_register_fields( $template, $fields ) {
@@ -1531,7 +1531,7 @@ class Form_Templates {
 	 *
 	 * @param string $content Block markup.
 	 * @param int    $form_id Form ID; 0 leaves the markup as it is.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function set_form_id( $content, $form_id ) {
@@ -1553,7 +1553,7 @@ class Form_Templates {
 	 * @param string               $content  The form's block markup, from build_content(). Built when
 	 *                                       empty and something filters the metas.
 	 * @param string               $context  `create` or `preview`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function build_metas( $template, $style = [], $content = '', $context = 'create' ) {
@@ -1582,7 +1582,7 @@ class Form_Templates {
 	 * @param string               $content  The form's block markup, from build_content(). Built when
 	 *                                       empty and something filters the metas.
 	 * @param string               $context  `swap`, `create` or `preview`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	public static function build_settings_metas( $template, $content = '', $context = 'swap' ) {
@@ -1596,7 +1596,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param array<string, mixed> $style    Optional style from sanitize_style().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{_srfm_forms_styling: array<string, mixed>, _srfm_instant_form_settings: array<string, mixed>, _srfm_single_page_form_title: int}
 	 */
 	public static function build_style_metas( $template, $style = [] ) {
@@ -1644,7 +1644,7 @@ class Form_Templates {
 	 * @param string               $template_id Template id.
 	 * @param array<string, mixed> $style       Optional style chosen in the preview (sanitize_style()).
 	 * @param array<string, mixed> $messages    Optional thank-you and email text edited in the preview (sanitize_messages()).
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return int|WP_Error New form ID.
 	 */
 	public static function create_form_from_template( $template_id, $style = [], $messages = [] ) {
@@ -1710,7 +1710,7 @@ class Form_Templates {
 	/**
 	 * GET /form-templates
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response
 	 */
 	public function rest_list_templates() {
@@ -1736,7 +1736,7 @@ class Form_Templates {
 	 * design. These keys are only replaced when the user chooses to, so a
 	 * form can take a new look and keep its own emails and messages.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, string> Meta keys.
 	 */
 	public static function get_message_meta_keys() {
@@ -1751,7 +1751,7 @@ class Form_Templates {
 		 * Filters the form settings a template swap only replaces when the user
 		 * chooses to also replace the form's emails and messages.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param array<int, string> $keys Meta keys.
 		 */
 		$filtered = apply_filters( 'srfm_form_template_message_meta_keys', $keys );
@@ -1764,7 +1764,7 @@ class Form_Templates {
 	/**
 	 * Whether the site-wide honeypot is on.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_spam_protection_on() {
@@ -1775,7 +1775,7 @@ class Form_Templates {
 	/**
 	 * Turn on the site-wide honeypot, keeping the other security settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function enable_spam_protection() {
@@ -1789,7 +1789,7 @@ class Form_Templates {
 	 * POST /form-templates/create
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_create_form( $request ) {
@@ -1827,7 +1827,7 @@ class Form_Templates {
 	 * existing entries and integrations were recorded against.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_get_template_content( $request ) {
@@ -1885,7 +1885,7 @@ class Form_Templates {
 	 * data with SureForms.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_record_demand( $request ) {
@@ -1912,7 +1912,7 @@ class Form_Templates {
 	 * search boxes.
 	 *
 	 * @param mixed $query Search text.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Cleaned text, or '' when it should not be shared.
 	 */
 	public static function clean_demand_query( $query ) {
@@ -1938,7 +1938,7 @@ class Form_Templates {
 	 * Whether this site shares usage data with SureForms, which is how
 	 * template requests reach the team.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_usage_sharing_on() {
@@ -1951,7 +1951,7 @@ class Form_Templates {
 	/**
 	 * What the template library needs to offer "Request this template".
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{enabled: bool, settings_url: string}
 	 */
 	public static function get_request_settings_for_js() {
@@ -1965,7 +1965,7 @@ class Form_Templates {
 	 * POST /form-templates/swap
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response
 	 */
 	public function rest_record_swap( $request ) {
@@ -1984,7 +1984,7 @@ class Form_Templates {
 	 *
 	 * @param int    $form_id     Form ID.
 	 * @param string $template_id Template id.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function record_swap( $form_id, $template_id ) {
@@ -2000,7 +2000,7 @@ class Form_Templates {
 	 * URL of a template's front-end preview.
 	 *
 	 * @param string $template_id Template id.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function get_preview_url( $template_id ) {
@@ -2019,7 +2019,7 @@ class Form_Templates {
 	 * Remove the in-memory preview form from the object cache at the end of the
 	 * request, so a persistent cache (Redis, Memcached) never keeps it.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function forget_preview_form() {
@@ -2037,7 +2037,7 @@ class Form_Templates {
 	 * real SureForms renderer, so the preview looks exactly like the form will
 	 * once it is embedded. Only users who can create forms see it.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public function maybe_render_preview() {
@@ -2136,7 +2136,7 @@ class Form_Templates {
 	 * handles' dependencies (wp-i18n, wp-hooks, ...) still print, since
 	 * WordPress resolves them when it prints the queue.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function filter_preview_assets() {
@@ -2163,7 +2163,7 @@ class Form_Templates {
 	 * @param string $handle Handle.
 	 * @param string $src    Source URL, '' for an inline-only handle.
 	 * @param string $type   'script' or 'style'.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_preview_asset( $handle, $src, $type ) {
@@ -2210,7 +2210,7 @@ class Form_Templates {
 	 * SureForms, SureForms Pro and the active theme keep theirs.
 	 *
 	 * @param array<int, string> $hooks Hooks to clear; the head and footer ones by default.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	public static function remove_third_party_hooks( $hooks = self::PREVIEW_ASSET_HOOKS ) {
@@ -2264,7 +2264,7 @@ class Form_Templates {
 	 * and submitting is switched off).
 	 *
 	 * @param mixed $methods Payment methods from `srfm_payment_methods_registry`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return mixed
 	 */
 	public static function preview_payment_methods( $methods ) {
@@ -2286,7 +2286,7 @@ class Form_Templates {
 	 * Nothing is recorded unless the site shares usage data with SureForms.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_record_action( $request ) {
@@ -2318,7 +2318,7 @@ class Form_Templates {
 	 *
 	 * @param string $heading Heading.
 	 * @param string $text    Body text.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	public static function confirmation_message( $heading, $text ) {
@@ -2342,7 +2342,7 @@ class Form_Templates {
 	 * @param int   $form_id     Form ID.
 	 * @param mixed $cover_type  Banner type, `color` or `image`.
 	 * @param mixed $cover_color Banner color.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Hex color, or '' to keep the white title.
 	 */
 	public static function get_banner_title_color( $form_id, $cover_type, $cover_color ) {
@@ -2356,7 +2356,7 @@ class Form_Templates {
 	 * Whether a hex color is dark enough to need light text on it.
 	 *
 	 * @param string $hex Hex color.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_dark( $hex ) {
@@ -2376,7 +2376,7 @@ class Form_Templates {
 	 * Pro's template builder when the template declares `conversational`).
 	 *
 	 * @param array<string, mixed> $metas Built metas.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	public static function is_conversational( $metas ) {
@@ -2389,7 +2389,7 @@ class Form_Templates {
 	 * `min_pro_version`, or without the template builder its Pro keys need.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	private static function needs_pro_update( $template ) {
@@ -2406,7 +2406,7 @@ class Form_Templates {
 	 * One setup step and whether it is done.
 	 *
 	 * @param string $id `stripe`, `paypal` or `google_maps`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{id: string, label: string, done: bool, url: string}|null Null for an unknown id or one this site can't do.
 	 */
 	private static function resolve_setup_item( $id ) {
@@ -2449,7 +2449,7 @@ class Form_Templates {
 	 * The error for a template that can't be used on this site.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return WP_Error|null Null when the template can be used.
 	 */
 	private static function locked_error( $template ) {
@@ -2478,7 +2478,7 @@ class Form_Templates {
 	 * @param string                           $tag      Tag, lowercase, with braces.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
 	 * @param array<string, mixed>             $template Template, for its quiz settings.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string|null Null for tags without an example (answers, unknown tags).
 	 */
 	private static function tag_sample( $tag, $fields, $template = [] ) {
@@ -2526,7 +2526,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed>             $quiz   Template `quiz` settings.
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, string> Sample by tag.
 	 */
 	private static function quiz_samples( $quiz, $fields ) {
@@ -2583,7 +2583,7 @@ class Form_Templates {
 	 *
 	 * @param string                           $slug   Payment field slug.
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function payment_amount_sample( $slug, $fields ) {
@@ -2608,7 +2608,7 @@ class Form_Templates {
 	 *
 	 * @param string                           $slug   Slug.
 	 * @param array<int, array<string, mixed>> $fields Fields.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>|null
 	 */
 	private static function find_field( $slug, $fields ) {
@@ -2624,7 +2624,7 @@ class Form_Templates {
 	 * A field's calculation formula, '' for a field that isn't calculated.
 	 *
 	 * @param array<string, mixed> $field Field schema.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function get_formula( $field ) {
@@ -2639,7 +2639,7 @@ class Form_Templates {
 	 * @param string                           $slug   Field slug.
 	 * @param array<int, array<string, mixed>> $fields Fields.
 	 * @param int                              $depth  Calculated fields already being worked out.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return float|null Null for an unknown field or a non-numeric answer.
 	 */
 	private static function numeric_sample( $slug, $fields, $depth = 0 ) {
@@ -2674,7 +2674,7 @@ class Form_Templates {
 	/**
 	 * Every template category, in display order.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, string>>
 	 */
 	private static function all_categories() {
@@ -2730,7 +2730,7 @@ class Form_Templates {
 	 * @param string               $context  `create` or `preview` for all the form's metas,
 	 *                                       `swap` for the settings metas and the thank-you message.
 	 * @param int                  $form_id  The form the blocks belong to, when known.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{content: string, metas: array<string, mixed>}|WP_Error
 	 */
 	private static function build( $template, $style, $context, $form_id = 0 ) {
@@ -2762,7 +2762,7 @@ class Form_Templates {
 	 * @param array<string, mixed> $template Template.
 	 * @param string               $content  The form's block markup, or '' to build it when needed.
 	 * @param string               $context  `create`, `swap` or `preview`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	private static function filter_metas( $metas, $template, $content, $context ) {
@@ -2786,7 +2786,7 @@ class Form_Templates {
 		 * On `create` the form doesn't exist yet, so `$content`'s blocks still
 		 * have `formId: 0`; they get the new form's ID once it is saved.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.0
 		 * @param array<string, mixed>             $metas    Metas, keyed by meta key.
 		 * @param array<string, mixed>             $template Template.
 		 * @param string                           $content  The form's block markup.
@@ -2802,7 +2802,7 @@ class Form_Templates {
 	 * The thank-you message meta a template sets.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return mixed `_srfm_form_confirmation` value.
 	 */
 	private static function confirmation_meta( $template ) {
@@ -2821,7 +2821,7 @@ class Form_Templates {
 	 * The behaviour metas a template sets, before `srfm_form_template_metas`.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	private static function settings_metas( $template ) {
@@ -2892,7 +2892,7 @@ class Form_Templates {
 	 * File a hook callback is defined in.
 	 *
 	 * @param mixed $callback Callback.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string Normalized real path, '' when it can't be told.
 	 */
 	private static function callback_file( $callback ) {
@@ -2924,7 +2924,7 @@ class Form_Templates {
 	 * An example answer for a field, taken from its placeholder or first option.
 	 *
 	 * @param array<string, mixed> $field Field schema.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function sample_answer( $field ) {
@@ -2990,7 +2990,7 @@ class Form_Templates {
 	 * A template's theme, falling back to the first one.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	private static function get_template_theme( $template ) {
@@ -3003,7 +3003,7 @@ class Form_Templates {
 	 * Hex color to RGB.
 	 *
 	 * @param string $hex #RGB or #RRGGBB.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array{0:int,1:int,2:int}
 	 */
 	private static function hex_to_rgb( $hex ) {
@@ -3020,7 +3020,7 @@ class Form_Templates {
 	 * so replies and confirmation emails have somewhere to go.
 	 *
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	private static function has_required_email( $fields ) {
@@ -3038,7 +3038,7 @@ class Form_Templates {
 	 * the preview's value, so `0`, `'0'` and `'false'` are off too.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	private static function includes_all_data( $template ) {
@@ -3054,7 +3054,7 @@ class Form_Templates {
 	 * own text from this site to any address.
 	 *
 	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string
 	 */
 	private static function autoresponder_body( $autoresponder ) {
@@ -3072,7 +3072,7 @@ class Form_Templates {
 	 * one edited in the preview, else "Thanks," over the site title.
 	 *
 	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return string One line per line of the sign-off.
 	 */
 	private static function autoresponder_signoff( $autoresponder ) {
@@ -3085,7 +3085,7 @@ class Form_Templates {
 	 * a template is applied to a form, so its other page settings stay.
 	 *
 	 * @param array<string, mixed> $theme Theme from resolve_theme().
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	private static function instant_form_style( $theme ) {
@@ -3105,7 +3105,7 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $values   Values.
 	 * @param array<string, mixed> $defaults Defaults.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
 	private static function changed_keys( $values, $defaults ) {
@@ -3121,7 +3121,7 @@ class Form_Templates {
 	 * real posts don't reach, so previews rendering at the same time never share
 	 * cache entries.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return int
 	 */
 	private static function get_preview_post_id() {
@@ -3139,7 +3139,7 @@ class Form_Templates {
 	 * @param array<string, mixed> $template Template.
 	 * @param string               $content  Block markup.
 	 * @param array<string, mixed> $metas    Metas from build_metas(), including any a filter added.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function seed_preview_form( $template, $content, $metas ) {
@@ -3185,7 +3185,7 @@ class Form_Templates {
 	 * seen the in-memory form. Keeps the preview's own body class, styles and
 	 * submit blocker, which the library relies on.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function render_conversational_preview() {
@@ -3229,7 +3229,7 @@ class Form_Templates {
 	 * Script that stops the preview's form from being submitted: it is a
 	 * picture of the form, and the in-memory form cannot take entries.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function print_submit_blocker() {
@@ -3259,7 +3259,7 @@ class Form_Templates {
 	 *
 	 * @param string $markup Rendered form markup.
 	 * @param int    $width  Form container width in px.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return void
 	 */
 	private static function render_preview_document( $markup, $width ) {
@@ -3301,7 +3301,7 @@ class Form_Templates {
 	/**
 	 * The templates that ship with the plugin, from the catalog files.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function default_templates() {
@@ -3313,7 +3313,7 @@ class Form_Templates {
 	 * registers its scripts with site-relative paths, so both forms are checked.
 	 *
 	 * @param string $src Source URL.
-	 * @since x.x.x
+	 * @since 2.13.0
 	 * @return bool
 	 */
 	private static function is_core_asset( $src ) {

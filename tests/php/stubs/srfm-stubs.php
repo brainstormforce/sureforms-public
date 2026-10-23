@@ -205,7 +205,7 @@ class Analytics
      *
      * @param mixed  $template_id Template id (sanitized here).
      * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
-     * @since x.x.x
+     * @since 2.13.0
      * @return void
      */
     public static function track_form_template_usage($template_id, $action = 'create')
@@ -216,7 +216,7 @@ class Analytics
      *
      * @param string $query Cleaned request text. Ignored for `search`.
      * @param string $type  `request` for an explicit request, `search` for a search with no results.
-     * @since x.x.x
+     * @since 2.13.0
      * @return void
      */
     public static function track_form_template_demand($query, $type = 'request')
@@ -227,7 +227,7 @@ class Analytics
      *
      * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
      * @param string $template_id Template id, for every action but `library_open`.
-     * @since x.x.x
+     * @since 2.13.0
      * @return bool Whether the action was counted.
      */
     public static function track_form_template_action($action, $template_id = '')
@@ -239,7 +239,7 @@ class Analytics
      * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
      * @param string $choice   Choice, required for `choose`.
      * @param string $position Card position (`1`, `2`) or `link`, for `choose`.
-     * @since x.x.x
+     * @since 2.13.0
      * @return bool Whether the action was counted.
      */
     public static function track_form_start_action($action, $choice = '', $position = '')
@@ -250,7 +250,7 @@ class Analytics
      *
      * @param string $choice      Start screen choice.
      * @param string $created_via How the form was created: `ai`, `template` or `scratch`.
-     * @since x.x.x
+     * @since 2.13.0
      * @return void
      */
     public static function track_form_start_created($choice, $created_via)
@@ -259,7 +259,7 @@ class Analytics
     /**
      * Queue the start screen funnel with fresh outcomes before a report.
      *
-     * @since x.x.x
+     * @since 2.13.0
      * @return void
      */
     public static function refresh_form_start_funnel()
@@ -268,7 +268,7 @@ class Analytics
     /**
      * Drafts, published forms and forms with entries, per start screen choice.
      *
-     * @since x.x.x
+     * @since 2.13.0
      * @return array<string, array<string, int>> Choice => [ `draft`, `published`, `with_entries` ].
      */
     public static function form_start_outcomes()

@@ -14,7 +14,7 @@
  * tests/unit/inc/test-admin-ajax.php.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 use SRFM\Admin\Analytics;
@@ -23,7 +23,7 @@ use SRFM\Inc\Helper;
 /**
  * Class Test_Analytics_Uninstall_Pref
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Test_Analytics_Uninstall_Pref extends SRFM_Unit_Test_Case {
 

@@ -83,7 +83,7 @@ export const trackTemplateAction = ( action, templateId = '' ) =>
  * Count a search that found no template. Only the count is shared, never
  * the search text.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @return {Promise<Object>} Response.
  */
 export const recordEmptySearch = () =>
@@ -100,7 +100,7 @@ export const recordEmptySearch = () =>
  * (`messageKeys`: emails, thank-you message, button text, step labels) are
  * left alone unless the user chose to replace them too.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @param {Object}   settings        `settings` from the template content.
  * @param {Object}   meta            The open form's meta.
  * @param {string[]} messageKeys     `message_meta_keys` from the template list.

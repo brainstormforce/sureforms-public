@@ -35,7 +35,7 @@
  * decision on sub-site rows first, so it is left out on purpose.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 // Exit if not called by WordPress uninstall.

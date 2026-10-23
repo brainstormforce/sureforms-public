@@ -53,7 +53,7 @@ const CARDS = {
  * from scratch. Every view and choice is counted, so the funnel shows which
  * way people start and how far each path gets.
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 const StartScreen = () => {
 	const navigate = useNavigate();

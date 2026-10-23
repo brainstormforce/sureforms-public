@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
  * Opens the template library (`?page=add-new-form&view=templates`) in place,
  * through the Add New Form screen's router, so no page reload is needed.
  *
- * @since x.x.x
+ * @since 2.13.0
  * @return {Function} Opens the library.
  */
 const useOpenTemplateLibrary = () => {

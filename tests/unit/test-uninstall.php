@@ -12,13 +12,13 @@
  * unset again within a process. Plugin Check enforces that guard separately.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 /**
  * Class Test_Uninstall
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Test_Uninstall extends WP_UnitTestCase {
 
