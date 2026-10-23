@@ -201,6 +201,80 @@ class Analytics
     {
     }
     /**
+     * Track forms started from a prebuilt template.
+     *
+     * @param mixed  $template_id Template id (sanitized here).
+     * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_form_template_usage($template_id, $action = 'create')
+    {
+    }
+    /**
+     * Track demand for templates that do not exist yet.
+     *
+     * @param string $query Cleaned request text. Ignored for `search`.
+     * @param string $type  `request` for an explicit request, `search` for a search with no results.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_form_template_demand($query, $type = 'request')
+    {
+    }
+    /**
+     * Count a step of the template journey that happens in the library.
+     *
+     * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
+     * @param string $template_id Template id, for every action but `library_open`.
+     * @since x.x.x
+     * @return bool Whether the action was counted.
+     */
+    public static function track_form_template_action($action, $template_id = '')
+    {
+    }
+    /**
+     * Count a step of the Add New Form start screen.
+     *
+     * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
+     * @param string $choice   Choice, required for `choose`.
+     * @param string $position Card position (`1`, `2`) or `link`, for `choose`.
+     * @since x.x.x
+     * @return bool Whether the action was counted.
+     */
+    public static function track_form_start_action($action, $choice = '', $position = '')
+    {
+    }
+    /**
+     * Count a form created after a start screen choice.
+     *
+     * @param string $choice      Start screen choice.
+     * @param string $created_via How the form was created: `ai`, `template` or `scratch`.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_form_start_created($choice, $created_via)
+    {
+    }
+    /**
+     * Queue the start screen funnel with fresh outcomes before a report.
+     *
+     * @since x.x.x
+     * @return void
+     */
+    public static function refresh_form_start_funnel()
+    {
+    }
+    /**
+     * Drafts, published forms and forms with entries, per start screen choice.
+     *
+     * @since x.x.x
+     * @return array<string, array<string, int>> Choice => [ `draft`, `published`, `with_entries` ].
+     */
+    public static function form_start_outcomes()
+    {
+    }
+    /**
      * Return total number of forms using instant forms.
      *
      * @since 1.4.0

@@ -11,6 +11,8 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Form_Start;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Form_Views;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -26,6 +28,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Analytics {
 	use Get_Instance;
+
+	/**
+	 * Option holding the Add New Form start funnel totals.
+	 *
+	 * @since x.x.x
+	 */
+	public const FORM_START_FUNNEL_OPTION = 'srfm_form_start_funnel';
 
 	/**
 	 * BSF_Analytics_Events instance for one-time event tracking.
@@ -175,6 +184,10 @@ class Analytics {
 
 		// Build learn progress snapshot.
 		$this->get_learn_tracking_data();
+
+		// Recount published template forms so this report carries current numbers.
+		self::refresh_form_template_usage();
+		self::refresh_form_start_funnel();
 
 		// Flush pending events into payload (only if any exist).
 		$pending_events = self::events()->flush_pending();
@@ -735,6 +748,9 @@ class Analytics {
 				'is_ai_generated'    => (string) (int) $is_ai,
 				'block_count'        => (string) $block_count,
 				'days_since_install' => (string) $days_since_install,
+				'created_via'        => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_created_via', true ) ),
+				'template_id'        => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_template_id', true ) ),
+				'start_choice'       => Helper::get_string_value( get_post_meta( $post->ID, Form_Start::START_CHOICE_META, true ) ),
 			]
 		);
 	}
@@ -789,6 +805,479 @@ class Analytics {
 		// the next flush sends these totals. Nothing is re-sent until another AI form
 		// is created.
 		self::events()->track( 'ai_starter_usage', (string) array_sum( $counts ), $properties, true );
+	}
+
+	/**
+	 * Track forms started from a prebuilt template.
+	 *
+	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
+	 * as the `form_template_usage` event, so template popularity and how often
+	 * templates are swapped inside the editor can be read from the warehouse.
+	 * Nothing is kept or queued unless the site shares usage data.
+	 *
+	 * @param mixed  $template_id Template id (sanitized here).
+	 * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_form_template_usage( $template_id, $action = 'create' ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return;
+		}
+
+		// The id becomes an option key and an event property key, so clean it here
+		// rather than trusting every caller.
+		$template_id = substr( sanitize_key( Helper::get_string_value( $template_id ) ), 0, 40 );
+		if ( '' === $template_id ) {
+			return;
+		}
+
+		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$counts = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
+
+		if ( 'swap' === $action ) {
+			$usage['swaps'] = absint( $usage['swaps'] ?? 0 ) + 1;
+		} else {
+			$usage['created'] = absint( $usage['created'] ?? 0 ) + 1;
+		}
+
+		// Cap distinct keys so a filtered template list can't grow the option unbounded.
+		if ( isset( $counts[ $template_id ] ) || count( $counts ) < 40 ) {
+			$counts[ $template_id ] = absint( $counts[ $template_id ] ?? 0 ) + 1;
+		}
+
+		$usage['templates'] = $counts;
+		Helper::update_srfm_option( 'form_template_usage', $usage );
+
+		self::send_form_template_usage( $usage );
+	}
+
+	/**
+	 * Refresh the `form_template_usage` event with the current number of
+	 * published template forms, just before an analytics report is built.
+	 *
+	 * Publishing happens long after a form is created, and forms get
+	 * unpublished or deleted, so the published counts are recounted from the
+	 * forms each cycle instead of being added up. Sites that never used a
+	 * template send nothing.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function refresh_form_template_usage() {
+		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$used = 0;
+		foreach ( [ 'created', 'swaps', 'library_opens', 'previews' ] as $key ) {
+			$used += absint( $usage[ $key ] ?? 0 );
+		}
+		if ( 0 === $used && 0 === array_sum( self::published_template_forms() ) ) {
+			return;
+		}
+
+		self::send_form_template_usage( $usage );
+	}
+
+	/**
+	 * Count a step of the template journey that happens in the library: the
+	 * library being opened, a template previewed, a locked Premium template
+	 * previewed, or its "Upgrade to unlock" button clicked.
+	 *
+	 * Adds to the running totals in srfm_options and re-sends them with the
+	 * `form_template_usage` event. Locked previews and upgrade clicks are also
+	 * counted per template.
+	 *
+	 * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
+	 * @param string $template_id Template id, for every action but `library_open`.
+	 * @since x.x.x
+	 * @return bool Whether the action was counted.
+	 */
+	public static function track_form_template_action( $action, $template_id = '' ) {
+		$totals = [
+			'library_open'   => 'library_opens',
+			'preview'        => 'previews',
+			'locked_preview' => 'locked_previews',
+			'upgrade_click'  => 'upgrade_clicks',
+		];
+		if ( ! isset( $totals[ $action ] ) ) {
+			return false;
+		}
+
+		$template_id = substr( sanitize_key( Helper::get_string_value( $template_id ) ), 0, 40 );
+		if ( 'library_open' !== $action && '' === $template_id ) {
+			return false;
+		}
+
+		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$usage[ $totals[ $action ] ] = absint( $usage[ $totals[ $action ] ] ?? 0 ) + 1;
+
+		$per_template = [
+			'locked_preview' => 'locked_preview_counts',
+			'upgrade_click'  => 'upgrade_click_counts',
+		];
+		if ( isset( $per_template[ $action ] ) ) {
+			$counts = self::usage_counts( $usage, $per_template[ $action ] );
+			// Cap distinct keys so the option and the event stay small.
+			if ( isset( $counts[ $template_id ] ) || count( $counts ) < 40 ) {
+				$counts[ $template_id ] = ( $counts[ $template_id ] ?? 0 ) + 1;
+			}
+			$usage[ $per_template[ $action ] ] = $counts;
+		}
+
+		Helper::update_srfm_option( 'form_template_usage', $usage );
+		self::send_form_template_usage( $usage );
+
+		return true;
+	}
+
+	/**
+	 * Number of forms per template id that have received at least one entry,
+	 * the sign a template form is actually working on the site.
+	 *
+	 * @since x.x.x
+	 * @return array<string, int> Template id => forms with entries, at most 40 ids.
+	 */
+	public static function template_forms_with_entries() {
+		global $wpdb;
+
+		if ( Register::is_entries_table_missing() ) {
+			return [];
+		}
+
+		$entries = Entries::get_instance()->get_tablename();
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The table name comes from the Entries class, not from input.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT tm.meta_value AS template_id, COUNT(DISTINCT p.ID) AS forms
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} cv ON cv.post_id = p.ID AND cv.meta_key = %s AND cv.meta_value = %s
+				INNER JOIN {$wpdb->postmeta} tm ON tm.post_id = p.ID AND tm.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status <> %s
+				AND EXISTS ( SELECT 1 FROM {$entries} e WHERE e.form_id = p.ID AND e.status <> %s )
+				GROUP BY tm.meta_value
+				ORDER BY forms DESC
+				LIMIT 40",
+				'_srfm_created_via',
+				'template',
+				'_srfm_template_id',
+				SRFM_FORMS_POST_TYPE,
+				'trash',
+				'trash'
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		$counts = [];
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			$id = substr( sanitize_key( Helper::get_string_value( $row['template_id'] ?? '' ) ), 0, 40 );
+			if ( '' !== $id ) {
+				$counts[ $id ] = absint( $row['forms'] ?? 0 );
+			}
+		}
+
+		return $counts;
+	}
+
+	/**
+	 * Number of published forms per template id, counted from the forms
+	 * themselves (forms created from a template carry `_srfm_created_via` =
+	 * `template` and `_srfm_template_id`).
+	 *
+	 * @since x.x.x
+	 * @return array<string, int> Template id => published forms, at most 40 ids.
+	 */
+	public static function published_template_forms() {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT tm.meta_value AS template_id, COUNT(*) AS forms
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} cv ON cv.post_id = p.ID AND cv.meta_key = %s AND cv.meta_value = %s
+				INNER JOIN {$wpdb->postmeta} tm ON tm.post_id = p.ID AND tm.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status = %s
+				GROUP BY tm.meta_value
+				ORDER BY forms DESC
+				LIMIT 40",
+				'_srfm_created_via',
+				'template',
+				'_srfm_template_id',
+				SRFM_FORMS_POST_TYPE,
+				'publish'
+			),
+			ARRAY_A
+		);
+
+		$counts = [];
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			$id = substr( sanitize_key( Helper::get_string_value( $row['template_id'] ?? '' ) ), 0, 40 );
+			if ( '' !== $id ) {
+				$counts[ $id ] = absint( $row['forms'] ?? 0 );
+			}
+		}
+
+		return $counts;
+	}
+
+	/**
+	 * Count a step of the Add New Form start funnel: the start screen shown,
+	 * a choice made on it (with the position its card was shown in, or `link`
+	 * for the scratch link), or a step inside a path while a choice is in
+	 * play. Adds to the running totals in srfm_options and re-sends them with
+	 * the `form_start_funnel` event.
+	 *
+	 * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
+	 * @param string $choice   Choice, required for `choose`.
+	 * @param string $position Card position (`1`, `2`) or `link`, for `choose`.
+	 * @since x.x.x
+	 * @return bool Whether the action was counted.
+	 */
+	public static function track_form_start_action( $action, $choice = '', $position = '' ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return false;
+		}
+
+		$choice = Form_Start::sanitize_choice( $choice );
+		$funnel = self::get_form_start_funnel();
+
+		if ( 'view' === $action ) {
+			$funnel['views'] = Helper::get_integer_value( $funnel['views'] ?? 0 ) + 1;
+		} elseif ( 'choose' === $action ) {
+			if ( '' === $choice ) {
+				return false;
+			}
+			$funnel[ 'choice_' . $choice ] = Helper::get_integer_value( $funnel[ 'choice_' . $choice ] ?? 0 ) + 1;
+
+			// Positions are a few known values; anything else is not counted per position.
+			$position = sanitize_key( $position );
+			if ( in_array( $position, [ '1', '2', '3', 'link' ], true ) ) {
+				$key            = 'choice_' . $choice . '_pos_' . $position;
+				$funnel[ $key ] = Helper::get_integer_value( $funnel[ $key ] ?? 0 ) + 1;
+			}
+
+			// The very first choice on a site is the cleanest read of what people want.
+			if ( empty( $funnel['first_choice'] ) ) {
+				$funnel['first_choice'] = $choice;
+			}
+		} elseif ( in_array( $action, Form_Start::STEPS, true ) ) {
+			$funnel[ 'step_' . $action ] = Helper::get_integer_value( $funnel[ 'step_' . $action ] ?? 0 ) + 1;
+		} else {
+			return false;
+		}
+
+		self::update_form_start_funnel( $funnel );
+		self::send_form_start_funnel( $funnel );
+
+		return true;
+	}
+
+	/**
+	 * Count a form created after a start screen choice. When it was created
+	 * another way than the one picked (AI picked, template used), the switch
+	 * is counted too.
+	 *
+	 * @param string $choice      Start screen choice.
+	 * @param string $created_via How the form was created: `ai`, `template` or `scratch`.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_form_start_created( $choice, $created_via ) {
+		$choice      = Form_Start::sanitize_choice( $choice );
+		$created_via = Form_Start::sanitize_choice( $created_via );
+		if ( '' === $choice || ! Form_Templates::is_usage_sharing_on() ) {
+			return;
+		}
+
+		$funnel = self::get_form_start_funnel();
+
+		$funnel[ 'created_' . $choice ] = Helper::get_integer_value( $funnel[ 'created_' . $choice ] ?? 0 ) + 1;
+		if ( '' !== $created_via && $created_via !== $choice ) {
+			$key            = 'switch_' . $choice . '_to_' . $created_via;
+			$funnel[ $key ] = Helper::get_integer_value( $funnel[ $key ] ?? 0 ) + 1;
+		}
+
+		self::update_form_start_funnel( $funnel );
+		self::send_form_start_funnel( $funnel );
+	}
+
+	/**
+	 * Re-send the `form_start_funnel` event with current draft, published
+	 * and with-entries counts, just before an analytics report is built.
+	 * Those change long after a form is created, so they are recounted from
+	 * the forms each cycle. Sites that never saw the start screen send nothing.
+	 *
+	 * A site that used the start screen while usage sharing was off has no
+	 * stored totals, but its forms still carry the choice, so their outcomes
+	 * are sent once it is turned on.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function refresh_form_start_funnel() {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return;
+		}
+
+		$funnel = self::get_form_start_funnel();
+		if ( empty( $funnel ) ) {
+			$forms = 0;
+			foreach ( self::form_start_outcomes() as $counts ) {
+				$forms += array_sum( $counts );
+			}
+			if ( 0 === $forms ) {
+				return;
+			}
+			// Views and choices can't be rebuilt from the forms, so mark these
+			// outcomes for the warehouse to leave out of cross-site rates.
+			$funnel = [ 'recovered' => true ];
+		}
+
+		self::send_form_start_funnel( $funnel );
+	}
+
+	/**
+	 * Forms created after each start screen choice, by status, counted from
+	 * the forms themselves.
+	 *
+	 * @since x.x.x
+	 * @return array<string, array<string, int>> Choice => [ `draft`, `published`, `with_entries` ].
+	 */
+	public static function form_start_outcomes() {
+		global $wpdb;
+
+		$outcomes = array_fill_keys(
+			Form_Start::CHOICES,
+			[
+				'draft'        => 0,
+				'published'    => 0,
+				'with_entries' => 0,
+			]
+		);
+
+		// Both counts read drafts and published forms only, so `with_entries`
+		// never counts a form that is in neither (private, pending, scheduled).
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT sc.meta_value AS choice, p.post_status AS status, COUNT(DISTINCT p.ID) AS forms
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} sc ON sc.post_id = p.ID AND sc.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status IN ( %s, %s )
+				GROUP BY sc.meta_value, p.post_status",
+				Form_Start::START_CHOICE_META,
+				SRFM_FORMS_POST_TYPE,
+				'draft',
+				'publish'
+			),
+			ARRAY_A
+		);
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			$choice = Form_Start::sanitize_choice( $row['choice'] ?? '' );
+			if ( '' !== $choice ) {
+				$status                         = 'publish' === ( $row['status'] ?? '' ) ? 'published' : 'draft';
+				$outcomes[ $choice ][ $status ] = absint( $row['forms'] ?? 0 );
+			}
+		}
+
+		if ( Register::is_entries_table_missing() ) {
+			return $outcomes;
+		}
+
+		$entries = Entries::get_instance()->get_tablename();
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The table name comes from the Entries class, not from input.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT sc.meta_value AS choice, COUNT(DISTINCT p.ID) AS forms
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} sc ON sc.post_id = p.ID AND sc.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status IN ( %s, %s )
+				AND EXISTS ( SELECT 1 FROM {$entries} e WHERE e.form_id = p.ID AND e.status <> %s )
+				GROUP BY sc.meta_value",
+				Form_Start::START_CHOICE_META,
+				SRFM_FORMS_POST_TYPE,
+				'draft',
+				'publish',
+				'trash'
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			$choice = Form_Start::sanitize_choice( $row['choice'] ?? '' );
+			if ( '' !== $choice ) {
+				$outcomes[ $choice ]['with_entries'] = absint( $row['forms'] ?? 0 );
+			}
+		}
+
+		return $outcomes;
+	}
+
+	/**
+	 * Track demand for templates that do not exist yet: what people request
+	 * from the template library, and how often a search finds nothing.
+	 *
+	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
+	 * as the `form_template_demand` event, so the most wanted templates can be
+	 * read from the warehouse. Only a request the user sends on purpose carries
+	 * its text (already cleaned by Form_Templates::clean_demand_query()); a
+	 * search with no results is only counted, never its text. Nothing is kept
+	 * or queued unless the site shares usage data.
+	 *
+	 * @param string $query Cleaned request text. Ignored for `search`.
+	 * @param string $type  `request` for an explicit request, `search` for a search with no results.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_form_template_demand( $query, $type = 'request' ) {
+		if ( ! Form_Templates::is_usage_sharing_on() ) {
+			return;
+		}
+
+		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
+		$demand = is_array( $demand ) ? $demand : [];
+
+		if ( 'search' === $type ) {
+			$demand['searches'] = absint( $demand['searches'] ?? 0 ) + 1;
+		} else {
+			// The query becomes an option key and an event property key.
+			$key = substr( str_replace( '-', '_', sanitize_title( Helper::get_string_value( $query ) ) ), 0, 40 );
+			if ( '' === $key ) {
+				return;
+			}
+
+			$counts = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
+
+			// Cap distinct keys so free text can't grow the option unbounded.
+			if ( isset( $counts[ $key ] ) || count( $counts ) < 30 ) {
+				$counts[ $key ] = absint( $counts[ $key ] ?? 0 ) + 1;
+			}
+			$demand['request'] = $counts;
+		}
+		Helper::update_srfm_option( 'form_template_demand', $demand );
+
+		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
+		$properties = [
+			'plan'     => Helper::has_pro() ? 'business' : 'free',
+			'requests' => (string) array_sum( $requests ),
+			'searches' => (string) absint( $demand['searches'] ?? 0 ),
+		];
+		foreach ( $requests as $id => $count ) {
+			$properties[ 'request_' . $id ] = (string) $count;
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'form_template_demand', (string) array_sum( $requests ), $properties, true );
 	}
 
 	/**
@@ -918,6 +1407,141 @@ class Analytics {
 			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
 			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
 		}
+	}
+
+	/**
+	 * A per-template count map stored in the usage totals.
+	 *
+	 * @param array<string, mixed> $usage Stored usage totals.
+	 * @param string               $key   Map key.
+	 * @since x.x.x
+	 * @return array<string, int>
+	 */
+	private static function usage_counts( $usage, $key ) {
+		if ( ! isset( $usage[ $key ] ) || ! is_array( $usage[ $key ] ) ) {
+			return [];
+		}
+
+		$counts = [];
+		foreach ( $usage[ $key ] as $id => $count ) {
+			$counts[ (string) $id ] = Helper::get_integer_value( $count );
+		}
+		return $counts;
+	}
+
+	/**
+	 * Queue the `form_template_usage` event: the stored creation and swap
+	 * totals plus the forms published right now, per template.
+	 *
+	 * @param array<string, mixed> $usage Stored usage totals.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function send_form_template_usage( $usage ) {
+		$counts    = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
+		$published = self::published_template_forms();
+
+		$with_entries = self::template_forms_with_entries();
+		$locked       = self::usage_counts( $usage, 'locked_preview_counts' );
+		$upgrades     = self::usage_counts( $usage, 'upgrade_click_counts' );
+
+		$properties   = [
+			'plan'            => Helper::has_pro() ? 'business' : 'free',
+			// From this version, a duplicated form no longer counts for its
+			// template (`_srfm_created_via` = `duplicate`), so the series can be split here.
+			'plugin_version'  => SRFM_VER,
+			'library_opens'   => (string) Helper::get_integer_value( $usage['library_opens'] ?? 0 ),
+			'previews'        => (string) Helper::get_integer_value( $usage['previews'] ?? 0 ),
+			'created'         => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
+			'swaps'           => (string) Helper::get_integer_value( $usage['swaps'] ?? 0 ),
+			'published'       => (string) array_sum( $published ),
+			'with_entries'    => (string) array_sum( $with_entries ),
+			'locked_previews' => (string) Helper::get_integer_value( $usage['locked_previews'] ?? 0 ),
+			'upgrade_clicks'  => (string) Helper::get_integer_value( $usage['upgrade_clicks'] ?? 0 ),
+		];
+		$per_template = [
+			'template_'       => $counts,
+			'published_'      => $published,
+			'with_entries_'   => $with_entries,
+			'locked_preview_' => $locked,
+			'upgrade_'        => $upgrades,
+		];
+		foreach ( $per_template as $prefix => $values ) {
+			foreach ( $values as $id => $count ) {
+				$properties[ $prefix . $id ] = (string) $count;
+			}
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'form_template_usage', (string) array_sum( $counts ), $properties, true );
+	}
+
+	/**
+	 * Stored start funnel totals.
+	 *
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function get_form_start_funnel() {
+		$funnel = get_option( self::FORM_START_FUNNEL_OPTION, [] );
+		return is_array( $funnel ) ? $funnel : [];
+	}
+
+	/**
+	 * Save start funnel totals.
+	 *
+	 * Kept in their own option rather than srfm_options: the start screen, the
+	 * template library and the AI screen send their counts at the same moment,
+	 * and requests rewriting one shared row would drop each other's counts.
+	 *
+	 * @param array<string, mixed> $funnel Totals.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function update_form_start_funnel( $funnel ) {
+		update_option( self::FORM_START_FUNNEL_OPTION, $funnel, false );
+	}
+
+	/**
+	 * Queue the `form_start_funnel` event: the stored view, choice, step,
+	 * creation and switch totals plus each choice's forms in draft, published
+	 * and receiving entries right now. Shares and completion rates are worked
+	 * out in the warehouse, e.g. published_ai / choice_ai. `views` counts the
+	 * times the screen was shown, not unique visits: going back and picking
+	 * the other card is two choices on one view, so choices can exceed views.
+	 *
+	 * @param array<string, mixed> $funnel Stored totals.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function send_form_start_funnel( $funnel ) {
+		$properties = [
+			'plan'           => Helper::has_pro() ? 'business' : 'free',
+			'first_choice'   => Form_Start::sanitize_choice( $funnel['first_choice'] ?? '' ),
+			// Lets a change in how something is counted be told apart in the series.
+			'plugin_version' => SRFM_VER,
+		];
+		if ( ! empty( $funnel['recovered'] ) ) {
+			$properties['recovered'] = '1';
+		}
+
+		// Counters are stored under known prefixes only, so they pass through as is.
+		foreach ( $funnel as $key => $value ) {
+			if ( is_string( $key ) && preg_match( '/^(views|choice_|step_|created_|switch_)/', $key ) ) {
+				$properties[ $key ] = (string) Helper::get_integer_value( $value );
+			}
+		}
+
+		$choices = 0;
+		foreach ( self::form_start_outcomes() as $choice => $counts ) {
+			$choices += Helper::get_integer_value( $funnel[ 'choice_' . $choice ] ?? 0 );
+			foreach ( $counts as $status => $count ) {
+				$properties[ $status . '_' . $choice ] = (string) $count;
+			}
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'form_start_funnel', (string) $choices, $properties, true );
 	}
 
 	/**
