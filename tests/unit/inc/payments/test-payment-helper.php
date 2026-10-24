@@ -461,6 +461,8 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 
 		// Through the submit pipeline order (allowlist first), the repeated source is gone entirely.
 		$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( [ $fake => 'Basic', $real => 'Premium' ], $form_id );
+		$this->assertArrayNotHasKey( $real, $stripped );
+		$this->assertArrayNotHasKey( $fake, $stripped );
 		$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'] );
 	}
 
@@ -525,6 +527,12 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'missing', $form_data ) );
 		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( '', $form_data ) );
 		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'price', 'not-an-array' ) );
+
+		// The slug must match exactly: `base-price` is a different field from `price`.
+		$this->assertSame( '50', Payment_Helper::get_submitted_value_by_slug( 'price', [ 'srfm-number-aaa-lbl-QmFzZQ-base-price' => '9' ] + $form_data ) );
+
+		// A slug submitted under two keys has no single value.
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'price', [ 'srfm-number-fake-lbl-UHJpY2U-price' => '1' ] + $form_data ) );
 	}
 
 	public function test_validate_amount_against_config() {

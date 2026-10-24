@@ -383,10 +383,10 @@ class Field_Validation {
 	 * here too; the allowlist already contains repeater children because the collector
 	 * recurses into `innerBlocks`.
 	 *
-	 * SECURITY INVARIANT — a slug names exactly one field, so each slug may reach the
-	 * submission under at most one key (per level: top-level, and each repeater row).
-	 * Downstream readers resolve a field by its slug and do not agree on which of several
-	 * keys wins, so a repeated slug is dropped entirely: see drop_repeated_slug_keys().
+	 * SECURITY INVARIANT — a slug and a block_id each name exactly one field, so each
+	 * may reach the submission under at most one key, at the top level and within each
+	 * repeater row the walk keeps. Any key whose slug or block_id is repeated is dropped:
+	 * see drop_repeated_field_keys().
 	 *
 	 * @param array<mixed> $form_data The submitted form data (sanitized).
 	 * @param int|mixed    $form_id   The ID of the form being submitted.
@@ -398,7 +398,7 @@ class Field_Validation {
 			return [];
 		}
 
-		$form_data = self::drop_repeated_slug_keys( $form_data );
+		$form_data = self::drop_repeated_field_keys( $form_data );
 
 		$form_id_int     = Helper::get_integer_value( $form_id );
 		$known_block_ids = self::get_known_field_block_ids( $form_id_int );
@@ -621,8 +621,8 @@ class Field_Validation {
 			return '';
 		}
 
-		$parts = explode( '-lbl-', $key );
-		$after = $parts[1] ?? '';
+		// Split at the first `-lbl-` only, so a slug that itself contains `-lbl-` stays whole.
+		$after = substr( $key, strpos( $key, '-lbl-' ) + 5 );
 		$pos   = strpos( $after, '-' );
 
 		return false === $pos ? '' : substr( $after, $pos + 1 );
@@ -700,27 +700,36 @@ class Field_Validation {
 	}
 
 	/**
-	 * Drop every field key whose slug is submitted under more than one key.
+	 * Drop every field key whose slug or block_id is submitted under more than one key.
 	 *
-	 * The form renders one input name per field, so a slug that arrives under two keys
-	 * (a different block_id, prefix or label segment) did not come from the rendered form.
-	 * No single key can be trusted over another, so all of them are dropped; a required
-	 * field then fails validation instead of being resolved to an arbitrary copy.
+	 * The form renders one input name per field, so a slug or block_id that arrives under
+	 * two keys did not come from the rendered form. No single key can be trusted over
+	 * another, so all of them are dropped; a required field then fails validation instead
+	 * of being resolved to an arbitrary copy. Empty slugs and block_ids identify nothing
+	 * and are not grouped.
 	 *
 	 * @param array<mixed> $fields Submitted fields at one level (top-level or a repeater row).
 	 * @since 2.12.10
-	 * @return array<mixed> The fields with every repeated-slug key removed.
+	 * @return array<mixed> The fields with every repeated-slug and repeated-block_id key removed.
 	 */
-	private static function drop_repeated_slug_keys( $fields ) {
-		$keys_by_slug = [];
+	private static function drop_repeated_field_keys( $fields ) {
+		$groups = [];
 		foreach ( array_keys( $fields ) as $key ) {
-			$slug = self::get_slug_from_key( $key );
+			if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
+				continue;
+			}
+
+			$slug     = self::get_slug_from_key( $key );
+			$block_id = Helper::get_block_id_from_key( $key );
 			if ( '' !== $slug ) {
-				$keys_by_slug[ $slug ][] = $key;
+				$groups[ 'slug:' . $slug ][] = $key;
+			}
+			if ( '' !== $block_id ) {
+				$groups[ 'id:' . $block_id ][] = $key;
 			}
 		}
 
-		foreach ( $keys_by_slug as $keys ) {
+		foreach ( $groups as $keys ) {
 			if ( count( $keys ) > 1 ) {
 				foreach ( $keys as $key ) {
 					unset( $fields[ $key ] );
@@ -756,7 +765,7 @@ class Field_Validation {
 				}
 			}
 
-			$rows[ $index ] = self::drop_repeated_slug_keys( $row );
+			$rows[ $index ] = self::drop_repeated_field_keys( $row );
 		}
 
 		return $rows;

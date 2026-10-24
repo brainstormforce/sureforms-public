@@ -686,6 +686,8 @@ class Test_Field_Validation extends TestCase {
 		$this->assertSame( '', Field_Validation::get_slug_from_key( 'srfm-input-multi-choice-abc123' ), 'no -lbl- marker' );
 		$this->assertSame( '', Field_Validation::get_slug_from_key( 'srfm-input-abc-lbl-TmFtZQ' ), 'no slug after the label' );
 		$this->assertSame( '', Field_Validation::get_slug_from_key( 0 ), 'non-string key' );
+		$this->assertSame( 'plan-lbl-x', Field_Validation::get_slug_from_key( 'srfm-dropdown-abc-lbl-UGxhbg-plan-lbl-x' ), 'a slug containing -lbl- survives whole' );
+		$this->assertSame( 'lbl-name', Field_Validation::get_slug_from_key( 'srfm-input-abc-lbl-TmFtZQ-lbl-name' ), 'a slug starting with lbl- survives whole' );
 	}
 
 	/**
@@ -731,6 +733,42 @@ class Test_Field_Validation extends TestCase {
 		// The same rule applies inside each repeater row.
 		$repeater = Field_Validation::strip_unknown_field_keys( [ 'srfm-repeater-rrrr1111-lbl-Um93cw-rows' => [ [ $cases['unknown block_id'] => 'Basic', $real => 'Premium' ] ] ], $form_id );
 		$this->assertSame( [], $repeater['srfm-repeater-rrrr1111-lbl-Um93cw-rows'][0] ?? null, 'a slug repeated inside a repeater row is dropped' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A block_id also identifies exactly one field. A second key reusing a real block_id
+	 * under a different slug is dropped together with the real key, while distinct
+	 * fields (including slugs that only share a prefix, and fields without a block_id)
+	 * are kept.
+	 */
+	public function test_strip_unknown_field_keys_drops_every_key_of_a_repeated_block_id() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Repeated Block Id Form',
+				'post_content' => '<!-- wp:srfm/number {"block_id":"qty00001","slug":"qty"} /--><!-- wp:srfm/input {"block_id":"plan0001","slug":"plan"} /--><!-- wp:srfm/input {"block_id":"plan0002","slug":"plan-2"} /--><!-- wp:srfm/input {"block_id":"","slug":"note-a"} /--><!-- wp:srfm/email {"block_id":"","slug":"note-b"} /-->',
+			]
+		);
+
+		$real   = 'srfm-number-qty00001-lbl-UXR5-qty';
+		$reused = 'srfm-number-qty00001-lbl-WA-zzz';
+		$kept   = [
+			'srfm-input-plan0001-lbl-UGxhbg-plan'   => 'a',
+			'srfm-input-plan0002-lbl-UGxhbg-plan-2' => 'b',
+			'srfm-input--lbl-Tm90ZQ-note-a'         => 'c',
+			'srfm-email--lbl-Tm90ZQ-note-b'         => 'd',
+		];
+
+		$stripped = Field_Validation::strip_unknown_field_keys( [ $reused => '1', $real => '100' ] + $kept, $form_id );
+
+		$this->assertArrayNotHasKey( $reused, $stripped, 'a second key for a known block_id is dropped' );
+		$this->assertArrayNotHasKey( $real, $stripped, 'the field it shadows is dropped too' );
+		foreach ( $kept as $key => $value ) {
+			$this->assertSame( $value, $stripped[ $key ] ?? null, "$key is a distinct field and is kept" );
+		}
 
 		wp_delete_post( $form_id, true );
 	}
