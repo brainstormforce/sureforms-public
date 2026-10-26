@@ -10,6 +10,8 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -257,13 +259,21 @@ class Field_Validation {
 		}
 
 		foreach ( $walked['unsubmittable'] as $field ) {
-			$key = 'srfm-' . $field['type'] . '-' . $field['block_id'] . '-lbl-' . Helper::encode( $field['label'] ) . '-' . $field['slug'];
+			$prefix = 'srfm-' . $field['type'] . '-' . $field['block_id'] . '-lbl-';
+			$suffix = '-' . $field['slug'];
 
-			// array_key_exists(), not isset(): a submitted null must still count as
-			// submitted, so this never overwrites what the visitor sent.
-			if ( ! array_key_exists( $key, $form_data ) ) {
-				$form_data[ $key ] = '';
+			// The field is identified by its block id and slug, never by the label: the
+			// label in a rendered key is whatever the field displayed (a block.json
+			// default, a translation), so any submitted key for this block id and slug
+			// means the visitor sent the field, whatever label it encodes. A submitted
+			// null still counts, so this never overwrites what the visitor sent.
+			foreach ( array_keys( $form_data ) as $submitted_key ) {
+				if ( is_string( $submitted_key ) && str_starts_with( $submitted_key, $prefix ) && str_ends_with( $submitted_key, $suffix ) ) {
+					continue 2;
+				}
 			}
+
+			$form_data[ $prefix . Helper::encode( $field['label'] ) . $suffix ] = '';
 		}
 
 		return $form_data;
@@ -771,13 +781,14 @@ class Field_Validation {
 				// A browser posts nothing for an unticked checkbox, so these fields need
 				// rebuilding from the form itself -- see backfill_unsubmitted_fields().
 				if ( isset( self::UNSUBMITTABLE_BLOCKS[ $block_name ] ) && ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
+					// The saved label, else the block.json default the field renders with
+					// when the label was never edited, else the markup's own fallback.
+					$label           = String_Translator::block_attribute_value( $block_name, $attrs, 'label' );
 					$unsubmittable[] = [
 						'type'     => self::UNSUBMITTABLE_BLOCKS[ $block_name ]['type'],
 						'block_id' => $attrs['block_id'],
 						'slug'     => isset( $attrs['slug'] ) && is_string( $attrs['slug'] ) ? $attrs['slug'] : '',
-						'label'    => ! empty( $attrs['label'] ) && is_string( $attrs['label'] )
-							? $attrs['label']
-							: self::UNSUBMITTABLE_BLOCKS[ $block_name ]['label'],
+						'label'    => '' !== $label ? $label : self::UNSUBMITTABLE_BLOCKS[ $block_name ]['label'],
 					];
 				}
 			}
