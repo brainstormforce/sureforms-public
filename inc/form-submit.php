@@ -557,7 +557,7 @@ class Form_Submit {
 						]
 					);
 				}
-				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
+				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
@@ -602,7 +602,7 @@ class Form_Submit {
 						]
 					);
 				}
-				if ( true === $sureforms_captcha_data['success'] ) {
+				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
@@ -2095,5 +2095,44 @@ class Form_Submit {
 	 */
 	private static function is_captcha_verified( $result ) {
 		return is_array( $result ) && isset( $result['success'] ) && true === $result['success'];
+	}
+
+	/**
+	 * Whether a Google reCAPTCHA siteverify response is a pass for this form.
+	 *
+	 * Every variant needs a confirmed success. For v3, success only means the token
+	 * is valid; the verdict is the score, so a v3 response passes only when it carries
+	 * a numeric score at or above the srfm_recaptcha_v3_score_threshold value. A
+	 * missing or non-numeric score is not a pass.
+	 *
+	 * @param mixed  $result       Decoded siteverify response.
+	 * @param string $captcha_type The form's stored reCAPTCHA variant (_srfm_form_recaptcha).
+	 * @param int    $form_id      Form post ID.
+	 * @since 2.13.1
+	 * @return bool
+	 */
+	private static function is_recaptcha_verified( $result, $captcha_type, $form_id ) {
+		if ( ! self::is_captcha_verified( $result ) ) {
+			return false;
+		}
+
+		if ( 'v3-reCAPTCHA' !== $captcha_type ) {
+			return true;
+		}
+
+		/**
+		 * Filter the lowest reCAPTCHA v3 score a submission is accepted at.
+		 *
+		 * Scores run from 0.0 (likely automated) to 1.0 (likely human). A non-numeric
+		 * return falls back to the default; the value is clamped to 0-1.
+		 *
+		 * @param float $threshold Minimum score. Default 0.5, Google's suggested starting point.
+		 * @param int   $form_id   Form post ID.
+		 * @since 2.13.1
+		 */
+		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', 0.5, $form_id );
+		$threshold = is_numeric( $threshold ) ? max( 0.0, min( 1.0, (float) $threshold ) ) : 0.5;
+
+		return is_array( $result ) && isset( $result['score'] ) && is_numeric( $result['score'] ) && (float) $result['score'] >= $threshold;
 	}
 }

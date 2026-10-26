@@ -568,6 +568,147 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * Submit a Google reCAPTCHA form whose siteverify call returns $body.
+	 *
+	 * @param string $version          Form's reCAPTCHA variant (v2-checkbox, v3-reCAPTCHA, ...).
+	 * @param string $body             Raw siteverify response body.
+	 * @param bool   $honeypot_present Whether the request carries an empty honeypot field.
+	 * @return bool True when the submission was rejected as a captcha failure.
+	 */
+	private function recaptcha_submission_rejected( $version, $body, $honeypot_present ) {
+		$secret_keys = [
+			'v2-checkbox'  => 'srfm_v2_checkbox_secret_key',
+			'v2-invisible' => 'srfm_v2_invisible_secret_key',
+			'v3-reCAPTCHA' => 'srfm_v3_secret_key',
+		];
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'reCAPTCHA Test Form',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
+		update_option(
+			'srfm_security_settings_options',
+			[
+				$secret_keys[ $version ] => 'secret-key',
+				'srfm_honeypot'          => false,
+			]
+		);
+
+		$verified   = false;
+		$siteverify = static function () use ( $body, &$verified ) {
+			$verified = true;
+			return [
+				'headers'  => [],
+				'body'     => $body,
+				'response' => [
+					'code'    => 200,
+					'message' => 'OK',
+				],
+			];
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$params = [
+			'form-id'              => (string) $form_id,
+			'g-recaptcha-response' => 'visitor-token',
+		];
+		if ( $honeypot_present ) {
+			$params['srfm-honeypot-field'] = '';
+		}
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( $params );
+
+		$rejected = false;
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+			ob_end_clean();
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+			// Entry processing may still stop for unrelated reasons; only a
+			// captcha error response counts as a captcha rejection.
+			$rejected = is_array( $data ) && isset( $data['data']['detail_message'] )
+				&& false !== strpos( $data['data']['detail_message'], 'Captcha validation failed' );
+		}
+
+		remove_filter( 'pre_http_request', $siteverify );
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+
+		// Every verdict must come from the captcha gate, not an earlier exit.
+		$this->assertTrue( $verified, 'The submission never reached reCAPTCHA siteverify.' );
+
+		return $rejected;
+	}
+
+	/**
+	 * A v3 token is only a pass when Google scored it at or above the threshold.
+	 *
+	 * @dataProvider provide_recaptcha_verdicts
+	 *
+	 * @param string $version       Form's reCAPTCHA variant.
+	 * @param string $body          Raw siteverify response body.
+	 * @param bool   $want_rejected Expected verdict.
+	 */
+	public function test_handle_form_submission_recaptcha_verdict( $version, $body, $want_rejected ) {
+		foreach ( [ true, false ] as $honeypot_present ) {
+			$this->assertSame(
+				$want_rejected,
+				$this->recaptcha_submission_rejected( $version, $body, $honeypot_present ),
+				sprintf( '%s with honeypot %s', $body, $honeypot_present ? 'present' : 'absent' )
+			);
+		}
+	}
+
+	/**
+	 * Siteverify bodies and whether each must be rejected.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_recaptcha_verdicts() {
+		return [
+			'v3 score 0.0'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.0,"action":"submit"}', true ],
+			'v3 score 0.4'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.4}', true ],
+			'v3 score missing'      => [ 'v3-reCAPTCHA', '{"success":true}', true ],
+			'v3 score null'         => [ 'v3-reCAPTCHA', '{"success":true,"score":null}', true ],
+			'v3 score non-numeric'  => [ 'v3-reCAPTCHA', '{"success":true,"score":"high"}', true ],
+			'v3 score array'        => [ 'v3-reCAPTCHA', '{"success":true,"score":[0.9]}', true ],
+			'v3 high score failed'  => [ 'v3-reCAPTCHA', '{"success":false,"score":0.9}', true ],
+			'v3 malformed body'     => [ 'v3-reCAPTCHA', '<html>503</html>', true ],
+			'v3 score 0.5'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.5}', false ],
+			'v3 score 0.9'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.9,"action":"submit"}', false ],
+			'v2 checkbox no score'  => [ 'v2-checkbox', '{"success":true}', false ],
+			'v2 invisible no score' => [ 'v2-invisible', '{"success":true}', false ],
+			'v2 checkbox failed'    => [ 'v2-checkbox', '{"success":false}', true ],
+			'v2 checkbox malformed' => [ 'v2-checkbox', '<html>503</html>', true ],
+		];
+	}
+
+	/**
+	 * The v3 threshold is filterable per form; a bad filter return keeps the default.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_threshold_filter() {
+		$strict = static function () {
+			return 0.95;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.9}', true ) );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+
+		$garbage = static function () {
+			return 'not-a-number';
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $garbage );
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.1}', true ) );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $garbage );
+	}
+
+	/**
 	 * Test parse_email_notification_template returns expected structure.
 	 */
 	public function test_parse_email_notification_template() {
