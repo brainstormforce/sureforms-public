@@ -479,8 +479,9 @@ class Test_Uninstall extends WP_UnitTestCase {
 		remove_filter( 'sureforms_tracking_enabled', $sharing );
 
 		$options = get_option( 'srfm_options' );
-		$this->assertArrayHasKey( 'form_template_usage', $options, 'Precondition: the usage writer stored its counter.' );
-		$this->assertArrayHasKey( 'form_template_demand', $options, 'Precondition: the demand writer stored the request.' );
+		$this->assertNotEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION ), 'Precondition: the usage writer stored its counter.' );
+		$this->assertNotEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION ), 'Precondition: the demand writer stored the request.' );
+		$this->assertArrayNotHasKey( 'form_template_usage', $options, 'the counters stay out of the settings row' );
 		$this->assertNotEmpty( get_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION ), 'Precondition: the funnel writer stored its totals.' );
 
 		$options['remove_analytics_data_on_uninstall'] = true;
@@ -490,8 +491,8 @@ class Test_Uninstall extends WP_UnitTestCase {
 		$this->run_uninstall();
 
 		$after = get_option( 'srfm_options' );
-		$this->assertArrayNotHasKey( 'form_template_usage', $after );
-		$this->assertArrayNotHasKey( 'form_template_demand', $after, 'the text typed into Request this template must go' );
+		$this->assertFalse( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, false ) );
+		$this->assertFalse( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, false ), 'the text typed into Request this template must go' );
 		$this->assertFalse( get_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION, false ) );
 		$this->assertSame( 20, $after['forms_per_page'], 'settings stay' );
 	}

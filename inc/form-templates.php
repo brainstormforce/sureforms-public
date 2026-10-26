@@ -1765,6 +1765,31 @@ class Form_Templates {
 	}
 
 	/**
+	 * Whether a form has a native integration or webhook set up, whose field
+	 * mappings point at the form's current field slugs. A value that cannot be
+	 * read counts as set up.
+	 *
+	 * @param int $form_id Form ID.
+	 * @since 2.13.0
+	 * @return bool
+	 */
+	public static function has_field_mappings( $form_id ) {
+		foreach ( [ '_srfm_native_integrations', '_srfm_integrations_webhooks' ] as $meta_key ) {
+			$value = get_post_meta( $form_id, $meta_key, true );
+			if ( is_string( $value ) && '' !== trim( $value ) ) {
+				$value = json_decode( $value, true );
+				if ( ! is_array( $value ) ) {
+					return true;
+				}
+			}
+			if ( ! empty( $value ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Whether the site-wide honeypot is on.
 	 *
 	 * @since 2.13.0
@@ -1854,22 +1879,26 @@ class Form_Templates {
 
 		$style_metas = self::build_style_metas( $template, $style );
 		$has_entries = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
+		$has_mapping = $form_id > 0 && self::has_field_mappings( $form_id );
 
 		return new WP_REST_Response(
 			[
-				'id'           => $template['id'],
-				'title'        => self::get_form_title( $template ),
-				'content'      => $built['content'],
-				'has_entries'  => $has_entries,
+				'id'                 => $template['id'],
+				'title'              => self::get_form_title( $template ),
+				'content'            => $built['content'],
+				'has_entries'        => $has_entries,
+				// Integrations and webhooks send fields by their slugs, which a
+				// swap replaces, so such a form is copied to a new one instead.
+				'has_field_mappings' => $has_mapping,
 				// Applied over the open form's own settings in the editor: every
 				// value the template owns, also when it equals the default, so
 				// none of the form's old values survive the swap.
-				'styling'      => self::template_owned_styling( $style_metas['_srfm_forms_styling'] ),
-				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
+				'styling'            => self::template_owned_styling( $style_metas['_srfm_forms_styling'] ),
+				'instant_form'       => self::instant_form_style( self::resolve_theme( $template, $style ) ),
 				// Button text, emails, thank-you message and steps the template sets.
 				// The editor only applies the get_message_meta_keys() ones when the
 				// user chooses to replace the form's messages too.
-				'settings'     => $built['metas'],
+				'settings'           => $built['metas'],
 			]
 		);
 	}

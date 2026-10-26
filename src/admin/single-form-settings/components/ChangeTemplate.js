@@ -295,12 +295,17 @@ const ChangeTemplate = () => {
 				instantForm: response.instant_form || {},
 				settings: response.settings || {},
 				hasEntries: Boolean( response?.has_entries ),
+				hasFieldMappings: Boolean( response?.has_field_mappings ),
 				// The template's context (a quote form's emails for a quote
 				// form) is what most swaps want, so this starts ticked.
 				replaceMessages: true,
 			};
 
-			if ( next.hasEntries || rootClientIds.length ) {
+			if (
+				next.hasEntries ||
+				next.hasFieldMappings ||
+				rootClientIds.length
+			) {
 				setPending( next );
 				return;
 			}
@@ -339,7 +344,10 @@ const ChangeTemplate = () => {
 	};
 
 	const renderConfirm = () => {
-		const { template, hasEntries } = pending;
+		const { template, hasEntries, hasFieldMappings } = pending;
+		// Entries and integrations are tied to this form's fields, so a form
+		// with either gets a new form instead of having its fields replaced.
+		const keepsForm = hasEntries || hasFieldMappings;
 
 		return (
 			<Modal
@@ -349,13 +357,18 @@ const ChangeTemplate = () => {
 				size="medium"
 			>
 				<div className="srfm-change-template__confirm">
-					{ hasEntries ? (
+					{ keepsForm ? (
 						<>
 							<Notice status="warning" isDismissible={ false }>
-								{ __(
-									'This form already has entries. Replacing its fields would separate those entries and any connected integrations from the new fields.',
-									'sureforms'
-								) }
+								{ hasEntries
+									? __(
+										'This form already has entries. Replacing its fields would separate those entries and any connected integrations from the new fields.',
+										'sureforms'
+									  )
+									: __(
+										'This form has integrations or webhooks connected to its fields. Replacing its fields would leave them sending empty values.',
+										'sureforms'
+									  ) }
 							</Notice>
 							<p>
 								{ sprintf(
@@ -407,7 +420,7 @@ const ChangeTemplate = () => {
 						>
 							{ __( 'Back', 'sureforms' ) }
 						</Button>
-						{ hasEntries ? (
+						{ keepsForm ? (
 							<Button
 								variant="primary"
 								isBusy={ busy }

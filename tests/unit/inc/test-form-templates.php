@@ -770,7 +770,7 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertFalse( $response->get_data()['recorded'] );
-		$this->assertEmpty( \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] ) );
+		$this->assertEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ) );
 	}
 
 	public function test_rest_record_action_tracks_steps_and_counts_locked_previews() {
@@ -778,7 +778,7 @@ class Test_Form_Templates extends TestCase {
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );
 		$free = static fn() => 'free';
 		add_filter( 'srfm_pro_tier', $free );
-		\SRFM\Inc\Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 
 		$track = static function ( $action, $template_id = '' ) {
 			$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/track' );
@@ -797,7 +797,7 @@ class Test_Form_Templates extends TestCase {
 		remove_filter( 'srfm_pro_tier', $free );
 		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
 
-		$usage = \SRFM\Inc\Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [] );
 		$this->assertSame( 1, $usage['library_opens'] );
 		$this->assertSame( 2, $usage['previews'] );
 		$this->assertSame( 1, $usage['locked_previews'], 'Only the Business template counts as locked on a free site.' );
@@ -808,7 +808,7 @@ class Test_Form_Templates extends TestCase {
 	public function test_rest_record_action_records_nothing_without_usage_sharing() {
 		$this->login_admin();
 		add_filter( 'sureforms_tracking_enabled', '__return_false' );
-		\SRFM\Inc\Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/track' );
 		$request->set_param( 'action', 'library_open' );
@@ -817,7 +817,7 @@ class Test_Form_Templates extends TestCase {
 		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
 
 		$this->assertFalse( $response->get_data()['recorded'] );
-		$this->assertEmpty( \SRFM\Inc\Helper::get_srfm_option( 'form_template_usage', [] ) );
+		$this->assertEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 	}
 
 	public function test_template_requests_and_empty_searches_are_counted() {
@@ -833,18 +833,18 @@ class Test_Form_Templates extends TestCase {
 
 		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
 
-		$demand = \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] );
+		$demand = get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] );
 		$this->assertSame( 2, $demand['request']['gym_membership'] );
 		// A search with no results is only counted, never its text.
 		$this->assertSame( 1, $demand['searches'] );
 		$this->assertStringNotContainsString( 'pet', wp_json_encode( $demand ) );
-		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 	}
 
 	public function test_rest_record_demand_counts_an_empty_search_without_text() {
 		$this->login_admin();
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );
-		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 
 		// What the library sends: no query at all.
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/request' );
@@ -855,8 +855,8 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertTrue( $response->get_data()['recorded'] );
-		$this->assertSame( [ 'searches' => 1 ], \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] ) );
-		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+		$this->assertSame( [ 'searches' => 1 ], get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ) );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 
 		// A request still needs its text.
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/request' );
@@ -2355,6 +2355,43 @@ class Test_Form_Templates extends TestCase {
 		$template['autoresponder']['summary'] = true;
 		$emails                               = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
 		$this->assertStringNotContainsString( '{all_data}', $emails[1]['email_body'] );
+	}
+
+	public function test_has_field_mappings() {
+		$form_id = wp_insert_post( [ 'post_type' => SRFM_FORMS_POST_TYPE, 'post_status' => 'publish', 'post_title' => 'Mapped' ] );
+
+		// Nothing set up, or emptied.
+		$this->assertFalse( Form_Templates::has_field_mappings( $form_id ) );
+		update_post_meta( $form_id, '_srfm_native_integrations', '[]' );
+		update_post_meta( $form_id, '_srfm_integrations_webhooks', [] );
+		$this->assertFalse( Form_Templates::has_field_mappings( $form_id ) );
+
+		// A native integration (stored as JSON) or a webhook (stored as an array).
+		update_post_meta( $form_id, '_srfm_native_integrations', wp_json_encode( [ [ 'id' => 'wf1' ] ] ) );
+		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ) );
+		delete_post_meta( $form_id, '_srfm_native_integrations' );
+		update_post_meta( $form_id, '_srfm_integrations_webhooks', [ [ 'id' => 'wh1' ] ] );
+		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ) );
+
+		// A value that cannot be read counts as set up.
+		delete_post_meta( $form_id, '_srfm_integrations_webhooks' );
+		update_post_meta( $form_id, '_srfm_native_integrations', 'not json' );
+		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ) );
+	}
+
+	public function test_rest_get_template_content_reports_field_mappings() {
+		$this->login_admin();
+		$post_id = Form_Templates::create_form_from_template( 'contact-us' );
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/rsvp' );
+		$request->set_param( 'template_id', 'rsvp' );
+		$request->set_param( 'form_id', $post_id );
+
+		$this->assertFalse( Form_Templates::get_instance()->rest_get_template_content( $request )->get_data()['has_field_mappings'] );
+
+		update_post_meta( $post_id, '_srfm_integrations_webhooks', [ [ 'id' => 'wh1' ] ] );
+		$data = Form_Templates::get_instance()->rest_get_template_content( $request )->get_data();
+		$this->assertFalse( $data['has_entries'] );
+		$this->assertTrue( $data['has_field_mappings'], 'A form without entries but with a webhook is not swapped in place.' );
 	}
 
 	public function test_autoresponder_signoff_is_editable() {

@@ -37,6 +37,23 @@ class Analytics {
 	public const FORM_START_FUNNEL_OPTION = 'srfm_form_start_funnel';
 
 	/**
+	 * Option holding the template create, swap, view and upgrade counts. Like
+	 * the start funnel, it has its own row: counting rewrites the whole value,
+	 * and in srfm_options that would also rewrite every setting stored there.
+	 *
+	 * @since 2.13.0
+	 */
+	public const FORM_TEMPLATE_USAGE_OPTION = 'srfm_form_template_usage';
+
+	/**
+	 * Option holding the template library's search and request counts, in its
+	 * own row for the same reason.
+	 *
+	 * @since 2.13.0
+	 */
+	public const FORM_TEMPLATE_DEMAND_OPTION = 'srfm_form_template_demand';
+
+	/**
 	 * Ajax action backing the deactivation-survey checkbox.
 	 *
 	 * Shared between the survey config that declares it and the handler that
@@ -936,7 +953,7 @@ class Analytics {
 			return;
 		}
 
-		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = Helper::get_array_value( get_option( self::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$usage = is_array( $usage ) ? $usage : [];
 
 		$counts = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
@@ -953,7 +970,7 @@ class Analytics {
 		}
 
 		$usage['templates'] = $counts;
-		Helper::update_srfm_option( 'form_template_usage', $usage );
+		update_option( self::FORM_TEMPLATE_USAGE_OPTION, $usage, false );
 
 		self::send_form_template_usage( $usage );
 	}
@@ -971,7 +988,7 @@ class Analytics {
 	 * @return void
 	 */
 	public static function refresh_form_template_usage() {
-		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = Helper::get_array_value( get_option( self::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$usage = is_array( $usage ) ? $usage : [];
 
 		$used = 0;
@@ -1015,7 +1032,7 @@ class Analytics {
 			return false;
 		}
 
-		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = Helper::get_array_value( get_option( self::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$usage = is_array( $usage ) ? $usage : [];
 
 		$usage[ $totals[ $action ] ] = absint( $usage[ $totals[ $action ] ] ?? 0 ) + 1;
@@ -1033,7 +1050,7 @@ class Analytics {
 			$usage[ $per_template[ $action ] ] = $counts;
 		}
 
-		Helper::update_srfm_option( 'form_template_usage', $usage );
+		update_option( self::FORM_TEMPLATE_USAGE_OPTION, $usage, false );
 		self::send_form_template_usage( $usage );
 
 		return true;
@@ -1348,7 +1365,7 @@ class Analytics {
 			return;
 		}
 
-		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
+		$demand = Helper::get_array_value( get_option( self::FORM_TEMPLATE_DEMAND_OPTION, [] ) );
 		$demand = is_array( $demand ) ? $demand : [];
 
 		if ( 'search' === $type ) {
@@ -1368,7 +1385,7 @@ class Analytics {
 			}
 			$demand['request'] = $counts;
 		}
-		Helper::update_srfm_option( 'form_template_demand', $demand );
+		update_option( self::FORM_TEMPLATE_DEMAND_OPTION, $demand, false );
 
 		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
 		$properties = [
