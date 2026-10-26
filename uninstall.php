@@ -96,6 +96,10 @@ if ( ! is_array( $srfm_options ) || true !== ( $srfm_options['remove_analytics_d
  *  - db_repair_attempts         admin/admin.php. A cumulative counter sent with
  *                               the database-error notice event, and read
  *                               nowhere else, so it gates no behaviour.
+ *  - form_template_usage        admin/analytics.php. Template create and swap
+ *                               counts, re-sent as running totals.
+ *  - form_template_demand       admin/analytics.php. Holds the text people typed
+ *                               into "Request this template".
  *
  * Plus the contact details inside onboarding_user_details (first_name,
  * last_name, email), written by inc/rest-api.php. They are collected data, not
@@ -132,6 +136,8 @@ $srfm_analytics_keys = [
 	'user_active',
 	'email_delivery_state_tracked',
 	'db_repair_attempts',
+	'form_template_usage',
+	'form_template_demand',
 	'remove_analytics_data_on_uninstall',
 ];
 
@@ -164,6 +170,10 @@ if ( [] === $srfm_options ) {
 } else {
 	update_option( 'srfm_options', $srfm_options );
 }
+
+// The start screen funnel totals live in their own option (see
+// Analytics::FORM_START_FUNNEL_OPTION), so they go separately.
+delete_option( 'srfm_form_start_funnel' );
 
 /*
  * Evict the cached copies as well.
