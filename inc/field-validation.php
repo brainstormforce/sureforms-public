@@ -720,7 +720,7 @@ class Field_Validation {
 	 * resolves to the same field are both dropped.
 	 *
 	 * @param array<mixed> $fields Submitted fields at one level (top-level or a repeater row).
-	 * @since 2.12.10
+	 * @since 2.13.0
 	 * @return array<mixed> The fields with every repeated-slug and repeated-block_id key removed.
 	 */
 	private static function drop_repeated_field_keys( $fields ) {
@@ -758,7 +758,7 @@ class Field_Validation {
 	 * Empty slugs and block_ids identify nothing and are left out.
 	 *
 	 * @param string $key Submitted field key containing `-lbl-`.
-	 * @since 2.12.10
+	 * @since 2.13.0
 	 * @return array<int, string> Identities, prefixed `slug:` or `id:`.
 	 */
 	private static function get_field_key_identities( $key ) {
