@@ -677,6 +677,131 @@ class Test_Field_Validation extends TestCase {
 	}
 
 	/**
+	 * The slug is everything after the first hyphen that follows `-lbl-`, so hyphenated
+	 * slugs survive whole and a key without the label marker has no slug.
+	 */
+	public function test_get_slug_from_key() {
+		$this->assertSame( 'plan', Field_Validation::get_slug_from_key( 'srfm-dropdown-planreal-lbl-UGxhbg-plan' ) );
+		$this->assertSame( 'my-plan', Field_Validation::get_slug_from_key( 'srfm-dropdown-1-planreal-lbl-UGxhbg-my-plan' ) );
+		$this->assertSame( '', Field_Validation::get_slug_from_key( 'srfm-input-multi-choice-abc123' ), 'no -lbl- marker' );
+		$this->assertSame( '', Field_Validation::get_slug_from_key( 'srfm-input-abc-lbl-TmFtZQ' ), 'no slug after the label' );
+		$this->assertSame( '', Field_Validation::get_slug_from_key( 0 ), 'non-string key' );
+		$this->assertSame( 'plan-lbl-x', Field_Validation::get_slug_from_key( 'srfm-dropdown-abc-lbl-UGxhbg-plan-lbl-x' ), 'a slug containing -lbl- survives whole' );
+		$this->assertSame( 'lbl-name', Field_Validation::get_slug_from_key( 'srfm-input-abc-lbl-TmFtZQ-lbl-name' ), 'a slug starting with lbl- survives whole' );
+	}
+
+	/**
+	 * A slug identifies exactly one field, so it may arrive under only one key. When it
+	 * arrives under more than one, there is no trustworthy way to choose between them, so
+	 * every key carrying that slug is dropped. Covers a duplicate whose block_id is unknown
+	 * (slug-only match) and one that reuses the real block_id with a different label.
+	 */
+	public function test_strip_unknown_field_keys_drops_every_key_of_a_repeated_slug() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Repeated Slug Form',
+				'post_content' => '<!-- wp:srfm/repeater {"block_id":"rrrr1111","slug":"rows"} --><!-- wp:srfm/dropdown {"block_id":"planreal","slug":"plan"} /--><!-- /wp:srfm/repeater --><!-- wp:srfm/input {"block_id":"name0001","slug":"full-name"} /-->',
+			]
+		);
+
+		$real  = 'srfm-dropdown-planreal-lbl-UGxhbg-plan';
+		$name  = 'srfm-input-name0001-lbl-TmFtZQ-full-name';
+		$cases = [
+			'unknown block_id' => 'srfm-dropdown-planfake-lbl-UGxhbg-plan',
+			'reused block_id'  => 'srfm-dropdown-1-planreal-lbl-T3RoZXI-plan',
+		];
+
+		foreach ( $cases as $case => $duplicate ) {
+			$kept = Field_Validation::strip_unknown_field_keys(
+				[
+					$duplicate => 'Basic',
+					$real      => 'Premium',
+					$name      => 'Jane',
+					'form-id'  => $form_id,
+				],
+				$form_id
+			);
+
+			$this->assertArrayNotHasKey( $duplicate, $kept, "$case: duplicate key is dropped" );
+			$this->assertArrayNotHasKey( $real, $kept, "$case: the field the duplicate shadows is dropped too" );
+			$this->assertSame( 'Jane', $kept[ $name ] ?? null, "$case: unrelated fields are untouched" );
+			$this->assertSame( $form_id, $kept['form-id'] ?? null, "$case: non-field keys are untouched" );
+		}
+
+		// The same rule applies inside each repeater row.
+		$repeater = Field_Validation::strip_unknown_field_keys( [ 'srfm-repeater-rrrr1111-lbl-Um93cw-rows' => [ [ $cases['unknown block_id'] => 'Basic', $real => 'Premium' ] ] ], $form_id );
+		$this->assertSame( [], $repeater['srfm-repeater-rrrr1111-lbl-Um93cw-rows'][0] ?? null, 'a slug repeated inside a repeater row is dropped' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A block_id also identifies exactly one field. A second key reusing a real block_id
+	 * under a different slug is dropped together with the real key, while distinct
+	 * fields (including slugs that only share a prefix, and fields without a block_id)
+	 * are kept.
+	 */
+	public function test_strip_unknown_field_keys_drops_every_key_of_a_repeated_block_id() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Repeated Block Id Form',
+				'post_content' => '<!-- wp:srfm/number {"block_id":"qty00001","slug":"qty"} /--><!-- wp:srfm/input {"block_id":"plan0001","slug":"plan"} /--><!-- wp:srfm/input {"block_id":"plan0002","slug":"plan-2"} /--><!-- wp:srfm/input {"block_id":"","slug":"note-a"} /--><!-- wp:srfm/email {"block_id":"","slug":"note-b"} /-->',
+			]
+		);
+
+		$real   = 'srfm-number-qty00001-lbl-UXR5-qty';
+		$reused = 'srfm-number-qty00001-lbl-WA-zzz';
+		$kept   = [
+			'srfm-input-plan0001-lbl-UGxhbg-plan'   => 'a',
+			'srfm-input-plan0002-lbl-UGxhbg-plan-2' => 'b',
+			'srfm-input--lbl-Tm90ZQ-note-a'         => 'c',
+			'srfm-email--lbl-Tm90ZQ-note-b'         => 'd',
+		];
+
+		$stripped = Field_Validation::strip_unknown_field_keys( [ $reused => '1', $real => '100' ] + $kept, $form_id );
+
+		$this->assertArrayNotHasKey( $reused, $stripped, 'a second key for a known block_id is dropped' );
+		$this->assertArrayNotHasKey( $real, $stripped, 'the field it shadows is dropped too' );
+		foreach ( $kept as $key => $value ) {
+			$this->assertSame( $value, $stripped[ $key ] ?? null, "$key is a distinct field and is kept" );
+		}
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A real field is grouped under every reading of its own key, never against itself,
+	 * so a slug containing `-lbl-` or `_` is kept when no other key shares a reading.
+	 */
+	public function test_strip_unknown_field_keys_keeps_a_lone_field_with_lbl_or_underscore_in_its_slug() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Lbl Slug Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"aaa11111","slug":"lbl-value"} /--><!-- wp:srfm/input {"block_id":"bbb22222","slug":"my_plan"} /--><!-- wp:srfm/input {"block_id":"ccc33333","slug":"x-lbl-y"} /-->',
+			]
+		);
+
+		$form_data = [
+			'srfm-input-aaa11111-lbl-TGJs-lbl-value' => 'a',
+			'srfm-input-bbb22222-lbl-UGxhbg-my_plan'  => 'b',
+			'srfm-input-ccc33333-lbl-WA-x-lbl-y'      => 'c',
+		];
+		$stripped  = Field_Validation::strip_unknown_field_keys( $form_data, $form_id );
+
+		foreach ( $form_data as $key => $value ) {
+			$this->assertSame( $value, $stripped[ $key ] ?? null, "$key is kept" );
+		}
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * The slug fallback must not weaken the anti-injection guard: a key with neither a
 	 * known block_id nor a known slug is still foreign and dropped.
 	 */

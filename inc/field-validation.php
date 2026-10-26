@@ -393,6 +393,11 @@ class Field_Validation {
 	 * here too; the allowlist already contains repeater children because the collector
 	 * recurses into `innerBlocks`.
 	 *
+	 * SECURITY INVARIANT — a slug and a block_id each name exactly one field, so each
+	 * may reach the submission under at most one key, at the top level and within each
+	 * repeater row the walk keeps. Any key whose slug or block_id is repeated is dropped:
+	 * see drop_repeated_field_keys().
+	 *
 	 * @param array<mixed> $form_data The submitted form data (sanitized).
 	 * @param int|mixed    $form_id   The ID of the form being submitted.
 	 * @since 2.12.3
@@ -402,6 +407,8 @@ class Field_Validation {
 		if ( ! is_array( $form_data ) ) {
 			return [];
 		}
+
+		$form_data = self::drop_repeated_field_keys( $form_data );
 
 		$form_id_int     = Helper::get_integer_value( $form_id );
 		$known_block_ids = self::get_known_field_block_ids( $form_id_int );
@@ -608,6 +615,30 @@ class Field_Validation {
 	}
 
 	/**
+	 * Extract a field's slug from its submitted key.
+	 *
+	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
+	 * padding-stripped standard base64 and never contains a hyphen, so the slug is
+	 * everything after the first hyphen that follows `-lbl-` (the slug itself may
+	 * contain hyphens, which is why only the first is used as the boundary).
+	 *
+	 * @param string $key Submitted field key.
+	 * @since 2.12.7
+	 * @return string The slug, or '' when it cannot be derived.
+	 */
+	public static function get_slug_from_key( $key ) {
+		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
+			return '';
+		}
+
+		// Split at the first `-lbl-` only, so a slug that itself contains `-lbl-` stays whole.
+		$after = substr( $key, strpos( $key, '-lbl-' ) + 5 );
+		$pos   = strpos( $after, '-' );
+
+		return false === $pos ? '' : substr( $after, $pos + 1 );
+	}
+
+	/**
 	 * The walked allowlists for one form, memoised for the request.
 	 *
 	 * One cache, not one per getter. Both public getters need the same walk, and each
@@ -679,27 +710,71 @@ class Field_Validation {
 	}
 
 	/**
-	 * Extract a field's slug from its submitted key.
+	 * Drop every field key whose slug or block_id is submitted under more than one key.
 	 *
-	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
-	 * padding-stripped standard base64 and never contains a hyphen, so the slug is
-	 * everything after the first hyphen that follows `-lbl-` (the slug itself may
-	 * contain hyphens, which is why only the first is used as the boundary).
+	 * The form renders one input name per field, so a slug or block_id that arrives under
+	 * two keys did not come from the rendered form. No single key can be trusted over
+	 * another, so all of them are dropped; a required field then fails validation instead
+	 * of being resolved to an arbitrary copy. Keys are compared under every reading a
+	 * consumer applies (see get_field_key_identities()), so two keys that any consumer
+	 * resolves to the same field are both dropped.
 	 *
-	 * @param string $key Submitted field key.
-	 * @since 2.12.7
-	 * @return string The slug, or '' when it cannot be derived.
+	 * @param array<mixed> $fields Submitted fields at one level (top-level or a repeater row).
+	 * @since 2.13.0
+	 * @return array<mixed> The fields with every repeated-slug and repeated-block_id key removed.
 	 */
-	private static function get_slug_from_key( $key ) {
-		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
-			return '';
+	private static function drop_repeated_field_keys( $fields ) {
+		$groups = [];
+		foreach ( array_keys( $fields ) as $key ) {
+			if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
+				continue;
+			}
+
+			foreach ( self::get_field_key_identities( $key ) as $identity ) {
+				$groups[ $identity ][ $key ] = true;
+			}
 		}
 
-		$parts = explode( '-lbl-', $key );
-		$after = $parts[1] ?? '';
-		$pos   = strpos( $after, '-' );
+		foreach ( $groups as $keys ) {
+			if ( count( $keys ) > 1 ) {
+				foreach ( array_keys( $keys ) as $key ) {
+					unset( $fields[ $key ] );
+				}
+			}
+		}
 
-		return false === $pos ? '' : substr( $after, $pos + 1 );
+		return $fields;
+	}
+
+	/**
+	 * Every slug and block_id a submitted field key can be read as.
+	 *
+	 * Consumers read keys differently: get_slug_from_key() takes everything after the
+	 * first `-lbl-`, while prepare_submission_data(), map_slug_to_submission_data(), the
+	 * `{form:slug}` smart tag and SureForms Pro's repeater stop at the next `-lbl-`;
+	 * SureForms Pro's calculation finds a field by `-<block_id>-lbl-` anywhere in the key;
+	 * and process_form_fields() stores keys with `_` read as a space. One field key must
+	 * resolve to one field in all of them, so it is identified under each reading.
+	 * Empty slugs and block_ids identify nothing and are left out.
+	 *
+	 * @param string $key Submitted field key containing `-lbl-`.
+	 * @since 2.13.0
+	 * @return array<int, string> Identities, prefixed `slug:` or `id:`.
+	 */
+	private static function get_field_key_identities( $key ) {
+		$key      = str_replace( '_', ' ', $key );
+		$segments = explode( '-lbl-', $key );
+
+		$identities = [
+			'slug:' . self::get_slug_from_key( $key ),
+			'slug:' . implode( '-', array_slice( explode( '-', $segments[1] ?? '' ), 1 ) ),
+		];
+		foreach ( array_slice( $segments, 0, -1 ) as $segment ) {
+			$tokens       = explode( '-', $segment );
+			$identities[] = 'id:' . end( $tokens );
+		}
+
+		return array_values( array_diff( array_unique( $identities ), [ 'slug:', 'id:' ] ) );
 	}
 
 	/**
@@ -727,7 +802,7 @@ class Field_Validation {
 				}
 			}
 
-			$rows[ $index ] = $row;
+			$rows[ $index ] = self::drop_repeated_field_keys( $row );
 		}
 
 		return $rows;

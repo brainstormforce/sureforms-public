@@ -416,6 +416,94 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertNull( $result );
 	}
 
+	public function test_get_form_submitted_value_by_slug_and_block_name_rejects_repeated_slug() {
+		$form_data = [
+			'srfm-dropdown-planfake-lbl-UGxhbg-plan' => 'Basic',
+			'srfm-dropdown-planreal-lbl-UGxhbg-plan' => 'Premium',
+		];
+		$result    = $this->call_private_method( null, 'get_form_submitted_value_by_slug_and_block_name', [
+			'plan',
+			'srfm/dropdown',
+			$form_data,
+		] );
+		$this->assertNull( $result, 'an amount source submitted under two keys has no single value to price against' );
+	}
+
+	public function test_get_form_submitted_value_by_slug_and_block_name_matches_slug_exactly() {
+		// A different field whose slug merely ends in the source slug is not the source.
+		$form_data = [
+			'srfm-dropdown-other001-lbl-T3RoZXI-my-plan' => 'Other',
+			'srfm-dropdown-planreal-lbl-UGxhbg-plan'     => 'Premium',
+		];
+		$result    = $this->call_private_method( null, 'get_form_submitted_value_by_slug_and_block_name', [
+			'plan',
+			'srfm/dropdown',
+			$form_data,
+		] );
+		$this->assertSame( 'Premium', $result );
+	}
+
+	public function test_validate_amount_against_config_rejects_repeated_amount_source() {
+		$content = '<!-- wp:srfm/dropdown {"block_id":"planreal","slug":"plan","options":[{"label":"Basic","icon":"","value":"1"},{"label":"Premium","icon":"","value":"100"}]} /-->'
+			. '<!-- wp:srfm/payment {"block_id":"pay02","slug":"srfm-payment","paymentType":"one-time","amountType":"variable","minimumAmount":1,"variableAmountField":"plan"} /-->';
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => $content ] );
+		\SRFM\Inc\Field_Validation::add_block_config( parse_blocks( $content ), $form_id );
+
+		$real = 'srfm-dropdown-planreal-lbl-UGxhbg-plan';
+		$fake = 'srfm-dropdown-planfake-lbl-UGxhbg-plan';
+
+		// Baseline: the genuine selection alone is priced from the server-side option config.
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, [ $real => 'Premium' ], 100.0 )['valid'] );
+		$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, [ $real => 'Premium' ], 1.0 )['valid'] );
+
+		// Two submitted keys for the amount source: no amount is accepted, whatever the order.
+		foreach ( [ [ $fake => 'Basic', $real => 'Premium' ], [ $real => 'Premium', $fake => 'Basic' ] ] as $form_data ) {
+			foreach ( [ 1.0, 100.0 ] as $amount ) {
+				$result = Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $form_data, $amount );
+				$this->assertFalse( $result['valid'], "amount $amount must not validate against a repeated amount source" );
+			}
+		}
+
+		// Through the submit pipeline order (allowlist first), the repeated source is gone entirely.
+		$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( [ $fake => 'Basic', $real => 'Premium' ], $form_id );
+		$this->assertArrayNotHasKey( $real, $stripped );
+		$this->assertArrayNotHasKey( $fake, $stripped );
+		$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'] );
+	}
+
+	/**
+	 * Keys that read as the amount source in one parser and as something else in another
+	 * (a second `-lbl-`, `_` read as a space, a block_id after a later `-lbl-`) must not
+	 * survive the allowlist next to the real key, so the priced value is the stored one.
+	 */
+	public function test_strip_unknown_field_keys_rejects_keys_that_parse_as_the_amount_source() {
+		$content = '<!-- wp:srfm/dropdown {"block_id":"planreal","slug":"my_plan","options":[{"label":"Basic","icon":"","value":"1"},{"label":"Premium","icon":"","value":"100"}]} /-->'
+			. '<!-- wp:srfm/input {"block_id":"opt01","slug":"notes"} /-->'
+			. '<!-- wp:srfm/payment {"block_id":"pay02","slug":"srfm-payment","paymentType":"one-time","amountType":"variable","minimumAmount":1,"variableAmountField":"my_plan"} /-->';
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => $content ] );
+		\SRFM\Inc\Field_Validation::add_block_config( parse_blocks( $content ), $form_id );
+
+		$real = 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan';
+		$sets = [
+			'second -lbl- under an unknown block_id'  => [ 'srfm-dropdown-zz-lbl-UGxhbg-my_plan' => 'Basic', 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ],
+			'second -lbl- under an optional field'    => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ],
+			'underscore read as a space'              => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-my plan' => 'Premium' ],
+			'block_id after a second -lbl-'           => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-planreal-lbl-x' => 'Premium' ],
+		];
+
+		foreach ( $sets as $name => $form_data ) {
+			$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( $form_data, $form_id );
+			foreach ( array_keys( $form_data ) as $key ) {
+				$this->assertArrayNotHasKey( $key, $stripped, "$name: $key is dropped" );
+			}
+			$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'], "$name: \$1 is rejected" );
+		}
+
+		// The genuine selection alone still prices normally.
+		$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( [ $real => 'Premium' ], $form_id );
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 100.0 )['valid'] );
+	}
+
 	// --- validate_payment_amount ---
 
 	public function test_validate_payment_amount_returns_invalid_for_nonexistent_form() {
@@ -477,6 +565,12 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'missing', $form_data ) );
 		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( '', $form_data ) );
 		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'price', 'not-an-array' ) );
+
+		// The slug must match exactly: `base-price` is a different field from `price`.
+		$this->assertSame( '50', Payment_Helper::get_submitted_value_by_slug( 'price', [ 'srfm-number-aaa-lbl-QmFzZQ-base-price' => '9' ] + $form_data ) );
+
+		// A slug submitted under two keys has no single value.
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'price', [ 'srfm-number-fake-lbl-UHJpY2U-price' => '1' ] + $form_data ) );
 	}
 
 	public function test_validate_amount_against_config() {
