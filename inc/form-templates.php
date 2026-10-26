@@ -193,6 +193,13 @@ class Form_Templates {
 	private static $preview_post_id = null;
 
 	/**
+	 * Metas of the in-memory preview form, in the post meta cache's shape.
+	 *
+	 * @var array<string, array<int, mixed>>
+	 */
+	private static $preview_meta = [];
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.13.0
@@ -2025,6 +2032,48 @@ class Form_Templates {
 		}
 		wp_cache_delete( self::$preview_post_id, 'posts' );
 		wp_cache_delete( self::$preview_post_id, 'post_meta' );
+		remove_filter( 'get_post_metadata', [ self::class, 'get_preview_meta' ], 10 );
+		foreach ( [ 'add_post_metadata', 'update_post_metadata', 'delete_post_metadata' ] as $hook ) {
+			remove_filter( $hook, [ self::class, 'drop_preview_meta_write' ], 10 );
+		}
+		self::$preview_meta = [];
+	}
+
+	/**
+	 * Serve the in-memory preview form's metas, so they survive its meta
+	 * cache being cleared. Other posts, and keys the form has no value for,
+	 * read as usual.
+	 *
+	 * @param mixed  $value     Short-circuit value; null to read as usual.
+	 * @param int    $object_id Post ID.
+	 * @param string $meta_key  Meta key; empty for all metas.
+	 * @since 2.13.0
+	 * @return mixed
+	 */
+	public static function get_preview_meta( $value, $object_id, $meta_key ) {
+		if ( null !== $value || self::$preview_post_id !== (int) $object_id ) {
+			return $value;
+		}
+		if ( '' === $meta_key ) {
+			return self::$preview_meta;
+		}
+		if ( ! isset( self::$preview_meta[ $meta_key ] ) ) {
+			return null;
+		}
+		// The preview form stores one value per key, so single or not, it is a one-item list.
+		return [ maybe_unserialize( Helper::get_string_value( self::$preview_meta[ $meta_key ][0] ?? '' ) ) ];
+	}
+
+	/**
+	 * Drop a meta write to the in-memory preview form; it is never saved.
+	 *
+	 * @param mixed $check     Short-circuit value; null to write as usual.
+	 * @param int   $object_id Post ID.
+	 * @since 2.13.0
+	 * @return mixed False for the preview form, otherwise $check.
+	 */
+	public static function drop_preview_meta_write( $check, $object_id ) {
+		return self::$preview_post_id !== (int) $object_id ? $check : false;
 	}
 
 	/**
@@ -3183,6 +3232,17 @@ class Form_Templates {
 			$meta[ $key ] = [ is_scalar( $value ) ? (string) $value : maybe_serialize( Helper::get_array_value( $value ) ) ];
 		}
 		wp_cache_set( self::get_preview_post_id(), $meta, 'post_meta' );
+
+		// Any meta write to a post clears its meta cache, which would leave the
+		// renderer reading this form's defaults. The preview renders inside
+		// `the_content` as the current post, where themes write their own meta
+		// for it (Divi 5 caches its canvases), so its metas are served from
+		// memory and writes to it are dropped: the form is never saved.
+		self::$preview_meta = $meta;
+		add_filter( 'get_post_metadata', [ self::class, 'get_preview_meta' ], 10, 3 );
+		foreach ( [ 'add_post_metadata', 'update_post_metadata', 'delete_post_metadata' ] as $hook ) {
+			add_filter( $hook, [ self::class, 'drop_preview_meta_write' ], 10, 2 );
+		}
 	}
 
 	/**

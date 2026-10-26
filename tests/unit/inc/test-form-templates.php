@@ -2688,6 +2688,34 @@ class Test_Form_Templates extends TestCase {
 		$property->setValue( null, null );
 	}
 
+	public function test_preview_form_metas_survive_a_meta_write_to_it() {
+		$template = Form_Templates::get_template( 'knowledge-quiz' );
+		$build    = new ReflectionMethod( Form_Templates::class, 'build' );
+		$build->setAccessible( true );
+		$built = $build->invoke( null, $template, [], 'preview' );
+		$seed  = new ReflectionMethod( Form_Templates::class, 'seed_preview_form' );
+		$seed->setAccessible( true );
+		$seed->invoke( null, $template, $built['content'], $built['metas'] );
+		$id = new ReflectionMethod( Form_Templates::class, 'get_preview_post_id' );
+		$id->setAccessible( true );
+		$preview_id = $id->invoke( null );
+
+		// A theme caching its own data on the current post (Divi 5 does, while
+		// the form renders inside the_content) clears that post's meta cache.
+		update_post_meta( $preview_id, '_theme_cache', 'x' );
+		wp_cache_delete( $preview_id, 'post_meta' );
+
+		$this->assertSame( $built['metas']['_srfm_forms_styling'], get_post_meta( $preview_id, '_srfm_forms_styling', true ) );
+		$this->assertSame( '', get_post_meta( $preview_id, '_theme_cache', true ) );
+
+		global $wpdb;
+		$this->assertSame( '0', $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE post_id = %d", $preview_id ) ) );
+
+		// Once the request ends, the post reads as usual again.
+		Form_Templates::forget_preview_form();
+		$this->assertSame( '', get_post_meta( $preview_id, '_srfm_forms_styling', true ) );
+	}
+
 	public function test_maybe_render_preview_needs_the_query_var_and_capability() {
 		$die = static function () {
 			return static function ( $message, $title, $args ) {
