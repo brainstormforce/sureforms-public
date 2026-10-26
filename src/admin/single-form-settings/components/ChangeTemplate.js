@@ -55,13 +55,44 @@ const usePortalRoot = () => {
 };
 
 /**
+ * Whether the editor's values (saved or not) set up something that maps the
+ * form's fields by slug. A value that cannot be read counts as set up, like
+ * Form_Templates::has_field_mappings().
+ *
+ * @param {Object}   meta The form's edited meta.
+ * @param {string[]} keys Meta keys from the server's `mapping_meta_keys`.
+ * @return {boolean} Whether any of them is set.
+ */
+const hasMappingsInMeta = ( meta, keys ) =>
+	( Array.isArray( keys ) ? keys : [] ).some( ( key ) => {
+		let value = meta?.[ key ];
+		if ( 'string' === typeof value ) {
+			if ( ! value.trim() ) {
+				return false;
+			}
+			try {
+				value = JSON.parse( value );
+			} catch {
+				return true;
+			}
+		}
+		if ( Array.isArray( value ) ) {
+			return value.length > 0;
+		}
+		return value && 'object' === typeof value
+			? Object.keys( value ).length > 0
+			: Boolean( value );
+	} );
+
+/**
  * "Change template" in the form editor header. Opens the same template
  * library as the Add New Form screen: live previews, and a full preview with
  * the Customize panel. Using a template replaces the open form's fields and
  * design with exactly what was previewed.
  *
  * Existing entries and integrations are keyed to the form's fields, so a form
- * that already has entries is offered a new form instead. Otherwise the user
+ * that has entries, or integrations, webhooks, user registration or post
+ * creation set up (saved or not), is offered a new form instead. Otherwise the user
  * confirms before their form is replaced, and the change can be undone. The
  * confirmation says what is replaced and lets the user keep the form's own
  * emails, thank-you message and button text.
@@ -76,7 +107,7 @@ const ChangeTemplate = () => {
 	const [ busy, setBusy ] = useState( false );
 	// The template waiting on the user:
 	// { template, style, content, styling, instantForm, settings, hasEntries,
-	//   replaceMessages }.
+	//   hasFieldMappings, replaceMessages }.
 	const [ pending, setPending ] = useState( null );
 	const portalRoot = usePortalRoot();
 	// The admin bar stays visible over the editor, so the screens start below it.
@@ -295,7 +326,11 @@ const ChangeTemplate = () => {
 				instantForm: response.instant_form || {},
 				settings: response.settings || {},
 				hasEntries: Boolean( response?.has_entries ),
-				hasFieldMappings: Boolean( response?.has_field_mappings ),
+				// The server reads the saved form; integrations added in this
+				// editor session are only in the edited meta until it is saved.
+				hasFieldMappings:
+					Boolean( response?.has_field_mappings ) ||
+					hasMappingsInMeta( meta, response?.mapping_meta_keys ),
 				// The template's context (a quote form's emails for a quote
 				// form) is what most swaps want, so this starts ticked.
 				replaceMessages: true,
@@ -366,7 +401,7 @@ const ChangeTemplate = () => {
 										'sureforms'
 									  )
 									: __(
-										'This form has integrations or webhooks connected to its fields. Replacing its fields would leave them sending empty values.',
+										'This form has integrations, webhooks, user registration or post creation connected to its fields. Replacing its fields would leave them with empty values.',
 										'sureforms'
 									  ) }
 							</Notice>
@@ -470,7 +505,7 @@ const ChangeTemplate = () => {
 			>
 				<p className="m-0 text-sm text-text-secondary">
 					{ __(
-						'Preview a template and customize its design. Using it replaces this form\'s fields and design, and you choose whether its emails, thank-you message and button text are replaced too.',
+						'Preview a template and customize its design. Using it replaces this form\'s fields and design, and you choose whether its emails, thank-you message and button text are replaced too. A form with entries or connected integrations gets a new form instead.',
 						'sureforms'
 					) }
 				</p>

@@ -931,8 +931,8 @@ class Analytics {
 	/**
 	 * Track forms started from a prebuilt template.
 	 *
-	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
-	 * as the `form_template_usage` event, so template popularity and how often
+	 * Keeps cumulative counters in FORM_TEMPLATE_USAGE_OPTION and re-sends the
+	 * latest totals as the `form_template_usage` event, so template popularity and how often
 	 * templates are swapped inside the editor can be read from the warehouse.
 	 * Nothing is kept or queued unless the site shares usage data.
 	 *
@@ -1007,8 +1007,8 @@ class Analytics {
 	 * library being opened, a template previewed, a locked Premium template
 	 * previewed, or its "Upgrade to unlock" button clicked.
 	 *
-	 * Adds to the running totals in srfm_options and re-sends them with the
-	 * `form_template_usage` event. Locked previews and upgrade clicks are also
+	 * Adds to the running totals in FORM_TEMPLATE_USAGE_OPTION and re-sends them
+	 * with the `form_template_usage` event. Locked previews and upgrade clicks are also
 	 * counted per template.
 	 *
 	 * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
@@ -1153,8 +1153,8 @@ class Analytics {
 	 * Count a step of the Add New Form start funnel: the start screen shown,
 	 * a choice made on it (with the position its card was shown in, or `link`
 	 * for the scratch link), or a step inside a path while a choice is in
-	 * play. Adds to the running totals in srfm_options and re-sends them with
-	 * the `form_start_funnel` event.
+	 * play. Adds to the running totals in FORM_START_FUNNEL_OPTION and re-sends
+	 * them with the `form_start_funnel` event.
 	 *
 	 * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
 	 * @param string $choice   Choice, required for `choose`.
@@ -1348,8 +1348,8 @@ class Analytics {
 	 * Track demand for templates that do not exist yet: what people request
 	 * from the template library, and how often a search finds nothing.
 	 *
-	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
-	 * as the `form_template_demand` event, so the most wanted templates can be
+	 * Keeps cumulative counters in FORM_TEMPLATE_DEMAND_OPTION and re-sends the
+	 * latest totals as the `form_template_demand` event, so the most wanted templates can be
 	 * read from the warehouse. Only a request the user sends on purpose carries
 	 * its text (already cleaned by Form_Templates::clean_demand_query()); a
 	 * search with no results is only counted, never its text. Nothing is kept

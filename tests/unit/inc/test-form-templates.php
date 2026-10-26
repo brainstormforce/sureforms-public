@@ -2379,6 +2379,42 @@ class Test_Form_Templates extends TestCase {
 		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ) );
 	}
 
+	public function test_has_field_mappings_counts_pro_registration_and_post_feeds() {
+		$form_id = wp_insert_post( [ 'post_type' => SRFM_FORMS_POST_TYPE, 'post_status' => 'publish', 'post_title' => 'Feeds' ] );
+
+		update_post_meta( $form_id, '_srfm_user_registration_settings', wp_json_encode( [ [ 'username' => '{form:email}' ] ] ) );
+		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ), 'User registration maps fields by slug.' );
+		delete_post_meta( $form_id, '_srfm_user_registration_settings' );
+
+		update_post_meta( $form_id, '_srfm_raw_cpt_meta', wp_json_encode( [ [ 'postTitle' => '{form:name}' ] ] ) );
+		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ), 'Post creation maps fields by slug.' );
+		delete_post_meta( $form_id, '_srfm_raw_cpt_meta' );
+
+		// An add-on can add its own key.
+		update_post_meta( $form_id, '_addon_feed', wp_json_encode( [ [ 'id' => 1 ] ] ) );
+		$this->assertFalse( Form_Templates::has_field_mappings( $form_id ) );
+		$add = static fn( $keys ) => array_merge( $keys, [ '_addon_feed' ] );
+		add_filter( 'srfm_field_mapping_meta_keys', $add );
+		$this->assertTrue( Form_Templates::has_field_mappings( $form_id ) );
+		remove_filter( 'srfm_field_mapping_meta_keys', $add );
+		delete_post_meta( $form_id, '_addon_feed' );
+	}
+
+	public function test_get_field_mapping_meta_keys() {
+		$this->assertSame( Form_Templates::FIELD_MAPPING_META_KEYS, Form_Templates::get_field_mapping_meta_keys() );
+
+		// A filter can add keys but never remove the built-in ones, nor break the list.
+		foreach ( [ static fn() => [], static fn() => 'oops', static fn() => [ 5, '_addon_feed' ] ] as $filter ) {
+			add_filter( 'srfm_field_mapping_meta_keys', $filter );
+			$keys = Form_Templates::get_field_mapping_meta_keys();
+			remove_filter( 'srfm_field_mapping_meta_keys', $filter );
+			foreach ( Form_Templates::FIELD_MAPPING_META_KEYS as $key ) {
+				$this->assertContains( $key, $keys );
+			}
+			$this->assertSame( array_values( array_filter( $keys, 'is_string' ) ), $keys );
+		}
+	}
+
 	public function test_rest_get_template_content_reports_field_mappings() {
 		$this->login_admin();
 		$post_id = Form_Templates::create_form_from_template( 'contact-us' );
@@ -2392,6 +2428,7 @@ class Test_Form_Templates extends TestCase {
 		$data = Form_Templates::get_instance()->rest_get_template_content( $request )->get_data();
 		$this->assertFalse( $data['has_entries'] );
 		$this->assertTrue( $data['has_field_mappings'], 'A form without entries but with a webhook is not swapped in place.' );
+		$this->assertSame( Form_Templates::get_field_mapping_meta_keys(), $data['mapping_meta_keys'], 'The editor checks its unsaved values for the same keys.' );
 	}
 
 	public function test_autoresponder_signoff_is_editable() {
