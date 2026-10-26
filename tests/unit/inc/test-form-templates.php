@@ -2716,6 +2716,44 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( '', get_post_meta( $preview_id, '_srfm_forms_styling', true ) );
 	}
 
+	public function test_get_preview_meta() {
+		$id   = new ReflectionProperty( Form_Templates::class, 'preview_post_id' );
+		$meta = new ReflectionProperty( Form_Templates::class, 'preview_meta' );
+		$id->setAccessible( true );
+		$meta->setAccessible( true );
+		$id->setValue( null, 2147000002 );
+		$meta->setValue( null, [ '_srfm_forms_styling' => [ maybe_serialize( [ 'primary_color' => '#111111' ] ) ] ] );
+
+		// A seeded key unserializes into a one-item list.
+		$this->assertSame( [ [ 'primary_color' => '#111111' ] ], Form_Templates::get_preview_meta( null, 2147000002, '_srfm_forms_styling' ) );
+		// No key: every seeded meta, in the cache's raw shape.
+		$this->assertSame( $meta->getValue(), Form_Templates::get_preview_meta( null, 2147000002, '' ) );
+		// A key the form has no value for, another post, or an earlier filter's value: untouched.
+		$this->assertNull( Form_Templates::get_preview_meta( null, 2147000002, '_srfm_missing' ) );
+		$this->assertNull( Form_Templates::get_preview_meta( null, 1, '_srfm_forms_styling' ) );
+		$this->assertSame( [ 'other' ], Form_Templates::get_preview_meta( [ 'other' ], 2147000002, '_srfm_forms_styling' ) );
+
+		Form_Templates::forget_preview_form();
+		$id->setValue( null, null );
+	}
+
+	public function test_drop_preview_meta_write() {
+		$id = new ReflectionProperty( Form_Templates::class, 'preview_post_id' );
+		$id->setAccessible( true );
+
+		// Nothing previewed: every write goes through.
+		$id->setValue( null, null );
+		$this->assertNull( Form_Templates::drop_preview_meta_write( null, 2147000003 ) );
+
+		$id->setValue( null, 2147000003 );
+		$this->assertFalse( Form_Templates::drop_preview_meta_write( null, 2147000003 ) );
+		$this->assertFalse( Form_Templates::drop_preview_meta_write( null, '2147000003' ) );
+		$this->assertNull( Form_Templates::drop_preview_meta_write( null, 1 ) );
+		$this->assertTrue( Form_Templates::drop_preview_meta_write( true, 1 ) );
+
+		$id->setValue( null, null );
+	}
+
 	public function test_maybe_render_preview_needs_the_query_var_and_capability() {
 		$die = static function () {
 			return static function ( $message, $title, $args ) {
