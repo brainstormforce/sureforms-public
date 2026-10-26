@@ -727,6 +727,28 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( '#FFFFFF', $styling['bg_color'] );
 	}
 
+	/**
+	 * Every style value the template owns goes to the editor, also when it
+	 * equals the default, so the form's old value can't survive the swap.
+	 * Units travel with their numbers, or padding 28 renders as 28em on a form
+	 * that used em. Unrelated settings (a background image) stay out.
+	 */
+	public function test_rest_get_template_content_sends_template_owned_style_values_that_equal_the_default() {
+		$this->login_admin();
+
+		$response = rest_do_request( new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/contact-us' ) );
+		$this->assertSame( 200, $response->get_status() );
+		$styling  = $response->get_data()['styling'];
+		$defaults = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'];
+
+		foreach ( [ 'field_spacing', 'text_color_on_primary', 'form_padding_unit', 'form_border_radius_unit', 'instant_form_padding_unit', 'instant_form_border_radius_unit' ] as $key ) {
+			$this->assertArrayHasKey( $key, $styling, "{$key} belongs to the template's look" );
+		}
+		$this->assertSame( $defaults['form_padding_unit'], $styling['form_padding_unit'] );
+		$this->assertSame( 'medium', $styling['field_spacing'] );
+		$this->assertArrayNotHasKey( 'bg_image', $styling, 'settings the template does not set stay as the form has them' );
+	}
+
 	public function test_clean_demand_query_keeps_short_descriptions_only() {
 		$this->assertSame( 'gym membership', Form_Templates::clean_demand_query( '  Gym   <b>Membership</b> ' ) );
 		$this->assertSame( '', Form_Templates::clean_demand_query( 'a' ) );
@@ -2446,6 +2468,30 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'jane@example.com', $answers[1]['sample'] );
 		$this->assertFalse( $answers[1]['required'] );
 		$this->assertSame( 'Sales', $answers[2]['sample'], 'Choices use their first option.' );
+	}
+
+	/**
+	 * An intro erased in the preview stays erased on the created form, so the
+	 * owner email matches what was previewed. The subject cannot be cleared,
+	 * since an email needs one.
+	 */
+	public function test_apply_messages_honours_a_cleared_intro() {
+		$this->turn_on_spam_protection();
+		$template = Form_Templates::get_template( 'contact-us' );
+		$this->assertNotEmpty( $template['email_intro'], 'Precondition: the template has an intro.' );
+
+		$messages = Form_Templates::sanitize_messages(
+			[
+				'email_subject' => '',
+				'email_intro'   => '',
+			]
+		);
+		$applied = Form_Templates::apply_messages( $template, $messages );
+		$emails  = Form_Templates::build_settings_metas( $applied )['_srfm_email_notification'];
+
+		$this->assertStringNotContainsString( esc_html( $template['email_intro'] ), $emails[0]['email_body'], 'the cleared intro must not come back' );
+		$this->assertStringContainsString( '{all_data}', $emails[0]['email_body'], 'without an intro the answers stay' );
+		$this->assertSame( $template['email_subject'], $applied['email_subject'], 'an empty subject keeps the template subject' );
 	}
 
 	public function test_apply_messages_can_leave_the_answers_out_of_the_owner_email() {

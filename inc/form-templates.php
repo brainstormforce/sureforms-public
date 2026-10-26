@@ -1066,10 +1066,13 @@ class Form_Templates {
 		if ( isset( $messages['email_all_data'] ) ) {
 			$template['email_all_data'] = (bool) $messages['email_all_data'];
 		}
-		foreach ( [ 'email_subject', 'email_intro' ] as $key ) {
-			if ( isset( $messages[ $key ] ) && '' !== $messages[ $key ] ) {
-				$template[ $key ] = $messages[ $key ];
-			}
+		// An emptied subject keeps the template's, since an email needs one. An
+		// emptied intro stays empty, as the preview showed it.
+		if ( isset( $messages['email_subject'] ) && '' !== $messages['email_subject'] ) {
+			$template['email_subject'] = $messages['email_subject'];
+		}
+		if ( isset( $messages['email_intro'] ) ) {
+			$template['email_intro'] = $messages['email_intro'];
 		}
 		if ( ! empty( $messages['autoresponder'] ) && ! empty( $template['autoresponder'] ) ) {
 			$auto = Helper::get_array_value( $messages['autoresponder'] );
@@ -1858,16 +1861,10 @@ class Form_Templates {
 				'title'        => self::get_form_title( $template ),
 				'content'      => $built['content'],
 				'has_entries'  => $has_entries,
-				// Applied over the open form's own settings in the editor.
-				// The background always goes along, also when it matches the
-				// default, so a form that had a gradient or image doesn't keep it.
-				'styling'      => array_merge(
-					self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
-					[
-						'bg_type'  => $style_metas['_srfm_forms_styling']['bg_type'],
-						'bg_color' => $style_metas['_srfm_forms_styling']['bg_color'],
-					]
-				),
+				// Applied over the open form's own settings in the editor: every
+				// value the template owns, also when it equals the default, so
+				// none of the form's old values survive the swap.
+				'styling'      => self::template_owned_styling( $style_metas['_srfm_forms_styling'] ),
 				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
 				// Button text, emails, thank-you message and steps the template sets.
 				// The editor only applies the get_message_meta_keys() ones when the
@@ -3100,19 +3097,24 @@ class Form_Templates {
 	}
 
 	/**
-	 * The entries of `$values` that differ from `$defaults`, so applying a
-	 * template in the editor keeps the form's other style choices.
+	 * The styling values a template sets (see build_style_metas()), so applying
+	 * a template in the editor keeps the form's other style choices.
 	 *
-	 * @param array<string, mixed> $values   Values.
-	 * @param array<string, mixed> $defaults Defaults.
+	 * Padding and corners go with their unit and link keys: the numbers mean
+	 * nothing without them. The background type and color go too, so a form
+	 * that had a gradient or image doesn't keep it.
+	 *
+	 * @param array<string, mixed> $styling From build_style_metas().
 	 * @since 2.13.0
 	 * @return array<string, mixed>
 	 */
-	private static function changed_keys( $values, $defaults ) {
+	private static function template_owned_styling( $styling ) {
+		$owned = [ 'primary_color', 'text_color', 'text_color_on_primary', 'field_spacing', 'submit_button_alignment', 'bg_type', 'bg_color' ];
+
 		return array_filter(
-			$values,
-			static fn( $value, $key ) => ! array_key_exists( $key, $defaults ) || $defaults[ $key ] !== $value,
-			ARRAY_FILTER_USE_BOTH
+			$styling,
+			static fn( $key ) => in_array( $key, $owned, true ) || 1 === preg_match( '/^(instant_)?form_(padding|border_radius)_/', $key ),
+			ARRAY_FILTER_USE_KEY
 		);
 	}
 
