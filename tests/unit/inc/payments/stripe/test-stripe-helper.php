@@ -609,7 +609,10 @@ class Test_Stripe_Helper extends TestCase {
 		Stripe_Helper::update_all_stripe_settings( Stripe_Helper::get_default_stripe_settings() );
 	}
 
-	public function test_wallets_follow_the_dashboard_default_configuration() {
+	/**
+	 * Wallets follow the account's default payment method configuration.
+	 */
+	public function test_get_wallet_settings() {
 		$this->stub_wallet_api(
 			[
 				'data' => [
@@ -631,7 +634,10 @@ class Test_Stripe_Helper extends TestCase {
 		$this->reset_wallet_stub();
 	}
 
-	public function test_wallets_are_cached_until_cleared() {
+	/**
+	 * The lookup is cached until the cache is cleared.
+	 */
+	public function test_clear_wallet_settings_cache() {
 		$calls = $this->stub_wallet_api( [ 'data' => [ $this->wallet_configuration( 'off', 'off' ) ] ] );
 
 		Stripe_Helper::get_wallet_settings();
