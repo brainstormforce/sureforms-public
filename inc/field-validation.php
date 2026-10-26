@@ -393,10 +393,11 @@ class Field_Validation {
 	 * here too; the allowlist already contains repeater children because the collector
 	 * recurses into `innerBlocks`.
 	 *
-	 * SECURITY INVARIANT — a slug and a block_id each name exactly one field, so each
-	 * may reach the submission under at most one key, at the top level and within each
-	 * repeater row the walk keeps. Any key whose slug or block_id is repeated is dropped:
-	 * see drop_repeated_field_keys().
+	 * SECURITY INVARIANT — every kept key names exactly one defined field (its block_id
+	 * and slug belong together, see field_key_belongs_to_form()), and each slug and
+	 * block_id reaches the submission under at most one key, at the top level and within
+	 * each repeater row the walk keeps. Any key whose slug or block_id is repeated is
+	 * dropped: see drop_repeated_field_keys().
 	 *
 	 * @param array<mixed> $form_data The submitted form data (sanitized).
 	 * @param int|mixed    $form_id   The ID of the form being submitted.
@@ -408,17 +409,16 @@ class Field_Validation {
 			return [];
 		}
 
-		$form_data = self::drop_repeated_field_keys( $form_data );
-
 		$form_id_int     = Helper::get_integer_value( $form_id );
 		$known_block_ids = self::get_known_field_block_ids( $form_id_int );
 		$known_slugs     = self::get_known_field_slugs( $form_id_int );
+		$pairs           = $form_id_int > 0 ? self::get_field_identifiers( $form_id_int )['pairs'] : [];
 
 		// Fail open. The sets are empty only when the form's blocks could not be derived
 		// (no/empty post_content, a parse failure, or a structure this walk does not
 		// recognise). Enforcing on an empty set would strip every field.
 		if ( empty( $known_block_ids ) && empty( $known_slugs ) ) {
-			return $form_data;
+			return self::drop_repeated_field_keys( $form_data );
 		}
 
 		foreach ( $form_data as $key => $value ) {
@@ -431,18 +431,20 @@ class Field_Validation {
 			// submitted and the current post_content; the slug does not, so requiring only
 			// a block_id match silently deleted real submissions (#1517643). A key with
 			// neither a known block_id nor a known slug is genuinely foreign and dropped.
-			if ( ! self::field_key_belongs_to_form( $key, $known_block_ids, $known_slugs ) ) {
+			if ( ! self::field_key_belongs_to_form( $key, $known_block_ids, $known_slugs, $pairs ) ) {
 				unset( $form_data[ $key ] );
 				continue;
 			}
 
 			// A known key whose value is an array is a repeater: walk its rows.
 			if ( is_array( $value ) ) {
-				$form_data[ $key ] = self::strip_unknown_repeater_keys( $value, $known_block_ids, $known_slugs );
+				$form_data[ $key ] = self::strip_unknown_repeater_keys( $value, $known_block_ids, $known_slugs, $pairs );
 			}
 		}
 
-		return $form_data;
+		// After the allowlist, so a forged key is removed on its own and cannot take
+		// the real field down with it as a "repeat".
+		return self::drop_repeated_field_keys( $form_data );
 	}
 
 	/**
@@ -653,7 +655,7 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id, already normalised by the callers.
 	 * @since 2.12.8
-	 * @return array{ids:array<string,true>,slugs:array<string,true>,unsubmittable:array<int,array<string,string>>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>}
 	 */
 	private static function get_field_identifiers( $form_id ) {
 		static $cache = [];
@@ -670,43 +672,57 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id.
 	 * @since 2.12.7
-	 * @return array{ids:array<string,true>,slugs:array<string,true>,unsubmittable:array<int,array<string,string>>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>}
 	 */
 	private static function walk_field_identifiers( $form_id ) {
 		$ids           = [];
 		$slugs         = [];
+		$pairs         = [];
 		$unsubmittable = [];
 		$post          = get_post( $form_id );
 
 		if ( $post instanceof \WP_Post && ! empty( $post->post_content ) && function_exists( 'parse_blocks' ) ) {
 			$visited = [];
-			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited, 0, $unsubmittable );
+			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited, 0, $unsubmittable, $pairs );
 		}
 
 		return [
 			'ids'           => $ids,
 			'slugs'         => $slugs,
+			'pairs'         => $pairs,
 			'unsubmittable' => $unsubmittable,
 		];
 	}
 
 	/**
-	 * Whether a submitted field key belongs to the form, by block_id or by slug.
+	 * Whether a submitted field key names one field the form defines.
 	 *
-	 * @param string             $key             Submitted field key.
-	 * @param array<string,true> $known_block_ids Allowlisted block ids.
-	 * @param array<string,true> $known_slugs     Allowlisted field slugs.
+	 * SECURITY INVARIANT — a kept key resolves to exactly one defined field:
+	 *  - a known block_id must carry that same field's slug (from `$pairs`), so a known
+	 *    block_id cannot be reused under another field's slug;
+	 *  - an unknown block_id is kept only by its slug (block_id drift under full-page
+	 *    caching), and only when the key holds a single `-lbl-`, so every consumer
+	 *    reads the same slug from it.
+	 * A block_id with no recorded slug (added through `srfm_known_field_block_ids`, or a
+	 * legacy block without one) is kept on its block_id, again only with a single `-lbl-`.
+	 *
+	 * @param string               $key             Submitted field key.
+	 * @param array<string,true>   $known_block_ids Allowlisted block ids.
+	 * @param array<string,true>   $known_slugs     Allowlisted field slugs.
+	 * @param array<string,string> $pairs           Block id => that field's own slug.
 	 * @since 2.12.7
 	 * @return bool
 	 */
-	private static function field_key_belongs_to_form( $key, $known_block_ids, $known_slugs ) {
-		if ( isset( $known_block_ids[ Helper::get_block_id_from_key( $key ) ] ) ) {
-			return true;
+	private static function field_key_belongs_to_form( $key, $known_block_ids, $known_slugs, $pairs = [] ) {
+		$block_id   = Helper::get_block_id_from_key( $key );
+		$slug       = self::get_slug_from_key( $key );
+		$single_lbl = 1 === substr_count( $key, '-lbl-' );
+
+		if ( isset( $known_block_ids[ $block_id ] ) ) {
+			return isset( $pairs[ $block_id ] ) ? $pairs[ $block_id ] === $slug : $single_lbl;
 		}
 
-		$slug = self::get_slug_from_key( $key );
-
-		return '' !== $slug && isset( $known_slugs[ $slug ] );
+		return $single_lbl && '' !== $slug && isset( $known_slugs[ $slug ] );
 	}
 
 	/**
@@ -780,13 +796,14 @@ class Field_Validation {
 	/**
 	 * Remove unknown child field keys from repeater rows.
 	 *
-	 * @param array<mixed>       $rows            The repeater's submitted rows.
-	 * @param array<string,true> $known_block_ids Map of block ids belonging to the form.
-	 * @param array<string,true> $known_slugs     Map of field slugs belonging to the form.
+	 * @param array<mixed>         $rows            The repeater's submitted rows.
+	 * @param array<string,true>   $known_block_ids Map of block ids belonging to the form.
+	 * @param array<string,true>   $known_slugs     Map of field slugs belonging to the form.
+	 * @param array<string,string> $pairs         Block id => that field's own slug.
 	 * @since 2.12.3
 	 * @return array<mixed> The rows with unknown child keys removed.
 	 */
-	private static function strip_unknown_repeater_keys( $rows, $known_block_ids, $known_slugs = [] ) {
+	private static function strip_unknown_repeater_keys( $rows, $known_block_ids, $known_slugs = [], $pairs = [] ) {
 		foreach ( $rows as $index => $row ) {
 			if ( ! is_array( $row ) ) {
 				continue;
@@ -797,7 +814,7 @@ class Field_Validation {
 					continue;
 				}
 
-				if ( ! self::field_key_belongs_to_form( $child_key, $known_block_ids, $known_slugs ) ) {
+				if ( ! self::field_key_belongs_to_form( $child_key, $known_block_ids, $known_slugs, $pairs ) ) {
 					unset( $row[ $child_key ] );
 				}
 			}
@@ -819,10 +836,12 @@ class Field_Validation {
 	 * @param array<int,array<string,string>> $unsubmittable Accumulator of the checkbox/GDPR
 	 *                                                       fields a browser cannot submit
 	 *                                                       when unticked (by reference).
+	 * @param array<string,string>            $pairs   Accumulator of block id => that field's
+	 *                                                 own slug (by reference).
 	 * @since 2.12.3
 	 * @return void
 	 */
-	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0, &$unsubmittable = [] ) {
+	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0, &$unsubmittable = [], &$pairs = [] ) {
 		if ( ! is_array( $blocks ) || $depth > 50 ) {
 			return;
 		}
@@ -851,6 +870,11 @@ class Field_Validation {
 				// slug match keeps a legitimately-submitted field whose block_id drifted.
 				if ( ! empty( $attrs['slug'] ) && is_string( $attrs['slug'] ) ) {
 					$slugs[ $attrs['slug'] ] = true;
+					// Which slug this block_id belongs to, so a key cannot pair a known
+					// block_id with another field's slug.
+					if ( ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
+						$pairs[ $attrs['block_id'] ] = $attrs['slug'];
+					}
 				}
 
 				// A browser posts nothing for an unticked checkbox, so these fields need
@@ -876,13 +900,13 @@ class Field_Validation {
 					$visited[ $ref ] = true;
 					$ref_post        = get_post( $ref );
 					if ( $ref_post instanceof \WP_Post && 'wp_block' === $ref_post->post_type && '' !== $ref_post->post_content ) {
-						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1, $unsubmittable );
+						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs );
 					}
 				}
 			}
 
 			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1, $unsubmittable );
+				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs );
 			}
 		}
 	}
