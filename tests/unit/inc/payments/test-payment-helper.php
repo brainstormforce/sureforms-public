@@ -466,6 +466,39 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'] );
 	}
 
+	/**
+	 * Keys that read as the amount source in one parser and as something else in another
+	 * (a second `-lbl-`, `_` read as a space, a block_id after a later `-lbl-`) must not
+	 * survive the allowlist next to the real key, so the priced value is the stored one.
+	 */
+	public function test_strip_unknown_field_keys_rejects_keys_that_parse_as_the_amount_source() {
+		$content = '<!-- wp:srfm/dropdown {"block_id":"planreal","slug":"my_plan","options":[{"label":"Basic","icon":"","value":"1"},{"label":"Premium","icon":"","value":"100"}]} /-->'
+			. '<!-- wp:srfm/input {"block_id":"opt01","slug":"notes"} /-->'
+			. '<!-- wp:srfm/payment {"block_id":"pay02","slug":"srfm-payment","paymentType":"one-time","amountType":"variable","minimumAmount":1,"variableAmountField":"my_plan"} /-->';
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => $content ] );
+		\SRFM\Inc\Field_Validation::add_block_config( parse_blocks( $content ), $form_id );
+
+		$real = 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan';
+		$sets = [
+			'second -lbl- under an unknown block_id'  => [ 'srfm-dropdown-zz-lbl-UGxhbg-my_plan' => 'Basic', 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ],
+			'second -lbl- under an optional field'    => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ],
+			'underscore read as a space'              => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-my plan' => 'Premium' ],
+			'block_id after a second -lbl-'           => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-planreal-lbl-x' => 'Premium' ],
+		];
+
+		foreach ( $sets as $name => $form_data ) {
+			$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( $form_data, $form_id );
+			foreach ( array_keys( $form_data ) as $key ) {
+				$this->assertArrayNotHasKey( $key, $stripped, "$name: $key is dropped" );
+			}
+			$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'], "$name: \$1 is rejected" );
+		}
+
+		// The genuine selection alone still prices normally.
+		$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( [ $real => 'Premium' ], $form_id );
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 100.0 )['valid'] );
+	}
+
 	// --- validate_payment_amount ---
 
 	public function test_validate_payment_amount_returns_invalid_for_nonexistent_form() {

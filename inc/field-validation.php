@@ -705,8 +705,9 @@ class Field_Validation {
 	 * The form renders one input name per field, so a slug or block_id that arrives under
 	 * two keys did not come from the rendered form. No single key can be trusted over
 	 * another, so all of them are dropped; a required field then fails validation instead
-	 * of being resolved to an arbitrary copy. Empty slugs and block_ids identify nothing
-	 * and are not grouped.
+	 * of being resolved to an arbitrary copy. Keys are compared under every reading a
+	 * consumer applies (see get_field_key_identities()), so two keys that any consumer
+	 * resolves to the same field are both dropped.
 	 *
 	 * @param array<mixed> $fields Submitted fields at one level (top-level or a repeater row).
 	 * @since 2.12.10
@@ -719,25 +720,51 @@ class Field_Validation {
 				continue;
 			}
 
-			$slug     = self::get_slug_from_key( $key );
-			$block_id = Helper::get_block_id_from_key( $key );
-			if ( '' !== $slug ) {
-				$groups[ 'slug:' . $slug ][] = $key;
-			}
-			if ( '' !== $block_id ) {
-				$groups[ 'id:' . $block_id ][] = $key;
+			foreach ( self::get_field_key_identities( $key ) as $identity ) {
+				$groups[ $identity ][ $key ] = true;
 			}
 		}
 
 		foreach ( $groups as $keys ) {
 			if ( count( $keys ) > 1 ) {
-				foreach ( $keys as $key ) {
+				foreach ( array_keys( $keys ) as $key ) {
 					unset( $fields[ $key ] );
 				}
 			}
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Every slug and block_id a submitted field key can be read as.
+	 *
+	 * Consumers read keys differently: get_slug_from_key() takes everything after the
+	 * first `-lbl-`, while prepare_submission_data(), map_slug_to_submission_data(), the
+	 * `{form:slug}` smart tag and SureForms Pro's repeater stop at the next `-lbl-`;
+	 * SureForms Pro's calculation finds a field by `-<block_id>-lbl-` anywhere in the key;
+	 * and process_form_fields() stores keys with `_` read as a space. One field key must
+	 * resolve to one field in all of them, so it is identified under each reading.
+	 * Empty slugs and block_ids identify nothing and are left out.
+	 *
+	 * @param string $key Submitted field key containing `-lbl-`.
+	 * @since 2.12.10
+	 * @return array<int, string> Identities, prefixed `slug:` or `id:`.
+	 */
+	private static function get_field_key_identities( $key ) {
+		$key      = str_replace( '_', ' ', $key );
+		$segments = explode( '-lbl-', $key );
+
+		$identities = [
+			'slug:' . self::get_slug_from_key( $key ),
+			'slug:' . implode( '-', array_slice( explode( '-', $segments[1] ?? '' ), 1 ) ),
+		];
+		foreach ( array_slice( $segments, 0, -1 ) as $segment ) {
+			$tokens       = explode( '-', $segment );
+			$identities[] = 'id:' . end( $tokens );
+		}
+
+		return array_values( array_diff( array_unique( $identities ), [ 'slug:', 'id:' ] ) );
 	}
 
 	/**

@@ -774,6 +774,34 @@ class Test_Field_Validation extends TestCase {
 	}
 
 	/**
+	 * A real field is grouped under every reading of its own key, never against itself,
+	 * so a slug containing `-lbl-` or `_` is kept when no other key shares a reading.
+	 */
+	public function test_strip_unknown_field_keys_keeps_a_lone_field_with_lbl_or_underscore_in_its_slug() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Lbl Slug Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"aaa11111","slug":"lbl-value"} /--><!-- wp:srfm/input {"block_id":"bbb22222","slug":"my_plan"} /--><!-- wp:srfm/input {"block_id":"ccc33333","slug":"x-lbl-y"} /-->',
+			]
+		);
+
+		$form_data = [
+			'srfm-input-aaa11111-lbl-TGJs-lbl-value' => 'a',
+			'srfm-input-bbb22222-lbl-UGxhbg-my_plan'  => 'b',
+			'srfm-input-ccc33333-lbl-WA-x-lbl-y'      => 'c',
+		];
+		$stripped  = Field_Validation::strip_unknown_field_keys( $form_data, $form_id );
+
+		foreach ( $form_data as $key => $value ) {
+			$this->assertSame( $value, $stripped[ $key ] ?? null, "$key is kept" );
+		}
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * The slug fallback must not weaken the anti-injection guard: a key with neither a
 	 * known block_id nor a known slug is still foreign and dropped.
 	 */
