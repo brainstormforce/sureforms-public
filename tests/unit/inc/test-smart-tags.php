@@ -32,6 +32,8 @@ class Test_Smart_Tags extends TestCase {
 		$this->smart_tags    = new Smart_Tags();
 		$this->saved_request = [
 			'query_string' => $_SERVER['QUERY_STRING'] ?? null,
+			'request_uri'  => $_SERVER['REQUEST_URI'] ?? null,
+			'request'      => $_REQUEST,
 			'cookie'       => $_COOKIE,
 			'post'         => $GLOBALS['post'] ?? null,
 		];
@@ -43,6 +45,12 @@ class Test_Smart_Tags extends TestCase {
 		} else {
 			$_SERVER['QUERY_STRING'] = $this->saved_request['query_string'];
 		}
+		if ( null === $this->saved_request['request_uri'] ) {
+			unset( $_SERVER['REQUEST_URI'] );
+		} else {
+			$_SERVER['REQUEST_URI'] = $this->saved_request['request_uri'];
+		}
+		$_REQUEST        = $this->saved_request['request'];
 		$_COOKIE         = $this->saved_request['cookie'];
 		$GLOBALS['post'] = $this->saved_request['post'];
 		$this->set_rendering_form_id( 0 );
@@ -611,5 +619,125 @@ class Test_Smart_Tags extends TestCase {
 		$_SERVER['QUERY_STRING'] = '%E0%A4%A8%E0%A4%BE%E0%A4%AE=Asha';
 
 		$this->assertSame( 'Asha', Smart_Tags::parse_request_param( '{get_input:नाम}' ) );
+	}
+
+	/**
+	 * Visitor-controlled smart tags that resolve while a form renders.
+	 *
+	 * Each case sets the request state the tag reads, with a shortcode in it.
+	 * {current_page_url} is percent-encoded by esc_url() today; it is kept here so
+	 * the guarantee does not rest on that alone.
+	 *
+	 * @return array<string, array{0: string, 1: callable}>
+	 */
+	public function visitor_controlled_tag_provider() {
+		return [
+			'get_input'        => [
+				'{get_input:msg}',
+				static function () {
+					$_SERVER['QUERY_STRING'] = 'msg=AA[srfm_probe]BB';
+				},
+			],
+			'get_cookie'       => [
+				'{get_cookie:msg}',
+				static function () {
+					$_COOKIE['msg'] = 'AA[srfm_probe]BB';
+				},
+			],
+			'current_page_url' => [
+				'{current_page_url}',
+				static function () {
+					$_SERVER['REQUEST_URI'] = '/contact/?x=[srfm_probe]';
+				},
+			],
+			'http_referer'     => [
+				'{http_referer}',
+				static function () {
+					$_SERVER['REQUEST_URI']       = '/contact/';
+					$_REQUEST['_wp_http_referer'] = '/elsewhere/?x=[srfm_probe]';
+				},
+			],
+		];
+	}
+
+	/**
+	 * A shortcode carried in by the visitor is never run by the page render.
+	 *
+	 * Form content renders inside the_content, which runs do_shortcode() after
+	 * the blocks, so a resolved value has to reach it with its brackets encoded.
+	 *
+	 * @dataProvider visitor_controlled_tag_provider
+	 *
+	 * @param string   $tag       Smart tag.
+	 * @param callable $set_state Sets the request state the tag reads.
+	 */
+	public function test_render_form_does_not_let_a_visitor_value_run_a_shortcode( $tag, $set_state ) {
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->make_current_post( 'page' );
+		$this->set_rendering_form_id( $form_id );
+		$set_state();
+		add_shortcode( 'srfm_probe', static fn() => 'EXECUTED' );
+
+		$html     = '<p>' . $tag . '</p>';
+		$rendered = $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) );
+		$output   = do_shortcode( $rendered );
+		remove_shortcode( 'srfm_probe' );
+
+		$this->assertStringNotContainsString( '[srfm_probe]', $rendered, 'the resolved value carries no shortcode brackets' );
+		$this->assertStringNotContainsString( 'EXECUTED', $output );
+	}
+
+	/**
+	 * End to end: a form embedded on a page with a {get_input:*} field default.
+	 *
+	 * The page's the_content renders the srfm/form block and then runs
+	 * do_shortcode() over the whole page, form markup included.
+	 */
+	public function test_embedded_form_does_not_run_a_shortcode_from_the_query_string() {
+		$form_id          = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Prefill',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"ta123456","slug":"message","label":"Message","defaultValue":"{get_input:msg}"} /-->',
+			]
+		);
+		$this->post_ids[] = $form_id;
+		$this->make_current_post( 'page' );
+		$_SERVER['QUERY_STRING'] = 'msg=AA[srfm_probe]BB';
+		add_shortcode( 'srfm_probe', static fn() => 'EXECUTED' );
+
+		$output = apply_filters( 'the_content', '<!-- wp:srfm/form {"id":' . $form_id . '} /-->' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core hook.
+		remove_shortcode( 'srfm_probe' );
+
+		$this->assertStringContainsString( 'AA&#91;srfm_probe&#93;BB', $output, 'the prefilled value still renders' );
+		$this->assertStringNotContainsString( 'EXECUTED', $output );
+	}
+
+	/**
+	 * Shortcodes the site owner wrote into the form are untouched: only resolved
+	 * values are encoded.
+	 */
+	public function test_render_form_keeps_shortcodes_written_into_the_form() {
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->set_rendering_form_id( $form_id );
+		$_SERVER['QUERY_STRING'] = 'msg=hello';
+		add_shortcode( 'srfm_probe', static fn() => 'EXECUTED' );
+
+		$html   = '<p>[srfm_probe] {get_input:msg}</p>';
+		$output = do_shortcode( $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) ) );
+		remove_shortcode( 'srfm_probe' );
+
+		$this->assertSame( '<p>EXECUTED hello</p>', $output );
+	}
+
+	/**
+	 * Outside the form render (emails, confirmations) values keep their brackets:
+	 * no shortcode pass runs over them, and a visitor's "[1]" stays readable.
+	 */
+	public function test_process_smart_tags_keeps_brackets_outside_the_form_render() {
+		$_SERVER['QUERY_STRING'] = 'msg=see+[1]';
+
+		$this->assertSame( 'see [1]', $this->smart_tags->process_smart_tags( '{get_input:msg}', null, [] ) );
 	}
 }
