@@ -98,14 +98,18 @@ class Submit_Token {
 	 * Verify a token submitted with a form.
 	 *
 	 * Checks the token against every accepted window, from newest to oldest,
-	 * using constant-time comparison throughout.
+	 * using constant-time comparison throughout. A matching token is accepted only
+	 * while the form is a SureForms form with `publish` status: tokens outlive the
+	 * page that embedded them, so publication state is re-read from the database on
+	 * every verification rather than trusted from when the token was minted.
 	 *
 	 * @since  2.6.0
 	 * @since  2.12.6 Added the $namespace parameter.
+	 * @since  2.13.0 Returns false unless the form is currently published.
 	 * @param  string $token     Token value received from the client.
 	 * @param  int    $form_id   Form post ID extracted from the request body.
 	 * @param  string $namespace Purpose the token must have been minted for.
-	 * @return bool True if the token is valid for the given form, false otherwise.
+	 * @return bool True if the token is valid for the given, currently published form, false otherwise.
 	 */
 	public static function verify( string $token, int $form_id, string $namespace = self::NAMESPACE_SUBMIT ): bool {
 		if ( '' === $token || $form_id <= 0 ) {
@@ -119,7 +123,8 @@ class Submit_Token {
 		// Walk backwards through accepted windows; current window first.
 		for ( $offset = 0; $offset < $accepted; $offset++ ) {
 			if ( hash_equals( self::sign( $form_id, self::current_window() - $offset, $namespace ), $token ) ) {
-				return true;
+				$form = get_post( $form_id );
+				return $form instanceof \WP_Post && SRFM_FORMS_POST_TYPE === $form->post_type && 'publish' === $form->post_status;
 			}
 		}
 

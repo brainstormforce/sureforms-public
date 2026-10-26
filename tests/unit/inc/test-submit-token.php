@@ -209,7 +209,7 @@ class Test_Submit_Token extends SRFM_Unit_Test_Case {
 	 * already embedded in cached HTML keep verifying across an upgrade.
 	 */
 	public function test_sign_is_namespaced_per_purpose() {
-		$form_id = 4242;
+		$form_id = $this->form_id;
 
 		$submit = Submit_Token::generate( $form_id );
 		$view   = Submit_Token::generate( $form_id, Submit_Token::NAMESPACE_VIEW );
@@ -226,5 +226,79 @@ class Test_Submit_Token extends SRFM_Unit_Test_Case {
 		// token minted before this change still verifies.
 		$this->assertSame( 'srfm_submit', Submit_Token::NAMESPACE_SUBMIT, 'Changing this rejects every token in cached HTML.' );
 		$this->assertSame( $submit, Submit_Token::generate( $form_id, Submit_Token::NAMESPACE_SUBMIT ) );
+	}
+
+	/**
+	 * A token only authorises a form that is currently published.
+	 *
+	 * Tokens live in cached HTML for up to 48 hours, so one minted while the form
+	 * was public must stop verifying as soon as the form leaves `publish`.
+	 *
+	 * @dataProvider unpublished_status_provider
+	 *
+	 * @param string $status Status the form is moved to after the token is minted.
+	 */
+	public function test_verify_rejects_form_that_is_no_longer_published( $status ) {
+		$token = Submit_Token::generate( $this->form_id );
+		$this->assertTrue( Submit_Token::verify( $token, $this->form_id ), 'Precondition: token verifies while the form is published.' );
+
+		if ( 'trash' === $status ) {
+			wp_trash_post( $this->form_id );
+		} else {
+			wp_update_post(
+				[
+					'ID'            => $this->form_id,
+					'post_status'   => $status,
+					'post_date'     => 'future' === $status ? gmdate( 'Y-m-d H:i:s', time() + DAY_IN_SECONDS ) : '',
+					'post_date_gmt' => 'future' === $status ? gmdate( 'Y-m-d H:i:s', time() + DAY_IN_SECONDS ) : '',
+				]
+			);
+		}
+		$this->assertSame( $status, get_post_status( $this->form_id ), 'Precondition: status change applied.' );
+
+		$this->assertFalse( Submit_Token::verify( $token, $this->form_id ), "A token must not verify for a {$status} form." );
+		$this->assertFalse( Submit_Token::verify( Submit_Token::generate( $this->form_id, Submit_Token::NAMESPACE_VIEW ), $this->form_id, Submit_Token::NAMESPACE_VIEW ), "A view token must not verify for a {$status} form." );
+	}
+
+	/**
+	 * Statuses that take a form offline.
+	 *
+	 * @return array<string, array<string>>
+	 */
+	public function unpublished_status_provider() {
+		return [
+			'draft'   => [ 'draft' ],
+			'pending' => [ 'pending' ],
+			'private' => [ 'private' ],
+			'future'  => [ 'future' ],
+			'trash'   => [ 'trash' ],
+		];
+	}
+
+	/**
+	 * Republishing a form makes its outstanding tokens valid again.
+	 */
+	public function test_verify_accepts_again_after_republish() {
+		$token = Submit_Token::generate( $this->form_id );
+
+		wp_update_post( [ 'ID' => $this->form_id, 'post_status' => 'draft' ] );
+		$this->assertFalse( Submit_Token::verify( $token, $this->form_id ) );
+
+		wp_update_post( [ 'ID' => $this->form_id, 'post_status' => 'publish' ] );
+		$this->assertTrue( Submit_Token::verify( $token, $this->form_id ) );
+	}
+
+	/**
+	 * A token only authorises an existing SureForms form.
+	 */
+	public function test_verify_rejects_non_form_or_missing_post() {
+		$post_id = $this->factory()->post->create( [ 'post_type' => 'post' ] );
+		$this->assertFalse( Submit_Token::verify( Submit_Token::generate( $post_id ), $post_id ), 'A published post of another type is not a form.' );
+
+		$token = Submit_Token::generate( $this->form_id );
+		wp_delete_post( $this->form_id, true );
+		$this->assertFalse( Submit_Token::verify( $token, $this->form_id ), 'A deleted form must not verify.' );
+
+		$this->assertFalse( Submit_Token::verify( Submit_Token::generate( 987654 ), 987654 ), 'A form id that never existed must not verify.' );
 	}
 }
