@@ -194,11 +194,16 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 	// --- update_payment_settings ---
 
 	public function test_update_payment_settings_with_valid_array() {
+		$before = \SRFM\Inc\Helper::get_srfm_option( 'payment_settings', [] );
 		$result = Payment_Helper::update_payment_settings( [
 			'currency'     => 'EUR',
 			'payment_mode' => 'live',
 		] );
 		$this->assertTrue( $result );
+		$this->assertSame( 'EUR', Payment_Helper::get_currency() );
+
+		// No DB rollback here: put the store currency and mode back for later tests.
+		\SRFM\Inc\Helper::update_srfm_option( 'payment_settings', $before );
 	}
 
 	public function test_update_payment_settings_with_non_array_returns_false() {

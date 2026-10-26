@@ -1039,6 +1039,80 @@ class Test_Field_Validation extends TestCase {
 	}
 
 	/**
+	 * A GDPR field left at its default text is stored once, not twice.
+	 *
+	 * The block comment carries no `label` when the text was never edited, while the
+	 * rendered field encodes the block.json default in its name. Rendering the real
+	 * block (so the default is applied) and submitting that key must not gain a second
+	 * GDPR key under a different label.
+	 */
+	public function test_backfill_does_not_duplicate_a_gdpr_field_at_its_default_label() {
+		$content = '<!-- wp:srfm/gdpr {"block_id":"gd123456","slug":"gdpr"} /-->';
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'GDPR Form',
+				'post_content' => $content,
+			]
+		);
+
+		$markup = render_block( parse_blocks( $content )[0] );
+		$this->assertSame( 1, preg_match( '/name="(srfm-gdpr-[^"]+)"/', $markup, $matches ), 'the GDPR field renders a name' );
+
+		$result = Field_Validation::backfill_unsubmitted_fields( [ $matches[1] => 'on' ], $form_id );
+
+		$this->assertSame( [ $matches[1] => 'on' ], $result );
+
+		// When it is not sent at all, it is rebuilt under the same rendered key.
+		$this->assertSame( [ $matches[1] => '' ], Field_Validation::backfill_unsubmitted_fields( [], $form_id ) );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * An unticked checkbox left at its default label is rebuilt under the key it renders.
+	 */
+	public function test_backfill_key_matches_the_rendered_name_at_the_block_default() {
+		$content = '<!-- wp:srfm/checkbox {"block_id":"cb777777","slug":"checkbox"} /-->';
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Checkbox Form',
+				'post_content' => $content,
+			]
+		);
+
+		$markup = render_block( parse_blocks( $content )[0] );
+		$this->assertSame( 1, preg_match( '/name="(srfm-checkbox-[^"]+)"/', $markup, $matches ) );
+
+		$result = Field_Validation::backfill_unsubmitted_fields( [], $form_id );
+
+		$this->assertSame( [ $matches[1] => '' ], $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A ticked checkbox whose label was translated at render time is stored once.
+	 *
+	 * Multilingual plugins swap the label before the field renders, so the submitted
+	 * key encodes the translated text. The field is identified by its block id and
+	 * slug, so that key counts as the field being submitted.
+	 */
+	public function test_backfill_does_not_duplicate_a_checkbox_with_a_translated_label() {
+		$form_id = $this->make_checkbox_form();
+		$key     = 'srfm-checkbox-cb123456-lbl-' . \SRFM\Inc\Helper::encode( 'Saisonale Angebote' ) . '-seasonal-offers';
+
+		$result = Field_Validation::backfill_unsubmitted_fields( [ $key => 'on' ], $form_id );
+
+		$this->assertSame( [ $key => 'on' ], $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * Forms without a checkbox are untouched, and no other field type is invented.
 	 */
 	public function test_backfill_unsubmitted_fields_leaves_other_forms_alone() {

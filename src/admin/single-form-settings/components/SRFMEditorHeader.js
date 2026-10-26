@@ -3,6 +3,7 @@ import { useEntityProp } from '@wordpress/core-data';
 import { TextControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useRef, createRoot } from '@wordpress/element';
+import ChangeTemplate from './ChangeTemplate.js';
 
 const SRFMEditorHeader = () => {
 	const postId = useSelect( ( select ) => {
@@ -24,17 +25,20 @@ const SRFMEditorHeader = () => {
 	}, [] );
 
 	return (
-		<TextControl
-			__next40pxDefaultSize
-			ref={ formTitleInputRef }
-			className="srfm-header-title-input"
-			placeholder={ __( 'Form Title', 'sureforms' ) }
-			value={ title }
-			onChange={ ( value ) => {
-				setTitle( value );
-			} }
-			autoComplete="off"
-		/>
+		<>
+			<TextControl
+				__next40pxDefaultSize
+				ref={ formTitleInputRef }
+				className="srfm-header-title-input"
+				placeholder={ __( 'Form Title', 'sureforms' ) }
+				value={ title }
+				onChange={ ( value ) => {
+					setTitle( value );
+				} }
+				autoComplete="off"
+			/>
+			<ChangeTemplate />
+		</>
 	);
 };
 
