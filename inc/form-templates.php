@@ -2090,17 +2090,22 @@ class Form_Templates {
 			\Spec_Gb_Helper::get_instance()->get_generated_stylesheet( get_post( self::get_preview_post_id() ) );
 		}
 
+		// The preview is the in-memory form's page, not whatever page the request
+		// URL resolved to. Rendering runs `the_content`, and page builders read the
+		// current post there: Elementor replaces the content with the current
+		// page's own layout when that page was built with it.
+		$preview_post = get_post( self::get_preview_post_id() );
+		if ( $preview_post instanceof \WP_Post ) {
+			$GLOBALS['post'] = $preview_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- The preview is this form's page.
+			setup_postdata( $preview_post );
+		}
+
 		// SureForms Pro draws the conversational layout on the form's own page
 		// only: it switches it on at template_redirect when the page's post is
 		// a conversational form. So such a template previews as that page:
-		// the in-memory form becomes the post, Pro's hook sees it, and the
-		// form's page template renders it once every hook has run.
+		// Pro's hook sees the in-memory form set above, and the form's page
+		// template renders it once every hook has run.
 		if ( self::is_conversational( $built['metas'] ) ) {
-			$preview_post = get_post( self::get_preview_post_id() );
-			if ( $preview_post instanceof \WP_Post ) {
-				$GLOBALS['post'] = $preview_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- The preview is this form's page.
-				setup_postdata( $preview_post );
-			}
 			// Only Pro's hook needs to see the form before it renders. Other
 			// plugins' redirects (maintenance mode, language, membership) would
 			// send the preview frame elsewhere, as the other previews exit
