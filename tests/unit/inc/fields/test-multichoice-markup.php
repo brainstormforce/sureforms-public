@@ -42,6 +42,12 @@ class Test_Multichoice_Markup extends TestCase {
 		$this->multichoice_markup = new Multichoice_Markup( $attributes );
 	}
 
+	protected function tearDown(): void {
+		remove_all_filters( 'srfm_multilingual_provider' );
+		$this->reset_multilingual_manager();
+		parent::tearDown();
+	}
+
 	/**
 	 * Build a multi-choice field whose options carry descriptions.
 	 *
@@ -144,9 +150,11 @@ class Test_Multichoice_Markup extends TestCase {
 	}
 
 	/**
-	 * Test markup contains checkbox inputs for multi-select mode.
+	 * With a multilingual provider active, the label shows the translated title
+	 * while data-option-text keeps the submitted value.
 	 */
 	public function test_markup_shows_the_translated_title_but_keeps_the_value() {
+		$this->use_active_multilingual_provider();
 		$field = new Multichoice_Markup(
 			[
 				'label'           => 'Ticket',
@@ -171,6 +179,9 @@ class Test_Multichoice_Markup extends TestCase {
 		$this->assertStringNotContainsString( '>Early Bird</label>', $markup );
 	}
 
+	/**
+	 * Test markup contains checkbox inputs for multi-select mode.
+	 */
 	public function test_markup_contains_checkbox_options() {
 		$markup = $this->multichoice_markup->markup();
 		$this->assertStringContainsString( 'type="checkbox"', $markup );
@@ -263,5 +274,29 @@ class Test_Multichoice_Markup extends TestCase {
 		);
 
 		unset( $_SERVER['QUERY_STRING'] );
+	}
+
+	/**
+	 * Make a mock multilingual provider the active one until tearDown().
+	 */
+	private function use_active_multilingual_provider() {
+		$provider = $this->createMock( \SRFM\Inc\Compatibility\Multilingual\Providers\Provider::class );
+		$provider->method( 'is_active' )->willReturn( true );
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $provider ) {
+				return $provider;
+			}
+		);
+		$this->reset_multilingual_manager();
+	}
+
+	/**
+	 * Drop the cached manager so the next call resolves the provider again.
+	 */
+	private function reset_multilingual_manager() {
+		$prop = new \ReflectionProperty( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class, 'instance' );
+		$prop->setAccessible( true );
+		$prop->setValue( null, null );
 	}
 }

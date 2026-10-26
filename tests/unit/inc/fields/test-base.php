@@ -17,6 +17,12 @@ class Test_Base extends TestCase {
 		$this->base = new Base();
 	}
 
+	protected function tearDown(): void {
+		remove_all_filters( 'srfm_multilingual_provider' );
+		$this->reset_multilingual_manager();
+		parent::tearDown();
+	}
+
 	/**
 	 * Test that markup() returns empty string by default.
 	 */
@@ -142,11 +148,17 @@ class Test_Base extends TestCase {
 	}
 
 	/**
-	 * The visible title prefers the render-time translation, and falls back to
-	 * the entered optionTitle when there is none.
+	 * The visible title uses the render-time translation only while a
+	 * multilingual provider is active, and the entered optionTitle otherwise.
 	 */
 	public function test_get_option_display_title() {
-		$this->assertSame( 'Frühbucher', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird', 'translatedTitle' => 'Frühbucher' ] ] ) );
+		$translated = [ 'optionTitle' => 'Early Bird', 'translatedTitle' => 'Frühbucher' ];
+
+		// Single-language site: a stored translatedTitle is never shown.
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ $translated ] ) );
+
+		$this->use_active_multilingual_provider();
+		$this->assertSame( 'Frühbucher', $this->call_private_method( $this->base, 'get_option_display_title', [ $translated ] ) );
 		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird' ] ] ) );
 
 		// A blank or non-string translation never hides the title.
@@ -208,5 +220,29 @@ class Test_Base extends TestCase {
 		$property   = $reflection->getProperty( $property_name );
 		$property->setAccessible( true );
 		return $property->getValue( $object );
+	}
+
+	/**
+	 * Make a mock multilingual provider the active one until tearDown().
+	 */
+	private function use_active_multilingual_provider() {
+		$provider = $this->createMock( \SRFM\Inc\Compatibility\Multilingual\Providers\Provider::class );
+		$provider->method( 'is_active' )->willReturn( true );
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $provider ) {
+				return $provider;
+			}
+		);
+		$this->reset_multilingual_manager();
+	}
+
+	/**
+	 * Drop the cached manager so the next call resolves the provider again.
+	 */
+	private function reset_multilingual_manager() {
+		$prop = new \ReflectionProperty( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class, 'instance' );
+		$prop->setAccessible( true );
+		$prop->setValue( null, null );
 	}
 }

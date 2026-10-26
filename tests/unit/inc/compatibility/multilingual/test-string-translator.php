@@ -539,6 +539,39 @@ class Test_String_Translator extends TestCase {
 		remove_all_filters( 'srfm_multilingual_provider' );
 	}
 
+	public function test_translate_form_content_drops_a_stored_translated_title() {
+		// The stub translates every string to itself, so there is nothing to show.
+		$content = '<!-- wp:srfm/multi-choice {"block_id":"mcxl2","options":[{"optionTitle":"Early Bird","translatedTitle":"Stored"}]} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4246, $content );
+
+		$this->assertStringContainsString( '"optionTitle":"Early Bird"', $out );
+		$this->assertStringNotContainsString( 'translatedTitle', $out );
+	}
+
+	public function test_translate_form_content_leaves_dropdown_option_titles_alone() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		// AI- and Abilities-built dropdowns can carry optionTitle next to label.
+		$content = '<!-- wp:srfm/dropdown {"block_id":"ddxl1","options":[{"label":"Friend","optionTitle":"Friend"}]} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4247, $content );
+
+		$this->assertStringContainsString( '"label":"DE:Friend"', $out );
+		$this->assertStringNotContainsString( 'translatedTitle', $out );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
 	public function test_translate_form_content_noops_when_provider_inactive() {
 		// Replace stub with an inactive provider.
 		remove_filter( 'srfm_multilingual_provider', $this->filter, 10 );

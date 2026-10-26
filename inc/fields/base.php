@@ -10,6 +10,7 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -573,9 +574,10 @@ class Base {
 	/**
 	 * Visible text for a multi-choice option.
 	 *
-	 * Uses the multilingual translation when the render pass added one, and the
-	 * entered optionTitle otherwise. data-option-text keeps the optionTitle, so
-	 * the submitted value and conditional logic stay in the source language.
+	 * Uses translatedTitle only while a multilingual provider is active, where the
+	 * translation render pass is its only source; the entered optionTitle
+	 * otherwise. data-option-text keeps the optionTitle, so the submitted value
+	 * and conditional logic stay in the source language.
 	 *
 	 * @param mixed $option Option array from the block attributes.
 	 * @since x.x.x
@@ -585,7 +587,7 @@ class Base {
 		if ( ! is_array( $option ) ) {
 			return '';
 		}
-		if ( isset( $option['translatedTitle'] ) && is_string( $option['translatedTitle'] ) && '' !== $option['translatedTitle'] ) {
+		if ( isset( $option['translatedTitle'] ) && is_string( $option['translatedTitle'] ) && '' !== $option['translatedTitle'] && Multilingual_Manager::get_instance()->provider()->is_active() ) {
 			return $option['translatedTitle'];
 		}
 

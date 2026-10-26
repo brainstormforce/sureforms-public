@@ -678,13 +678,15 @@ class String_Translator {
 					// A multi-choice optionTitle is the submitted value and the
 					// conditional-logic key, so it stays as entered; the translation
 					// goes in translatedTitle, which only the visible label reads.
-					if ( isset( $option['optionTitle'] ) && is_string( $option['optionTitle'] ) ) {
+					// This pass is its only source, so any stored value is dropped.
+					unset( $attrs['options'][ $option_index ]['translatedTitle'] );
+					if ( 'srfm/multi-choice' === $block_name && isset( $option['optionTitle'] ) && is_string( $option['optionTitle'] ) ) {
 						$translated_title = $this->translate_block_option_field( $form_id, $block_id, (int) $option_index, 'optionTitle', $option['optionTitle'] );
 						if ( $translated_title !== $option['optionTitle'] ) {
 							$attrs['options'][ $option_index ]['translatedTitle'] = $translated_title;
 						}
 					}
-					if ( ! empty( $attrs['showDescriptions'] ) && isset( $option['description'] ) && is_string( $option['description'] ) ) {
+					if ( 'srfm/multi-choice' === $block_name && ! empty( $attrs['showDescriptions'] ) && isset( $option['description'] ) && is_string( $option['description'] ) ) {
 						$attrs['options'][ $option_index ]['description'] = $this->translate_block_option_field( $form_id, $block_id, (int) $option_index, 'description', $option['description'] );
 					}
 				}

@@ -474,9 +474,15 @@ class String_Collector {
 			}
 
 			if ( $has_options ) {
-				// Descriptions render only while showDescriptions is on, so hidden
-				// ones are not registered.
-				$option_fields = ! empty( $attrs['showDescriptions'] ) ? [ 'label', 'optionTitle', 'description' ] : [ 'label', 'optionTitle' ];
+				// Only multi-choice renders optionTitle. Descriptions render only
+				// while showDescriptions is on, so hidden ones are not registered.
+				$option_fields = [ 'label' ];
+				if ( 'srfm/multi-choice' === $block_name ) {
+					$option_fields[] = 'optionTitle';
+					if ( ! empty( $attrs['showDescriptions'] ) ) {
+						$option_fields[] = 'description';
+					}
+				}
 				foreach ( $attrs['options'] as $option_index => $option ) {
 					if ( ! is_array( $option ) ) {
 						continue;
