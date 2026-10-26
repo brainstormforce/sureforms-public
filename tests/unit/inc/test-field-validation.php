@@ -527,7 +527,9 @@ class Test_Field_Validation extends TestCase {
 			]
 		);
 
-		$key  = 'srfm-input-ab_12cd-lbl-UmVhbA-real';
+		// Saving the form gives the block its slug (Helper::process_blocks()), and the
+		// rendered key carries it.
+		$key  = 'srfm-input-ab_12cd-lbl-UmVhbA-srfm-input';
 		$kept = Field_Validation::strip_unknown_field_keys( [ $key => 'ok' ], $form_id );
 
 		$this->assertArrayHasKey( $key, $kept, 'A field whose block id contains an underscore must be kept.' );
@@ -633,15 +635,15 @@ class Test_Field_Validation extends TestCase {
 
 		$stripped = Field_Validation::strip_unknown_field_keys(
 			[
-				'srfm-input-realfield-lbl-UmVhbA-real'   => 'ok',
-				'srfm-input-deadbeef-lbl-R2hvc3Q-ghost'  => 'injected',
+				'srfm-input-realfield-lbl-UmVhbA-srfm-input' => 'ok',
+				'srfm-input-deadbeef-lbl-R2hvc3Q-ghost'      => 'injected',
 				'form-id'                                => $form_id,
 			],
 			$form_id
 		);
 
 		$this->assertArrayNotHasKey( 'srfm-input-deadbeef-lbl-R2hvc3Q-ghost', $stripped, 'invented field is dropped' );
-		$this->assertArrayHasKey( 'srfm-input-realfield-lbl-UmVhbA-real', $stripped, 'known field survives' );
+		$this->assertArrayHasKey( 'srfm-input-realfield-lbl-UmVhbA-srfm-input', $stripped, 'known field survives' );
 		$this->assertArrayHasKey( 'form-id', $stripped, 'non-field keys are left alone' );
 
 		wp_delete_post( $form_id, true );
@@ -764,8 +766,8 @@ class Test_Field_Validation extends TestCase {
 
 		$stripped = Field_Validation::strip_unknown_field_keys( [ $reused => '1', $real => '100' ] + $kept, $form_id );
 
-		$this->assertArrayNotHasKey( $reused, $stripped, 'a second key for a known block_id is dropped' );
-		$this->assertArrayNotHasKey( $real, $stripped, 'the field it shadows is dropped too' );
+		$this->assertArrayNotHasKey( $reused, $stripped, 'a known block_id under another slug is dropped' );
+		$this->assertSame( '100', $stripped[ $real ] ?? null, 'the real field is not taken down by the forged key' );
 		foreach ( $kept as $key => $value ) {
 			$this->assertSame( $value, $stripped[ $key ] ?? null, "$key is a distinct field and is kept" );
 		}
@@ -1139,5 +1141,80 @@ class Test_Field_Validation extends TestCase {
 	public function test_backfill_unsubmitted_fields_needs_a_form() {
 		$this->assertSame( [ 'a' => 'b' ], Field_Validation::backfill_unsubmitted_fields( [ 'a' => 'b' ], 0 ) );
 		$this->assertSame( [ 'a' => 'b' ], Field_Validation::backfill_unsubmitted_fields( [ 'a' => 'b' ], 'not-an-id' ) );
+	}
+
+	/**
+	 * A payment form whose dropdown `plan` prices the payment, next to two other fields.
+	 *
+	 * @return int Form ID.
+	 */
+	private function make_plan_form() {
+		return wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Plan Form',
+				'post_content' => '<!-- wp:srfm/dropdown {"block_id":"planreal","slug":"plan"} /--><!-- wp:srfm/email {"block_id":"email01","slug":"email"} /--><!-- wp:srfm/input {"block_id":"notes99","slug":"notes"} /--><!-- wp:srfm/input {"block_id":"ccc33333","slug":"x-lbl-y"} /-->',
+			]
+		);
+	}
+
+	/**
+	 * A key must name one field the form defines: when its block_id is known, its slug
+	 * must be that field's slug. Reusing a known block_id the visitor left out of the
+	 * submission, under another field's slug (with an extra `-lbl-` so consumers read it
+	 * differently), is dropped, and the genuine field survives on its own.
+	 */
+	public function test_strip_unknown_field_keys_drops_a_known_block_id_carrying_another_fields_slug() {
+		$form_id = $this->make_plan_form();
+		$genuine = 'srfm-dropdown-1-planreal-lbl-UGxhbg-plan';
+
+		foreach ( [ 'srfm-dropdown-1-notes99-lbl-UGxhbg-plan-lbl-zz', 'srfm-dropdown-1-notes99-lbl-UGxhbg-plan' ] as $forged ) {
+			$stripped = Field_Validation::strip_unknown_field_keys(
+				[
+					$genuine => 'Basic',
+					$forged  => 'Premium',
+				],
+				$form_id
+			);
+
+			$this->assertArrayNotHasKey( $forged, $stripped, "$forged names notes99 under the plan slug" );
+			$this->assertSame( 'Basic', $stripped[ $genuine ] ?? null, 'a forged key must not knock out the real field' );
+		}
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A key with more than one `-lbl-` is kept only when it is exactly a field's own
+	 * key; through the block_id-drift fallback it is dropped, since consumers would
+	 * read its slug in different ways.
+	 */
+	public function test_strip_unknown_field_keys_drops_a_multi_lbl_key_without_a_matching_field() {
+		$form_id = $this->make_plan_form();
+		$own     = 'srfm-input-ccc33333-lbl-WA-x-lbl-y';
+		$drifted = 'srfm-input-fake0000-lbl-WA-x-lbl-y';
+
+		$this->assertSame( 'c', Field_Validation::strip_unknown_field_keys( [ $own => 'c' ], $form_id )[ $own ] ?? null, 'the field\'s own key is kept' );
+		$this->assertArrayNotHasKey( $drifted, Field_Validation::strip_unknown_field_keys( [ $drifted => 'c' ], $form_id ), 'an unknown block_id cannot carry a multi -lbl- key through the slug fallback' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The entry files each field under the slug the payment validator reads,
+	 * Field_Validation::get_slug_from_key(), so the stored selection is the priced one.
+	 */
+	public function test_prepare_submission_data_labels_fields_with_the_validator_slug() {
+		$prepared = ( new \SRFM\Inc\Form_Submit() )->prepare_submission_data(
+			[
+				'srfm-input-ccc33333-lbl-WA-x-lbl-y'      => 'c',
+				'srfm-dropdown-1-planreal-lbl-UGxhbg-plan' => 'Basic',
+			]
+		);
+
+		$this->assertSame( 'c', $prepared['x-lbl-y'] ?? null );
+		$this->assertArrayNotHasKey( 'x', $prepared );
+		$this->assertSame( 'Basic', $prepared['plan'] ?? null );
 	}
 }

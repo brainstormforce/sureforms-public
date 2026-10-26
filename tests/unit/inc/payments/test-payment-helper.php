@@ -484,19 +484,28 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		\SRFM\Inc\Field_Validation::add_block_config( parse_blocks( $content ), $form_id );
 
 		$real = 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan';
+		// A drifted key next to a known block_id carrying a longer slug: the malformed
+		// key is dropped, and what survives prices and records the same value.
+		$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( [ 'srfm-dropdown-zz-lbl-UGxhbg-my_plan' => 'Basic', 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ], $form_id );
+		$this->assertSame( [ 'srfm-dropdown-zz-lbl-UGxhbg-my_plan' => 'Basic' ], $stripped );
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'] );
+		$this->assertSame( 'Basic', ( new \SRFM\Inc\Form_Submit() )->prepare_submission_data( $stripped )['my_plan'] ?? null, 'the stored selection is the priced one' );
+
 		$sets = [
-			'second -lbl- under an unknown block_id'  => [ 'srfm-dropdown-zz-lbl-UGxhbg-my_plan' => 'Basic', 'srfm-dropdown-planreal-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ],
 			'second -lbl- under an optional field'    => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-my_plan-lbl-x' => 'Premium' ],
 			'underscore read as a space'              => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-my plan' => 'Premium' ],
 			'block_id after a second -lbl-'           => [ $real => 'Basic', 'srfm-input-opt01-lbl-UGxhbg-planreal-lbl-x' => 'Premium' ],
 		];
 
+		// Each forged key reuses the known optional field opt01 under the amount source's
+		// slug. It is dropped on its own, so the real selection survives and the value
+		// the payment is priced from is the value the entry stores.
 		foreach ( $sets as $name => $form_data ) {
 			$stripped = \SRFM\Inc\Field_Validation::strip_unknown_field_keys( $form_data, $form_id );
-			foreach ( array_keys( $form_data ) as $key ) {
-				$this->assertArrayNotHasKey( $key, $stripped, "$name: $key is dropped" );
-			}
-			$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'], "$name: \$1 is rejected" );
+			$this->assertSame( [ $real => 'Basic' ], $stripped, "$name: only the real key survives" );
+			$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 1.0 )['valid'], "$name: priced from Basic" );
+			$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay02', $form_id, $stripped, 100.0 )['valid'], "$name: not priced from Premium" );
+			$this->assertSame( 'Basic', ( new \SRFM\Inc\Form_Submit() )->prepare_submission_data( $stripped )['my_plan'] ?? null, "$name: the entry stores the priced selection" );
 		}
 
 		// The genuine selection alone still prices normally.
