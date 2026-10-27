@@ -102,31 +102,22 @@ export default () => {
 				// Fetch data from API
 				const response = await apiFetch( { path: endpoint } );
 
-				// Process the data to create the chart.
-				const postsData = {};
-
-				response.forEach( ( post ) => {
-					const postDate = new Date(
-						post.created_at
-					).toLocaleDateString();
-
-					if ( ! postsData[ postDate ] ) {
-						postsData[ postDate ] = 1;
-					} else {
-						postsData[ postDate ]++;
-					}
-				} );
-
-				// Convert date strings to Date objects and sort by date
-				const sortedDataArray = Object.entries( postsData )
-					.sort(
-						( [ dateA ], [ dateB ] ) =>
-							new Date( dateA ) - new Date( dateB )
-					)
-					.map( ( [ date, count ] ) => ( {
-						month: format( new Date( date ), 'MMM dd, yyyy' ),
+				// The endpoint returns one { date: 'yyyy-MM-dd', count } row per
+				// day, oldest first. Build the Date from its parts so the label is
+				// that calendar day in every browser timezone (a bare 'yyyy-MM-dd'
+				// string is parsed as UTC midnight).
+				const sortedDataArray = response.map( ( { date, count } ) => {
+					const [ year, month, day ] = date
+						.split( '-' )
+						.map( Number );
+					return {
+						month: format(
+							new Date( year, month - 1, day ),
+							'MMM dd, yyyy'
+						),
 						entries: count,
-					} ) );
+					};
+				} );
 
 				// Prepare the data for the chart.
 				setDataToShow( sortedDataArray );
