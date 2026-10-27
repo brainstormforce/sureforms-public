@@ -12,7 +12,7 @@
  * boot lines with `Features::is_enabled()`.
  *
  * @package sureforms
- * @since 2.13.0
+ * @since x.x.x
  */
 
 namespace SRFM\Inc;
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Feature registry.
  *
- * @since 2.13.0
+ * @since x.x.x
  */
 class Features {
 	/**
@@ -62,12 +62,12 @@ class Features {
 	 *   They are dropped while it is off, for features whose classes are booted
 	 *   by other code and so cannot be gated at their own boot line.
 	 * - cron_hooks (string[]): scheduled hooks to clear when it is turned off.
-	 * - usage_blocks (string[]): block names whose published forms are listed
+	 * - usage_blocks (string[]): block names whose forms are listed
 	 *   as "in use" before the feature is turned off.
 	 * - usage_meta (string[]): form meta keys checked the same way; a form
 	 *   counts when the meta (array or JSON) has its on/off flag set.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function definitions() {
@@ -87,8 +87,11 @@ class Features {
 					'entry/(?P<id>\d+)/details',
 					'entry/(?P<id>\d+)/logs',
 					'database/repair-entries-table',
+					'entries-chart-data',
 				],
 				'cron_hooks' => [ 'srfm_weekly_scheduled_events' ],
+				// Entry limits count stored entries, so they stop applying while this is off.
+				'usage_meta' => [ '_srfm_form_restriction' ],
 			],
 			'ai_builder' => [
 				'group'  => 'core',
@@ -106,7 +109,7 @@ class Features {
 		/**
 		 * Filters the features a site owner can switch off.
 		 *
-		 * @since 2.13.0
+		 * @since x.x.x
 		 * @param array<string,array<string,mixed>> $rows Feature rows keyed by feature key.
 		 */
 		$rows = apply_filters( 'srfm_features', $rows );
@@ -146,7 +149,7 @@ class Features {
 	 * when its own switch is off or when anything it depends on is off.
 	 *
 	 * @param string $key Feature key.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public static function is_enabled( $key ) {
@@ -159,7 +162,7 @@ class Features {
 		/**
 		 * Filters whether a feature is on.
 		 *
-		 * @since 2.13.0
+		 * @since x.x.x
 		 * @param bool   $enabled Whether the feature is on.
 		 * @param string $key     Feature key.
 		 */
@@ -175,7 +178,7 @@ class Features {
 	/**
 	 * The stored switches, limited to booleans.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,bool>
 	 */
 	public static function get_saved() {
@@ -197,7 +200,7 @@ class Features {
 	 * Entries back on reschedules the email summary when that is switched on.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public static function save( $values ) {
@@ -226,7 +229,7 @@ class Features {
 		/**
 		 * Fires after the feature switches are saved.
 		 *
-		 * @since 2.13.0
+		 * @since x.x.x
 		 * @param array<string,bool> $before States before saving.
 		 * @param array<string,bool> $after  States after saving.
 		 */
@@ -239,13 +242,13 @@ class Features {
 	 * Save the switches from the Features settings tab.
 	 *
 	 * Expects `features` (map of key → bool) and an optional `confirm`. When
-	 * the save would turn off a feature that published forms use and `confirm`
+	 * the save would turn off a feature that forms use and `confirm`
 	 * is not set, nothing is saved and those forms are returned instead, so
 	 * the owner can confirm first. Permission and nonce are checked by the
 	 * `srfm-global-settings` route before this runs.
 	 *
 	 * @param array<mixed> $params Request params without `srfm_tab`.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
 	public static function rest_save( $params ) {
@@ -277,7 +280,7 @@ class Features {
 	/**
 	 * Resolved state of every registered feature.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,bool>
 	 */
 	public static function states() {
@@ -292,7 +295,7 @@ class Features {
 	 * Data for the admin and editor scripts: every row with its saved switch,
 	 * its resolved state, and the features that keep it off.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function for_js() {
@@ -329,7 +332,7 @@ class Features {
 	 * adds through the same filter.
 	 *
 	 * @param array<mixed> $endpoints Endpoints keyed by route.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<mixed>
 	 */
 	public static function filter_endpoints( $endpoints ) {
@@ -345,11 +348,10 @@ class Features {
 	}
 
 	/**
-	 * Published forms that use a feature, for the warning shown before it is
-	 * turned off.
+	 * Forms that use a feature, for the warning shown before it is turned off.
 	 *
 	 * @param string $key Feature key.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<int,array{id:int,title:string,edit_url:string}>
 	 */
 	public static function forms_using( $key ) {
@@ -364,11 +366,12 @@ class Features {
 	}
 
 	/**
-	 * Published forms that contain any of the blocks or have any of the metas switched on.
+	 * Forms (any status but trash and auto-draft) that contain any of the blocks
+	 * or have any of the metas switched on.
 	 *
 	 * @param array<mixed> $blocks Block names.
 	 * @param array<mixed> $metas  Form meta keys.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<int,array{id:int,title:string,edit_url:string}>
 	 */
 	public static function forms_matching( $blocks, $metas ) {
@@ -379,7 +382,8 @@ class Features {
 		$form_ids = get_posts(
 			[
 				'post_type'      => SRFM_FORMS_POST_TYPE,
-				'post_status'    => 'publish',
+				// Unpublished forms are listed too: they would break once published.
+				'post_status'    => [ 'publish', 'future', 'draft', 'pending', 'private' ],
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 			]
@@ -406,12 +410,15 @@ class Features {
 	 * @param int          $form_id Form ID.
 	 * @param array<mixed> $blocks  Block names.
 	 * @param array<mixed> $metas   Meta keys.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public static function form_uses( $form_id, $blocks, $metas ) {
 		if ( ! empty( $blocks ) ) {
 			$content = Helper::get_string_value( get_post_field( 'post_content', $form_id ) );
+			// A block that renders from a synced pattern is part of the form.
+			$visited = [];
+			$content = self::with_pattern_content( $content, $visited );
 			foreach ( $blocks as $block ) {
 				if ( is_string( $block ) && has_block( $block, $content ) ) {
 					return true;
@@ -433,7 +440,7 @@ class Features {
 	/**
 	 * Forget cached definitions and states.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public static function reset() {
@@ -447,18 +454,18 @@ class Features {
 	 * Kept apart from definitions() so that gating modules on `plugins_loaded`
 	 * never loads translations early. Only read on admin screens, after `init`.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,array{label:string,description:string}>
 	 */
 	public static function labels() {
 		$labels = [
 			'entries'    => [
 				'label'       => __( 'Entries', 'sureforms' ),
-				'description' => __( 'Turning this off stops saving new entries. Old ones are kept.', 'sureforms' ),
+				'description' => __( 'Turning this off stops saving new entries, so entry limits stop applying. Old ones are kept.', 'sureforms' ),
 			],
 			'ai_builder' => [
 				'label'       => __( 'AI form builder', 'sureforms' ),
-				'description' => __( 'Turning this off hides the AI form builder and its dashboard widget.', 'sureforms' ),
+				'description' => __( 'Turning this off hides Create with AI on the New Form screen and the AI dashboard widget.', 'sureforms' ),
 			],
 			'ottokit'    => [
 				'label'       => __( 'OttoKit automations', 'sureforms' ),
@@ -473,18 +480,52 @@ class Features {
 		/**
 		 * Filters the label and description shown for each feature.
 		 *
-		 * @since 2.13.0
+		 * @since x.x.x
 		 * @param array<string,array<string,string>> $labels Keyed by feature key.
 		 */
 		return Helper::get_array_value( apply_filters( 'srfm_feature_labels', $labels ) );
 	}
 
 	/**
+	 * The content followed by the content of every synced pattern it references,
+	 * at any depth, each pattern once.
+	 *
+	 * @param string           $content Block content.
+	 * @param array<int, true> $visited Pattern IDs already expanded, keyed by ID.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function with_pattern_content( $content, &$visited ) {
+		if ( ! has_block( 'core/block', $content ) ) {
+			return $content;
+		}
+		$stack = parse_blocks( $content );
+		while ( ! empty( $stack ) ) {
+			$block = array_pop( $stack );
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			$ref = absint( $block['attrs']['ref'] ?? 0 );
+			if ( 'core/block' === ( $block['blockName'] ?? '' ) && $ref && ! isset( $visited[ $ref ] ) ) {
+				$visited[ $ref ] = true;
+				$pattern         = get_post( $ref );
+				if ( $pattern instanceof \WP_Post && 'wp_block' === $pattern->post_type ) {
+					$content .= self::with_pattern_content( $pattern->post_content, $visited );
+				}
+			}
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				array_push( $stack, ...$block['innerBlocks'] );
+			}
+		}
+		return $content;
+	}
+
+	/**
 	 * Features this save would turn off, directly or through a dependency,
-	 * with the published forms that use them.
+	 * with the forms that use them.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,array<int,array{id:int,title:string,edit_url:string}>>
 	 */
 	private static function in_use_if_saved( $values ) {
@@ -513,7 +554,7 @@ class Features {
 	 * any item is on. A scalar counts when it is truthy and not "false".
 	 *
 	 * @param mixed $meta Meta value, JSON already decoded.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private static function meta_is_on( $meta ) {
@@ -541,7 +582,7 @@ class Features {
 	 *
 	 * @param array<string,bool> $saved  Saved switches.
 	 * @param array<mixed>       $values Submitted map of feature key → bool.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return array<string,bool>
 	 */
 	private static function merge( $saved, $values ) {
@@ -564,7 +605,7 @@ class Features {
 	 * @param string             $key   Feature key.
 	 * @param array<string,bool> $saved Switches to resolve against.
 	 * @param array<string>      $seen  Keys already on the path, to stop a dependency loop.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private static function resolve( $key, $saved, $seen ) {
@@ -593,7 +634,7 @@ class Features {
 	 * Clear a scheduled hook from both Action Scheduler and WP-Cron.
 	 *
 	 * @param string $hook Hook name.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private static function unschedule( $hook ) {

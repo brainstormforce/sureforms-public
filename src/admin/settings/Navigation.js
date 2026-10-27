@@ -17,7 +17,7 @@ import {
 	ToggleRight,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
-import { withEnabledFeatures } from '@Utils/features';
+import { isFeatureEnabled, withEnabledFeatures } from '@Utils/features';
 import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
@@ -206,6 +206,21 @@ const defaultNavigation = [
 export const getNavigation = () =>
 	withEnabledFeatures(
 		applyFilters( 'srfm.settings.navigation', defaultNavigation )
+	);
+
+/**
+ * Whether a tab slug belongs to a tab hidden because its feature is off, so a
+ * deep link (or a gateway's return URL) to it never mounts the hidden page.
+ *
+ * @param {string} slug Tab slug from the `tab` query arg.
+ * @return {boolean} True when the tab exists but its feature is off.
+ */
+export const isHiddenSettingsTab = ( slug ) =>
+	applyFilters( 'srfm.settings.navigation', defaultNavigation ).some(
+		( item ) =>
+			item.slug === slug &&
+			!! item.feature &&
+			! isFeatureEnabled( item.feature )
 	);
 
 const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {

@@ -275,7 +275,9 @@ class Global_Settings {
 
 		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
 
-		if ( $srfm_email_summary ) {
+		// The summary reads the entries table and its handler only boots with Entries on;
+		// Features::save() schedules it when Entries is turned back on.
+		if ( $srfm_email_summary && Features::is_enabled( 'entries' ) ) {
 			Email_Summary::schedule_weekly_entries_email();
 		}
 

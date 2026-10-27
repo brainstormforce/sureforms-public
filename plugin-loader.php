@@ -57,6 +57,7 @@ use SRFM\Inc\Migrator\Bootstrap as Migrator_Bootstrap;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Payments\Payments;
+use SRFM\Inc\Payments\Stripe\Stripe_Webhook;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
@@ -237,6 +238,9 @@ class Plugin_Loader {
 		if ( Features::is_enabled( 'payments' ) ) {
 			Payments::get_instance();
 		}
+		// Booted whatever the Payments switch says: renewals, refunds and disputes on
+		// existing subscriptions keep arriving and must still be recorded.
+		Stripe_Webhook::get_instance();
 		Duplicate_Form::get_instance();
 		Learn::get_instance();
 	}

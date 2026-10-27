@@ -301,7 +301,7 @@ class Form_Restriction {
 	 * never accepted without its payment.
 	 *
 	 * @param int $form_id Form ID.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public static function needs_disabled_payments( $form_id ) {
@@ -311,7 +311,7 @@ class Form_Restriction {
 	/**
 	 * Message shown in place of a form that needs Payments while it is off.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	public static function payments_off_message() {

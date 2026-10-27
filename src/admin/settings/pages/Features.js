@@ -82,7 +82,10 @@ const FeatureCell = ( {
 				<p className="m-0 text-sm font-semibold text-text-primary">
 					{ label }
 				</p>
-				<p className="m-0 mt-0.5 text-xs leading-5 text-field-helper">
+				<p
+					id={ `srfm-feature-${ featureKey }-description` }
+					className="m-0 mt-0.5 text-xs leading-5 text-field-helper"
+				>
 					{ description }
 				</p>
 			</div>
@@ -145,9 +148,11 @@ const FeaturesPage = () => {
 				setSaving( false );
 				toast.success( __( 'Settings saved.', 'sureforms' ) );
 			} )
-			.catch( () => {
+			.catch( ( err ) => {
 				setSaving( false );
-				toast.error( __( 'Could not save the features.', 'sureforms' ) );
+				toast.error(
+					err?.message || __( 'Could not save the features.', 'sureforms' )
+				);
 			} );
 	};
 
@@ -195,6 +200,8 @@ const FeaturesPage = () => {
 						disabled={ ! available }
 						value={ available && false !== switches[ key ] }
 						aria-label={ row.label }
+						// Announces the description, including why a switch is unavailable.
+						aria-describedby={ `srfm-feature-${ key }-description` }
 						onChange={ ( value ) => {
 							setInUse( null );
 							setSwitches( { ...switches, [ key ]: value } );
@@ -214,7 +221,7 @@ const FeaturesPage = () => {
 				>
 					<p className="text-sm font-semibold m-0">
 						{ __(
-							'These published forms use something you are turning off:',
+							'These forms use something you are turning off:',
 							'sureforms'
 						) }
 					</p>
@@ -245,6 +252,8 @@ const FeaturesPage = () => {
 							variant="primary"
 							size="sm"
 							loading={ saving }
+							// force-ui's loading state does not disable the button.
+							disabled={ saving }
 							onClick={ () => save( true ) }
 						>
 							{ __( 'Turn off anyway', 'sureforms' ) }

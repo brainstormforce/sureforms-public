@@ -171,6 +171,133 @@ class Test_Features extends TestCase {
 	}
 
 	/**
+	 * The Stripe webhook stays registered while Payments is off, so renewals,
+	 * refunds and disputes on existing subscriptions are still recorded.
+	 */
+	public function test_stripe_webhook_is_registered_while_payments_is_off() {
+		global $wp_rest_server;
+
+		// The test bootstrap already booted it with Payments on; start from nothing.
+		$prop = new ReflectionProperty( \SRFM\Inc\Payments\Stripe\Stripe_Webhook::class, 'instance' );
+		$prop->setAccessible( true );
+		$original = $prop->getValue();
+		if ( $original ) {
+			remove_action( 'rest_api_init', [ $original, 'register_endpoints' ] );
+		}
+		$prop->setValue( null, null );
+
+		Features::save( [ 'payments' => false ] );
+		\SRFM\Plugin_Loader::get_instance()->load_classes();
+		$booted         = $prop->getValue();
+		$wp_rest_server = null;
+		$routes         = rest_get_server()->get_routes();
+		$wp_rest_server = null;
+
+		if ( $booted && $original ) {
+			remove_action( 'rest_api_init', [ $booted, 'register_endpoints' ] );
+		}
+		$prop->setValue( null, $original );
+		if ( $original ) {
+			add_action( 'rest_api_init', [ $original, 'register_endpoints' ] );
+		}
+
+		$this->assertNotNull( $booted, 'the webhook boots whatever the Payments switch says' );
+		$this->assertArrayHasKey( '/sureforms/webhook_test', $routes );
+		$this->assertArrayHasKey( '/sureforms/webhook_live', $routes );
+	}
+
+	/**
+	 * A payment block that renders from a synced pattern counts as the form's own:
+	 * the form is restricted while Payments is off and listed before it is turned off.
+	 */
+	public function test_payment_block_inside_a_synced_pattern_counts() {
+		$pattern = wp_insert_post(
+			[
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/payment {"block_id":"pay1"} /-->',
+			]
+		);
+		$form    = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"in1"} /--><!-- wp:block {"ref":' . $pattern . '} /-->',
+			]
+		);
+
+		$this->assertTrue( Features::form_uses( $form, [ 'srfm/payment' ], [] ) );
+		$this->assertContains( $form, wp_list_pluck( Features::forms_using( 'payments' ), 'id' ) );
+
+		Features::save( [ 'payments' => false ] );
+		$this->assertTrue( Form_Restriction::is_form_restricted( $form ), 'never accepted without its payment' );
+
+		wp_delete_post( $form, true );
+		wp_delete_post( $pattern, true );
+	}
+
+	/**
+	 * Forms that are not published yet still use the feature: a draft, scheduled,
+	 * pending or private payment form is listed; a trashed one is not.
+	 */
+	public function test_unpublished_forms_are_listed_as_in_use() {
+		$ids = [];
+		foreach ( [ 'draft', 'future', 'pending', 'private', 'trash' ] as $status ) {
+			$ids[ $status ] = wp_insert_post(
+				[
+					'post_type'    => SRFM_FORMS_POST_TYPE,
+					'post_status'  => $status,
+					'post_title'   => 'Payment form ' . $status,
+					'post_date'    => 'future' === $status ? gmdate( 'Y-m-d H:i:s', time() + DAY_IN_SECONDS ) : '',
+					'post_content' => '<!-- wp:srfm/payment {"block_id":"p' . $status . '"} /-->',
+				]
+			);
+		}
+
+		$listed = wp_list_pluck( Features::forms_using( 'payments' ), 'id' );
+
+		foreach ( [ 'draft', 'future', 'pending', 'private' ] as $status ) {
+			$this->assertContains( $ids[ $status ], $listed, $status . ' forms are listed' );
+		}
+		$this->assertNotContains( $ids['trash'], $listed, 'trashed forms are not' );
+
+		foreach ( $ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+	}
+
+	/**
+	 * A pattern that references itself is expanded once and does not loop.
+	 */
+	public function test_form_uses_stops_on_a_pattern_cycle() {
+		$pattern = wp_insert_post(
+			[
+				'post_type'   => 'wp_block',
+				'post_status' => 'publish',
+				'post_title'  => 'Self-referencing pattern',
+			]
+		);
+		wp_update_post(
+			[
+				'ID'           => $pattern,
+				'post_content' => '<!-- wp:block {"ref":' . $pattern . '} /-->',
+			]
+		);
+		$form = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:block {"ref":' . $pattern . '} /-->',
+			]
+		);
+
+		$this->assertFalse( Features::form_uses( $form, [ 'srfm/payment' ], [] ) );
+
+		wp_delete_post( $form, true );
+		wp_delete_post( $pattern, true );
+	}
+
+	/**
 	 * A form that takes payments is never accepted while Payments is off.
 	 */
 	public function test_payment_form_is_restricted_while_payments_is_off() {
@@ -241,6 +368,153 @@ class Test_Features extends TestCase {
 		$this->assertSame( $before, $after, 'no entry row is written' );
 
 		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A submission that is not stored still passes through srfm_form_submission_response,
+	 * so listeners that shape the response (e.g. Pro's conditional confirmations) run on
+	 * both paths: with Entries off and on a form whose compliance setting skips storage.
+	 */
+	public function test_submission_response_filter_runs_when_not_stored() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
+		$seen    = 0;
+		$shape   = static function ( $response ) use ( &$seen ) {
+			++$seen;
+			$response['data']['submission_settings']['submission_mode'] = 'same page';
+			return $response;
+		};
+		add_filter( 'srfm_form_submission_response', $shape );
+
+		Features::save( [ 'entries' => false ] );
+		$response = Form_Submit::get_instance()->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+		$this->assertSame( 1, $seen, 'the filter runs once with Entries off' );
+		$this->assertSame( 'same page', $response['data']['submission_settings']['submission_mode'] );
+		$this->assertTrue( $response['success'] );
+
+		Features::save( [ 'entries' => true ] );
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+		$response = Form_Submit::get_instance()->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+		$this->assertSame( 2, $seen, 'the filter runs on a form that does not store entries' );
+		$this->assertSame( 'same page', $response['data']['submission_settings']['submission_mode'] );
+
+		remove_filter( 'srfm_form_submission_response', $shape );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * While Entries is off, saving the email summary settings schedules nothing,
+	 * because the summary's handler is not booted.
+	 */
+	public function test_email_summary_is_not_scheduled_while_entries_is_off() {
+		Features::save( [ 'entries' => false ] );
+		\SRFM\Inc\Global_Settings\Global_Settings::srfm_save_email_summary_settings( [ 'srfm_email_summary' => true ] );
+
+		$this->assertFalse( as_next_scheduled_action( 'srfm_weekly_scheduled_events' ) );
+	}
+
+	/**
+	 * The dashboard chart reads the entries table, so its route goes with Entries.
+	 */
+	public function test_entries_chart_route_is_dropped_while_entries_is_off() {
+		Features::save( [ 'entries' => false ] );
+
+		$this->assertArrayNotHasKey( 'entries-chart-data', Features::filter_endpoints( [ 'entries-chart-data' => [] ] ) );
+	}
+
+	/**
+	 * Entry limits count stored entries, so a form with one is listed before
+	 * Entries is turned off.
+	 */
+	public function test_forms_with_an_entry_limit_are_listed_before_entries_is_turned_off() {
+		$limited = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
+		$open    = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta( $limited, '_srfm_form_restriction', wp_json_encode( [ 'status' => true, 'maxEntries' => 5 ] ) );
+		update_post_meta( $open, '_srfm_form_restriction', wp_json_encode( [ 'status' => false, 'maxEntries' => 5 ] ) );
+
+		$listed = wp_list_pluck( Features::forms_using( 'entries' ), 'id' );
+
+		$this->assertContains( $limited, $listed );
+		$this->assertNotContains( $open, $listed, 'a limit that is switched off is not listed' );
+
+		wp_delete_post( $limited, true );
+		wp_delete_post( $open, true );
+	}
+
+	/**
+	 * The OttoKit integration AJAX handler is not registered while OttoKit is off.
+	 */
+	public function test_ottokit_ajax_is_not_registered_while_ottokit_is_off() {
+		global $wp_filter;
+		$saved = $wp_filter['wp_ajax_sureforms_integration'] ?? null;
+		unset( $wp_filter['wp_ajax_sureforms_integration'] );
+
+		Features::save( [ 'ottokit' => false ] );
+		new \SRFM\Inc\Admin_Ajax();
+		$registered = has_action( 'wp_ajax_sureforms_integration' );
+
+		unset( $wp_filter['wp_ajax_sureforms_integration'] );
+		if ( null !== $saved ) {
+			$wp_filter['wp_ajax_sureforms_integration'] = $saved; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- restores the hook removed above.
+		}
+
+		$this->assertFalse( $registered );
+	}
+
+	/**
+	 * With the AI form builder off, New Form still opens its own screen (the start
+	 * screen without the AI card), not a redirect to a blank form.
+	 */
+	public function test_new_form_screen_is_not_redirected_while_ai_builder_is_off() {
+		global $wp_filter;
+
+		$admin = wp_insert_user(
+			[
+				'user_login' => 'features_newform_' . wp_generate_password( 6, false ),
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin );
+		Features::save( [ 'ai_builder' => false ] );
+
+		$load_hooks = static function () use ( &$wp_filter ) {
+			return array_filter(
+				array_keys( $wp_filter ),
+				static fn( $hook ) => 0 === strpos( (string) $hook, 'load-' ) && false !== strpos( (string) $hook, 'add-new-form' )
+			);
+		};
+		$before = $load_hooks();
+		\SRFM\Admin\Admin::get_instance()->add_new_form();
+		$added = array_diff( $load_hooks(), $before );
+
+		wp_set_current_user( 0 );
+		wp_delete_user( $admin );
+
+		$this->assertSame( [], array_values( $added ) );
 	}
 
 	/**
@@ -363,7 +637,8 @@ class Test_Features extends TestCase {
 	}
 
 	/**
-	 * Published forms match by block or by a switched-on meta; drafts never match.
+	 * Forms match by block or by a switched-on meta, drafts included: a draft
+	 * breaks the same way once it is published.
 	 */
 	public function test_forms_matching() {
 		$published = wp_insert_post(
@@ -384,7 +659,7 @@ class Test_Features extends TestCase {
 
 		$this->assertSame( [], Features::forms_matching( [], [] ) );
 		$this->assertContains( $published, wp_list_pluck( Features::forms_matching( [], [ '_srfm_test_meta' ] ), 'id' ) );
-		$this->assertNotContains( $draft, wp_list_pluck( Features::forms_matching( [ 'srfm/url' ], [] ), 'id' ), 'drafts are not listed' );
+		$this->assertContains( $draft, wp_list_pluck( Features::forms_matching( [ 'srfm/url' ], [] ), 'id' ), 'drafts are listed' );
 
 		wp_delete_post( $published, true );
 		wp_delete_post( $draft, true );

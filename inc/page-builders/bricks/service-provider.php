@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Page_Builders\Bricks;
 
+use SRFM\Inc\Features;
 use SRFM\Inc\Payments\Payment_History_Shortcode;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -43,6 +44,11 @@ class Service_Provider {
 			[ $this, 'bricks_translatable_strings' ]
 		);
 		\Bricks\Elements::register_element( __DIR__ . '/elements/form-widget.php' );
+
+		// Payment history belongs to Payments; it is not offered while that is off.
+		if ( ! Features::is_enabled( 'payments' ) ) {
+			return;
+		}
 		\Bricks\Elements::register_element( __DIR__ . '/elements/payment-history-widget.php' );
 
 		// Head-load the Payment History stylesheet when the element is on the page.

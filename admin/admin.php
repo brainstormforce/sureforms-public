@@ -1498,7 +1498,7 @@ JS;
 	 * Attached to `wp-hooks`, which every SureForms and SureForms Pro bundle
 	 * depends on, so it prints before any of them on any screen they load.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function localize_features() {
@@ -1555,7 +1555,9 @@ JS;
 			[ $this, 'render_forms' ],
 			1
 		);
-		$new_form_hook = add_submenu_page(
+		// With the AI form builder off this still opens: the start screen leaves out its
+		// AI card and never routes to the AI screen (getAddNewFormScreen()).
+		add_submenu_page(
 			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
@@ -1564,16 +1566,6 @@ JS;
 			[ $this, 'add_new_form_callback' ],
 			2
 		);
-		// The New Form screen is the AI builder; without it, every link to it opens a blank form instead.
-		if ( $new_form_hook && ! Features::is_enabled( 'ai_builder' ) ) {
-			add_action(
-				'load-' . $new_form_hook,
-				static function () {
-					wp_safe_redirect( admin_url( 'post-new.php?post_type=' . SRFM_FORMS_POST_TYPE ) );
-					exit;
-				}
-			);
-		}
 		$entries_hook = Features::is_enabled( 'entries' ) ? add_submenu_page(
 			'sureforms_menu',
 			__( 'Entries', 'sureforms' ),

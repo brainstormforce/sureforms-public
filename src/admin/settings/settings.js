@@ -3,7 +3,7 @@ import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import FormPageHeader from '../components/PageHeader';
 import '../tw-base.scss';
 
-import Navigation from './Navigation';
+import Navigation, { isHiddenSettingsTab } from './Navigation';
 import Component from './Component';
 import UnsavedChangesGuard from './UnsavedChangesGuard';
 import { Toaster } from '@bsf/force-ui';
@@ -15,9 +15,10 @@ function useQuery() {
 
 function QueryScreen() {
 	const query = useQuery();
+	const tab = query.get( 'tab' );
 	return (
 		<Component
-			path={ query.get( 'tab' ) }
+			path={ isHiddenSettingsTab( tab ) ? 'general-settings' : tab }
 			subpage={ query.get( 'subpage' ) }
 		/>
 	);
