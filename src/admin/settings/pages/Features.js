@@ -82,7 +82,7 @@ const FeatureCell = ( {
 				<p className="m-0 text-sm font-semibold text-text-primary">
 					{ label }
 				</p>
-				<p className="m-0 mt-0.5 text-xs leading-5 text-text-secondary">
+				<p className="m-0 mt-0.5 text-xs leading-5 text-field-helper">
 					{ description }
 				</p>
 			</div>
@@ -282,8 +282,12 @@ const FeaturesPage = () => {
 				</Tabs>
 			) }
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-px overflow-hidden rounded-lg border border-solid border-border-subtle bg-border-subtle md:[&>*:last-child:nth-child(odd)]:col-span-2">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-px overflow-hidden rounded-lg border border-solid border-border-subtle bg-border-subtle">
 				{ cells }
+				{ /* Fills the empty half so the last odd card keeps its width. */ }
+				{ cells.length % 2 === 1 && (
+					<div className="hidden md:block bg-background-primary" />
+				) }
 			</div>
 		</div>
 	);

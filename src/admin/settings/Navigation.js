@@ -35,27 +35,6 @@ const defaultNavigation = [
 		),
 	},
 	{
-		name: __( 'Features', 'sureforms' ),
-		slug: 'features-settings',
-		icon: <ToggleRight />,
-		helpText: (
-			<>
-				{ __(
-					"Turn off what you don't use. Anything off stops loading on your site, and turning it back on restores its data exactly where you left it.",
-					'sureforms'
-				) }{ ' ' }
-				<a
-					href="https://sureforms.com/docs/manage-features/"
-					target="_blank"
-					rel="noopener noreferrer"
-					className="text-field-helper underline"
-				>
-					{ __( 'Learn more', 'sureforms' ) }
-				</a>
-			</>
-		),
-	},
-	{
 		name: __( 'Global Defaults', 'sureforms' ),
 		slug: 'global-defaults',
 		icon: <Globe />,
@@ -165,6 +144,27 @@ const defaultNavigation = [
 					className="text-field-helper underline"
 				>
 					{ __( 'View documentation', 'sureforms' ) }
+				</a>
+			</>
+		),
+	},
+	{
+		name: __( 'Manage Features', 'sureforms' ),
+		slug: 'features-settings',
+		icon: <ToggleRight />,
+		helpText: (
+			<>
+				{ __(
+					"Turn off what you don't use. Anything off stops loading on your site, and turning it back on restores its data exactly where you left it.",
+					'sureforms'
+				) }{ ' ' }
+				<a
+					href="https://sureforms.com/docs/manage-features/"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-field-helper underline"
+				>
+					{ __( 'Learn more', 'sureforms' ) }
 				</a>
 			</>
 		),

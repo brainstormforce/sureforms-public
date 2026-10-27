@@ -454,7 +454,7 @@ class Features {
 		$labels = [
 			'entries'    => [
 				'label'       => __( 'Entries', 'sureforms' ),
-				'description' => __( 'Turning this off stops saving new submissions. Existing entries are kept.', 'sureforms' ),
+				'description' => __( 'Turning this off stops saving new entries. Old ones are kept.', 'sureforms' ),
 			],
 			'ai_builder' => [
 				'label'       => __( 'AI form builder', 'sureforms' ),
@@ -462,11 +462,11 @@ class Features {
 			],
 			'ottokit'    => [
 				'label'       => __( 'OttoKit automations', 'sureforms' ),
-				'description' => __( 'Turning this off hides the Automations tab and the OttoKit settings page.', 'sureforms' ),
+				'description' => __( 'Turning this off hides the Automations tab and OttoKit page.', 'sureforms' ),
 			],
 			'payments'   => [
 				'label'       => __( 'Payments', 'sureforms' ),
-				'description' => __( 'Turning this off removes payment fields, and paid forms stop taking submissions.', 'sureforms' ),
+				'description' => __( 'Turning this off removes payment fields and pauses paid forms.', 'sureforms' ),
 			],
 		];
 
