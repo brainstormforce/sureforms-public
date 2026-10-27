@@ -12,13 +12,13 @@
  * unset again within a process. Plugin Check enforces that guard separately.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 /**
  * Class Test_Uninstall
  *
- * @since x.x.x
+ * @since 2.13.0
  */
 class Test_Uninstall extends WP_UnitTestCase {
 
@@ -456,5 +456,59 @@ class Test_Uninstall extends WP_UnitTestCase {
 		foreach ( $others as $name => $value ) {
 			$this->assertSame( $value, get_option( $name ), "{$name} is not ours to remove" );
 		}
+	}
+
+	/**
+	 * The template and start-screen stores, filled by their real writers, go
+	 * with the rest of the analytics buffer.
+	 *
+	 * Seeded through Analytics rather than by hand, so a writer that starts
+	 * storing somewhere new fails this test instead of passing a fixture that
+	 * mirrors the removal list.
+	 *
+	 * @return void
+	 */
+	public function test_opt_in_removes_template_and_start_funnel_stores() {
+		$sharing = static fn() => true;
+		add_filter( 'sureforms_tracking_enabled', $sharing );
+
+		\SRFM\Admin\Analytics::track_form_template_usage( 'contact-us', 'create' );
+		\SRFM\Admin\Analytics::track_form_template_demand( 'wedding rsvp', 'request' );
+		\SRFM\Admin\Analytics::track_form_start_action( 'view' );
+
+		remove_filter( 'sureforms_tracking_enabled', $sharing );
+
+		$options = get_option( 'srfm_options' );
+		$this->assertNotEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION ), 'Precondition: the usage writer stored its counter.' );
+		$this->assertNotEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION ), 'Precondition: the demand writer stored the request.' );
+		$this->assertArrayNotHasKey( 'form_template_usage', $options, 'the counters stay out of the settings row' );
+		$this->assertNotEmpty( get_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION ), 'Precondition: the funnel writer stored its totals.' );
+
+		$options['remove_analytics_data_on_uninstall'] = true;
+		$options['forms_per_page']                     = 20;
+		update_option( 'srfm_options', $options );
+
+		$this->run_uninstall();
+
+		$after = get_option( 'srfm_options' );
+		$this->assertFalse( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, false ) );
+		$this->assertFalse( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, false ), 'the text typed into Request this template must go' );
+		$this->assertFalse( get_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION, false ) );
+		$this->assertSame( 20, $after['forms_per_page'], 'settings stay' );
+	}
+
+	/**
+	 * Without the opt-in, the separate funnel option is left alone too.
+	 *
+	 * @return void
+	 */
+	public function test_start_funnel_survives_without_opt_in() {
+		update_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION, [ 'views' => 3 ], false );
+		$this->seed( null );
+
+		$this->run_uninstall();
+
+		$this->assertSame( [ 'views' => 3 ], get_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION ) );
+		delete_option( \SRFM\Admin\Analytics::FORM_START_FUNNEL_OPTION );
 	}
 }

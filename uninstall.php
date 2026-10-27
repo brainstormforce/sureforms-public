@@ -35,7 +35,7 @@
  * decision on sub-site rows first, so it is left out on purpose.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.0
  */
 
 // Exit if not called by WordPress uninstall.
@@ -164,6 +164,14 @@ if ( [] === $srfm_options ) {
 } else {
 	update_option( 'srfm_options', $srfm_options );
 }
+
+// The start screen funnel totals and the template usage and demand counts
+// (which hold the text people typed into "Request this template") live in
+// their own options (see the Analytics::*_OPTION constants), so they go
+// separately.
+delete_option( 'srfm_form_start_funnel' );
+delete_option( 'srfm_form_template_usage' );
+delete_option( 'srfm_form_template_demand' );
 
 /*
  * Evict the cached copies as well.

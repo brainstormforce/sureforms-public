@@ -974,10 +974,8 @@ class Form_Submit {
 			}
 
 			if ( ! empty( $parts[1] ) ) {
-				$tokens = explode( '-', $parts[1] );
-				if ( count( $tokens ) > 1 ) {
-					$label = implode( '-', array_slice( $tokens, 1 ) );
-				}
+				// The same slug the payment validator reads, so the stored value is the priced one.
+				$label = Field_Validation::get_slug_from_key( $key );
 
 				$fields = explode( '-', $parts[0] );
 

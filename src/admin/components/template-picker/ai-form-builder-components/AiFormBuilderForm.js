@@ -7,7 +7,7 @@ import {
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
-import { ArrowRight, Sparkles, MicOff, Mic } from 'lucide-react';
+import { ArrowRight, Sparkles, MicOff, Mic, LayoutTemplate } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { speak } from '@wordpress/a11y';
 import { cn, srfmClassNames } from '@Utils/Helpers';
@@ -19,7 +19,9 @@ import {
 	isFromStarter,
 	MAX_PROMPT_LENGTH,
 } from '../utils/starter-prompts.js';
+import useOpenTemplateLibrary from '../use-open-template-library.js';
 import { useLocation } from 'react-router-dom';
+import { getScratchUrl } from '@Utils/form-start';
 
 const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
 	const buttonProps = isListening
@@ -76,6 +78,8 @@ export default ( props ) => {
 		features,
 		prefilledPrompt,
 	} = props;
+
+	const openTemplateLibrary = useOpenTemplateLibrary();
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const [ characterCount, setCharacterCount ] = useState( 0 );
@@ -786,6 +790,18 @@ export default ( props ) => {
 					</Container.Item>
 
 					<Container.Item className="flex p-2 gap-6 justify-center">
+						{ srfm_admin?.form_templates?.length > 0 && (
+							<Button
+								className="hover:cursor-pointer"
+								icon={ <LayoutTemplate size={ 16 } /> }
+								iconPosition="left"
+								size="md"
+								variant="ghost"
+								onClick={ openTemplateLibrary }
+							>
+								{ __( 'Choose from a template', 'sureforms' ) }
+							</Button>
+						) }
 						<Button
 							className="text-text-tertiary hover:cursor-pointer hover:text-text-secondary"
 							icon={ <ArrowRight size={ 16 } /> }
@@ -801,10 +817,11 @@ export default ( props ) => {
 										'build-scratch'
 									);
 								}
-								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+								// Tagged with the start screen choice, so this counts as a switch to scratch.
+								window.location.href = getScratchUrl();
 							} }
 						>
-							{ __( 'Or create it yourself', 'sureforms' ) }
+							{ __( 'Start from scratch', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 
