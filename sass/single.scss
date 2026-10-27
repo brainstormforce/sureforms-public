@@ -87,7 +87,7 @@
 			.srfm-single-banner-title {
 				width: 100%;
 				margin: 0 auto;
-				color: #ffffff;
+				color: var(--srfm-banner-title-color, #ffffff);
 				font-weight: 600;
 				font-size: 40px;
 				line-height: 44px;

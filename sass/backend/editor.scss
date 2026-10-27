@@ -475,6 +475,12 @@ body.post-type-sureforms_form {
 			}
 		}
 
+		.srfm-change-template-button {
+			flex: none;
+			margin-left: 4px;
+			color: #1e1e1e;
+		}
+
 		.components-text-control__input {
 			font-size: 16px;
 			font-style: normal;
@@ -811,4 +817,28 @@ html[dir="rtl"] body.post-type-sureforms_form {
 
 .srfm-upgrade-prompt__link:focus {
 	color: #d54407;
+}
+
+// Change template modal (form editor header).
+.srfm-change-template-modal {
+	.srfm-change-template__confirm {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		max-width: 560px;
+
+		p {
+			margin: 0;
+		}
+
+		.components-notice {
+			margin: 0;
+		}
+	}
+
+	.srfm-change-template__actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
 }
