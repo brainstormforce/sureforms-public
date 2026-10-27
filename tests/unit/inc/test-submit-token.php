@@ -301,4 +301,32 @@ class Test_Submit_Token extends SRFM_Unit_Test_Case {
 
 		$this->assertFalse( Submit_Token::verify( Submit_Token::generate( 987654 ), 987654 ), 'A form id that never existed must not verify.' );
 	}
+
+	/**
+	 * signature_matches() checks only the token's signature, whatever the form's status.
+	 */
+	public function test_signature_matches() {
+		$token = Submit_Token::generate( $this->form_id );
+		wp_update_post( [ 'ID' => $this->form_id, 'post_status' => 'draft' ] );
+
+		$this->assertTrue( Submit_Token::signature_matches( $token, $this->form_id ), 'A genuine token matches even while the form is unpublished.' );
+		$this->assertFalse( Submit_Token::signature_matches( $token, $this->form_id + 1 ), 'A token is bound to its form.' );
+		$this->assertFalse( Submit_Token::signature_matches( str_repeat( 'a', 64 ), $this->form_id ), 'A forged token does not match.' );
+		$this->assertFalse( Submit_Token::signature_matches( '', $this->form_id ), 'An empty token does not match.' );
+		$this->assertFalse( Submit_Token::signature_matches( $token, 0 ), 'A zero form id does not match.' );
+	}
+
+	/**
+	 * is_form_open() is true only for a published SureForms form.
+	 */
+	public function test_is_form_open() {
+		$this->assertTrue( Submit_Token::is_form_open( $this->form_id ), 'A published form is open.' );
+
+		wp_update_post( [ 'ID' => $this->form_id, 'post_status' => 'draft' ] );
+		$this->assertFalse( Submit_Token::is_form_open( $this->form_id ), 'A draft form is not open.' );
+
+		$post_id = $this->factory()->post->create( [ 'post_type' => 'post' ] );
+		$this->assertFalse( Submit_Token::is_form_open( $post_id ), 'A published post of another type is not a form.' );
+		$this->assertFalse( Submit_Token::is_form_open( 987654 ), 'A missing post is not open.' );
+	}
 }
