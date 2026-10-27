@@ -606,10 +606,13 @@ function onHCaptchaError() {
 	/**
 	 * Ensures that the element with the class 'srfm-branding' is always fully visible.
 	 *
-	 * This function checks the computed styles of the element with the class 'srfm-branding'
-	 * every second to ensure that its opacity is set to 1, its visibility is set to 'visible',
-	 * and its display property is set to 'block'. If any of these styles are not set correctly,
-	 * they are updated to ensure the element is always fully visible.
+	 * Checks the computed styles of the element with the class 'srfm-branding' on load
+	 * and again whenever the page's markup, inline styles or classes change, so that its
+	 * opacity is 1, its visibility is 'visible' and its display is not 'none'. While the
+	 * form itself is hidden, the branding is hidden with it.
+	 *
+	 * Inline styles are only written when they differ from the target value, so the
+	 * observer's own writes settle instead of re-triggering it.
 	 *
 	 * Note: This function relies on the presence of the element with the class 'srfm-branding'
 	 * in the DOM. If the element is not found, the function exits early without making any changes.
@@ -623,10 +626,19 @@ function onHCaptchaError() {
 
 		const srfmForm = document.querySelector( 'form.srfm-form' );
 
-		setInterval( () => {
-			if ( 'none' === window.getComputedStyle( srfmForm ).display ) {
+		const setBrandingStyle = ( property, value ) => {
+			if ( srfmBranding.style[ property ] !== value ) {
+				srfmBranding.style[ property ] = value;
+			}
+		};
+
+		const enforceBranding = () => {
+			if (
+				srfmForm &&
+				'none' === window.getComputedStyle( srfmForm ).display
+			) {
 				// Hide the SureForms branding if Form is hidden.
-				srfmBranding.style.display = 'none';
+				setBrandingStyle( 'display', 'none' );
 				return;
 			}
 
@@ -634,17 +646,29 @@ function onHCaptchaError() {
 				window.getComputedStyle( srfmBranding );
 
 			if ( opacity < 1 ) {
-				srfmBranding.style.opacity = 1;
+				setBrandingStyle( 'opacity', '1' );
 			}
 
 			if ( 'visible' !== visibility ) {
-				srfmBranding.style.visibility = 'visible';
+				setBrandingStyle( 'visibility', 'visible' );
 			}
 
 			if ( 'none' === display ) {
-				srfmBranding.style.display = 'block';
+				setBrandingStyle( 'display', 'block' );
 			}
-		}, 100 );
+		};
+
+		enforceBranding();
+
+		new MutationObserver( enforceBranding ).observe(
+			document.documentElement,
+			{
+				attributes: true,
+				attributeFilter: [ 'style', 'class' ],
+				childList: true,
+				subtree: true,
+			}
+		);
 	}
 
 	/**
@@ -686,11 +710,22 @@ function onHCaptchaError() {
 		}
 	}
 	window.addEventListener( 'resize', handleInstantFormWrapperHeight ); // Handle wrapper height on window resize.
-	window.addEventListener( 'mousemove', handleInstantFormWrapperHeight ); // Recalculate the wrapper height on mouse move.
 
 	window.addEventListener( 'load', function () {
 		handleInstantFormWrapperHeight();
 		handleInstantFormBranding();
+
+		// Recalculate the wrapper height whenever the form container changes size
+		// (textarea resize, conditional fields, validation messages, steps).
+		const instantFormContainer = document.querySelector(
+			'#srfm-single-page-container .srfm-form-container'
+		);
+
+		if ( instantFormContainer && 'ResizeObserver' in window ) {
+			new ResizeObserver( handleInstantFormWrapperHeight ).observe(
+				instantFormContainer
+			);
+		}
 
 		const formContainers = document.querySelectorAll(
 			'.srfm-form-container'
