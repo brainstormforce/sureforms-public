@@ -37,6 +37,23 @@ class Analytics {
 	public const FORM_START_FUNNEL_OPTION = 'srfm_form_start_funnel';
 
 	/**
+	 * Option holding the template create, swap, view and upgrade counts. Like
+	 * the start funnel, it has its own row: counting rewrites the whole value,
+	 * and in srfm_options that would also rewrite every setting stored there.
+	 *
+	 * @since 2.13.0
+	 */
+	public const FORM_TEMPLATE_USAGE_OPTION = 'srfm_form_template_usage';
+
+	/**
+	 * Option holding the template library's search and request counts, in its
+	 * own row for the same reason.
+	 *
+	 * @since 2.13.0
+	 */
+	public const FORM_TEMPLATE_DEMAND_OPTION = 'srfm_form_template_demand';
+
+	/**
 	 * Ajax action backing the deactivation-survey checkbox.
 	 *
 	 * Shared between the survey config that declares it and the handler that
@@ -914,8 +931,8 @@ class Analytics {
 	/**
 	 * Track forms started from a prebuilt template.
 	 *
-	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
-	 * as the `form_template_usage` event, so template popularity and how often
+	 * Keeps cumulative counters in FORM_TEMPLATE_USAGE_OPTION and re-sends the
+	 * latest totals as the `form_template_usage` event, so template popularity and how often
 	 * templates are swapped inside the editor can be read from the warehouse.
 	 * Nothing is kept or queued unless the site shares usage data.
 	 *
@@ -936,7 +953,7 @@ class Analytics {
 			return;
 		}
 
-		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = Helper::get_array_value( get_option( self::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$usage = is_array( $usage ) ? $usage : [];
 
 		$counts = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
@@ -953,7 +970,7 @@ class Analytics {
 		}
 
 		$usage['templates'] = $counts;
-		Helper::update_srfm_option( 'form_template_usage', $usage );
+		update_option( self::FORM_TEMPLATE_USAGE_OPTION, $usage, false );
 
 		self::send_form_template_usage( $usage );
 	}
@@ -971,7 +988,7 @@ class Analytics {
 	 * @return void
 	 */
 	public static function refresh_form_template_usage() {
-		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = Helper::get_array_value( get_option( self::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$usage = is_array( $usage ) ? $usage : [];
 
 		$used = 0;
@@ -990,8 +1007,8 @@ class Analytics {
 	 * library being opened, a template previewed, a locked Premium template
 	 * previewed, or its "Upgrade to unlock" button clicked.
 	 *
-	 * Adds to the running totals in srfm_options and re-sends them with the
-	 * `form_template_usage` event. Locked previews and upgrade clicks are also
+	 * Adds to the running totals in FORM_TEMPLATE_USAGE_OPTION and re-sends them
+	 * with the `form_template_usage` event. Locked previews and upgrade clicks are also
 	 * counted per template.
 	 *
 	 * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
@@ -1015,7 +1032,7 @@ class Analytics {
 			return false;
 		}
 
-		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = Helper::get_array_value( get_option( self::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$usage = is_array( $usage ) ? $usage : [];
 
 		$usage[ $totals[ $action ] ] = absint( $usage[ $totals[ $action ] ] ?? 0 ) + 1;
@@ -1033,7 +1050,7 @@ class Analytics {
 			$usage[ $per_template[ $action ] ] = $counts;
 		}
 
-		Helper::update_srfm_option( 'form_template_usage', $usage );
+		update_option( self::FORM_TEMPLATE_USAGE_OPTION, $usage, false );
 		self::send_form_template_usage( $usage );
 
 		return true;
@@ -1136,8 +1153,8 @@ class Analytics {
 	 * Count a step of the Add New Form start funnel: the start screen shown,
 	 * a choice made on it (with the position its card was shown in, or `link`
 	 * for the scratch link), or a step inside a path while a choice is in
-	 * play. Adds to the running totals in srfm_options and re-sends them with
-	 * the `form_start_funnel` event.
+	 * play. Adds to the running totals in FORM_START_FUNNEL_OPTION and re-sends
+	 * them with the `form_start_funnel` event.
 	 *
 	 * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
 	 * @param string $choice   Choice, required for `choose`.
@@ -1331,8 +1348,8 @@ class Analytics {
 	 * Track demand for templates that do not exist yet: what people request
 	 * from the template library, and how often a search finds nothing.
 	 *
-	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
-	 * as the `form_template_demand` event, so the most wanted templates can be
+	 * Keeps cumulative counters in FORM_TEMPLATE_DEMAND_OPTION and re-sends the
+	 * latest totals as the `form_template_demand` event, so the most wanted templates can be
 	 * read from the warehouse. Only a request the user sends on purpose carries
 	 * its text (already cleaned by Form_Templates::clean_demand_query()); a
 	 * search with no results is only counted, never its text. Nothing is kept
@@ -1348,7 +1365,7 @@ class Analytics {
 			return;
 		}
 
-		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
+		$demand = Helper::get_array_value( get_option( self::FORM_TEMPLATE_DEMAND_OPTION, [] ) );
 		$demand = is_array( $demand ) ? $demand : [];
 
 		if ( 'search' === $type ) {
@@ -1368,7 +1385,7 @@ class Analytics {
 			}
 			$demand['request'] = $counts;
 		}
-		Helper::update_srfm_option( 'form_template_demand', $demand );
+		update_option( self::FORM_TEMPLATE_DEMAND_OPTION, $demand, false );
 
 		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
 		$properties = [

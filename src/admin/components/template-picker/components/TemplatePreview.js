@@ -619,6 +619,11 @@ const TemplatePreview = ( {
 		const onKeyDown = ( event ) => {
 			const target = event.target;
 			if ( 'Escape' === event.key ) {
+				// A dialog on top (the "Replace form" confirmation) handled it
+				// and closes itself; the preview and its colors stay.
+				if ( event.defaultPrevented ) {
+					return;
+				}
 				// In a text field, Escape leaves the field first, so typing a
 				// message is not lost to a stray key.
 				if (

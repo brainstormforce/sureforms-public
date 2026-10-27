@@ -835,8 +835,8 @@ class Test_Field_Validation extends TestCase {
 	 * block_id out of page source, then nest forged child keys inside it.
 	 */
 	public function test_strip_unknown_field_keys_drops_unknown_repeater_child_keys() {
-		$content  = '<!-- wp:srfm/repeater {"block_id":"bbbb2222"} -->';
-		$content .= '<!-- wp:srfm/input {"block_id":"cccc3333"} /-->';
+		$content  = '<!-- wp:srfm/repeater {"block_id":"bbbb2222","slug":"rows"} -->';
+		$content .= '<!-- wp:srfm/input {"block_id":"cccc3333","slug":"child"} /-->';
 		$content .= '<!-- /wp:srfm/repeater -->';
 
 		$form_id = wp_insert_post(
@@ -1181,6 +1181,39 @@ class Test_Field_Validation extends TestCase {
 			$this->assertArrayNotHasKey( $forged, $stripped, "$forged names notes99 under the plan slug" );
 			$this->assertSame( 'Basic', $stripped[ $genuine ] ?? null, 'a forged key must not knock out the real field' );
 		}
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A field without a slug (an inline button) submits its key with an empty
+	 * slug; its block_id under any made-up slug is not a field of the form.
+	 */
+	public function test_collect_field_block_ids() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Button Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"name01","slug":"name"} /--><!-- wp:srfm/inline-button {"block_id":"btn01"} /-->',
+			]
+		);
+		$own    = 'srfm-inline-button-btn01-lbl-QnV0dG9u-';
+		$made   = 'srfm-inline-button-btn01-lbl-QnV0dG9u-junk';
+		$stolen = 'srfm-inline-button-btn01-lbl-QnV0dG9u-name';
+
+		$stripped = Field_Validation::strip_unknown_field_keys(
+			[
+				'srfm-input-name01-lbl-TmFtZQ-name' => 'Jane',
+				$own                                => 'x',
+				$made                               => 'spam',
+			],
+			$form_id
+		);
+		$this->assertSame( 'x', $stripped[ $own ] ?? null, 'the button\'s own key is kept' );
+		$this->assertArrayNotHasKey( $made, $stripped, 'a made-up slug on the button\'s block_id is dropped' );
+		$this->assertSame( 'Jane', $stripped['srfm-input-name01-lbl-TmFtZQ-name'] ?? null );
+		$this->assertArrayNotHasKey( $stolen, Field_Validation::strip_unknown_field_keys( [ $stolen => 'x' ], $form_id ), 'nor another field\'s slug' );
 
 		wp_delete_post( $form_id, true );
 	}
