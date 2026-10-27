@@ -514,7 +514,7 @@ class Admin_Ajax {
 
 		// Determine content type and filename based on file extension.
 		$content_type = 'application/octet-stream';
-		$filename     = $file_info['basename'];
+		$filename     = Entries::get_export_download_filename( $file_info['basename'] );
 		if ( isset( $file_info['extension'] ) ) {
 			if ( 'csv' === $file_info['extension'] ) {
 				$content_type = 'text/csv';
