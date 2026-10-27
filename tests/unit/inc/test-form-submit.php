@@ -23,6 +23,13 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 	protected $form_submit;
 
+	/**
+	 * Decoded JSON of the last captcha submission sent by recaptcha_submission_rejected().
+	 *
+	 * @var array<mixed>|null
+	 */
+	private $last_captcha_response;
+
 	protected function setUp(): void {
 		$this->form_submit = new Form_Submit();
 	}
@@ -641,9 +648,11 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		} catch ( \WPDieException $e ) {
 			$data = json_decode( (string) ob_get_clean(), true );
 			// Entry processing may still stop for unrelated reasons; only a
-			// captcha error response counts as a captcha rejection.
-			$rejected = is_array( $data ) && isset( $data['data']['detail_message'] )
-				&& false !== strpos( $data['data']['detail_message'], 'Captcha validation failed' );
+			// captcha error response counts: recaptcha_error_message() alone sets
+			// detail_message (no provider code) or log_message (with one).
+			$rejected = is_array( $data ) && ( isset( $data['data']['detail_message'] ) || isset( $data['data']['log_message'] ) );
+
+			$this->last_captcha_response = is_array( $data ) ? $data : null;
 		}
 
 		remove_filter( 'pre_http_request', $siteverify );
@@ -697,6 +706,23 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 			'v2 checkbox failed'    => [ 'v2-checkbox', '{"success":false}', true ],
 			'v2 checkbox malformed' => [ 'v2-checkbox', '<html>503</html>', true ],
 		];
+	}
+
+	/**
+	 * A v3 rejection for a low score is reported with its own reason code, while a
+	 * rejection Google explains keeps Google's code.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_low_score_reason_code() {
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.1}', true ) );
+		$this->assertSame( [ 'score-threshold-not-met' ], $this->last_captcha_response['data']['api_response']['error-codes'] );
+		$this->assertStringContainsString( 'The reCAPTCHA v3 score was below the accepted threshold.', $this->last_captcha_response['data']['log_message'] );
+		$this->assertStringContainsString( 'Error Code: score-threshold-not-met', $this->last_captcha_response['data']['log_message'] );
+
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":false,"error-codes":["timeout-or-duplicate"]}', true ) );
+		$this->assertSame( [ 'timeout-or-duplicate' ], $this->last_captcha_response['data']['api_response']['error-codes'] );
+
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v2-checkbox', '{"success":false}', true ) );
+		$this->assertArrayNotHasKey( 'error-codes', $this->last_captcha_response['data']['api_response'] );
 	}
 
 	/**

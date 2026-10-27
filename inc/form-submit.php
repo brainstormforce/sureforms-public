@@ -561,6 +561,11 @@ class Form_Submit {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
+				// A confirmed token that still did not pass is a v3 score below the threshold; Google sends no code for it.
+				if ( self::is_captcha_verified( $sureforms_captcha_data ) ) {
+					$sureforms_captcha_data['error-codes'] = [ 'score-threshold-not-met' ];
+				}
+
 				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
 			}
 
@@ -604,6 +609,11 @@ class Form_Submit {
 				}
 				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+				}
+
+				// A confirmed token that still did not pass is a v3 score below the threshold; Google sends no code for it.
+				if ( self::is_captcha_verified( $sureforms_captcha_data ) ) {
+					$sureforms_captcha_data['error-codes'] = [ 'score-threshold-not-met' ];
 				}
 
 				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
@@ -1485,12 +1495,14 @@ class Form_Submit {
 		// Google reCAPTCHA error codes.
 		// Reference: (https://developers.google.com/recaptcha/docs/verify#error-code-reference).
 		$google_recaptcha_error = [
-			'missing-input-secret'   => 'The secret parameter is missing.',
-			'invalid-input-secret'   => 'The secret parameter is invalid or malformed.',
-			'missing-input-response' => 'The response parameter is missing.',
-			'invalid-input-response' => 'The response parameter is invalid or malformed.',
-			'bad-request'            => 'The request is invalid or malformed.',
-			'timeout-or-duplicate'   => 'The response is no longer valid: either is too old or has been used previously.',
+			'missing-input-secret'    => 'The secret parameter is missing.',
+			'invalid-input-secret'    => 'The secret parameter is invalid or malformed.',
+			'missing-input-response'  => 'The response parameter is missing.',
+			'invalid-input-response'  => 'The response parameter is invalid or malformed.',
+			'bad-request'             => 'The request is invalid or malformed.',
+			'timeout-or-duplicate'    => 'The response is no longer valid: either is too old or has been used previously.',
+			// Set by SureForms, not Google: the v3 score was under srfm_recaptcha_v3_score_threshold.
+			'score-threshold-not-met' => 'The reCAPTCHA v3 score was below the accepted threshold.',
 		];
 
 		// hCaptcha error codes.
@@ -2108,7 +2120,7 @@ class Form_Submit {
 	 * @param mixed  $result       Decoded siteverify response.
 	 * @param string $captcha_type The form's stored reCAPTCHA variant (_srfm_form_recaptcha).
 	 * @param int    $form_id      Form post ID.
-	 * @since 2.13.1
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private static function is_recaptcha_verified( $result, $captcha_type, $form_id ) {
@@ -2128,7 +2140,7 @@ class Form_Submit {
 		 *
 		 * @param float $threshold Minimum score. Default 0.5, Google's suggested starting point.
 		 * @param int   $form_id   Form post ID.
-		 * @since 2.13.1
+		 * @since x.x.x
 		 */
 		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', 0.5, $form_id );
 		$threshold = is_numeric( $threshold ) ? max( 0.0, min( 1.0, (float) $threshold ) ) : 0.5;
