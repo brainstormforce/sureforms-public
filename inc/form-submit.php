@@ -2090,7 +2090,7 @@ class Form_Submit {
 	 * true means the token was never confirmed, so it is not treated as verified.
 	 *
 	 * @param mixed $result Return value of one of the validate_*_token() methods.
-	 * @since 2.12.9
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private static function is_captcha_verified( $result ) {

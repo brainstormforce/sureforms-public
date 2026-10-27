@@ -28,6 +28,16 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * Drop any HTTP mock and captcha settings a test registered, even when it
+	 * exits through an unexpected exception before its own cleanup runs.
+	 */
+	protected function tearDown(): void {
+		remove_all_filters( 'pre_http_request' );
+		delete_option( 'srfm_security_settings_options' );
+		parent::tearDown();
+	}
+
+	/**
 	 * Test recaptcha_error_message method.
 	 * This function tests various scenarios for the recaptcha_error_message method.
 	 * It includes cases where:
