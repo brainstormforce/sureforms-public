@@ -104,6 +104,33 @@ class String_Translator {
 	}
 
 	/**
+	 * Resolve the value a translatable block attribute renders with: the saved
+	 * attribute when present, otherwise the block type's registered default.
+	 *
+	 * Gutenberg omits attributes left at their block.json default from the block
+	 * comment, so a field whose label was never edited has no `label` in
+	 * post_content yet still renders one. Both the collector and the translator
+	 * read values through this method so default strings are registered and
+	 * translated like saved ones.
+	 *
+	 * @param string              $block_name Block name, e.g. `srfm/phone`.
+	 * @param array<string,mixed> $attrs      Parsed block attributes.
+	 * @param string              $attribute  Attribute key.
+	 * @since 2.13.0
+	 * @return string The saved or default string, or '' when neither is a string.
+	 */
+	public static function block_attribute_value( string $block_name, array $attrs, string $attribute ): string {
+		if ( array_key_exists( $attribute, $attrs ) ) {
+			return is_string( $attrs[ $attribute ] ) ? $attrs[ $attribute ] : '';
+		}
+
+		$block_type = \WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
+		$default    = $block_type && isset( $block_type->attributes[ $attribute ]['default'] ) ? $block_type->attributes[ $attribute ]['default'] : '';
+
+		return is_string( $default ) ? $default : '';
+	}
+
+	/**
 	 * Block names whose `options` array contains translatable `label` entries.
 	 *
 	 * @since 2.11.0
@@ -600,14 +627,15 @@ class String_Translator {
 			// Translate scalar attributes for known SureForms blocks.
 			if ( '' !== $block_id && isset( $attribute_map[ $block_name ] ) ) {
 				foreach ( $attribute_map[ $block_name ] as $attribute_key ) {
-					if ( ! isset( $attrs[ $attribute_key ] ) || ! is_string( $attrs[ $attribute_key ] ) ) {
+					$value = self::block_attribute_value( $block_name, $attrs, $attribute_key );
+					if ( '' === $value ) {
 						continue;
 					}
 					$attrs[ $attribute_key ] = $this->translate_block_attribute(
 						$form_id,
 						$block_id,
 						$attribute_key,
-						$attrs[ $attribute_key ]
+						$value
 					);
 				}
 			}

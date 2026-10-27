@@ -56,6 +56,10 @@ class Test_Analytics extends TestCase {
 		// Reset the AI starter counters so they don't leak into other tests.
 		Helper::update_srfm_option( 'ai_starter_usage', [] );
 
+		// Delete template forms here too, so a failing test can't leak them
+		// into the published / with-entries counts of the next one.
+		$this->delete_template_forms();
+
 		// Clean up any test posts.
 		$posts = get_posts(
 			[
@@ -440,6 +444,106 @@ class Test_Analytics extends TestCase {
 		delete_transient( 'srfm_email_delivery_state_checked' );
 		Helper::update_srfm_option( 'email_delivery_state_tracked', $tracked_backup );
 		\SRFM\Inc\Email_Delivery\Status::reset();
+	}
+
+	// ─── form templates ───────────────────────────────────────────
+
+	/**
+	 * The pending copy of an event, or null when it was not tracked.
+	 *
+	 * @param string $name Event name.
+	 * @return array<string,mixed>|null
+	 */
+	private function pending_event( $name ) {
+		foreach ( get_option( 'srfm_options', [] )['usage_events_pending'] ?? [] as $event ) {
+			if ( $name === ( $event['event_name'] ?? '' ) ) {
+				return $event;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Template usage is counted and queued only while the site shares usage data.
+	 */
+	public function test_track_form_template_usage_needs_usage_sharing() {
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		Analytics::track_form_template_usage( 'contact-us', 'create' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		$this->assertEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [] ) );
+		$this->assertNull( $this->pending_event( 'form_template_usage' ) );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_usage( 'contact-us', 'create' );
+		Analytics::track_form_template_usage( 'contact-us', 'swap' );
+		Analytics::track_form_template_usage( 'Bad Id!', 'create' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$event = $this->pending_event( 'form_template_usage' );
+		$this->assertNotNull( $event );
+		$this->assertSame( '2', $event['properties']['created'] );
+		$this->assertSame( '1', $event['properties']['swaps'] );
+		$this->assertSame( '2', $event['properties']['template_contact-us'] );
+		$this->assertSame( '1', $event['properties']['template_badid'], 'Ids are cleaned before they become keys.' );
+
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+	}
+
+	/**
+	 * The template counters live in their own options: a count rewrites its whole
+	 * value, so it never rewrites the settings in srfm_options.
+	 */
+	public function test_track_form_template_usage_keeps_its_counts_out_of_srfm_options() {
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_usage( 'contact-us', 'create' );
+		Analytics::track_form_template_action( 'view', 'contact-us' );
+		Analytics::track_form_template_demand( 'wedding rsvp', 'request' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$options = get_option( 'srfm_options', [] );
+		$this->assertArrayNotHasKey( 'form_template_usage', is_array( $options ) ? $options : [] );
+		$this->assertArrayNotHasKey( 'form_template_demand', is_array( $options ) ? $options : [] );
+		$this->assertSame( 1, get_option( Analytics::FORM_TEMPLATE_USAGE_OPTION )['templates']['contact-us'] ?? null );
+		$this->assertNotEmpty( get_option( Analytics::FORM_TEMPLATE_DEMAND_OPTION ) );
+
+		delete_option( Analytics::FORM_TEMPLATE_USAGE_OPTION );
+		delete_option( Analytics::FORM_TEMPLATE_DEMAND_OPTION );
+	}
+
+	/**
+	 * Requests carry their (cleaned) text; searches with no results are only
+	 * counted; nothing is kept without usage sharing.
+	 */
+	public function test_track_form_template_demand_counts_searches_without_text() {
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		Analytics::track_form_template_demand( 'gym membership', 'request' );
+		Analytics::track_form_template_demand( '', 'search' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		$this->assertEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ) );
+		$this->assertNull( $this->pending_event( 'form_template_demand' ) );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_demand( 'gym membership', 'request' );
+		Analytics::track_form_template_demand( 'pet adoption', 'search' );
+		Analytics::track_form_template_demand( '', 'search' );
+		Analytics::track_form_template_demand( '', 'request' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$event = $this->pending_event( 'form_template_demand' );
+		$this->assertNotNull( $event );
+		$this->assertSame( '1', $event['properties']['requests'] );
+		$this->assertSame( '1', $event['properties']['request_gym_membership'] );
+		$this->assertSame( '2', $event['properties']['searches'] );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( $event ) );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ) ) );
+
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 	}
 
 	// ─── embed_styling_gutenberg_count ────────────────────────────
@@ -1183,6 +1287,288 @@ class Test_Analytics extends TestCase {
 	}
 
 	/**
+	 * Forms created by make_template_form(), deleted after each test.
+	 *
+	 * @var array<int, int>
+	 */
+	private $template_forms = [];
+
+	/**
+	 * Delete the forms make_template_form() created.
+	 *
+	 * @return void
+	 */
+	private function delete_template_forms() {
+		foreach ( $this->template_forms as $id ) {
+			wp_delete_post( $id, true );
+		}
+		$this->template_forms = [];
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+		Analytics::events()->flush_pending();
+	}
+
+	/**
+	 * Create a form as a template would, with the given status.
+	 *
+	 * @param string $template_id Template id, or '' for a hand-made form.
+	 * @param string $status      Post status.
+	 * @return int Form id.
+	 */
+	private function make_template_form( $template_id, $status ) {
+		$id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => $status,
+				'post_title'  => 'Template form',
+			]
+		);
+		$this->template_forms[] = $id;
+		if ( '' !== $template_id ) {
+			update_post_meta( $id, '_srfm_created_via', 'template' );
+			update_post_meta( $id, '_srfm_template_id', $template_id );
+		}
+		return $id;
+	}
+
+	/**
+	 * The queued form_template_usage properties, or null when not queued.
+	 *
+	 * @return array<string, string>|null
+	 */
+	private function queued_template_usage() {
+		foreach ( get_option( 'srfm_options', [] )['usage_events_pending'] ?? [] as $event ) {
+			if ( 'form_template_usage' === ( $event['event_name'] ?? '' ) ) {
+				return $event['properties'] ?? [];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Test the template usage event counts published template forms per template.
+	 *
+	 * @return void
+	 */
+	public function test_refresh_form_template_usage_counts_published_template_forms() {
+		Analytics::events()->flush_pending();
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [ 'created' => 4, 'templates' => [ 'contact-us' => 3, 'quote-request' => 1 ] ], false );
+
+		$this->make_template_form( 'contact-us', 'publish' );
+		$this->make_template_form( 'contact-us', 'publish' );
+		$draft = $this->make_template_form( 'contact-us', 'draft' );
+		$this->make_template_form( 'quote-request', 'draft' );
+		$this->make_template_form( '', 'publish' );
+
+		Analytics::refresh_form_template_usage();
+		$props = $this->queued_template_usage();
+
+		$this->assertNotNull( $props );
+		$this->assertSame( '4', $props['created'] );
+		$this->assertSame( '2', $props['published'], 'Drafts and hand-made forms are not counted.' );
+		$this->assertSame( '2', $props['published_contact-us'] );
+		$this->assertArrayNotHasKey( 'published_quote-request', $props );
+		$this->assertSame( '3', $props['template_contact-us'] );
+
+		// Publishing later, or unpublishing, shows up on the next refresh.
+		wp_update_post( [ 'ID' => $draft, 'post_status' => 'publish' ] );
+		Analytics::refresh_form_template_usage();
+		$this->assertSame( '3', $this->queued_template_usage()['published_contact-us'] );
+
+		wp_update_post( [ 'ID' => $draft, 'post_status' => 'draft' ] );
+		Analytics::refresh_form_template_usage();
+		$this->assertSame( '2', $this->queued_template_usage()['published'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test sites that never used a template send no template usage event.
+	 *
+	 * @return void
+	 */
+	public function test_refresh_form_template_usage_sends_nothing_without_templates() {
+		Analytics::events()->flush_pending();
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+		$this->make_template_form( '', 'publish' );
+
+		Analytics::refresh_form_template_usage();
+
+		$this->assertNull( $this->queued_template_usage() );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test creating a template form queues the published counts too.
+	 *
+	 * @return void
+	 */
+	public function test_track_form_template_usage_sends_published_counts() {
+		Analytics::events()->flush_pending();
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+		$this->make_template_form( 'rsvp', 'publish' );
+
+		// Template usage is only tracked while the site shares usage data.
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_usage( 'rsvp' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$props = $this->queued_template_usage();
+
+		$this->assertSame( '1', $props['created'] );
+		$this->assertSame( '1', $props['template_rsvp'] );
+		$this->assertSame( '1', $props['published_rsvp'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test library steps are counted, with locked previews and upgrade clicks per template.
+	 *
+	 * @return void
+	 */
+	public function test_track_form_template_action_counts_library_steps() {
+		Analytics::events()->flush_pending();
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+
+		Analytics::track_form_template_action( 'library_open' );
+		Analytics::track_form_template_action( 'library_open' );
+		Analytics::track_form_template_action( 'preview', 'contact-us' );
+		Analytics::track_form_template_action( 'preview', 'loan-emi-calculator' );
+		Analytics::track_form_template_action( 'locked_preview', 'loan-emi-calculator' );
+		Analytics::track_form_template_action( 'upgrade_click', 'loan-emi-calculator' );
+		$props = $this->queued_template_usage();
+
+		$this->assertSame( has_filter( 'srfm_pro_tier' ) || defined( 'SRFM_PRO_VER' ) ? 'business' : 'free', $props['plan'] );
+		$this->assertSame( '2', $props['library_opens'] );
+		$this->assertSame( '2', $props['previews'] );
+		$this->assertSame( '1', $props['locked_previews'] );
+		$this->assertSame( '1', $props['upgrade_clicks'] );
+		$this->assertSame( '1', $props['locked_preview_loan-emi-calculator'] );
+		$this->assertSame( '1', $props['upgrade_loan-emi-calculator'] );
+		$this->assertArrayNotHasKey( 'locked_preview_contact-us', $props, 'Plain previews are only totalled.' );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test unknown actions, and template actions without a template, are ignored.
+	 *
+	 * @return void
+	 */
+	public function test_track_form_template_action_ignores_invalid_steps() {
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+
+		$this->assertFalse( Analytics::track_form_template_action( 'delete_everything', 'contact-us' ) );
+		$this->assertFalse( Analytics::track_form_template_action( 'preview' ) );
+		$this->assertTrue( Analytics::track_form_template_action( 'library_open' ) );
+		$this->assertSame( 1, get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [] )['library_opens'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test template forms that received an entry are counted per template.
+	 *
+	 * @return void
+	 */
+	public function test_template_forms_with_entries_are_counted() {
+		Analytics::events()->flush_pending();
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [ 'created' => 3 ], false );
+
+		$with_entry = $this->make_template_form( 'rsvp', 'publish' );
+		$this->make_template_form( 'rsvp', 'publish' );
+		$trashed_entry = $this->make_template_form( 'contact-us', 'publish' );
+		\SRFM\Inc\Database\Tables\Entries::add( [ 'form_id' => $with_entry ] );
+		\SRFM\Inc\Database\Tables\Entries::add( [ 'form_id' => $with_entry ] );
+		\SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id' => $trashed_entry,
+				'status'  => 'trash',
+			]
+		);
+
+		Analytics::refresh_form_template_usage();
+		$props = $this->queued_template_usage();
+
+		$this->assertSame( '1', $props['with_entries'] );
+		$this->assertSame( '1', $props['with_entries_rsvp'] );
+		$this->assertArrayNotHasKey( 'with_entries_contact-us', $props, 'Trashed entries do not count.' );
+		$this->assertSame( '3', $props['published'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test published_template_forms() counts only published forms made from a template.
+	 *
+	 * @return void
+	 */
+	public function test_published_template_forms() {
+		$this->make_template_form( 'contact-us', 'publish' );
+		$this->make_template_form( 'contact-us', 'publish' );
+		$this->make_template_form( 'rsvp', 'publish' );
+		$this->make_template_form( 'rsvp', 'draft' );
+		$this->make_template_form( 'quote-request', 'trash' );
+		$this->make_template_form( '', 'publish' );
+
+		$counts = Analytics::published_template_forms();
+
+		$this->assertSame(
+			[
+				'contact-us' => 2,
+				'rsvp'       => 1,
+			],
+			$counts,
+			'Most-used first; drafts, trashed and hand-made forms are left out.'
+		);
+
+		$this->delete_template_forms();
+		$this->assertSame( [], Analytics::published_template_forms() );
+	}
+
+	/**
+	 * Test track_form_template_demand() counts requests per (normalised) text
+	 * and searches without text, and queues the totals.
+	 *
+	 * @return void
+	 */
+	public function test_track_form_template_demand() {
+		Analytics::events()->flush_pending();
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_demand( 'Gym Membership' );
+		Analytics::track_form_template_demand( 'gym membership', 'request' );
+		Analytics::track_form_template_demand( 'Pet adoption', 'search' );
+		Analytics::track_form_template_demand( 'Car wash', 'anything-else' );
+		Analytics::track_form_template_demand( '   ' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$this->assertSame(
+			[
+				'request'  => [
+					'gym_membership' => 2,
+					'car_wash'       => 1,
+				],
+				'searches' => 1,
+			],
+			get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ),
+			'Unknown types count as requests; queries are normalised to keys; searches keep no text.'
+		);
+
+		$props = $this->pending_event( 'form_template_demand' )['properties'] ?? null;
+		$this->assertNotNull( $props );
+		$this->assertSame( '3', $props['requests'] );
+		$this->assertSame( '1', $props['searches'] );
+		$this->assertSame( '2', $props['request_gym_membership'] );
+		$this->assertArrayNotHasKey( 'search_pet_adoption', $props );
+		$this->assertContains( $props['plan'], [ 'free', 'business' ] );
+
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
+		Analytics::events()->flush_pending();
+	}
+
+	/**
 	 * Test track_first_form_published skips when status is not changing to publish.
 	 *
 	 * @return void
@@ -1784,5 +2170,255 @@ class Test_Analytics extends TestCase {
 		remove_filter( 'pre_option_active_plugins', $smtp );
 		delete_transient( 'srfm_email_delivery_state_checked' );
 		\SRFM\Inc\Email_Delivery\Status::reset();
+	}
+
+	/**
+	 * A form tagged with a start screen choice, cleaned up by tearDown().
+	 *
+	 * @param string $status Post status.
+	 * @param string $choice Start screen choice.
+	 * @return int Form ID.
+	 */
+	private function start_screen_form( $status, $choice ) {
+		$post_id = wp_insert_post(
+			[
+				'post_title'  => 'Start screen form',
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => $status,
+			]
+		);
+		update_post_meta( $post_id, '_srfm_test_post', 1 );
+		update_post_meta( $post_id, \SRFM\Inc\Form_Start::START_CHOICE_META, $choice );
+		return $post_id;
+	}
+
+	public function test_track_form_start_action() {
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+
+		// Called directly, not through the REST route: it checks the opt-in itself.
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		$this->assertFalse( Analytics::track_form_start_action( 'view' ) );
+		$this->assertEmpty( get_option( Analytics::FORM_START_FUNNEL_OPTION, [] ) );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$this->assertTrue( Analytics::track_form_start_action( 'choose', 'template', '2' ) );
+		$this->assertFalse( Analytics::track_form_start_action( 'choose' ), 'A choose without a choice.' );
+		$this->assertFalse( Analytics::track_form_start_action( 'delete_everything', 'ai' ) );
+		$funnel = get_option( Analytics::FORM_START_FUNNEL_OPTION, [] );
+		$this->assertSame( 1, $funnel['choice_template_pos_2'] );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+	}
+
+	public function test_track_form_start_created() {
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		Analytics::track_form_start_created( 'template', 'template' );
+		Analytics::track_form_start_created( 'template', 'scratch' );
+		Analytics::track_form_start_created( '', 'ai' );
+
+		$funnel = get_option( Analytics::FORM_START_FUNNEL_OPTION, [] );
+		$this->assertSame( 2, $funnel['created_template'] );
+		$this->assertSame( 1, $funnel['switch_template_to_scratch'] );
+		$this->assertArrayNotHasKey( 'created_ai', $funnel, 'No choice, nothing to count.' );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+	}
+
+	/**
+	 * A site that used the start screen while usage sharing was off has no
+	 * stored totals; its forms still get counted once sharing is on.
+	 */
+	public function test_refresh_form_start_funnel() {
+		delete_option( Analytics::FORM_START_FUNNEL_OPTION );
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$funnel_event = static function () {
+			foreach ( Analytics::events()->flush_pending() as $event ) {
+				if ( 'form_start_funnel' === ( $event['event_name'] ?? '' ) ) {
+					return $event;
+				}
+			}
+			return null;
+		};
+
+		$before = Analytics::form_start_outcomes();
+		Analytics::events()->flush_pending();
+		Analytics::refresh_form_start_funnel();
+		if ( 0 === array_sum( array_map( 'array_sum', $before ) ) ) {
+			$this->assertNull( $funnel_event(), 'No totals and no tagged forms: nothing to send.' );
+		}
+
+		$this->start_screen_form( 'publish', 'ai' );
+		Analytics::refresh_form_start_funnel();
+		$event = $funnel_event();
+		$this->assertNotNull( $event, 'Tagged forms are sent although no totals were stored.' );
+		$this->assertSame( (string) ( $before['ai']['published'] + 1 ), $event['properties']['published_ai'] );
+		$this->assertSame( SRFM_VER, $event['properties']['plugin_version'] );
+		$this->assertSame( '1', $event['properties']['recovered'], 'Rebuilt from the forms, without views or choices.' );
+		$this->assertArrayNotHasKey( 'views', $event['properties'] );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		Analytics::refresh_form_start_funnel();
+		$this->assertNull( $funnel_event(), 'Nothing is sent with usage sharing off.' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+	}
+
+	public function test_form_start_outcomes() {
+		global $wpdb;
+		$entries = \SRFM\Inc\Database\Tables\Entries::get_instance()->get_tablename();
+		$before  = Analytics::form_start_outcomes();
+
+		$live    = $this->start_screen_form( 'publish', 'scratch' );
+		$private = $this->start_screen_form( 'private', 'scratch' );
+		$trashed = $this->start_screen_form( 'publish', 'scratch' );
+		foreach ( [ [ $live, 'unread' ], [ $private, 'unread' ], [ $trashed, 'trash' ] ] as $entry ) {
+			\SRFM\Inc\Database\Tables\Entries::add(
+				[
+					'form_id'   => $entry[0],
+					'user_id'   => 0,
+					'status'    => $entry[1],
+					'form_data' => [ 'name' => 'Jane' ],
+				]
+			);
+		}
+
+		$after = Analytics::form_start_outcomes();
+		$this->assertSame( 2, $after['scratch']['published'] - $before['scratch']['published'] );
+		$this->assertSame( 0, $after['scratch']['draft'] - $before['scratch']['draft'], 'A private form is neither a draft nor published.' );
+		// Only the published form with a live entry: not the private form (in
+		// neither draft nor published) and not a form whose only entry is trashed.
+		$this->assertSame( 1, $after['scratch']['with_entries'] - $before['scratch']['with_entries'] );
+
+		// Without the entries table, forms are still counted and nothing breaks.
+		$present = new ReflectionProperty( \SRFM\Inc\Database\Register::class, 'entries_table_present' );
+		$present->setAccessible( true );
+		$was = $present->getValue();
+		$present->setValue( null, false );
+		$missing = Analytics::form_start_outcomes();
+		$present->setValue( null, $was );
+		$this->assertSame( $after['scratch']['published'], $missing['scratch']['published'] );
+		$this->assertSame( 0, $missing['scratch']['with_entries'] );
+
+		foreach ( [ $live, $private, $trashed ] as $form_id ) {
+			$wpdb->delete( $entries, [ 'form_id' => $form_id ] );
+		}
+	}
+
+	/**
+	 * Create an administrator.
+	 *
+	 * This class extends the polyfill TestCase rather than WP_UnitTestCase, so
+	 * there is no self::factory() to reach for.
+	 *
+	 * @return int
+	 */
+	private function create_admin() {
+		return (int) wp_insert_user(
+			[
+				'user_login' => 'srfm_uninstall_pref_' . wp_rand(),
+				'user_pass'  => wp_generate_password(),
+				'user_email' => 'srfm_uninstall_pref_' . wp_rand() . '@example.test',
+				'role'       => 'administrator',
+			]
+		);
+	}
+
+	/**
+	 * register_analytics_entity() hands the library a survey carrying the
+	 * uninstall checkbox, for an administrator in the admin.
+	 *
+	 * The config is built here rather than in the constructor because
+	 * current_user_can() and wp_create_nonce() both call the pluggable
+	 * wp_get_current_user(), which does not exist until wp-includes/pluggable.php
+	 * is loaded - after every plugin file has been required. See
+	 * tests/unit/admin/test-analytics-uninstall-pref.php for the capability,
+	 * nonce and stored-value cases.
+	 *
+	 * @return void
+	 */
+	public function test_register_analytics_entity() {
+		$analytics = Analytics::get_instance();
+
+		$this->assertSame(
+			0,
+			has_action( 'init', [ $analytics, 'register_analytics_entity' ] ),
+			'it runs on init at priority 0, before the library reads its entities at 10'
+		);
+
+		$captured = [];
+		$capture  = static function ( $survey ) use ( &$captured ) {
+			$captured = $survey;
+			return $survey;
+		};
+
+		$admin_id = $this->create_admin();
+		wp_set_current_user( $admin_id );
+		add_filter( 'srfm_deactivation_survey_data', $capture );
+		set_current_screen( 'plugins' );
+
+		$analytics->register_analytics_entity();
+
+		set_current_screen( 'front' );
+		remove_filter( 'srfm_deactivation_survey_data', $capture );
+		wp_set_current_user( 0 );
+		wp_delete_user( $admin_id );
+
+		$this->assertSame( 'sureforms', $captured[0]['plugin_slug'] );
+		$this->assertSame( SRFM_VER, $captured[0]['plugin_version'] );
+		$this->assertSame(
+			Analytics::UNINSTALL_PREF_KEY,
+			$captured[0]['extra_options'][0]['name'],
+			'the checkbox has to post the key uninstall.php reads'
+		);
+	}
+
+	/**
+	 * save_uninstall_preference() round-trips the checkbox into srfm_options as
+	 * a real boolean, which is the only form uninstall.php accepts as consent.
+	 *
+	 * The rejection paths - bad nonce, no manage_options, logged out - and the
+	 * full set of posted values live in
+	 * tests/unit/admin/test-analytics-uninstall-pref.php.
+	 *
+	 * @return void
+	 */
+	public function test_save_uninstall_preference() {
+		$analytics = Analytics::get_instance();
+
+		$admin_id = $this->create_admin();
+		wp_set_current_user( $admin_id );
+
+		$_POST['security']    = wp_create_nonce( Analytics::UNINSTALL_PREF_ACTION );
+		$_REQUEST['security'] = $_POST['security'];
+
+		// 'no' is the one that matters: a (bool) cast in place of the strict
+		// comparison reads it as consent, while '0' is falsy either way and so
+		// proves nothing on its own.
+		foreach ( [ '1' => true, '0' => false, 'no' => false ] as $posted => $expected ) {
+			$_POST['checked'] = (string) $posted;
+
+			ob_start();
+
+			try {
+				$analytics->save_uninstall_preference();
+				ob_end_clean();
+				$this->fail( 'the handler must always answer with wp_send_json_*()' );
+			} catch ( \WPDieException $e ) {
+				unset( $e );
+				$response = (array) json_decode( (string) ob_get_clean(), true );
+			}
+
+			$this->assertTrue( $response['success'] );
+			$this->assertSame( $expected, Helper::get_srfm_option( Analytics::UNINSTALL_PREF_KEY ) );
+		}
+
+		unset( $_POST['security'], $_POST['checked'], $_REQUEST['security'] );
+		Helper::update_srfm_option( Analytics::UNINSTALL_PREF_KEY, false );
+		wp_set_current_user( 0 );
+		wp_delete_user( $admin_id );
 	}
 }

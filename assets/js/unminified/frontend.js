@@ -507,7 +507,11 @@ function onHCaptchaError() {
 	 *
 	 * The function can further be used to adjust the form's label color and other related elements (such as dropdowns and calendars)
 	 * based on whether the existing text color is dark or light. If the text color is not dark, it updates CSS variables
-	 * to ensure proper visibility on a dark background, and appends these styles to a `<style>` tag within the element.
+	 * to ensure proper visibility on a dark background, in a `<style>` tag of its own placed after the form's styles.
+	 *
+	 * It can run again after the form's colors change (the template preview restyles a form in place): each run
+	 * undoes what an earlier run set and the background no longer calls for. A `srfm-has-dark-bg` class the site
+	 * added itself is never taken off.
 	 *
 	 * @param {HTMLElement} element - The container element which includes the form and other related elements. This element should contain a form and be styled appropriately to have a background color that is checked for darkness.
 	 * @return {void} This function does not return a value. It modifies the DOM by adding classes and updating styles as needed based on the background color of the container element.
@@ -524,7 +528,13 @@ function onHCaptchaError() {
 
 		if ( isDark ) {
 			// Add a class in the form container if background color is dark, so that it can be used by other developers as well.
-			element.classList.add( 'srfm-has-dark-bg' );
+			if ( ! element.classList.contains( 'srfm-has-dark-bg' ) ) {
+				element.classList.add( 'srfm-has-dark-bg' );
+				element.setAttribute( 'data-srfm-dark-bg', 'auto' );
+			}
+		} else if ( 'auto' === element.getAttribute( 'data-srfm-dark-bg' ) ) {
+			element.classList.remove( 'srfm-has-dark-bg' );
+			element.removeAttribute( 'data-srfm-dark-bg' );
 		}
 
 		/**
@@ -543,6 +553,10 @@ function onHCaptchaError() {
 			return;
 		}
 
+		let overrides = element.querySelector(
+			'style[data-srfm-dark-bg-overrides]'
+		);
+
 		/**
 		 * Lets calculate the form's text color.
 		 */
@@ -552,35 +566,41 @@ function onHCaptchaError() {
 
 		const textLuminance = getColorLuminance( textColor );
 
-		if ( ! isColorDark( textLuminance ) ) {
-			const cssVariablesAndColors = {
-				'--srfm-expandable-menu-background': '#2e2e2e',
-			};
-
-			const cssElements = [];
-
-			Object.keys( cssVariablesAndColors ).forEach( ( cssVariable ) => {
-				cssElements.push(
-					`${ cssVariable }: ${ cssVariablesAndColors[ cssVariable ] };`
-				);
-			} );
-
-			const styles = `.srfm-form-container-${ form.getAttribute(
-				'form-id'
-			) } { ${ cssElements.join( ' ' ) } }`;
-
-			// The container's inline <style> block is conditional ( it is omitted when
-			// default styling is disabled and no custom CSS exists ) — create it when
-			// missing instead of dereferencing null.
-			let styleTag = element.querySelector( 'style' );
-
-			if ( ! styleTag ) {
-				styleTag = document.createElement( 'style' );
-				element.appendChild( styleTag );
-			}
-
-			styleTag.innerHTML += styles;
+		if ( isColorDark( textLuminance ) ) {
+			overrides?.remove();
+			return;
 		}
+
+		const cssVariablesAndColors = {
+			'--srfm-expandable-menu-background': '#2e2e2e',
+		};
+
+		const cssElements = [];
+
+		Object.keys( cssVariablesAndColors ).forEach( ( cssVariable ) => {
+			cssElements.push(
+				`${ cssVariable }: ${ cssVariablesAndColors[ cssVariable ] };`
+			);
+		} );
+
+		if ( ! overrides ) {
+			// Right after the form's own styles, so it wins over them as before.
+			// The container's inline <style> block is conditional ( it is omitted when
+			// default styling is disabled and no custom CSS exists ).
+			overrides = document.createElement( 'style' );
+			overrides.setAttribute( 'data-srfm-dark-bg-overrides', '' );
+			const styleTag = element.querySelector( 'style' );
+
+			if ( styleTag ) {
+				styleTag.after( overrides );
+			} else {
+				element.appendChild( overrides );
+			}
+		}
+
+		overrides.textContent = `.srfm-form-container-${ form.getAttribute(
+			'form-id'
+		) } { ${ cssElements.join( ' ' ) } }`;
 	}
 
 	/**
@@ -687,6 +707,13 @@ function onHCaptchaError() {
 	addGlobalSrfmObject(
 		'handleInstantFormWrapperHeight',
 		handleInstantFormWrapperHeight
+	);
+
+	// Lets a form whose colors changed after load (the template preview
+	// restyles one in place) get the same dark-background handling again.
+	addGlobalSrfmObject(
+		'normalizeCSSVariablesForDarkBackground',
+		normalizeCSSVariablesForDarkBackground
 	);
 
 	const UTILITY = {
