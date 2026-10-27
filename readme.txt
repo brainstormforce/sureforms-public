@@ -426,6 +426,8 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Forms accept submissions only while they are published. A draft, private, scheduled or trashed form now shows "This form is currently unavailable." when submitted, and editors previewing an unpublished form see a notice that submissions are disabled until it is published.
 = 2.13.0 - 26th October 2026 =
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
