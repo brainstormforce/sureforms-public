@@ -2145,6 +2145,71 @@ class Helper {
 	}
 
 	/**
+	 * The SureForms Pro plan this site runs: 'free', 'starter', 'pro' or 'business'.
+	 *
+	 * Read from the classes the Pro build ships, which is what decides the
+	 * features a site has; the licence does not. Detected once per request,
+	 * as checking a class loads it, so call it on `init` or later.
+	 *
+	 * @since 2.13.0
+	 * @return string
+	 */
+	public static function get_pro_tier() {
+		static $detected = null;
+
+		if ( null === $detected ) {
+			if ( ! self::has_pro() ) {
+				$detected = 'free';
+			} elseif ( class_exists( 'SRFM_Pro\Inc\Business\Init' ) ) {
+				$detected = 'business';
+			} elseif ( class_exists( 'SRFM_Pro\Inc\Pro\Init' ) ) {
+				$detected = 'pro';
+			} else {
+				$detected = 'starter';
+			}
+		}
+
+		/**
+		 * Filters the SureForms Pro plan tier. Applied on every call, after the
+		 * detection is cached, so tests and custom builds can change it.
+		 *
+		 * @since 2.13.0
+		 * @param string $tier 'free', 'starter', 'pro' or 'business'.
+		 */
+		$tier = self::get_string_value( apply_filters( 'srfm_pro_tier', $detected ) );
+
+		return 0 === self::tier_rank( $tier ) ? 'free' : $tier;
+	}
+
+	/**
+	 * Rank of a plan tier, for comparing tiers. Unknown tiers rank as 'free'.
+	 *
+	 * @param string $tier 'free', 'starter', 'pro' or 'business'.
+	 * @since 2.13.0
+	 * @return int 0 to 3.
+	 */
+	public static function tier_rank( $tier ) {
+		$ranks = [
+			'free'     => 0,
+			'starter'  => 1,
+			'pro'      => 2,
+			'business' => 3,
+		];
+		return is_string( $tier ) && isset( $ranks[ $tier ] ) ? $ranks[ $tier ] : 0;
+	}
+
+	/**
+	 * Whether this site's plan includes a tier.
+	 *
+	 * @param string $required 'free', 'starter', 'pro' or 'business'.
+	 * @since 2.13.0
+	 * @return bool
+	 */
+	public static function has_tier( $required ) {
+		return self::tier_rank( self::get_pro_tier() ) >= self::tier_rank( $required );
+	}
+
+	/**
 	 * Whether SureForms promotional content should be hidden.
 	 *
 	 * Covers review requests, cross-sell banners and announcements. The free

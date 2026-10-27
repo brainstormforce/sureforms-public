@@ -106,8 +106,9 @@ class Dropdown_Markup extends Base {
 
 		// Translate the default placeholder text for frontend display. Routed through
 		// the multilingual provider (not just the textdomain) so it is translated on
-		// WPML/Polylang sites too — the default placeholder is not serialized into
-		// block markup, so it never reaches the per-form string package.
+		// WPML/Polylang sites too. A per-form translation of the default placeholder
+		// is applied earlier by String_Translator; this global string is the fallback
+		// when that per-form translation is missing.
 		if ( 'Select an option' === $this->placeholder ) {
 			$this->placeholder = String_Translator::get_instance()->translate_validation_message( 'srfm_dropdown_placeholder', __( 'Select an option', 'sureforms' ) );
 		}
