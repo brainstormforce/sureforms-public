@@ -467,13 +467,13 @@ class Test_Analytics extends TestCase {
 	 * Template usage is counted and queued only while the site shares usage data.
 	 */
 	public function test_track_form_template_usage_needs_usage_sharing() {
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 
 		add_filter( 'sureforms_tracking_enabled', '__return_false' );
 		Analytics::track_form_template_usage( 'contact-us', 'create' );
 		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
 
-		$this->assertEmpty( Helper::get_srfm_option( 'form_template_usage', [] ) );
+		$this->assertEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [] ) );
 		$this->assertNull( $this->pending_event( 'form_template_usage' ) );
 
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );
@@ -489,7 +489,28 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( '2', $event['properties']['template_contact-us'] );
 		$this->assertSame( '1', $event['properties']['template_badid'], 'Ids are cleaned before they become keys.' );
 
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
+	}
+
+	/**
+	 * The template counters live in their own options: a count rewrites its whole
+	 * value, so it never rewrites the settings in srfm_options.
+	 */
+	public function test_track_form_template_usage_keeps_its_counts_out_of_srfm_options() {
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_usage( 'contact-us', 'create' );
+		Analytics::track_form_template_action( 'view', 'contact-us' );
+		Analytics::track_form_template_demand( 'wedding rsvp', 'request' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$options = get_option( 'srfm_options', [] );
+		$this->assertArrayNotHasKey( 'form_template_usage', is_array( $options ) ? $options : [] );
+		$this->assertArrayNotHasKey( 'form_template_demand', is_array( $options ) ? $options : [] );
+		$this->assertSame( 1, get_option( Analytics::FORM_TEMPLATE_USAGE_OPTION )['templates']['contact-us'] ?? null );
+		$this->assertNotEmpty( get_option( Analytics::FORM_TEMPLATE_DEMAND_OPTION ) );
+
+		delete_option( Analytics::FORM_TEMPLATE_USAGE_OPTION );
+		delete_option( Analytics::FORM_TEMPLATE_DEMAND_OPTION );
 	}
 
 	/**
@@ -497,14 +518,14 @@ class Test_Analytics extends TestCase {
 	 * counted; nothing is kept without usage sharing.
 	 */
 	public function test_track_form_template_demand_counts_searches_without_text() {
-		Helper::update_srfm_option( 'form_template_demand', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 
 		add_filter( 'sureforms_tracking_enabled', '__return_false' );
 		Analytics::track_form_template_demand( 'gym membership', 'request' );
 		Analytics::track_form_template_demand( '', 'search' );
 		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
 
-		$this->assertEmpty( Helper::get_srfm_option( 'form_template_demand', [] ) );
+		$this->assertEmpty( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ) );
 		$this->assertNull( $this->pending_event( 'form_template_demand' ) );
 
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );
@@ -520,9 +541,9 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( '1', $event['properties']['request_gym_membership'] );
 		$this->assertSame( '2', $event['properties']['searches'] );
 		$this->assertStringNotContainsString( 'pet', wp_json_encode( $event ) );
-		$this->assertStringNotContainsString( 'pet', wp_json_encode( Helper::get_srfm_option( 'form_template_demand', [] ) ) );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ) ) );
 
-		Helper::update_srfm_option( 'form_template_demand', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 	}
 
 	// ─── embed_styling_gutenberg_count ────────────────────────────
@@ -1282,7 +1303,7 @@ class Test_Analytics extends TestCase {
 			wp_delete_post( $id, true );
 		}
 		$this->template_forms = [];
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 		Analytics::events()->flush_pending();
 	}
 
@@ -1330,7 +1351,7 @@ class Test_Analytics extends TestCase {
 	 */
 	public function test_refresh_form_template_usage_counts_published_template_forms() {
 		Analytics::events()->flush_pending();
-		Helper::update_srfm_option( 'form_template_usage', [ 'created' => 4, 'templates' => [ 'contact-us' => 3, 'quote-request' => 1 ] ] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [ 'created' => 4, 'templates' => [ 'contact-us' => 3, 'quote-request' => 1 ] ], false );
 
 		$this->make_template_form( 'contact-us', 'publish' );
 		$this->make_template_form( 'contact-us', 'publish' );
@@ -1367,7 +1388,7 @@ class Test_Analytics extends TestCase {
 	 */
 	public function test_refresh_form_template_usage_sends_nothing_without_templates() {
 		Analytics::events()->flush_pending();
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 		$this->make_template_form( '', 'publish' );
 
 		Analytics::refresh_form_template_usage();
@@ -1384,7 +1405,7 @@ class Test_Analytics extends TestCase {
 	 */
 	public function test_track_form_template_usage_sends_published_counts() {
 		Analytics::events()->flush_pending();
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 		$this->make_template_form( 'rsvp', 'publish' );
 
 		// Template usage is only tracked while the site shares usage data.
@@ -1407,7 +1428,7 @@ class Test_Analytics extends TestCase {
 	 */
 	public function test_track_form_template_action_counts_library_steps() {
 		Analytics::events()->flush_pending();
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 
 		Analytics::track_form_template_action( 'library_open' );
 		Analytics::track_form_template_action( 'library_open' );
@@ -1435,12 +1456,12 @@ class Test_Analytics extends TestCase {
 	 * @return void
 	 */
 	public function test_track_form_template_action_ignores_invalid_steps() {
-		Helper::update_srfm_option( 'form_template_usage', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [], false );
 
 		$this->assertFalse( Analytics::track_form_template_action( 'delete_everything', 'contact-us' ) );
 		$this->assertFalse( Analytics::track_form_template_action( 'preview' ) );
 		$this->assertTrue( Analytics::track_form_template_action( 'library_open' ) );
-		$this->assertSame( 1, Helper::get_srfm_option( 'form_template_usage', [] )['library_opens'] );
+		$this->assertSame( 1, get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [] )['library_opens'] );
 
 		$this->delete_template_forms();
 	}
@@ -1452,7 +1473,7 @@ class Test_Analytics extends TestCase {
 	 */
 	public function test_template_forms_with_entries_are_counted() {
 		Analytics::events()->flush_pending();
-		Helper::update_srfm_option( 'form_template_usage', [ 'created' => 3 ] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_USAGE_OPTION, [ 'created' => 3 ], false );
 
 		$with_entry = $this->make_template_form( 'rsvp', 'publish' );
 		$this->make_template_form( 'rsvp', 'publish' );
@@ -1513,7 +1534,7 @@ class Test_Analytics extends TestCase {
 	 */
 	public function test_track_form_template_demand() {
 		Analytics::events()->flush_pending();
-		Helper::update_srfm_option( 'form_template_demand', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );
 		Analytics::track_form_template_demand( 'Gym Membership' );
@@ -1531,7 +1552,7 @@ class Test_Analytics extends TestCase {
 				],
 				'searches' => 1,
 			],
-			Helper::get_srfm_option( 'form_template_demand', [] ),
+			get_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [] ),
 			'Unknown types count as requests; queries are normalised to keys; searches keep no text.'
 		);
 
@@ -1543,7 +1564,7 @@ class Test_Analytics extends TestCase {
 		$this->assertArrayNotHasKey( 'search_pet_adoption', $props );
 		$this->assertContains( $props['plan'], [ 'free', 'business' ] );
 
-		Helper::update_srfm_option( 'form_template_demand', [] );
+		update_option( \SRFM\Admin\Analytics::FORM_TEMPLATE_DEMAND_OPTION, [], false );
 		Analytics::events()->flush_pending();
 	}
 

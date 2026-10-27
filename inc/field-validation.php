@@ -703,8 +703,9 @@ class Field_Validation {
 	 *  - an unknown block_id is kept only by its slug (block_id drift under full-page
 	 *    caching), and only when the key holds a single `-lbl-`, so every consumer
 	 *    reads the same slug from it.
-	 * A block_id with no recorded slug (added through `srfm_known_field_block_ids`, or a
-	 * legacy block without one) is kept on its block_id, again only with a single `-lbl-`.
+	 * A block without a slug pairs its block_id with an empty slug. A block_id added
+	 * through `srfm_known_field_block_ids`, which has no pair, is kept on its block_id,
+	 * again only with a single `-lbl-`.
 	 *
 	 * @param string               $key             Submitted field key.
 	 * @param array<string,true>   $known_block_ids Allowlisted block ids.
@@ -875,6 +876,10 @@ class Field_Validation {
 					if ( ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
 						$pairs[ $attrs['block_id'] ] = $attrs['slug'];
 					}
+				} elseif ( ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) && '' === ( $attrs['slug'] ?? '' ) && ! isset( $pairs[ $attrs['block_id'] ] ) ) {
+					// A field without a slug renders its key with an empty one
+					// (Fields\Base), so its block_id pairs with no slug.
+					$pairs[ $attrs['block_id'] ] = '';
 				}
 
 				// A browser posts nothing for an unticked checkbox, so these fields need
