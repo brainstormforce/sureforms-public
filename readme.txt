@@ -430,6 +430,7 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
 * Fix: This update addressed a security bug. Props to Luke Schneider from Patchstack for reporting it responsibly to our team.
+* Fix: This update addressed a security bug. Props to Filip Kowalski from Patchstack for reporting it responsibly to our team.
 = 2.12.9 - 13th October 2026 =
 * New: Added the `srfm_submission_accepted` developer action, fired as soon as a submission is accepted.
 * New: Forms that do not store entries now warn you when a failed notification loses a submission.
