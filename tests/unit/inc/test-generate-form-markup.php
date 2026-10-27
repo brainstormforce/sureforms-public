@@ -125,6 +125,38 @@ class Test_Generate_Form_Markup extends TestCase {
 	}
 
 	/**
+	 * Only forms made from (or swapped to) a template get the class that scopes
+	 * the template success-message colors, so existing forms look the same.
+	 */
+	public function test_get_form_markup_marks_template_forms() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$plain_id = wp_insert_post(
+			[
+				'post_title'   => 'Plain Form',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"a1b2c3d4","formId":0} /-->',
+			]
+		);
+		$template_id = wp_insert_post(
+			[
+				'post_title'   => 'Template Form',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"e5f6a7b8","formId":0} /-->',
+				'meta_input'   => [ '_srfm_template_id' => 'contact-us' ],
+			]
+		);
+
+		$this->assertStringNotContainsString( 'srfm-template-form', Generate_Form_Markup::get_form_markup( $plain_id ) );
+		$this->assertMatchesRegularExpression( '/class="[^"]*srfm-form-container[^"]*srfm-template-form/', Generate_Form_Markup::get_form_markup( $template_id ) );
+
+		wp_delete_post( $plain_id, true );
+		wp_delete_post( $template_id, true );
+	}
+
+	/**
 	 * The admin-only "Edit Form" pill (#3029) is capability-gated and per-form.
 	 *
 	 * The sureforms_form CPT maps edit_post to manage_options, so only

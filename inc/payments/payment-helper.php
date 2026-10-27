@@ -834,32 +834,30 @@ class Payment_Helper {
 	/**
 	 * Get a submitted form value by field slug.
 	 *
-	 * Matches the SureForms field-name convention `{block}-{block_id}-lbl-{label}-{slug}` by
-	 * suffix, regardless of block type. Used to resolve `{form:slug}` tokens when recomputing a
-	 * calculation server-side. Returns null when the slug is not present in the submission.
+	 * Matches the slug of the SureForms field-name convention `{block}-{block_id}-lbl-{label}-{slug}`
+	 * exactly, regardless of block type. Used to resolve `{form:slug}` tokens when recomputing a
+	 * calculation server-side. Returns null unless exactly one submitted key carries the slug.
 	 *
 	 * @param string       $slug      The field slug to look up.
 	 * @param array<mixed> $form_data Submitted form data.
 	 * @since 2.11.1
-	 * @return mixed|null The submitted value, or null when not found.
+	 * @return mixed|null The submitted value, or null when not found or ambiguous.
 	 */
 	public static function get_submitted_value_by_slug( $slug, $form_data ) {
 		if ( empty( $slug ) || ! is_string( $slug ) || ! is_array( $form_data ) ) {
 			return null;
 		}
 
-		$suffix = '-' . $slug;
+		$submitted_value = null;
+		$matches         = 0;
 		foreach ( $form_data as $field_key => $field_value ) {
-			if ( ! is_string( $field_key ) || false === strpos( $field_key, '-lbl-' ) ) {
-				continue;
-			}
-
-			if ( substr( $field_key, -strlen( $suffix ) ) === $suffix ) {
-				return $field_value;
+			if ( Field_Validation::get_slug_from_key( $field_key ) === $slug ) {
+				$submitted_value = $field_value;
+				++$matches;
 			}
 		}
 
-		return null;
+		return 1 === $matches ? $submitted_value : null;
 	}
 
 	/**
@@ -1840,7 +1838,7 @@ class Payment_Helper {
 	 * @param string       $variable_amount_field_slug    Slug of the field to find.
 	 * @param string       $dynamic_amount_field_block_name Block name of the field.
 	 * @param array<mixed> $form_data                     Form submission data.
-	 * @return mixed|null Field value if found, null otherwise.
+	 * @return mixed|null The submitted value, or null when not found or ambiguous.
 	 * @since 2.3.0
 	 */
 	private static function get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data ) {
@@ -1859,19 +1857,21 @@ class Payment_Helper {
 		// Here is the structure of the form data name.
 		// srfm-input-multi-choice-398dbcfe-lbl-UGxlYXNlIGNob29zZSBvcHRpb24-multi-choice
 		// {block_name}-{block_id}-lbl-{combined-id}-{slug}.
+		// The amount source must resolve to exactly one submitted key. With more than one
+		// there is no single value to price against, so return null and let the caller reject.
 		$submitted_field_value = null;
+		$matches               = 0;
 		foreach ( $form_data as $field_key => $field_value ) {
-			// Check if field key starts with block_name- and ends with -slug.
+			// The key must start with block_name- and carry exactly this slug.
 			$is_start_with_block_name = strpos( $field_key, $block_name . '-' ) === 0;
-			$is_last_with_slug        = substr( $field_key, -strlen( '-' . $variable_amount_field_slug ) ) === '-' . $variable_amount_field_slug;
 
-			if ( $is_start_with_block_name && $is_last_with_slug ) {
+			if ( $is_start_with_block_name && Field_Validation::get_slug_from_key( $field_key ) === $variable_amount_field_slug ) {
 				$submitted_field_value = $field_value;
-				break;
+				++$matches;
 			}
 		}
 
-		return $submitted_field_value;
+		return 1 === $matches ? $submitted_field_value : null;
 	}
 
 	/**
