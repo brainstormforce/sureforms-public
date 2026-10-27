@@ -1015,7 +1015,7 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$to            = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
+		$to            = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data, $form_data ) );
 		$subject       = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
 		$email_body    = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
 		$is_raw_format = isset( $item['is_raw_format'] ) && true === $item['is_raw_format'];
@@ -1044,21 +1044,21 @@ class Form_Submit {
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
 		// Add the From: to the headers.
-		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
+		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data );
 
 		// Handle Reply-To with proper sanitization.
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data, $form_data ) ) ) . "\r\n";
 		}
 
 		// Handle CC with proper sanitization.
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data, $form_data ) ) ) . "\r\n";
 		}
 
 		// Handle BCC with proper sanitization.
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data, $form_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
@@ -1179,7 +1179,7 @@ class Form_Submit {
 							// even with debug logging switched off. A rejected
 							// recipient address (often what a visitor typed) is
 							// logged on the entry but says nothing about the site.
-							$recipients = self::get_visitor_recipients( $item, $submission_data );
+							$recipients = self::get_visitor_recipients( $item, $submission_data, $form_data );
 							if ( ! Mailer::is_visitor_recipient_failure( $email_report, $recipients['addresses'], $recipients['only_visitor'] ) ) {
 								$site_failed = true;
 								Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'], $entry_saved );
@@ -1665,10 +1665,12 @@ class Form_Submit {
 	 *
 	 * @param array<mixed> $item            Notification settings.
 	 * @param array<mixed> $submission_data Submission data.
+	 * @param array<mixed> $form_data       Request context, resolved the same way as when the notification was parsed.
 	 * @since 2.12.9
+	 * @since 2.13.0 Added $form_data.
 	 * @return array{addresses:array<int,string>,only_visitor:bool}
 	 */
-	private static function get_visitor_recipients( $item, $submission_data ) {
+	private static function get_visitor_recipients( $item, $submission_data, $form_data = [] ) {
 		$smart_tags   = Smart_Tags::get_instance();
 		$addresses    = [];
 		$owner        = [];
@@ -1681,7 +1683,7 @@ class Form_Submit {
 				if ( '' === $part ) {
 					continue;
 				}
-				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) ) ) );
+				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data, $form_data ) ) ) );
 				if ( false === strpos( $part, '{form:' ) ) {
 					$only_visitor = false;
 					$owner        = array_merge( $owner, $resolved );
@@ -2062,10 +2064,12 @@ class Form_Submit {
 	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
 	 * @param Smart_Tags    $smart_tags Smart Tags instance.
+	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
+	 * @since 2.13.0 Added $form_data.
 	 * @return string The formatted "From" email header.
 	 */
-	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
+	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {
 		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? sanitize_text_field( Helper::get_string_value( $item['from_name'] ) ) : '{site_title}';
 		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
 
@@ -2079,6 +2083,6 @@ class Form_Submit {
 			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) ) . '>' . "\r\n";
+		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data, $form_data ) ) ) . '>' . "\r\n";
 	}
 }
