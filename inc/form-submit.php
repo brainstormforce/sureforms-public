@@ -1667,7 +1667,7 @@ class Form_Submit {
 	 * @param array<mixed> $submission_data Submission data.
 	 * @param array<mixed> $form_data       Request context, resolved the same way as when the notification was parsed.
 	 * @since 2.12.9
-	 * @since 2.13.0 Added $form_data.
+	 * @since x.x.x Added $form_data.
 	 * @return array{addresses:array<int,string>,only_visitor:bool}
 	 */
 	private static function get_visitor_recipients( $item, $submission_data, $form_data = [] ) {
@@ -2066,7 +2066,7 @@ class Form_Submit {
 	 * @param Smart_Tags    $smart_tags Smart Tags instance.
 	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
-	 * @since 2.13.0 Added $form_data.
+	 * @since x.x.x Added $form_data.
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {
@@ -2083,6 +2083,12 @@ class Form_Submit {
 			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data, $form_data ) ) ) . '>' . "\r\n";
+		// A From address resolved from a smart tag gets the same admin_email fallback.
+		$resolved_from = Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data, $form_data ) );
+		if ( ! is_email( $resolved_from ) ) {
+			$resolved_from = Helper::get_string_value( get_option( 'admin_email' ) );
+		}
+
+		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) ) ) . ' <' . esc_html( $resolved_from ) . '>' . "\r\n";
 	}
 }

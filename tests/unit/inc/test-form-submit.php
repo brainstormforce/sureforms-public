@@ -535,6 +535,31 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A From address whose smart tag resolves to something that is not an email
+	 * falls back to admin_email, as an invalid typed From address does.
+	 */
+	public function test_add_from_data_in_header_falls_back_to_admin_email_for_invalid_resolved_tag() {
+		$this->add_page_email_tag();
+		$method = new \ReflectionMethod( Form_Submit::class, 'add_from_data_in_header' );
+		$method->setAccessible( true );
+
+		$header = $method->invoke(
+			null,
+			[],
+			[
+				'from_name'  => 'Site',
+				'from_email' => '{acf_email}',
+			],
+			\SRFM\Inc\Smart_Tags::get_instance(),
+			[ '_wp_http_referer' => '/another-page/' ]
+		);
+
+		$this->remove_page_email_tag();
+
+		$this->assertSame( 'From: Site <' . get_option( 'admin_email' ) . ">\r\n", $header );
+	}
+
+	/**
 	 * Callbacks registered by add_page_email_tag().
 	 *
 	 * @var array<string,callable>
