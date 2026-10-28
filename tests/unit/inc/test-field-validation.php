@@ -140,11 +140,13 @@ class Test_Field_Validation extends TestCase {
 			[
 				'blockName' => 'srfm/number',
 				'attrs'     => [
-					'block_id'   => 'num789',
-					'required'   => true,
-					'formatType' => 'eu-style',
-					'min'        => 5,
-					'max'        => 100,
+					'block_id'     => 'num789',
+					'required'     => true,
+					'formatType'   => 'eu-style',
+					'minValue'     => 5,
+					'maxValue'     => 100,
+					'readOnly'     => true,
+					'defaultValue' => '1.000,50',
 				],
 			],
 		];
@@ -154,8 +156,47 @@ class Test_Field_Validation extends TestCase {
 		$this->assertArrayHasKey( 'num789', $config );
 		$this->assertTrue( $config['num789']['required'] );
 		$this->assertEquals( 'eu-style', $config['num789']['format_type'] );
-		$this->assertEquals( 5.0, $config['num789']['min'] );
-		$this->assertEquals( 100.0, $config['num789']['max'] );
+		$this->assertSame( 5.0, $config['num789']['min'] );
+		$this->assertSame( 100.0, $config['num789']['max'] );
+		$this->assertTrue( $config['num789']['read_only'] );
+		$this->assertSame( '1.000,50', $config['num789']['defaultValue'] );
+	}
+
+	/**
+	 * Test add_block_config stores a number block's range only as the rendered input enforces it.
+	 */
+	public function test_add_block_config_number_block_range_matches_rendered_input() {
+		$form_id = wp_insert_post( [ 'post_type' => 'sureforms_form', 'post_status' => 'publish', 'post_title' => 'Test Form' ] );
+		$blocks  = [
+			[
+				'blockName' => 'srfm/number',
+				'attrs'     => [
+					'block_id' => 'numneg',
+					'minValue' => -5,
+					'maxValue' => 0,
+				],
+			],
+			[
+				'blockName' => 'srfm/number',
+				'attrs'     => [
+					'block_id' => 'numlegacy',
+					'min'      => 5,
+					'max'      => 10,
+				],
+			],
+		];
+		Field_Validation::add_block_config( $blocks, $form_id );
+		$config = get_post_meta( $form_id, '_srfm_block_config', true );
+
+		// A negative minimum is kept; a 0 maximum renders no max attribute, so it is not stored.
+		$this->assertSame( -5.0, $config['numneg']['min'] );
+		$this->assertArrayNotHasKey( 'max', $config['numneg'] );
+		$this->assertFalse( $config['numneg']['read_only'] );
+		$this->assertArrayNotHasKey( 'defaultValue', $config['numneg'] );
+
+		// `min`/`max` are not number block attributes.
+		$this->assertArrayNotHasKey( 'min', $config['numlegacy'] );
+		$this->assertArrayNotHasKey( 'max', $config['numlegacy'] );
 	}
 
 	/**
@@ -230,6 +271,63 @@ class Test_Field_Validation extends TestCase {
 		update_post_meta( $form_id, '_srfm_block_config', $stored );
 		$result = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 		$this->assertEquals( $stored, $result );
+	}
+
+	/**
+	 * Test get_or_migrate_block_config_for_legacy_form rebuilds a number config stored before
+	 * read_only / defaultValue / range were recorded.
+	 */
+	public function test_get_or_migrate_block_config_for_legacy_form_refreshes_stale_number_config() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Test Form',
+				'post_content' => '<!-- wp:srfm/number {"block_id":"num1","slug":"price","readOnly":true,"defaultValue":"25","minValue":1,"maxValue":50} /-->',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'num1' => [
+					'format_type' => 'us-style',
+					'block_name'  => 'srfm/number',
+					'slug'        => 'price',
+				],
+			]
+		);
+
+		$result = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+
+		$this->assertTrue( $result['num1']['read_only'] );
+		$this->assertSame( '25', $result['num1']['defaultValue'] );
+		$this->assertSame( 1.0, $result['num1']['min'] );
+		$this->assertSame( 50.0, $result['num1']['max'] );
+		$this->assertSame( $result, get_post_meta( $form_id, '_srfm_block_config', true ) );
+	}
+
+	/**
+	 * Test get_or_migrate_block_config_for_legacy_form keeps a stale config it cannot rebuild.
+	 */
+	public function test_get_or_migrate_block_config_for_legacy_form_keeps_stale_config_without_content() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Test Form',
+				'post_content' => '',
+			]
+		);
+		$stored  = [
+			'num1' => [
+				'format_type' => 'us-style',
+				'block_name'  => 'srfm/number',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_block_config', $stored );
+
+		$this->assertSame( $stored, Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id ) );
 	}
 
 	/**
