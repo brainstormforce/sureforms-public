@@ -20,6 +20,7 @@ import {
 	cn,
 } from '@Utils/Helpers';
 import { useState, useEffect, useRef } from '@wordpress/element';
+import dateFromYmd from './utils/dateFromYmd';
 
 // Text for chart when data is loading or no data is available
 const ChartText = ( { text, color = '', weight = '', size = 'md' } ) => (
@@ -103,21 +104,11 @@ export default () => {
 				const response = await apiFetch( { path: endpoint } );
 
 				// The endpoint returns one { date: 'yyyy-MM-dd', count } row per
-				// day, oldest first. Build the Date from its parts so the label is
-				// that calendar day in every browser timezone (a bare 'yyyy-MM-dd'
-				// string is parsed as UTC midnight).
-				const sortedDataArray = response.map( ( { date, count } ) => {
-					const [ year, month, day ] = date
-						.split( '-' )
-						.map( Number );
-					return {
-						month: format(
-							new Date( year, month - 1, day ),
-							'MMM dd, yyyy'
-						),
-						entries: count,
-					};
-				} );
+				// day, oldest first.
+				const sortedDataArray = response.map( ( { date, count } ) => ( {
+					month: format( dateFromYmd( date ), 'MMM dd, yyyy' ),
+					entries: count,
+				} ) );
 
 				// Prepare the data for the chart.
 				setDataToShow( sortedDataArray );

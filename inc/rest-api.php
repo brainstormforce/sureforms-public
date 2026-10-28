@@ -116,7 +116,7 @@ class Rest_Api {
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @since 1.0.0
-	 * @since 2.13.0 Returns `{ date: 'Y-m-d', count: int }` rows, oldest first, instead of one `created_at` row per entry.
+	 * @since x.x.x Returns `{ date: 'Y-m-d', count: int }` rows, oldest first, instead of one `created_at` row per entry.
 	 * @return array<int,array{date:string,count:int}>
 	 */
 	public function get_entries_chart_data( $request ) {
