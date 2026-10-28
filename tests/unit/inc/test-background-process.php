@@ -128,12 +128,58 @@ class Test_Background_Process extends TestCase {
 		$this->assertSame( 1, $this->hook_runs, 'The overlapping request must not run the hooks a second time.' );
 		$this->assertInstanceOf( WP_Error::class, $nested );
 		$this->assertSame( 'process_already_triggered', $nested->get_error_code() );
+		$this->assertSame( 409, $nested->get_error_data()['status'] );
 
 		// A later sequential retry is refused too.
 		$retry = ( new Background_Process() )->handle_after_submission( $this->make_request( $entry_id ) );
 		$this->assertInstanceOf( WP_Error::class, $retry );
 		$this->assertSame( 'process_already_triggered', $retry->get_error_code() );
+		$this->assertSame( 409, $retry->get_error_data()['status'] );
 		$this->assertSame( 1, $this->hook_runs );
+	}
+
+	/**
+	 * A request that passes the fast-path check but loses the atomic claim runs
+	 * no hooks and answers 409, which Client_Logger::is_fault() does not count:
+	 * the winning request ran the hooks, so there is nothing to alert on.
+	 */
+	public function test_handle_after_submission_lost_claim_is_409_not_fault() {
+		global $wpdb;
+		$entry_id = $this->create_entry();
+		$table    = Entries::get_instance()->get_tablename();
+		$injected = false;
+		add_action(
+			'srfm_after_submission_process',
+			function () {
+				$this->hook_runs++;
+			}
+		);
+		add_filter(
+			'query',
+			static function ( $query ) use ( $wpdb, $table, $entry_id, &$injected ) {
+				if ( ! $injected && 0 === strpos( $query, "UPDATE `{$table}`" ) ) {
+					$injected = true;
+					$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET extras = %s WHERE ID = %d", wp_json_encode( [ 'is_after_submission_process_triggered' => true ] ), $entry_id ) ); // phpcs:ignore
+				}
+				return $query;
+			}
+		);
+
+		$result = $this->background_process->handle_after_submission( $this->make_request( $entry_id ) );
+
+		$this->assertTrue( $injected, 'The request must have reached the claim, not the fast path.' );
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'process_already_triggered', $result->get_error_code() );
+		$this->assertSame( 409, $result->get_error_data()['status'] );
+		$this->assertSame( 0, $this->hook_runs );
+		$this->assertFalse(
+			\SRFM\Inc\Client_Logger::is_fault(
+				[
+					'type'   => 'after_submission',
+					'status' => $result->get_error_data()['status'],
+				]
+			)
+		);
 	}
 
 	/**

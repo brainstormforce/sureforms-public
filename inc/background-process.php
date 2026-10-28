@@ -101,7 +101,8 @@ class Background_Process {
 			return new \WP_Error(
 				'process_already_triggered',
 				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
-				[ 'status' => 403 ]
+				// 409, not 403: another request owns this entry's hooks, so this is not a fault for Client_Logger::is_fault().
+				[ 'status' => 409 ]
 			);
 		}
 
@@ -128,7 +129,8 @@ class Background_Process {
 			return new \WP_Error(
 				'process_already_triggered',
 				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
-				[ 'status' => 403 ]
+				// 409, not 403: another request owns this entry's hooks, so this is not a fault for Client_Logger::is_fault().
+				[ 'status' => 409 ]
 			);
 		}
 
@@ -183,7 +185,7 @@ class Background_Process {
 	 * every callback again.
 	 *
 	 * @param int $submission_id Entry ID.
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return bool True only for the call that set the flag.
 	 */
 	protected function claim_submission( $submission_id ) {
