@@ -149,7 +149,7 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 										)
 									}
 									onBlur={ () => {
-										// Mirror the server clamp so the field shows what is stored.
+										// Mirror the server clamp and 2-decimal rounding so the field shows what is stored.
 										const current =
 											securitytabOptions.srfm_v3_score_threshold;
 										if ( undefined === current ) {
@@ -158,7 +158,9 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 										const parsed = parseFloat( current );
 										const clamped = isNaN( parsed )
 											? 0.5
-											: Math.min( 1, Math.max( 0, parsed ) );
+											: Math.round(
+												( Math.min( 1, Math.max( 0, parsed ) ) + Number.EPSILON ) * 100
+											  ) / 100;
 										if ( clamped !== current ) {
 											updateGlobalSettings(
 												'srfm_v3_score_threshold',

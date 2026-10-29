@@ -333,14 +333,15 @@ class Global_Settings {
 	 * Normalise a reCAPTCHA v3 score threshold.
 	 *
 	 * Used both when the setting is saved and when Form_Submit reads it, so a
-	 * stored value is only ever a float in 0-1. A non-numeric or NAN value becomes 0.5.
+	 * stored value is only ever a float in 0-1 with at most two decimals. A
+	 * non-numeric or NAN value becomes 0.5. Recaptcha.js applies the same rule on blur.
 	 *
 	 * @param mixed $value Submitted or stored threshold.
 	 * @since x.x.x
 	 * @return float
 	 */
 	public static function sanitize_recaptcha_v3_threshold( $value ) {
-		return is_numeric( $value ) && ! is_nan( (float) $value ) ? max( 0.0, min( 1.0, (float) $value ) ) : 0.5;
+		return is_numeric( $value ) && ! is_nan( (float) $value ) ? round( max( 0.0, min( 1.0, (float) $value ) ), 2 ) : 0.5;
 	}
 
 	/**
