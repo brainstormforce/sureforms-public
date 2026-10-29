@@ -114,6 +114,21 @@ class Test_Update_Global_Settings extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
 
+	/**
+	 * The security category accepts the reCAPTCHA v3 threshold and stores it clamped.
+	 */
+	public function test_execute_security_saves_v3_score_threshold() {
+		$result = $this->ability->execute(
+			[
+				'category' => 'security',
+				'settings' => [ 'srfm_v3_score_threshold' => '3' ],
+			]
+		);
+		$saved = get_option( 'srfm_security_settings_options' );
+		delete_option( 'srfm_security_settings_options' );
 
-
+		$this->assertIsArray( $result );
+		$this->assertTrue( $result['saved'] );
+		$this->assertSame( 1.0, $saved['srfm_v3_score_threshold'] );
+	}
 }

@@ -223,6 +223,7 @@ class Get_Global_Settings extends Abstract_Ability {
 				'srfm_v2_invisible_secret_key' => '',
 				'srfm_v3_site_key'             => '',
 				'srfm_v3_secret_key'           => '',
+				'srfm_v3_score_threshold'      => 0.5,
 				'srfm_cf_appearance_mode'      => 'auto',
 				'srfm_cf_turnstile_site_key'   => '',
 				'srfm_cf_turnstile_secret_key' => '',

@@ -362,6 +362,43 @@ class Test_Global_Settings extends TestCase {
 		$this->assertTrue( $saved['srfm_honeypot'] );
 	}
 
+	/**
+	 * The reCAPTCHA v3 threshold is stored as a float clamped to 0-1, and an absent
+	 * or unusable value is stored as the 0.5 default.
+	 *
+	 * @dataProvider provide_v3_score_thresholds
+	 *
+	 * @param array<string,mixed> $options Settings passed to the save.
+	 * @param float               $want    Threshold expected in the stored option.
+	 */
+	public function test_srfm_save_security_settings_v3_score_threshold( $options, $want ) {
+		Global_Settings::srfm_save_security_settings( $options );
+
+		$saved = get_option( 'srfm_security_settings_options' );
+		delete_option( 'srfm_security_settings_options' );
+
+		$this->assertSame( $want, $saved['srfm_v3_score_threshold'] );
+	}
+
+	/**
+	 * Submitted thresholds and the value each must be stored as.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_v3_score_thresholds() {
+		return [
+			'absent'         => [ [], 0.5 ],
+			'float'          => [ [ 'srfm_v3_score_threshold' => 0.3 ], 0.3 ],
+			'numeric string' => [ [ 'srfm_v3_score_threshold' => '0.7' ], 0.7 ],
+			'zero'           => [ [ 'srfm_v3_score_threshold' => 0 ], 0.0 ],
+			'empty string'   => [ [ 'srfm_v3_score_threshold' => '' ], 0.5 ],
+			'non-numeric'    => [ [ 'srfm_v3_score_threshold' => 'abc' ], 0.5 ],
+			'array'          => [ [ 'srfm_v3_score_threshold' => [ 0.2 ] ], 0.5 ],
+			'above 1'        => [ [ 'srfm_v3_score_threshold' => 5 ], 1.0 ],
+			'below 0'        => [ [ 'srfm_v3_score_threshold' => -0.4 ], 0.0 ],
+		];
+	}
+
 
 	/**
 	 * Every path that reports the logging default must agree with the runtime.

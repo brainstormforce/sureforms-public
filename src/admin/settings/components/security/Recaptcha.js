@@ -127,6 +127,55 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 								} }
 							/>
 						) ) }
+						{ 'v3' === type.value && (
+							<div className="space-y-1.5">
+								<Input
+									type="number"
+									label={ __( 'Score Threshold', 'sureforms' ) }
+									name="srfm_v3_score_threshold"
+									size="md"
+									min={ 0 }
+									max={ 1 }
+									step={ 0.1 }
+									value={
+										securitytabOptions.srfm_v3_score_threshold ??
+										0.5
+									}
+									onChange={ ( value ) =>
+										updateGlobalSettings(
+											'srfm_v3_score_threshold',
+											value,
+											'security-settings'
+										)
+									}
+									onBlur={ () => {
+										// Mirror the server clamp so the field shows what is stored.
+										const current =
+											securitytabOptions.srfm_v3_score_threshold;
+										if ( undefined === current ) {
+											return;
+										}
+										const parsed = parseFloat( current );
+										const clamped = isNaN( parsed )
+											? 0.5
+											: Math.min( 1, Math.max( 0, parsed ) );
+										if ( clamped !== current ) {
+											updateGlobalSettings(
+												'srfm_v3_score_threshold',
+												clamped,
+												'security-settings'
+											);
+										}
+									} }
+								/>
+								<p className="text-xs text-text-tertiary m-0">
+									{ __(
+										'Submissions that Google scores below this value are blocked. Scores run from 0.0 (likely a bot) to 1.0 (likely a human). Default is 0.5.',
+										'sureforms'
+									) }
+								</p>
+							</div>
+						) }
 					</Tabs.Panel>
 				) ) }
 			</Tabs>

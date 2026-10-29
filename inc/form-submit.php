@@ -14,6 +14,7 @@ use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -2132,18 +2133,21 @@ class Form_Submit {
 			return true;
 		}
 
+		$security_options = get_option( 'srfm_security_settings_options' );
+		$stored_threshold = is_array( $security_options ) ? Global_Settings::sanitize_recaptcha_v3_threshold( $security_options['srfm_v3_score_threshold'] ?? null ) : 0.5;
+
 		/**
 		 * Filter the lowest reCAPTCHA v3 score a submission is accepted at.
 		 *
 		 * Scores run from 0.0 (likely automated) to 1.0 (likely human). A non-numeric
 		 * return falls back to the default; the value is clamped to 0-1.
 		 *
-		 * @param float $threshold Minimum score. Default 0.5, Google's suggested starting point.
+		 * @param float $threshold Minimum score. Default is the global reCAPTCHA v3 setting (0.5 when unset).
 		 * @param int   $form_id   Form post ID.
 		 * @since x.x.x
 		 */
-		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', 0.5, $form_id );
-		$threshold = is_numeric( $threshold ) ? max( 0.0, min( 1.0, (float) $threshold ) ) : 0.5;
+		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', $stored_threshold, $form_id );
+		$threshold = Global_Settings::sanitize_recaptcha_v3_threshold( $threshold );
 
 		return is_array( $result ) && isset( $result['score'] ) && is_numeric( $result['score'] ) && (float) $result['score'] >= $threshold;
 	}

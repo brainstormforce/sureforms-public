@@ -307,6 +307,7 @@ class Global_Settings {
 		$srfm_hcaptcha_site_key       = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_hcaptcha_site_key'] ?? '' ) );
 		$srfm_hcaptcha_secret_key     = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_hcaptcha_secret_key'] ?? '' ) );
 		$srfm_honeypot                = $setting_options['srfm_honeypot'] ?? false;
+		$srfm_v3_score_threshold      = self::sanitize_recaptcha_v3_threshold( $setting_options['srfm_v3_score_threshold'] ?? null );
 
 		return update_option(
 			'srfm_security_settings_options',
@@ -317,6 +318,7 @@ class Global_Settings {
 				'srfm_v2_invisible_secret_key' => $srfm_v2_invisible_secret_key,
 				'srfm_v3_site_key'             => $srfm_v3_site_key,
 				'srfm_v3_secret_key'           => $srfm_v3_secret_key,
+				'srfm_v3_score_threshold'      => $srfm_v3_score_threshold,
 				'srfm_cf_appearance_mode'      => $srfm_cf_appearance_mode,
 				'srfm_cf_turnstile_site_key'   => $srfm_cf_turnstile_site_key,
 				'srfm_cf_turnstile_secret_key' => $srfm_cf_turnstile_secret_key,
@@ -325,6 +327,20 @@ class Global_Settings {
 				'srfm_honeypot'                => $srfm_honeypot,
 			]
 		);
+	}
+
+	/**
+	 * Normalise a reCAPTCHA v3 score threshold.
+	 *
+	 * Used both when the setting is saved and when Form_Submit reads it, so a
+	 * stored value is only ever a float in 0-1. A non-numeric value becomes 0.5.
+	 *
+	 * @param mixed $value Submitted or stored threshold.
+	 * @since x.x.x
+	 * @return float
+	 */
+	public static function sanitize_recaptcha_v3_threshold( $value ) {
+		return is_numeric( $value ) ? max( 0.0, min( 1.0, (float) $value ) ) : 0.5;
 	}
 
 	/**
@@ -720,6 +736,7 @@ class Global_Settings {
 				'srfm_v2_invisible_secret_key' => '',
 				'srfm_v3_site_key'             => '',
 				'srfm_v3_secret_key'           => '',
+				'srfm_v3_score_threshold'      => 0.5,
 				'srfm_cf_appearance_mode'      => 'auto',
 				'srfm_cf_turnstile_site_key'   => '',
 				'srfm_cf_turnstile_secret_key' => '',
