@@ -237,6 +237,46 @@ class Test_Features extends TestCase {
 	}
 
 	/**
+	 * A synced pattern core does not render (not published, or behind a password)
+	 * adds nothing to the form, so its payment block does not count.
+	 */
+	public function test_payment_block_inside_an_unrendered_synced_pattern_does_not_count() {
+		$patterns = [
+			'draft'    => [ 'post_status' => 'draft' ],
+			'pending'  => [ 'post_status' => 'pending' ],
+			'private'  => [ 'post_status' => 'private' ],
+			'trash'    => [ 'post_status' => 'trash' ],
+			'password' => [
+				'post_status'   => 'publish',
+				'post_password' => 'secret',
+			],
+		];
+		foreach ( $patterns as $case => $args ) {
+			$pattern = wp_insert_post(
+				array_merge(
+					[
+						'post_type'    => 'wp_block',
+						'post_content' => '<!-- wp:srfm/payment {"block_id":"pay1"} /-->',
+					],
+					$args
+				)
+			);
+			$form    = wp_insert_post(
+				[
+					'post_type'    => SRFM_FORMS_POST_TYPE,
+					'post_status'  => 'publish',
+					'post_content' => '<!-- wp:block {"ref":' . $pattern . '} /-->',
+				]
+			);
+
+			$this->assertFalse( Features::form_uses( $form, [ 'srfm/payment' ], [] ), $case );
+
+			wp_delete_post( $form, true );
+			wp_delete_post( $pattern, true );
+		}
+	}
+
+	/**
 	 * Forms that are not published yet still use the feature: a draft, scheduled,
 	 * pending or private payment form is listed; a trashed one is not.
 	 */

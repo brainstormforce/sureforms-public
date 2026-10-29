@@ -488,7 +488,8 @@ class Features {
 
 	/**
 	 * The content followed by the content of every synced pattern it references,
-	 * at any depth, each pattern once.
+	 * at any depth, each pattern once. Like render_block_core_block(), a pattern
+	 * that is not published or has a password adds nothing.
 	 *
 	 * @param string           $content Block content.
 	 * @param array<int, true> $visited Pattern IDs already expanded, keyed by ID.
@@ -509,7 +510,12 @@ class Features {
 			if ( 'core/block' === ( $block['blockName'] ?? '' ) && $ref && ! isset( $visited[ $ref ] ) ) {
 				$visited[ $ref ] = true;
 				$pattern         = get_post( $ref );
-				if ( $pattern instanceof \WP_Post && 'wp_block' === $pattern->post_type ) {
+				if (
+					$pattern instanceof \WP_Post
+					&& 'wp_block' === $pattern->post_type
+					&& 'publish' === $pattern->post_status
+					&& empty( $pattern->post_password )
+				) {
 					$content .= self::with_pattern_content( $pattern->post_content, $visited );
 				}
 			}
