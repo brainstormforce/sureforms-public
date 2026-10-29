@@ -399,6 +399,42 @@ class Test_Global_Settings extends TestCase {
 		];
 	}
 
+	/**
+	 * The threshold helper returns a float in 0-1 for numeric input and 0.5 otherwise.
+	 *
+	 * @dataProvider provide_raw_v3_thresholds
+	 *
+	 * @param mixed $value Raw threshold.
+	 * @param float $want  Sanitized threshold.
+	 */
+	public function test_sanitize_recaptcha_v3_threshold( $value, $want ) {
+		$this->assertSame( $want, Global_Settings::sanitize_recaptcha_v3_threshold( $value ) );
+	}
+
+	/**
+	 * Raw thresholds and their sanitized values.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_raw_v3_thresholds() {
+		return [
+			'null'           => [ null, 0.5 ],
+			'true'           => [ true, 0.5 ],
+			'false'          => [ false, 0.5 ],
+			'empty string'   => [ '', 0.5 ],
+			'non-numeric'    => [ 'abc', 0.5 ],
+			'array'          => [ [ 0.2 ], 0.5 ],
+			'int zero'       => [ 0, 0.0 ],
+			'int one'        => [ 1, 1.0 ],
+			'numeric string' => [ '0.7', 0.7 ],
+			'exponent'       => [ '1e-1', 0.1 ],
+			'above 1'        => [ 5, 1.0 ],
+			'below 0'        => [ -0.4, 0.0 ],
+			'infinity'       => [ INF, 1.0 ],
+			'nan'            => [ NAN, 0.5 ],
+		];
+	}
+
 
 	/**
 	 * Every path that reports the logging default must agree with the runtime.
