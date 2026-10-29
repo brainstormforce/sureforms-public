@@ -590,9 +590,10 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 * @param string $version          Form's reCAPTCHA variant (v2-checkbox, v3-reCAPTCHA, ...).
 	 * @param string $body             Raw siteverify response body.
 	 * @param bool   $honeypot_present Whether the request carries an empty honeypot field.
+	 * @param array  $extra_options    Additional global security settings to store.
 	 * @return bool True when the submission was rejected as a captcha failure.
 	 */
-	private function recaptcha_submission_rejected( $version, $body, $honeypot_present ) {
+	private function recaptcha_submission_rejected( $version, $body, $honeypot_present, $extra_options = [] ) {
 		$secret_keys = [
 			'v2-checkbox'  => 'srfm_v2_checkbox_secret_key',
 			'v2-invisible' => 'srfm_v2_invisible_secret_key',
@@ -610,10 +611,13 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
 		update_option(
 			'srfm_security_settings_options',
-			[
-				$secret_keys[ $version ] => 'secret-key',
-				'srfm_honeypot'          => false,
-			]
+			array_merge(
+				[
+					$secret_keys[ $version ] => 'secret-key',
+					'srfm_honeypot'          => false,
+				],
+				$extra_options
+			)
 		);
 
 		$verified   = false;
@@ -742,6 +746,97 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		add_filter( 'srfm_recaptcha_v3_score_threshold', $garbage );
 		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.1}', true ) );
 		remove_filter( 'srfm_recaptcha_v3_score_threshold', $garbage );
+	}
+
+	/**
+	 * The v3 threshold saved in global settings decides the verdict, in both
+	 * acceptance branches; an unusable stored value falls back to 0.5.
+	 *
+	 * @dataProvider provide_stored_v3_thresholds
+	 *
+	 * @param mixed  $stored        Stored srfm_v3_score_threshold value.
+	 * @param string $body          Raw siteverify response body.
+	 * @param bool   $want_rejected Expected verdict.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_stored_threshold( $stored, $body, $want_rejected ) {
+		foreach ( [ true, false ] as $honeypot_present ) {
+			$this->assertSame(
+				$want_rejected,
+				$this->recaptcha_submission_rejected( 'v3-reCAPTCHA', $body, $honeypot_present, [ 'srfm_v3_score_threshold' => $stored ] ),
+				sprintf( 'threshold %s, %s, honeypot %s', var_export( $stored, true ), $body, $honeypot_present ? 'present' : 'absent' )
+			);
+		}
+	}
+
+	/**
+	 * Stored thresholds, siteverify bodies and whether each must be rejected.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_stored_v3_thresholds() {
+		return [
+			'lowered 0.3 accepts 0.4'      => [ 0.3, '{"success":true,"score":0.4}', false ],
+			'lowered 0.3 rejects 0.2'      => [ 0.3, '{"success":true,"score":0.2}', true ],
+			'raised 0.9 rejects 0.8'       => [ 0.9, '{"success":true,"score":0.8}', true ],
+			'raised 0.9 accepts 0.9'       => [ 0.9, '{"success":true,"score":0.9}', false ],
+			'numeric string 0.7'           => [ '0.7', '{"success":true,"score":0.6}', true ],
+			'non-numeric falls back 0.5'   => [ 'abc', '{"success":true,"score":0.4}', true ],
+			'empty string falls back 0.5'  => [ '', '{"success":true,"score":0.4}', true ],
+			'array falls back 0.5'         => [ [ 0.1 ], '{"success":true,"score":0.4}', true ],
+			'above 1 clamps to 1'          => [ 5, '{"success":true,"score":0.9}', true ],
+			'below 0 clamps to 0'          => [ -1, '{"success":true,"score":0.0}', false ],
+		];
+	}
+
+	/**
+	 * The filter receives the stored threshold as its default and still wins.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_filter_overrides_stored_threshold() {
+		$seen   = null;
+		$strict = static function ( $threshold ) use ( &$seen ) {
+			$seen = $threshold;
+			return 0.95;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+		$rejected = $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.9}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+
+		$this->assertTrue( $rejected );
+		$this->assertSame( 0.3, $seen );
+	}
+
+	/**
+	 * A filter return that is not a finite number falls back to the stored threshold.
+	 *
+	 * @dataProvider provide_unusable_filter_thresholds
+	 *
+	 * @param mixed $returned Value the filter returns.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_unusable_filter_uses_stored_threshold( $returned ) {
+		$filter = static function () use ( $returned ) {
+			return $returned;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $filter );
+		$accepts_0_4 = ! $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.4}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		$rejects_0_2 = $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.2}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $filter );
+
+		$this->assertTrue( $accepts_0_4, 'Score 0.4 must pass the stored 0.3.' );
+		$this->assertTrue( $rejects_0_2, 'Score 0.2 must fail the stored 0.3.' );
+	}
+
+	/**
+	 * Filter returns that are not a finite number.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_unusable_filter_thresholds() {
+		return [
+			'non-numeric' => [ 'not-a-number' ],
+			'null'        => [ null ],
+			'nan'         => [ NAN ],
+			'infinity'    => [ INF ],
+		];
 	}
 
 	/**
