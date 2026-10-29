@@ -427,8 +427,7 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 == Changelog ==
 = x.x.x =
-* Improvement: Forms using reCAPTCHA v3 now reject submissions that Google scores below 0.5 (likely automated). A blocked submission is reported with the error code `score-threshold-not-met` in the debug log and browser console. Use the `srfm_recaptcha_v3_score_threshold` filter to change the threshold.
-* New: Set the reCAPTCHA v3 score threshold from Settings > Spam Protection > reCAPTCHA > reCAPTCHA v3.
+* Improvement: Forms using reCAPTCHA v3 now reject submissions that Google scores below the threshold (default 0.5), set in Settings > Spam Protection > reCAPTCHA > reCAPTCHA v3 or with the `srfm_recaptcha_v3_score_threshold` filter. A blocked submission is reported with the error code `score-threshold-not-met` in the debug log and browser console.
 = 2.13.0 - 26th October 2026 =
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.

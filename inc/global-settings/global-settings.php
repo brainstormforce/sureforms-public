@@ -333,15 +333,17 @@ class Global_Settings {
 	 * Normalise a reCAPTCHA v3 score threshold.
 	 *
 	 * Used both when the setting is saved and when Form_Submit reads it, so a
-	 * stored value is only ever a float in 0-1 with at most two decimals. A
-	 * non-numeric or NAN value becomes 0.5. Recaptcha.js applies the same rule on blur.
+	 * stored value is only ever a float in 0-1 with at most two decimals. A value
+	 * that is not a finite number becomes $default. Recaptcha.js applies the same
+	 * rule on blur.
 	 *
-	 * @param mixed $value Submitted or stored threshold.
+	 * @param mixed $value   Submitted or stored threshold.
+	 * @param float $default Threshold used when $value is not a finite number.
 	 * @since x.x.x
 	 * @return float
 	 */
-	public static function sanitize_recaptcha_v3_threshold( $value ) {
-		return is_numeric( $value ) && ! is_nan( (float) $value ) ? round( max( 0.0, min( 1.0, (float) $value ) ), 2 ) : 0.5;
+	public static function sanitize_recaptcha_v3_threshold( $value, $default = 0.5 ) {
+		return is_numeric( $value ) && is_finite( (float) $value ) ? round( max( 0.0, min( 1.0, (float) $value ) ), 2 ) : $default;
 	}
 
 	/**
@@ -745,6 +747,11 @@ class Global_Settings {
 				'srfm_hcaptcha_secret_key'     => '',
 				'srfm_honeypot'                => false,
 			];
+		}
+
+		// Report the threshold Form_Submit applies, including for options saved before the setting existed.
+		if ( is_array( $global_setting_options['srfm_security_settings_options'] ?? null ) ) {
+			$global_setting_options['srfm_security_settings_options']['srfm_v3_score_threshold'] = self::sanitize_recaptcha_v3_threshold( $global_setting_options['srfm_security_settings_options']['srfm_v3_score_threshold'] ?? null );
 		}
 
 		if ( empty( $global_setting_options['srfm_mcp_settings_options'] ) ) {

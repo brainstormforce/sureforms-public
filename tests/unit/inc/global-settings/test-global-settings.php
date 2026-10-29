@@ -433,11 +433,56 @@ class Test_Global_Settings extends TestCase {
 			'exponent'       => [ '1e-1', 0.1 ],
 			'above 1'        => [ 5, 1.0 ],
 			'below 0'        => [ -0.4, 0.0 ],
-			'infinity'       => [ INF, 1.0 ],
+			'infinity'       => [ INF, 0.5 ],
 			'nan'            => [ NAN, 0.5 ],
 		];
 	}
 
+	/**
+	 * An unusable value falls back to the default the caller passes.
+	 */
+	public function test_sanitize_recaptcha_v3_threshold_uses_given_default() {
+		$this->assertSame( 0.3, Global_Settings::sanitize_recaptcha_v3_threshold( 'abc', 0.3 ) );
+		$this->assertSame( 0.3, Global_Settings::sanitize_recaptcha_v3_threshold( NAN, 0.3 ) );
+		$this->assertSame( 0.8, Global_Settings::sanitize_recaptcha_v3_threshold( '0.8', 0.3 ) );
+	}
+
+
+	/**
+	 * The Settings UI read reports the threshold in effect when the stored option
+	 * predates the setting or holds an unusable value.
+	 *
+	 * @dataProvider provide_stored_options_for_threshold_read
+	 *
+	 * @param array<string,mixed> $stored Stored security option.
+	 * @param float               $want   Threshold the read must report.
+	 */
+	public function test_srfm_get_general_settings_reports_v3_threshold( $stored, $want ) {
+		update_option( 'srfm_security_settings_options', $stored );
+
+		$request = new \WP_REST_Request( 'GET', '/sureforms/v1/srfm-global-settings' );
+		$request->set_param( 'options_to_fetch', 'srfm_security_settings_options' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$response = Global_Settings::srfm_get_general_settings( $request );
+		delete_option( 'srfm_security_settings_options' );
+
+		$data = $response instanceof \WP_REST_Response ? $response->get_data() : $response;
+
+		$this->assertSame( $want, $data['srfm_security_settings_options']['srfm_v3_score_threshold'] ?? null );
+	}
+
+	/**
+	 * Stored security options and the threshold the read must report.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_stored_options_for_threshold_read() {
+		return [
+			'key absent'  => [ [ 'srfm_v3_site_key' => 'site-key' ], 0.5 ],
+			'non-numeric' => [ [ 'srfm_v3_score_threshold' => 'abc' ], 0.5 ],
+			'stored 0.7'  => [ [ 'srfm_v3_score_threshold' => 0.7 ], 0.7 ],
+		];
+	}
 
 	/**
 	 * Every path that reports the logging default must agree with the runtime.

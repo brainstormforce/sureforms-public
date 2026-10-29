@@ -2139,15 +2139,16 @@ class Form_Submit {
 		/**
 		 * Filter the lowest reCAPTCHA v3 score a submission is accepted at.
 		 *
-		 * Scores run from 0.0 (likely automated) to 1.0 (likely human). A non-numeric
-		 * return falls back to the default; the value is clamped to 0-1.
+		 * Scores run from 0.0 (likely automated) to 1.0 (likely human). A return that
+		 * is not a finite number falls back to the global setting; the value is
+		 * clamped to 0-1.
 		 *
 		 * @param float $threshold Minimum score. Default is the global reCAPTCHA v3 setting (0.5 when unset).
 		 * @param int   $form_id   Form post ID.
 		 * @since x.x.x
 		 */
 		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', $stored_threshold, $form_id );
-		$threshold = Global_Settings::sanitize_recaptcha_v3_threshold( $threshold );
+		$threshold = Global_Settings::sanitize_recaptcha_v3_threshold( $threshold, $stored_threshold );
 
 		return is_array( $result ) && isset( $result['score'] ) && is_numeric( $result['score'] ) && (float) $result['score'] >= $threshold;
 	}

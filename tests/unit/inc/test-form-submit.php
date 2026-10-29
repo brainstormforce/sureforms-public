@@ -806,6 +806,40 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A filter return that is not a finite number falls back to the stored threshold.
+	 *
+	 * @dataProvider provide_unusable_filter_thresholds
+	 *
+	 * @param mixed $returned Value the filter returns.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_unusable_filter_uses_stored_threshold( $returned ) {
+		$filter = static function () use ( $returned ) {
+			return $returned;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $filter );
+		$accepts_0_4 = ! $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.4}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		$rejects_0_2 = $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.2}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $filter );
+
+		$this->assertTrue( $accepts_0_4, 'Score 0.4 must pass the stored 0.3.' );
+		$this->assertTrue( $rejects_0_2, 'Score 0.2 must fail the stored 0.3.' );
+	}
+
+	/**
+	 * Filter returns that are not a finite number.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_unusable_filter_thresholds() {
+		return [
+			'non-numeric' => [ 'not-a-number' ],
+			'null'        => [ null ],
+			'nan'         => [ NAN ],
+			'infinity'    => [ INF ],
+		];
+	}
+
+	/**
 	 * Test parse_email_notification_template returns expected structure.
 	 */
 	public function test_parse_email_notification_template() {
