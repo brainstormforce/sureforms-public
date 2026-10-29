@@ -68,7 +68,7 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 					<div className="pl-2 inline-flex items-center">
 						<Button
 							tag="a"
-							href="https://developers.google.com/recaptcha/intro"
+							href="https://docs.cloud.google.com/recaptcha/docs"
 							className="[&>span]:p-0 no-underline hover:no-underline"
 							variant="link"
 							target="_blank"
