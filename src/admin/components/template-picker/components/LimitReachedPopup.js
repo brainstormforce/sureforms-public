@@ -4,6 +4,7 @@ import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { Zap, ChevronRight } from 'lucide-react';
 import { useEffect } from '@wordpress/element';
+import { getScratchUrl } from '@Utils/form-start';
 
 const LimitReachedPopup = ( {
 	title = '',
@@ -16,6 +17,7 @@ const LimitReachedPopup = ( {
 	features = [],
 	showFeatures = false,
 	setShowCreditDetailsPopup,
+	onUseTemplate,
 } ) => {
 	// Get filter values
 	const {
@@ -152,11 +154,22 @@ const LimitReachedPopup = ( {
 				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
 
+					{ typeof onUseTemplate === 'function' && (
+						<Button
+							size="md"
+							variant="outline"
+							onClick={ onUseTemplate }
+						>
+							{ __( 'Use a template instead', 'sureforms' ) }
+						</Button>
+					) }
+
 					<Button
 						size="md"
 						variant="ghost"
 						onClick={ () => {
-							window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+							// Tagged with the start screen choice, so this counts as a switch to scratch.
+							window.location.href = getScratchUrl();
 						} }
 					>
 						{ __( 'Or create it yourself', 'sureforms' ) }

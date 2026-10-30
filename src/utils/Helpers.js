@@ -8,6 +8,7 @@ import { addQueryArgs, cleanForSlug } from '@wordpress/url';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
+import { clearStartChoice } from './form-start';
 import { toast } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { store as blocksStore } from '@wordpress/blocks';
@@ -108,6 +109,9 @@ export const handleAddNewPost = async (
 
 		if ( response?.id ) {
 			const postId = response.id;
+
+			// The start screen attempt ends with this form.
+			clearStartChoice();
 
 			// Store the post ID so the Learn section Lesson 2 can open this form directly.
 			const urlParams = new URLSearchParams( window.location.search );
