@@ -136,7 +136,7 @@ class Phone_Markup extends Base {
 					class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>"
 					name="<?php echo esc_attr( $this->field_name ); ?>"
 					id="<?php echo esc_attr( $this->unique_slug ); ?>"
-					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?> data-srfm-error-target
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					default-country="<?php echo esc_attr( $this->default_country ); ?>"

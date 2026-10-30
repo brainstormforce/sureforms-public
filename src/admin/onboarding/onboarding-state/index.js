@@ -12,7 +12,6 @@ export const ONBOARDING_STORAGE_KEYS = [ 'srfm_suremail_installation_started' ];
 
 // Initial state
 const initialState = {
-	emailDeliveryConfigured: false,
 	userDetails: {
 		firstName: leadDetails.first_name || '',
 		lastName: leadDetails.last_name || '',
@@ -44,6 +43,10 @@ const initialState = {
 			upgradeClicked: null,
 		},
 		suremailInstalled: false,
+		// Email delivery step: the delivery state when the step was shown and when
+		// it was left, and what the owner did. null until the step renders, so
+		// "never shown" stays distinct in admin/analytics.php.
+		emailDelivery: null,
 		accountConnected: false,
 		// Cache-conflict step: null until the step renders, then false/true.
 		// PHP reads this with isset(), so null keeps "never shown" distinct
@@ -59,7 +62,7 @@ const initialState = {
 
 // Action types
 const ACTIONS = {
-	SET_EMAIL_DELIVERY_CONFIGURED: 'SET_EMAIL_DELIVERY_CONFIGURED',
+	SET_EMAIL_DELIVERY_ANALYTICS: 'SET_EMAIL_DELIVERY_ANALYTICS',
 	MARK_STEP_SKIPPED: 'MARK_STEP_SKIPPED',
 	UNMARK_STEP_SKIPPED: 'UNMARK_STEP_SKIPPED',
 	SET_SUREMAIL_INSTALLED: 'SET_SUREMAIL_INSTALLED',
@@ -78,8 +81,17 @@ const ACTIONS = {
 // Reducer
 const onboardingReducer = ( state, action ) => {
 	switch ( action.type ) {
-		case ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED:
-			return { ...state, emailDeliveryConfigured: action.payload };
+		case ACTIONS.SET_EMAIL_DELIVERY_ANALYTICS:
+			return {
+				...state,
+				analytics: {
+					...state.analytics,
+					emailDelivery: {
+						...( state.analytics.emailDelivery || {} ),
+						...action.payload,
+					},
+				},
+			};
 		case ACTIONS.MARK_STEP_SKIPPED:
 			// Only add the step if it's not already in the skippedSteps array
 			if ( state.analytics.skippedSteps.includes( action.payload ) ) {
@@ -239,10 +251,10 @@ export const OnboardingProvider = ( { children } ) => {
 	const [ state, dispatch ] = useReducer( onboardingReducer, initialState );
 
 	const actions = {
-		setEmailDeliveryConfigured: ( value ) =>
+		setEmailDeliveryAnalytics: ( data ) =>
 			dispatch( {
-				type: ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED,
-				payload: value,
+				type: ACTIONS.SET_EMAIL_DELIVERY_ANALYTICS,
+				payload: data,
 			} ),
 		markStepSkipped: ( stepName ) =>
 			dispatch( {

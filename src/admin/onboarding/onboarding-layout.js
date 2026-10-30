@@ -182,11 +182,11 @@ const OnboardingContent = () => {
 	}, [ location.pathname, actions ] );
 
 	return (
-		<div className="bg-background-secondary h-full space-y-7 pb-10">
+		<div className="bg-background-secondary h-full space-y-7 pb-10 [@media(max-height:820px)]:space-y-3 [@media(max-height:820px)]:pb-4">
 			{ /* Header */ }
 			<NavBar />
 			{ /* Content */ }
-			<div className="p-7 w-full h-full">
+			<div className="p-7 w-full h-full [@media(max-height:820px)]:py-3">
 				<div className="w-full h-full max-w-2xl border-0.5 border-solid border-border-subtle bg-background-primary shadow-sm rounded-xl mx-auto p-6">
 					<Outlet />
 				</div>

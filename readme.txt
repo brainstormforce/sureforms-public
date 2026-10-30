@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: forms, ai forms, contact form, form builder, payment form
 Requires at least: 6.4
-Tested up to: 7.1.2
+Tested up to: 7.1.3
 Requires PHP: 7.4
-Stable tag: 2.12.8
+Stable tag: 2.13.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -426,25 +426,25 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= 2.13.0 - 26th October 2026 =
+* New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
+* Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
+* Fix: This update addressed security bugs. Props to Luke Schneider and Filip Kowalski from Patchstack for reporting them responsibly to our team.
+= 2.12.9 - 13th October 2026 =
+* New: Added the `srfm_submission_accepted` developer action, fired as soon as a submission is accepted.
+* New: Forms that do not store entries now warn you when a failed notification loses a submission.
+* New: MCP Adapter can now be installed and activated in one click.
+* Improvement: Failed notifications are no longer silently retried through PHP's mail(); the reason now shows in Entry Logs and Form Checks. Use the `srfm_allow_php_mail_fallback` filter to restore it.
+* Improvement: Smart tags such as {get_input:name} now resolve only inside SureForms form content. A tag written in ordinary page or post content is shown as written.
+* Fix: Deleting an option in a duplicated Multiple Choice block no longer removes it from the original.
+* Fix: Form fields no longer fail accessibility scans for a missing error message reference.
+* Fix: The submit button now stays disabled while a form redirects, preventing duplicate submissions.
+* Fix: Unticked Checkbox fields now appear in entries and notification emails.
+* Fix: This update addressed a security bug. Props to dzaku from Patchstack for reporting it responsibly to our team.
 = 2.12.8 - 25th September 2026 =
 * Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
 * Fix: Entry Logs now record the email notification sent when a form is submitted.
 * Fix: Resolved an editor crash that prevented forms containing a Register block from opening.
-= 2.12.7 - 12th September 2026 =
-* Improvement: Submission failure notices now offer View details, so you can read and copy the full diagnostics before contacting support.
-* Improvement: The Form Checks panel now appears only when something genuinely needs attention, with clearer wording, keeping the sidebar focused.
-* Fix: After-submission actions now complete reliably when a form redirects on success.
-* Fix: Form pages now keep their styles and submit script on sites using page builders that buffer page output, such as Breakdance.
-* Fix: Form submissions no longer drop fields when a caching plugin serves an older copy of the page, so every submitted field is saved to the entry.
-* Fix: The conversion rate no longer counts submissions made by site editors while previewing a form.
-* Fix: The Edit Form icon is no longer oversized in Divi.
-* Fix: This update addressed a security bug. Props to nh4tvd from Patchstack for reporting it responsibly to our team.
-= 2.12.6 - 2nd September 2026 =
-* New: Added an Enable Logs option that records form submission failures to a downloadable file, making it easier to diagnose issues on a live site.
-* New: Added Views and Conversion Rate columns to the Forms list, so you can see how each form is performing at a glance.
-* New: SureForms now detects a missing entries database table and offers a one-click repair, so submissions start saving again without manual database work.
-* Fix: The Edit Form button no longer overlaps form fields on the front end.
-* Fix: This update addressed a security bug. Props to Patchstack for reporting it responsibly to our team.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 == Upgrade Notice ==

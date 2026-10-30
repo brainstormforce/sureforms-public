@@ -880,4 +880,12 @@ class Test_Rest_Api extends TestCase {
 
 		wp_set_current_user( 0 );
 	}
+
+	public function test_get_email_delivery_status() {
+		$response = $this->rest_api->get_email_delivery_status();
+
+		$this->assertInstanceOf( \WP_REST_Response::class, $response );
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertArrayHasKey( 'state', $response->get_data() );
+	}
 }

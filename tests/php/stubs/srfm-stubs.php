@@ -190,6 +190,91 @@ class Analytics
     {
     }
     /**
+     * Track AI form creation, broken down by the starter card used (if any).
+     *
+     * @param string $starter_id Starter card id, or empty string for a free-text prompt.
+     * @param bool   $edited     Whether the starter prompt was edited before generating.
+     * @since 2.12.9
+     * @return void
+     */
+    public static function track_ai_starter_usage($starter_id, $edited)
+    {
+    }
+    /**
+     * Track forms started from a prebuilt template.
+     *
+     * @param mixed  $template_id Template id (sanitized here).
+     * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
+     * @since 2.13.0
+     * @return void
+     */
+    public static function track_form_template_usage($template_id, $action = 'create')
+    {
+    }
+    /**
+     * Track demand for templates that do not exist yet.
+     *
+     * @param string $query Cleaned request text. Ignored for `search`.
+     * @param string $type  `request` for an explicit request, `search` for a search with no results.
+     * @since 2.13.0
+     * @return void
+     */
+    public static function track_form_template_demand($query, $type = 'request')
+    {
+    }
+    /**
+     * Count a step of the template journey that happens in the library.
+     *
+     * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
+     * @param string $template_id Template id, for every action but `library_open`.
+     * @since 2.13.0
+     * @return bool Whether the action was counted.
+     */
+    public static function track_form_template_action($action, $template_id = '')
+    {
+    }
+    /**
+     * Count a step of the Add New Form start screen.
+     *
+     * @param string $action   `view`, `choose`, or one of Form_Start::STEPS.
+     * @param string $choice   Choice, required for `choose`.
+     * @param string $position Card position (`1`, `2`) or `link`, for `choose`.
+     * @since 2.13.0
+     * @return bool Whether the action was counted.
+     */
+    public static function track_form_start_action($action, $choice = '', $position = '')
+    {
+    }
+    /**
+     * Count a form created after a start screen choice.
+     *
+     * @param string $choice      Start screen choice.
+     * @param string $created_via How the form was created: `ai`, `template` or `scratch`.
+     * @since 2.13.0
+     * @return void
+     */
+    public static function track_form_start_created($choice, $created_via)
+    {
+    }
+    /**
+     * Queue the start screen funnel with fresh outcomes before a report.
+     *
+     * @since 2.13.0
+     * @return void
+     */
+    public static function refresh_form_start_funnel()
+    {
+    }
+    /**
+     * Drafts, published forms and forms with entries, per start screen choice.
+     *
+     * @since 2.13.0
+     * @return array<string, array<string, int>> Choice => [ `draft`, `published`, `with_entries` ].
+     */
+    public static function form_start_outcomes()
+    {
+    }
+    /**
      * Return total number of forms using instant forms.
      *
      * @since 1.4.0
@@ -7872,6 +7957,31 @@ namespace SRFM\Inc {
          * @since 0.0.1
          */
         public static function get_form_markup($id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post')
+        {
+        }
+        /**
+         * Render the form markup for get_form_markup().
+         *
+         * @param int|string   $id Contains form ID.
+         * @param bool         $show_title_current_page Boolean to srfm-show/srfm-hide form title.
+         * @param string       $sf_classname additional class_name.
+         * @param string       $post_type Contains post type.
+         * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+         * @param array<mixed> $block_attrs Block attributes for per-embed styling.
+         *
+         * @return string|false
+         * @since 2.12.9
+         */
+        public static function render_form_markup($id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs)
+        {
+        }
+        /**
+         * Get the ID of the form whose content is being rendered.
+         *
+         * @return int Form ID, or 0 when no form content is rendering.
+         * @since 2.12.9
+         */
+        public static function get_rendering_form_id()
         {
         }
     }

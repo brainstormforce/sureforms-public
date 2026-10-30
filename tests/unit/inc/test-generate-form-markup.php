@@ -36,6 +36,64 @@ class Test_Generate_Form_Markup extends TestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * Outside get_form_markup() no form content is rendering, and the mark is set while it runs.
+	 */
+	public function test_get_rendering_form_id_tracks_get_form_markup() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Rendering Id Form',
+				'post_content' => "<!-- wp:paragraph -->\n<p>Body</p>\n<!-- /wp:paragraph -->",
+			]
+		);
+		$seen    = null;
+		$record  = static function () use ( &$seen ) {
+			$seen = Generate_Form_Markup::get_rendering_form_id();
+		};
+		add_action( 'srfm_after_field_content', $record );
+
+		try {
+			Generate_Form_Markup::get_form_markup( $form_id );
+		} finally {
+			remove_action( 'srfm_after_field_content', $record );
+			wp_delete_post( $form_id, true );
+		}
+
+		$this->assertSame( $form_id, $seen );
+		$this->assertSame( 0, Generate_Form_Markup::get_rendering_form_id() );
+	}
+
+	/**
+	 * Called directly, render_form_markup() renders the form without marking it as form content.
+	 */
+	public function test_render_form_markup_does_not_mark_form_content() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Direct Render Form',
+				'post_content' => "<!-- wp:paragraph -->\n<p>Body</p>\n<!-- /wp:paragraph -->",
+			]
+		);
+		$seen    = null;
+		$record  = static function () use ( &$seen ) {
+			$seen = Generate_Form_Markup::get_rendering_form_id();
+		};
+		add_action( 'srfm_after_field_content', $record );
+
+		try {
+			$markup = Generate_Form_Markup::render_form_markup( $form_id, true, '', 'post', false, [] );
+		} finally {
+			remove_action( 'srfm_after_field_content', $record );
+			wp_delete_post( $form_id, true );
+		}
+
+		$this->assertIsString( $markup );
+		$this->assertSame( 0, $seen );
+	}
+
 	public function test_get_form_markup_empty_id() {
 		$result = Generate_Form_Markup::get_form_markup( 0 );
 		$this->assertIsString( $result );
@@ -64,6 +122,38 @@ class Test_Generate_Form_Markup extends TestCase {
 		$this->assertIsString( $result );
 
 		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Only forms made from (or swapped to) a template get the class that scopes
+	 * the template success-message colors, so existing forms look the same.
+	 */
+	public function test_get_form_markup_marks_template_forms() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$plain_id = wp_insert_post(
+			[
+				'post_title'   => 'Plain Form',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"a1b2c3d4","formId":0} /-->',
+			]
+		);
+		$template_id = wp_insert_post(
+			[
+				'post_title'   => 'Template Form',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"e5f6a7b8","formId":0} /-->',
+				'meta_input'   => [ '_srfm_template_id' => 'contact-us' ],
+			]
+		);
+
+		$this->assertStringNotContainsString( 'srfm-template-form', Generate_Form_Markup::get_form_markup( $plain_id ) );
+		$this->assertMatchesRegularExpression( '/class="[^"]*srfm-form-container[^"]*srfm-template-form/', Generate_Form_Markup::get_form_markup( $template_id ) );
+
+		wp_delete_post( $plain_id, true );
+		wp_delete_post( $template_id, true );
 	}
 
 	/**
@@ -1015,6 +1105,30 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		$this->assertStringNotContainsString( '<style', $markup );
 		$this->assertStringContainsString( 'srfm-styling-none', $markup );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * blockId comes from block attributes and reaches a container id and a <style>
+	 * selector, so anything outside the CSS-safe set is dropped rather than printed.
+	 */
+	public function test_get_form_markup_sanitises_block_id_in_the_container_id() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post(
+			[
+				'post_title'   => 'Block id scoping',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => 'content',
+			]
+		);
+
+		$markup = Generate_Form_Markup::get_form_markup( $form_id, true, '', 'post', false, [ 'blockId' => 'abc"><style>x{}' ] );
+
+		$this->assertStringContainsString( 'srfm-form-container-' . $form_id . '-abcstylex', $markup );
+		$this->assertStringNotContainsString( '<style>x{}', $markup );
 
 		wp_delete_post( $form_id, true );
 	}

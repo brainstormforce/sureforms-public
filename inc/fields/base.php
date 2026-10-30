@@ -538,7 +538,8 @@ class Base {
 	 * @return void
 	 */
 	protected function set_aria_described_by() {
-		$this->aria_described_by .= ' srfm-error-' . esc_attr( $this->block_id );
+		// Only reference elements that exist in the rendered markup. The error message id
+		// is linked by toggleErrorState() in frontend.js on controls marked data-srfm-error-target.
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . esc_attr( $this->block_id ) : '';
 	}
 }

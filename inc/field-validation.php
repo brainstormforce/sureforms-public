@@ -10,6 +10,8 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -18,6 +20,29 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Field Validation Class
  */
 class Field_Validation {
+	/**
+	 * Field blocks whose markup is a single checkbox input, mapped to the field type
+	 * slug and the label their markup class falls back to.
+	 *
+	 * A browser submits nothing for an unticked checkbox, so these are the only fields
+	 * that can be absent from a submission while every other field posts an empty value.
+	 * The label fallbacks mirror the set_input_label() calls in Checkbox_Markup and
+	 * GDPR_Markup; they are what the rendered input name encodes when a form leaves the
+	 * label empty, so the two have to agree.
+	 *
+	 * @since 2.12.9
+	 */
+	public const UNSUBMITTABLE_BLOCKS = [
+		'srfm/checkbox' => [
+			'type'  => 'checkbox',
+			'label' => 'Checkbox',
+		],
+		'srfm/gdpr'     => [
+			'type'  => 'gdpr',
+			'label' => 'I consent to have this website store my information so they can respond to my inquiry.',
+		],
+	];
+
 	/**
 	 * Add block configuration for form fields.
 	 *
@@ -197,6 +222,64 @@ class Field_Validation {
 	}
 
 	/**
+	 * Restore the fields a browser never submits when the visitor leaves them unset.
+	 *
+	 * An unticked checkbox is not posted at all, so its key never reaches the server:
+	 * the field is missing from the entry and from notification emails, while every
+	 * other field left empty arrives as '' and is shown as '-'. This rebuilds those
+	 * keys from the form's own blocks so an untouched checkbox reads like every other
+	 * untouched field.
+	 *
+	 * Submitted values are never replaced -- a key already present is left exactly as
+	 * it arrived, so a ticked box keeps the value the browser sent.
+	 *
+	 * The key is assembled the same way the markup does it
+	 * ({@see \SRFM\Inc\Fields\Base::set_input_label()} and the `name` attribute in
+	 * checkbox-markup.php), so the two have to stay in step; test-field-validation.php
+	 * asserts they do by rendering the field and comparing.
+	 *
+	 * @param array<mixed> $form_data Submitted form data.
+	 * @param int|mixed    $form_id   The form post id.
+	 * @since 2.12.9
+	 * @return array<mixed> Form data with the missing keys added.
+	 */
+	public static function backfill_unsubmitted_fields( $form_data, $form_id ) {
+		if ( ! is_array( $form_data ) ) {
+			return $form_data;
+		}
+
+		$form_id = Helper::get_integer_value( $form_id );
+		if ( $form_id <= 0 ) {
+			return $form_data;
+		}
+
+		$walked = self::get_field_identifiers( $form_id );
+		if ( empty( $walked['unsubmittable'] ) || ! is_array( $walked['unsubmittable'] ) ) {
+			return $form_data;
+		}
+
+		foreach ( $walked['unsubmittable'] as $field ) {
+			$prefix = 'srfm-' . $field['type'] . '-' . $field['block_id'] . '-lbl-';
+			$suffix = '-' . $field['slug'];
+
+			// The field is identified by its block id and slug, never by the label: the
+			// label in a rendered key is whatever the field displayed (a block.json
+			// default, a translation), so any submitted key for this block id and slug
+			// means the visitor sent the field, whatever label it encodes. A submitted
+			// null still counts, so this never overwrites what the visitor sent.
+			foreach ( array_keys( $form_data ) as $submitted_key ) {
+				if ( is_string( $submitted_key ) && str_starts_with( $submitted_key, $prefix ) && str_ends_with( $submitted_key, $suffix ) ) {
+					continue 2;
+				}
+			}
+
+			$form_data[ $prefix . Helper::encode( $field['label'] ) . $suffix ] = '';
+		}
+
+		return $form_data;
+	}
+
+	/**
 	 * Build the set of block ids that legitimately belong to a form.
 	 *
 	 * Walks the form's block markup and collects the `block_id` of every SureForms
@@ -310,6 +393,12 @@ class Field_Validation {
 	 * here too; the allowlist already contains repeater children because the collector
 	 * recurses into `innerBlocks`.
 	 *
+	 * SECURITY INVARIANT — every kept key names exactly one defined field (its block_id
+	 * and slug belong together, see field_key_belongs_to_form()), and each slug and
+	 * block_id reaches the submission under at most one key, at the top level and within
+	 * each repeater row the walk keeps. Any key whose slug or block_id is repeated is
+	 * dropped: see drop_repeated_field_keys().
+	 *
 	 * @param array<mixed> $form_data The submitted form data (sanitized).
 	 * @param int|mixed    $form_id   The ID of the form being submitted.
 	 * @since 2.12.3
@@ -323,12 +412,13 @@ class Field_Validation {
 		$form_id_int     = Helper::get_integer_value( $form_id );
 		$known_block_ids = self::get_known_field_block_ids( $form_id_int );
 		$known_slugs     = self::get_known_field_slugs( $form_id_int );
+		$pairs           = $form_id_int > 0 ? self::get_field_identifiers( $form_id_int )['pairs'] : [];
 
 		// Fail open. The sets are empty only when the form's blocks could not be derived
 		// (no/empty post_content, a parse failure, or a structure this walk does not
 		// recognise). Enforcing on an empty set would strip every field.
 		if ( empty( $known_block_ids ) && empty( $known_slugs ) ) {
-			return $form_data;
+			return self::drop_repeated_field_keys( $form_data );
 		}
 
 		foreach ( $form_data as $key => $value ) {
@@ -341,18 +431,20 @@ class Field_Validation {
 			// submitted and the current post_content; the slug does not, so requiring only
 			// a block_id match silently deleted real submissions (#1517643). A key with
 			// neither a known block_id nor a known slug is genuinely foreign and dropped.
-			if ( ! self::field_key_belongs_to_form( $key, $known_block_ids, $known_slugs ) ) {
+			if ( ! self::field_key_belongs_to_form( $key, $known_block_ids, $known_slugs, $pairs ) ) {
 				unset( $form_data[ $key ] );
 				continue;
 			}
 
 			// A known key whose value is an array is a repeater: walk its rows.
 			if ( is_array( $value ) ) {
-				$form_data[ $key ] = self::strip_unknown_repeater_keys( $value, $known_block_ids, $known_slugs );
+				$form_data[ $key ] = self::strip_unknown_repeater_keys( $value, $known_block_ids, $known_slugs, $pairs );
 			}
 		}
 
-		return $form_data;
+		// After the allowlist, so a forged key is removed on its own and cannot take
+		// the real field down with it as a "repeat".
+		return self::drop_repeated_field_keys( $form_data );
 	}
 
 	/**
@@ -525,6 +617,30 @@ class Field_Validation {
 	}
 
 	/**
+	 * Extract a field's slug from its submitted key.
+	 *
+	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
+	 * padding-stripped standard base64 and never contains a hyphen, so the slug is
+	 * everything after the first hyphen that follows `-lbl-` (the slug itself may
+	 * contain hyphens, which is why only the first is used as the boundary).
+	 *
+	 * @param string $key Submitted field key.
+	 * @since 2.12.7
+	 * @return string The slug, or '' when it cannot be derived.
+	 */
+	public static function get_slug_from_key( $key ) {
+		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
+			return '';
+		}
+
+		// Split at the first `-lbl-` only, so a slug that itself contains `-lbl-` stays whole.
+		$after = substr( $key, strpos( $key, '-lbl-' ) + 5 );
+		$pos   = strpos( $after, '-' );
+
+		return false === $pos ? '' : substr( $after, $pos + 1 );
+	}
+
+	/**
 	 * The walked allowlists for one form, memoised for the request.
 	 *
 	 * One cache, not one per getter. Both public getters need the same walk, and each
@@ -539,7 +655,7 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id, already normalised by the callers.
 	 * @since 2.12.8
-	 * @return array{ids:array<string,true>,slugs:array<string,true>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>}
 	 */
 	private static function get_field_identifiers( $form_id ) {
 		static $cache = [];
@@ -556,77 +672,139 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id.
 	 * @since 2.12.7
-	 * @return array{ids:array<string,true>,slugs:array<string,true>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>}
 	 */
 	private static function walk_field_identifiers( $form_id ) {
-		$ids   = [];
-		$slugs = [];
-		$post  = get_post( $form_id );
+		$ids           = [];
+		$slugs         = [];
+		$pairs         = [];
+		$unsubmittable = [];
+		$post          = get_post( $form_id );
 
 		if ( $post instanceof \WP_Post && ! empty( $post->post_content ) && function_exists( 'parse_blocks' ) ) {
 			$visited = [];
-			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited );
+			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited, 0, $unsubmittable, $pairs );
 		}
 
 		return [
-			'ids'   => $ids,
-			'slugs' => $slugs,
+			'ids'           => $ids,
+			'slugs'         => $slugs,
+			'pairs'         => $pairs,
+			'unsubmittable' => $unsubmittable,
 		];
 	}
 
 	/**
-	 * Whether a submitted field key belongs to the form, by block_id or by slug.
+	 * Whether a submitted field key names one field the form defines.
 	 *
-	 * @param string             $key             Submitted field key.
-	 * @param array<string,true> $known_block_ids Allowlisted block ids.
-	 * @param array<string,true> $known_slugs     Allowlisted field slugs.
+	 * SECURITY INVARIANT — a kept key resolves to exactly one defined field:
+	 *  - a known block_id must carry that same field's slug (from `$pairs`), so a known
+	 *    block_id cannot be reused under another field's slug;
+	 *  - an unknown block_id is kept only by its slug (block_id drift under full-page
+	 *    caching), and only when the key holds a single `-lbl-`, so every consumer
+	 *    reads the same slug from it.
+	 * A block without a slug pairs its block_id with an empty slug. A block_id added
+	 * through `srfm_known_field_block_ids`, which has no pair, is kept on its block_id,
+	 * again only with a single `-lbl-`.
+	 *
+	 * @param string               $key             Submitted field key.
+	 * @param array<string,true>   $known_block_ids Allowlisted block ids.
+	 * @param array<string,true>   $known_slugs     Allowlisted field slugs.
+	 * @param array<string,string> $pairs           Block id => that field's own slug.
 	 * @since 2.12.7
 	 * @return bool
 	 */
-	private static function field_key_belongs_to_form( $key, $known_block_ids, $known_slugs ) {
-		if ( isset( $known_block_ids[ Helper::get_block_id_from_key( $key ) ] ) ) {
-			return true;
+	private static function field_key_belongs_to_form( $key, $known_block_ids, $known_slugs, $pairs = [] ) {
+		$block_id   = Helper::get_block_id_from_key( $key );
+		$slug       = self::get_slug_from_key( $key );
+		$single_lbl = 1 === substr_count( $key, '-lbl-' );
+
+		if ( isset( $known_block_ids[ $block_id ] ) ) {
+			return isset( $pairs[ $block_id ] ) ? $pairs[ $block_id ] === $slug : $single_lbl;
 		}
 
-		$slug = self::get_slug_from_key( $key );
-
-		return '' !== $slug && isset( $known_slugs[ $slug ] );
+		return $single_lbl && '' !== $slug && isset( $known_slugs[ $slug ] );
 	}
 
 	/**
-	 * Extract a field's slug from its submitted key.
+	 * Drop every field key whose slug or block_id is submitted under more than one key.
 	 *
-	 * A key is `srfm-<type>-<block_id>-lbl-<base64 label>-<slug>`. Helper::encode() is
-	 * padding-stripped standard base64 and never contains a hyphen, so the slug is
-	 * everything after the first hyphen that follows `-lbl-` (the slug itself may
-	 * contain hyphens, which is why only the first is used as the boundary).
+	 * The form renders one input name per field, so a slug or block_id that arrives under
+	 * two keys did not come from the rendered form. No single key can be trusted over
+	 * another, so all of them are dropped; a required field then fails validation instead
+	 * of being resolved to an arbitrary copy. Keys are compared under every reading a
+	 * consumer applies (see get_field_key_identities()), so two keys that any consumer
+	 * resolves to the same field are both dropped.
 	 *
-	 * @param string $key Submitted field key.
-	 * @since 2.12.7
-	 * @return string The slug, or '' when it cannot be derived.
+	 * @param array<mixed> $fields Submitted fields at one level (top-level or a repeater row).
+	 * @since 2.13.0
+	 * @return array<mixed> The fields with every repeated-slug and repeated-block_id key removed.
 	 */
-	private static function get_slug_from_key( $key ) {
-		if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
-			return '';
+	private static function drop_repeated_field_keys( $fields ) {
+		$groups = [];
+		foreach ( array_keys( $fields ) as $key ) {
+			if ( ! is_string( $key ) || false === strpos( $key, '-lbl-' ) ) {
+				continue;
+			}
+
+			foreach ( self::get_field_key_identities( $key ) as $identity ) {
+				$groups[ $identity ][ $key ] = true;
+			}
 		}
 
-		$parts = explode( '-lbl-', $key );
-		$after = $parts[1] ?? '';
-		$pos   = strpos( $after, '-' );
+		foreach ( $groups as $keys ) {
+			if ( count( $keys ) > 1 ) {
+				foreach ( array_keys( $keys ) as $key ) {
+					unset( $fields[ $key ] );
+				}
+			}
+		}
 
-		return false === $pos ? '' : substr( $after, $pos + 1 );
+		return $fields;
+	}
+
+	/**
+	 * Every slug and block_id a submitted field key can be read as.
+	 *
+	 * Consumers read keys differently: get_slug_from_key() takes everything after the
+	 * first `-lbl-`, while prepare_submission_data(), map_slug_to_submission_data(), the
+	 * `{form:slug}` smart tag and SureForms Pro's repeater stop at the next `-lbl-`;
+	 * SureForms Pro's calculation finds a field by `-<block_id>-lbl-` anywhere in the key;
+	 * and process_form_fields() stores keys with `_` read as a space. One field key must
+	 * resolve to one field in all of them, so it is identified under each reading.
+	 * Empty slugs and block_ids identify nothing and are left out.
+	 *
+	 * @param string $key Submitted field key containing `-lbl-`.
+	 * @since 2.13.0
+	 * @return array<int, string> Identities, prefixed `slug:` or `id:`.
+	 */
+	private static function get_field_key_identities( $key ) {
+		$key      = str_replace( '_', ' ', $key );
+		$segments = explode( '-lbl-', $key );
+
+		$identities = [
+			'slug:' . self::get_slug_from_key( $key ),
+			'slug:' . implode( '-', array_slice( explode( '-', $segments[1] ?? '' ), 1 ) ),
+		];
+		foreach ( array_slice( $segments, 0, -1 ) as $segment ) {
+			$tokens       = explode( '-', $segment );
+			$identities[] = 'id:' . end( $tokens );
+		}
+
+		return array_values( array_diff( array_unique( $identities ), [ 'slug:', 'id:' ] ) );
 	}
 
 	/**
 	 * Remove unknown child field keys from repeater rows.
 	 *
-	 * @param array<mixed>       $rows            The repeater's submitted rows.
-	 * @param array<string,true> $known_block_ids Map of block ids belonging to the form.
-	 * @param array<string,true> $known_slugs     Map of field slugs belonging to the form.
+	 * @param array<mixed>         $rows            The repeater's submitted rows.
+	 * @param array<string,true>   $known_block_ids Map of block ids belonging to the form.
+	 * @param array<string,true>   $known_slugs     Map of field slugs belonging to the form.
+	 * @param array<string,string> $pairs         Block id => that field's own slug.
 	 * @since 2.12.3
 	 * @return array<mixed> The rows with unknown child keys removed.
 	 */
-	private static function strip_unknown_repeater_keys( $rows, $known_block_ids, $known_slugs = [] ) {
+	private static function strip_unknown_repeater_keys( $rows, $known_block_ids, $known_slugs = [], $pairs = [] ) {
 		foreach ( $rows as $index => $row ) {
 			if ( ! is_array( $row ) ) {
 				continue;
@@ -637,12 +815,12 @@ class Field_Validation {
 					continue;
 				}
 
-				if ( ! self::field_key_belongs_to_form( $child_key, $known_block_ids, $known_slugs ) ) {
+				if ( ! self::field_key_belongs_to_form( $child_key, $known_block_ids, $known_slugs, $pairs ) ) {
 					unset( $row[ $child_key ] );
 				}
 			}
 
-			$rows[ $index ] = $row;
+			$rows[ $index ] = self::drop_repeated_field_keys( $row );
 		}
 
 		return $rows;
@@ -651,15 +829,20 @@ class Field_Validation {
 	/**
 	 * Recursively collect SureForms block ids from a parsed block tree.
 	 *
-	 * @param array<mixed>       $blocks  Parsed blocks from parse_blocks().
-	 * @param array<string,true> $ids     Accumulator of block id => true (by reference).
-	 * @param array<string,true> $slugs   Accumulator of field slug => true (by reference).
-	 * @param array<int,true>    $visited Expanded reusable-block post ids, guards cycles.
-	 * @param int                $depth   Current recursion depth, guards pathological trees.
+	 * @param array<mixed>                    $blocks  Parsed blocks from parse_blocks().
+	 * @param array<string,true>              $ids     Accumulator of block id => true (by reference).
+	 * @param array<string,true>              $slugs   Accumulator of field slug => true (by reference).
+	 * @param array<int,true>                 $visited Expanded reusable-block post ids, guards cycles.
+	 * @param int                             $depth   Current recursion depth, guards pathological trees.
+	 * @param array<int,array<string,string>> $unsubmittable Accumulator of the checkbox/GDPR
+	 *                                                       fields a browser cannot submit
+	 *                                                       when unticked (by reference).
+	 * @param array<string,string>            $pairs   Accumulator of block id => that field's
+	 *                                                 own slug (by reference).
 	 * @since 2.12.3
 	 * @return void
 	 */
-	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0 ) {
+	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0, &$unsubmittable = [], &$pairs = [] ) {
 		if ( ! is_array( $blocks ) || $depth > 50 ) {
 			return;
 		}
@@ -688,6 +871,29 @@ class Field_Validation {
 				// slug match keeps a legitimately-submitted field whose block_id drifted.
 				if ( ! empty( $attrs['slug'] ) && is_string( $attrs['slug'] ) ) {
 					$slugs[ $attrs['slug'] ] = true;
+					// Which slug this block_id belongs to, so a key cannot pair a known
+					// block_id with another field's slug.
+					if ( ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
+						$pairs[ $attrs['block_id'] ] = $attrs['slug'];
+					}
+				} elseif ( ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) && '' === ( $attrs['slug'] ?? '' ) && ! isset( $pairs[ $attrs['block_id'] ] ) ) {
+					// A field without a slug renders its key with an empty one
+					// (Fields\Base), so its block_id pairs with no slug.
+					$pairs[ $attrs['block_id'] ] = '';
+				}
+
+				// A browser posts nothing for an unticked checkbox, so these fields need
+				// rebuilding from the form itself -- see backfill_unsubmitted_fields().
+				if ( isset( self::UNSUBMITTABLE_BLOCKS[ $block_name ] ) && ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
+					// The saved label, else the block.json default the field renders with
+					// when the label was never edited, else the markup's own fallback.
+					$label           = String_Translator::block_attribute_value( $block_name, $attrs, 'label' );
+					$unsubmittable[] = [
+						'type'     => self::UNSUBMITTABLE_BLOCKS[ $block_name ]['type'],
+						'block_id' => $attrs['block_id'],
+						'slug'     => isset( $attrs['slug'] ) && is_string( $attrs['slug'] ) ? $attrs['slug'] : '',
+						'label'    => '' !== $label ? $label : self::UNSUBMITTABLE_BLOCKS[ $block_name ]['label'],
+					];
 				}
 			}
 
@@ -699,13 +905,13 @@ class Field_Validation {
 					$visited[ $ref ] = true;
 					$ref_post        = get_post( $ref );
 					if ( $ref_post instanceof \WP_Post && 'wp_block' === $ref_post->post_type && '' !== $ref_post->post_content ) {
-						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1 );
+						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs );
 					}
 				}
 			}
 
 			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1 );
+				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs );
 			}
 		}
 	}
