@@ -359,7 +359,9 @@ const SureformsFormSpecificSettings = () => {
 		if ( typeof sureformsKeys?._srfm_is_inline_button === 'boolean' ) {
 			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 		}
-	}, [ blockCount ] );
+		// Not only the block count: a template swap can replace the blocks with
+		// the same number of others and still add or drop a page break.
+	}, [ blockCount, isPageBreak, isInlineButtonBlockPresent ] );
 
 	useSubmitButton( {
 		isInlineButtonBlockPresent,

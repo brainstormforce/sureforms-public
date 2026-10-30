@@ -36,53 +36,31 @@ class Smart_Tags {
 	/**
 	 * Smart Tag Render Function.
 	 *
+	 * Smart tags resolve only in SureForms form content. Any other block is returned as stored.
+	 *
 	 * @param string       $block_content Entire Block Content.
 	 * @param array<mixed> $block Block Properties As An Array.
 	 * @since 0.0.1
 	 * @return string
 	 */
 	public function render_form( $block_content, $block ) {
-		// Check if this block is a SureForms form block.
-		if ( strpos( $block_content, 'srfm-block' ) !== false ) {
-
-			// Check if it's any SRFM block.
-			if ( isset( $block['blockName'] ) && is_string( $block['blockName'] ) && strpos( $block['blockName'], 'srfm' ) !== false ) {
-
-				// Determine form ID based on block type.
-				$form_id = 0;
-				if ( 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
-					$form_id = absint( $block['attrs']['id'] );
-				} elseif ( ! empty( $block['attrs']['formId'] ) ) {
-					$form_id = absint( $block['attrs']['formId'] );
-				}
-
-				// If we found a form ID, process it.
-				if ( $form_id ) {
-					$form_data = [ 'form-id' => $form_id ];
-
-					return Helper::get_string_value(
-						self::process_smart_tags( $block_content, null, $form_data )
-					);
-				}
-			}
-
+		if ( false === strpos( $block_content, '{' ) ) {
 			return $block_content;
 		}
 
-		// Check if the block content contains any SureForms smart tags like {*}.
-		if ( preg_match( '/\{[^\}]+\}/', $block_content ) ) {
+		$form_id = $this->get_block_form_id( $block );
 
-			$id        = get_the_id();
-			$form_data = [ 'form-id' => $id ];
-
-			if ( self::check_form_by_id( $id ) ) {
-				return Helper::get_string_value(
-					self::process_smart_tags( $block_content, null, $form_data )
-				);
-			}
+		if ( ! $form_id || ! preg_match( '/\{[^\}]+\}/', $block_content ) ) {
+			return $block_content;
 		}
 
-		return $block_content;
+		// Form content renders inside the_content, whose do_shortcode() runs after the
+		// blocks, so a resolved value must not carry shortcode brackets: values such as
+		// {get_input:*}, {get_cookie:*} and {http_referer} come from the visitor. Only
+		// the resolved values are encoded; shortcodes written into the form still run.
+		return Helper::get_string_value(
+			self::process_smart_tags( $block_content, null, [ 'form-id' => $form_id ], true )
+		);
 	}
 
 	/**
@@ -90,10 +68,13 @@ class Smart_Tags {
 	 *
 	 * @param int|false $id Form id.
 	 * @since 0.0.1
+	 * @since 2.12.9 True only for a SureForms form post.
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
-		return get_post_type( Helper::get_integer_value( $id ) ) ? true : false;
+		$id = Helper::get_integer_value( $id );
+
+		return $id > 0 && SRFM_FORMS_POST_TYPE === get_post_type( $id );
 	}
 
 	/**
@@ -151,11 +132,14 @@ class Smart_Tags {
 	 * @param string            $content Form content.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
+	 * @param bool              $encode_shortcode_brackets Encode `[` and `]` in each resolved value,
+	 *                                                     for content that do_shortcode() runs over next.
 	 * @since 0.0.1 - return string
 	 * @since 1.11.0 - return array<mixed>
+	 * @since 2.13.0 - $encode_shortcode_brackets
 	 * @return string|array<mixed>
 	 */
-	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
+	public function process_smart_tags( $content, $submission_data = null, $form_data = null, $encode_shortcode_brackets = false ) {
 
 		if ( ! $content ) {
 			return $content;
@@ -171,8 +155,7 @@ class Smart_Tags {
 
 		foreach ( $matches[0] as $tag ) {
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
-			strpos( $tag, 'get_input:' ) ||
-			strpos( $tag, 'get_cookie:' ) ||
+			self::is_request_tag( $tag ) ||
 			0 === strpos( $tag, '{form:' ) ||
 			0 === strpos( $tag, '{form-payment:' );
 
@@ -244,6 +227,9 @@ class Smart_Tags {
 			}
 
 			$replace = Helper::get_string_value( $smart_tag_value );
+			if ( $encode_shortcode_brackets ) {
+				$replace = str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $replace );
+			}
 			$content = str_replace( $tag, $replace, $content );
 		}
 
@@ -360,7 +346,7 @@ class Smart_Tags {
 				return '';
 
 			default:
-				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
+				if ( self::is_request_tag( $tag ) ) {
 					return self::parse_request_param( $tag );
 				}
 
@@ -410,7 +396,7 @@ class Smart_Tags {
 	 * @return array<mixed>|string
 	 */
 	public static function parse_request_param( $value ) {
-		if ( ! $value ) {
+		if ( ! is_string( $value ) || ! self::is_request_tag( $value ) ) {
 			return '';
 		}
 
@@ -429,11 +415,18 @@ class Smart_Tags {
 				$var = Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? esc_attr( sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) ) : '';
+			return isset( $parameters[ $param ] ) ? self::neutralize_request_value( esc_attr( sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
-			return isset( $_COOKIE[ $param ] ) ? esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) : '';
+			// WordPress' own cookies carry the session and the comment author identity.
+			// Reading them here would hand them to whoever can place the tag, server
+			// side, which is why being HttpOnly does not protect them.
+			if ( preg_match( '/^(?:wordpress_|wp-|wp_|comment_author)/i', $param ) ) {
+				return '';
+			}
+
+			return isset( $_COOKIE[ $param ] ) ? self::neutralize_request_value( esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) ) : '';
 		}
 
 		return '';
@@ -721,6 +714,68 @@ class Smart_Tags {
 	}
 
 	/**
+	 * Get the form a rendered block belongs to.
+	 *
+	 * @param array<mixed> $block Block Properties As An Array.
+	 * @since 2.12.9
+	 * @return int Form ID, or 0 when the block is not form content.
+	 */
+	private function get_block_form_id( $block ) {
+		// Blocks of a form that get_form_markup() is rendering (block, shortcode, page builders).
+		$form_id = Generate_Form_Markup::get_rendering_form_id();
+		if ( $form_id ) {
+			return $form_id;
+		}
+
+		if ( isset( $block['blockName'] ) && 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
+			// The form block itself, after its markup has rendered.
+			$form_id = Helper::get_integer_value( $block['attrs']['id'] );
+		} elseif ( is_singular( SRFM_FORMS_POST_TYPE ) && get_queried_object_id() === get_the_ID() ) {
+			// The form post's own page, such as the Instant Form page. Tied to the queried
+			// object so that a loop rendering forms inside another post cannot borrow it:
+			// in that case the queried object is the outer post, not the form.
+			$form_id = Helper::get_integer_value( get_the_ID() );
+		}
+
+		return $this->check_form_by_id( $form_id ) ? $form_id : 0;
+	}
+
+	/**
+	 * Whether a tag is a request smart tag: {get_input:name} or {get_cookie:name}, matched in full.
+	 *
+	 * @param string $tag Smart tag.
+	 * @since 2.12.9
+	 * @return bool
+	 */
+	private static function is_request_tag( $tag ) {
+		return 1 === preg_match( '/^\{get_(?:input|cookie):[\p{L}\p{M}\p{N}_-]+\}\z/u', $tag );
+	}
+
+	/**
+	 * Make an escaped request value safe to place in form content.
+	 *
+	 * The value can land in an href or src attribute, where esc_attr() keeps the scheme
+	 * intact. Browsers decode character references, at any code point, and ignore
+	 * whitespace and control characters in a scheme, so the check does the same; a value
+	 * with a script scheme is dropped. Braces are returned as character references so a
+	 * later smart tag pass over the same markup cannot read a tag inside the value.
+	 *
+	 * @param string $value Escaped request value.
+	 * @since 2.12.9
+	 * @return string The value, or an empty string when it carries a script scheme.
+	 */
+	private static function neutralize_request_value( $value ) {
+		$decoded = html_entity_decode( wp_kses_decode_entities( $value ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		$scheme  = strtolower( Helper::get_string_value( preg_replace( '/[\t\r\n]+/', '', ltrim( $decoded, "\x00..\x20" ) ) ) );
+
+		if ( preg_match( '/^(?:javascript|vbscript|data):/', $scheme ) ) {
+			return '';
+		}
+
+		return str_replace( [ '{', '}' ], [ '&#123;', '&#125;' ], $value );
+	}
+
+	/**
 	 * Find paymentDescription attribute from a payment block by block_id.
 	 *
 	 * Recursively searches parsed blocks (including innerBlocks) for a
@@ -867,7 +922,9 @@ class Smart_Tags {
 		}
 
 		if ( property_exists( $post, $value ) ) {
-			return $post->{$value};
+			// Escaped here because a field default is escaped while it is still the
+			// literal tag, so this value is pasted in after that happened.
+			return esc_attr( Helper::get_string_value( $post->{$value} ) );
 		}
 
 		return '';

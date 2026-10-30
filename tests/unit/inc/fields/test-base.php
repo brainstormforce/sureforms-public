@@ -102,6 +102,20 @@ class Test_Base extends TestCase {
 		$this->assertSame( '-lbl-' . Helper::encode( 'Payment' ), $this->get_private_property( $this->base, 'input_label' ) );
 	}
 
+	/**
+	 * Test set_aria_described_by references only the help text, which is always rendered.
+	 */
+	public function test_set_aria_described_by() {
+		$this->call_private_method( $this->base, 'set_properties', [ [ 'block_id' => 'b1' ] ] );
+		$this->call_private_method( $this->base, 'set_aria_described_by' );
+		$this->assertSame( '', trim( (string) $this->get_private_property( $this->base, 'aria_described_by' ) ) );
+
+		$base = new Base();
+		$this->call_private_method( $base, 'set_properties', [ [ 'block_id' => 'b1', 'help' => 'Some help' ] ] );
+		$this->call_private_method( $base, 'set_aria_described_by' );
+		$this->assertSame( 'srfm-description-b1', trim( $this->get_private_property( $base, 'aria_described_by' ) ) );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );

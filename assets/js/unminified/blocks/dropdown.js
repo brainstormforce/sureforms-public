@@ -32,11 +32,6 @@ function initializeDropdown() {
 
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
-			const errorContainerID = element
-				?.closest( '.srfm-dropdown-block' )
-				?.querySelector( '.srfm-error-message' )
-				?.getAttribute( 'data-srfm-id' );
-
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
 				additionalConfig = {
 					maxItems: null, // Enabling multi selection for dropdown.
@@ -55,17 +50,22 @@ function initializeDropdown() {
 				plugins: [ 'remove_button', 'clear_button' ], // Adding remove button to the selected options and clear button for the dropdown.
 				openOnFocus: false, // Stop the dropdown from opening on focus.
 				/**
-				 * If the error container is present, assign it to the aria-describedby attribute.
-				 * This will ensure that when there is a error, it will be announced by the screen reader
-				 * when the field is in focus state.
+				 * Mirror the select's aria-describedby onto the search input, so the error
+				 * (linked only while shown) and the help text are announced on focus.
 				 *
 				 * If there are selected options, announce them on field focus.
 				 */
 				onFocus() {
-					if ( errorContainerID ) {
+					const describedBy =
+						element.getAttribute( 'aria-describedby' );
+					if ( describedBy ) {
 						tomInputInstance.control_input.setAttribute(
 							'aria-describedby',
-							errorContainerID
+							describedBy
+						);
+					} else {
+						tomInputInstance.control_input.removeAttribute(
+							'aria-describedby'
 						);
 					}
 					if (

@@ -65,6 +65,23 @@ const addInitialAttr = ( ChildComponent ) => {
 					attributeObject.slug = '';
 				}
 
+				// Give the duplicated block its own copy of every array attribute
+				// (one level: arrays and plain objects inside them are copied,
+				// anything deeper is still shared) so editing one block's arrays,
+				// e.g. options in multi-choice, cannot change the other block.
+				Object.entries( attributes ).forEach( ( [ key, value ] ) => {
+					if ( Array.isArray( value ) ) {
+						attributeObject[ key ] = value.map( ( item ) => {
+							if ( Array.isArray( item ) ) {
+								return [ ...item ];
+							}
+							return typeof item === 'object' && item !== null
+								? { ...item }
+								: item;
+						} );
+					}
+				} );
+
 				// Only copy conditional logic if pro is active (action is registered).
 				if ( hasAction( 'srfm.duplicateBlock' ) ) {
 					doAction( 'srfm.duplicateBlock', block_id, newBlockId );

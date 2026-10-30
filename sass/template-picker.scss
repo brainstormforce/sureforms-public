@@ -26,6 +26,9 @@ $sidebar_width: 290px;
 	}
 
 	#wpbody-content {
+		// No room for the hidden #wpfooter, so the screen doesn't scroll past its content.
+		padding-bottom: 0;
+
 		// Hide all admin notices on SureForms Template Picker.
 		.notice,
 		.error {
@@ -50,6 +53,11 @@ $sidebar_width: 290px;
 	#wpcontent {
 		margin: 0px;
 		padding: 0px;
+	}
+
+	// WordPress leaves room for its mobile admin bar, which is hidden here.
+	#wpbody {
+		padding-top: 0;
 	}
 
 	#bsf-optin-notice,

@@ -760,13 +760,28 @@ async function submitFormData( form ) {
 
 		// "TypeError: Failed to fetch" with a short duration is itself the
 		// diagnosis: the request never reached PHP -- blocked, offline or CORS.
+		//
+		// While the page is leaving, the browser cancels the request itself
+		// (Safari: "TypeError: Load failed"). That is logged as 'network' with no
+		// status, which Client_Logger::is_fault() does not count, so it cannot
+		// raise the "form submissions are failing" alert.
+		const message = `${ e?.name ?? 'Error' }: ${
+			typeof e?.message === 'string' ? e.message : ''
+		}${ e?.code ? ` (${ e.code })` : '' }`;
 		srfmLog.add( {
-			type: 'error',
+			type: navigatingAway ? 'network' : 'error',
 			duration_ms: Math.round( performance.now() - startedAt ),
-			message: `${ e?.name ?? 'Error' }: ${
-				typeof e?.message === 'string' ? e.message : ''
-			}${ e?.code ? ` (${ e.code })` : '' }`,
+			message: navigatingAway
+				? `Submission cancelled as the page was unloading: ${ message }`
+				: message,
 		} );
+
+		// Only server-authored messages are shown to the visitor. A native fetch or
+		// JSON error is raw browser text ("Load failed", or a SyntaxError about an
+		// HTML challenge page), so an empty message shows the translated generic
+		// error instead, as the Pro login handler does.
+		const isRawBrowserError =
+			e instanceof TypeError || e instanceof SyntaxError;
 
 		/**
 		 * Surface the server's own message (e.g. an expired submission token, a
@@ -778,7 +793,10 @@ async function submitFormData( form ) {
 		return {
 			success: false,
 			data: {
-				message: typeof e?.message === 'string' ? e.message : '',
+				message:
+					! isRawBrowserError && typeof e?.message === 'string'
+						? e.message
+						: '',
 				log_message: e?.code
 					? `SureForms submission failed (${ e.code }).`
 					: null,
@@ -914,8 +932,52 @@ function showSuccessMessage(
 	}
 }
 
+/**
+ * True once this page has started to leave: a redirect confirmation or any
+ * other navigation. The browser cancels in-flight requests as the page unloads,
+ * so a request that fails in this window is not a sign the site is broken.
+ * Reset when the page comes back from the back/forward cache.
+ */
+let navigatingAway = false;
+
+window.addEventListener( 'pagehide', () => {
+	navigatingAway = true;
+} );
+
+window.addEventListener( 'pageshow', ( event ) => {
+	if ( event.persisted ) {
+		navigatingAway = false;
+	}
+} );
+
+/**
+ * Navigate to the confirmation URL.
+ *
+ * @param {string} url Redirect URL.
+ * @return {boolean} True when the page will unload. False when it stays on
+ *                   screen: a URL that only changes the fragment of the current
+ *                   page (including an empty `#`), or a non-http(s) URL such as
+ *                   mailto: or tel:, which hands off to another app.
+ */
 function redirectToUrl( url ) {
+	let leavesPage = true;
+	try {
+		const target = new URL( url, window.location.href );
+		const here = new URL( window.location.href );
+		const isHttp = [ 'http:', 'https:' ].includes( target.protocol );
+		const isFragmentOnly =
+			String( url ).includes( '#' ) &&
+			target.origin === here.origin &&
+			target.pathname === here.pathname &&
+			target.search === here.search;
+		leavesPage = isHttp && ! isFragmentOnly;
+	} catch ( e ) {
+		// Not a parseable URL. The browser decides; assume it navigates.
+	}
+
+	navigatingAway = leavesPage;
 	window.location.assign( url );
+	return leavesPage;
 }
 
 /**
@@ -1216,13 +1278,41 @@ async function handleFormSubmission(
 					submitType,
 					loader
 				);
+			} else if (
+				formStatus?.redirect_url &&
+				redirectToUrl( formStatus.redirect_url )
+			) {
+				// Keep the button disabled and the loader on while the browser
+				// navigates. The old page can stay on screen for seconds, and a
+				// second tap would resubmit into a request the unload then cancels.
+				let fallbackTimer = 0;
+				// Back/forward cache restore: the page is back, so is the form.
+				const onPageShow = ( pageEvent ) => {
+					if ( pageEvent.persisted ) {
+						release();
+					}
+				};
+				const release = () => {
+					window.clearTimeout( fallbackTimer );
+					window.removeEventListener( 'pageshow', onPageShow );
+					loader.classList.remove( 'srfm-active' );
+					enableSubmitButton( form );
+				};
+				window.addEventListener( 'pageshow', onPageShow );
+				// ponytail: fixed 15s fallback for a redirect that never unloads the
+				// page (e.g. a URL served as a file download, or a beforeunload
+				// prompt the visitor cancelled). Make it configurable if a real slow
+				// redirect ever takes longer. The page is still here, so failures
+				// count again; if the navigation does commit later, pagehide sets
+				// navigatingAway back before the unload.
+				fallbackTimer = window.setTimeout( () => {
+					navigatingAway = false;
+					release();
+				}, 15000 );
 			} else {
-				if ( formStatus?.redirect_url ) {
-					redirectToUrl( formStatus?.redirect_url );
-				}
 				loader.classList.remove( 'srfm-active' );
 
-				// Re-enable submit button after redirect.
+				// Re-enable submit button: no redirect left the page.
 				enableSubmitButton( form );
 			}
 		} else {

@@ -12,6 +12,12 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Lost_Submissions;
+use SRFM\Inc\Email_Delivery\Mailer;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Email_Delivery\Suremail_Adapter;
+use SRFM\Inc\Form_Start;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
@@ -617,10 +623,11 @@ class Admin {
 		// date automatically (see BSF_Analytics_Events::track()) and dedupes per
 		// event name, matching the sibling notice's telemetry.
 		$events = [
-			'edit_form'     => 'form_setup_widget_edit_form',
-			'edit_thankyou' => 'form_setup_widget_edit_thankyou',
-			'set_up_email'  => 'form_setup_widget_set_up_email',
-			'view_form'     => 'form_setup_widget_view_form',
+			'edit_form'      => 'form_setup_widget_edit_form',
+			'edit_thankyou'  => 'form_setup_widget_edit_thankyou',
+			'set_up_email'   => 'form_setup_widget_set_up_email',
+			'view_form'      => 'form_setup_widget_view_form',
+			'email_delivery' => 'form_setup_widget_email_delivery',
 		];
 
 		if ( isset( $events[ $action ] ) ) {
@@ -702,6 +709,32 @@ class Admin {
 			],
 		];
 
+		// Whether those notifications will actually be sent. A form imported by a
+		// site builder is often live before any mailer is set up, which is the
+		// owner this widget exists for. The status title is the label; a button
+		// only when there is something to do.
+		$email_delivery = Email_Delivery_Status::get_status();
+		$delivery_row   = [
+			'label' => Helper::get_string_value( $email_delivery['title'] ?? '' ),
+			'cta'   => '',
+			'url'   => '',
+			'event' => 'email_delivery',
+		];
+		$delivery_state = Helper::get_string_value( $email_delivery['state'] ?? '' );
+
+		if ( 'not_configured' === $delivery_state ) {
+			// The Form Checks panel there installs SureMail in one click.
+			$delivery_row['cta'] = __( 'Set up email delivery', 'sureforms' );
+			$delivery_row['url'] = admin_url( 'admin.php?page=sureforms_menu' );
+		} elseif ( ! empty( $email_delivery['action']['url'] ) ) {
+			$delivery_row['cta'] = Helper::get_string_value( $email_delivery['action']['label'] ?? '' );
+			$delivery_row['url'] = Helper::get_string_value( $email_delivery['action']['url'] );
+		}
+
+		if ( '' !== $delivery_row['label'] ) {
+			$rows[] = $delivery_row;
+		}
+
 		// Fall back to a generic label for an untitled form so the heading never
 		// renders "Finish setting up " with a dangling space.
 		$card_title = '' !== trim( (string) $card['title'] ) ? $card['title'] : __( 'your form', 'sureforms' );
@@ -726,7 +759,9 @@ class Admin {
 				<?php foreach ( $rows as $row ) { ?>
 					<li class="srfm-setup-checklist__step">
 						<span class="srfm-setup-checklist__label"><?php echo esc_html( $row['label'] ); ?></span>
-						<a class="srfm-setup-checklist__cta" data-srfm-event="<?php echo esc_attr( $row['event'] ); ?>" href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $row['cta'] ); ?></a>
+						<?php if ( '' !== $row['cta'] && '' !== $row['url'] ) { ?>
+							<a class="srfm-setup-checklist__cta" data-srfm-event="<?php echo esc_attr( $row['event'] ); ?>" href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $row['cta'] ); ?></a>
+						<?php } ?>
 					</li>
 				<?php } ?>
 			</ul>
@@ -1410,8 +1445,9 @@ JS;
 
 		// Check if SureMail is installed and active.
 		if ( 'sureforms_smtp' === $submenu_page && file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( 'suremails/suremails.php' ) ) {
-			// Plugin is installed and active - redirect to SureMail dashboard.
-			wp_safe_redirect( admin_url( 'options-general.php?page=suremail#/dashboard' ) );
+			// Plugin is installed and active - redirect to SureMail dashboard. SureMail
+			// can live under Settings or as a top-level menu, so let it build the URL.
+			wp_safe_redirect( Suremail_Adapter::admin_url( '/dashboard' ) );
 			exit;
 		}
 	}
@@ -1871,6 +1907,7 @@ JS;
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
+			'can_install_plugins'          => current_user_can( 'install_plugins' ),
 			'mcp_adapter_status'           => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
 				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
 				: 'not_installed',
@@ -1931,6 +1968,11 @@ JS;
 		$is_sureforms_screen = apply_filters( 'srfm_is_dashboard_screen', $is_sureforms_screen );
 
 		if ( $is_sureforms_screen ) {
+			// Built only where SureForms' own screens read it: on other admin pages the
+			// status (and, with SureMail inactive, a get_plugins() scan) is wasted work.
+			$localization_data['email_delivery']       = Email_Delivery_Status::get_status();
+			$localization_data['email_delivery_offer'] = Email_Delivery_Status::get_offer();
+
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -2061,6 +2103,7 @@ JS;
 				'suremail_status'        => file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' )
 					? ( is_plugin_active( 'suremails/suremails.php' ) ? 'active' : 'installed' )
 					: 'not_installed',
+				'email_delivery_offer'   => Email_Delivery_Status::get_offer(),
 			];
 
 			wp_localize_script(
@@ -2179,18 +2222,28 @@ JS;
 				SRFM_SLUG . '-template-picker',
 				SRFM_SLUG . '_admin',
 				[
-					'site_url'                     => get_site_url(),
-					'plugin_url'                   => SRFM_URL,
-					'admin_url'                    => admin_url( 'admin.php' ),
-					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                   => Helper::current_user_can(),
-					'template_picker_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => Helper::has_pro(),
-					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
-					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
-					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
-					'pricing_page_url'             => Helper::get_sureforms_website_url( 'pricing' ),
-					'licensing_nonce'              => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
+					'site_url'                      => get_site_url(),
+					'plugin_url'                    => SRFM_URL,
+					'admin_url'                     => admin_url( 'admin.php' ),
+					'new_template_picker_base_url'  => admin_url( 'post-new.php?post_type=sureforms_form' ),
+					'capability'                    => Helper::current_user_can(),
+					'template_picker_nonce'         => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'                 => Helper::has_pro(),
+					'srfm_ai_usage_details'         => AI_Helper::get_current_usage_details(),
+					'has_ai_generated_forms'        => AI_Helper::has_ai_generated_forms(),
+					'is_pro_license_active'         => AI_Helper::is_pro_license_active(),
+					'srfm_ai_auth_user_email'       => get_option( 'srfm_ai_auth_user_email' ),
+					'pricing_page_url'              => Helper::get_sureforms_website_url( 'pricing' ),
+					'licensing_nonce'               => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
+					'form_templates'                => Form_Templates::get_templates_for_js(),
+					'pro_tier'                      => Helper::get_pro_tier(),
+					'form_template_categories'      => Form_Templates::get_categories(),
+					'form_template_themes'          => Form_Templates::get_themes_for_js(),
+					'form_template_requests'        => Form_Templates::get_request_settings_for_js(),
+					'form_template_spam_protection' => Form_Templates::is_spam_protection_on(),
+					'form_start'                    => Form_Start::get_settings_for_js(),
+					'site_title'                    => get_bloginfo( 'name' ),
+					'admin_email'                   => get_option( 'admin_email' ),
 				]
 			);
 
@@ -2884,13 +2937,31 @@ JS;
 				'dismissed'       => 'submission_failure_notice_dismiss',
 			],
 			'notification_error'          => [
-				'contact_support' => 'notification_failure_notice_cta',
-				'help_me_fix'     => 'notification_failure_notice_guide',
-				'dismissed'       => 'notification_failure_notice_dismiss',
+				'connect_surecontact' => 'notification_failure_notice_connect',
+				'contact_support'     => 'notification_failure_notice_cta',
+				'help_me_fix'         => 'notification_failure_notice_guide',
+				'view_logs'           => 'notification_failure_notice_logs',
+				'dismissed'           => 'notification_failure_notice_dismiss',
+			],
+			// Email delivery advice (#3150), dashboard panel only. Ignore goes through
+			// srfm_dismiss_action_item, which records its own dismiss event.
+			'email_delivery_setup'        => [
+				'setup_email_delivery' => 'email_setup_notice_install',
+				'open_suremail'        => 'email_setup_notice_connect',
+				'connect_surecontact'  => 'email_setup_notice_connect',
+			],
+			'email_delivery_limited'      => [
+				'open_suremail' => 'email_limited_notice_cta',
+			],
+			'email_delivery_quota'        => [
+				'open_suremail' => 'email_quota_notice_cta',
 			],
 			'integration_error'           => [
 				'contact_support' => 'integration_failure_notice_cta',
 				'dismissed'       => 'integration_failure_notice_dismiss',
+			],
+			'lost_submissions'            => [
+				'help_me_fix' => 'lost_submissions_notice_guide',
 			],
 			'caching_plugin'              => [
 				'help_me_fix' => 'caching_plugin_notice_cta',
@@ -3022,7 +3093,8 @@ JS;
 				'content'     => wp_kses_post( $content_markup ),
 				'button_text' => esc_html( __( 'Build My First Form', 'sureforms' ) ),
 				'dismiss'     => esc_html( __( 'Dismiss', 'sureforms' ) ),
-				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+				// The pointer is about the AI builder, so it skips the start screen.
+				'button_url'  => admin_url( 'admin.php?page=add-new-form&view=ai' ),
 			]
 		);
 	}
@@ -3499,6 +3571,20 @@ JS;
 
 		$this->enqueue_notice_response_script();
 
+		// Only when a notice carries Connect SureContact, so the other notices
+		// print nothing extra.
+		if ( ! empty( array_filter( array_column( $items, 'connect_label' ) ) ) ) {
+			?>
+			<style id="srfm-connect-surecontact-styles">
+				/* SureContact's purple, matching the SureForms dashboard panel. */
+				.notice .button.srfm-connect-surecontact { background: #8345DD; border-color: #8345DD; color: #fff; }
+				.notice .button.srfm-connect-surecontact:hover,
+				.notice .button.srfm-connect-surecontact:focus { background: #6D35C2; border-color: #6D35C2; color: #fff; }
+				.notice .button.srfm-connect-surecontact:focus { box-shadow: 0 0 0 1px #fff, 0 0 0 3px #8345DD; }
+			</style>
+			<?php
+		}
+
 		foreach ( $items as $item ) {
 			$status = Helper::get_string_value( $item['status'] ?? '' );
 
@@ -3538,10 +3624,24 @@ JS;
 				$has_cta = ! empty( $item['cta_label'] ) && ! empty( $item['cta_url'] );
 				?>
 				<p>
+					<?php
+					// The one-click fix, when there is one, leads.
+					$has_connect = ! empty( $item['connect_label'] ) && ! empty( $item['connect_url'] );
+					if ( $has_connect ) {
+						?>
+						<a
+							href="<?php echo esc_url( Helper::get_string_value( $item['connect_url'] ) ); ?>"
+							class="button button-primary srfm-connect-surecontact"
+							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
+							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['connect_action'] ?? '' ) ); ?>"
+						>
+							<?php echo esc_html( Helper::get_string_value( $item['connect_label'] ) ); ?>
+						</a>
+					<?php } ?>
 					<?php if ( $has_guide ) { ?>
 						<a
 							href="<?php echo esc_url( Helper::get_string_value( $item['guide_url'] ) ); ?>"
-							class="button button-primary"
+							class="<?php echo $has_connect ? 'button' : 'button button-primary'; ?>"
 							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
 							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['guide_action'] ?? '' ) ); ?>"
 							target="_blank"
@@ -3553,7 +3653,7 @@ JS;
 					<?php if ( $has_cta ) { ?>
 						<a
 							href="<?php echo esc_url( Helper::get_string_value( $item['cta_url'] ) ); ?>"
-							class="<?php echo $has_guide ? 'button' : 'button button-primary'; ?>"
+							class="<?php echo $has_guide || $has_connect ? 'button' : 'button button-primary'; ?>"
 							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
 							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['cta_action'] ?? '' ) ); ?>"
 							<?php
@@ -3699,6 +3799,53 @@ JS;
 			$warnings = $this->get_first_party_action_items();
 		}
 
+		// Lost submissions, outside the logging gate and on every screen: data is
+		// gone, and Distraction Free (which turns logging off) must not hide it.
+		$warnings = array_merge( $warnings, $this->get_lost_submissions_action_items() );
+
+		// Email delivery advice, outside the logging gate: it is about the site's
+		// setup, not about recorded failures. On the SureForms dashboard only --
+		// an owner who has not set up email yet needs telling where they manage
+		// forms, not on every admin screen -- which also keeps the form lookup
+		// behind it off every other page load.
+		$on_dashboard = Helper::validate_request_context( 'sureforms_menu', 'page' );
+		if ( $on_dashboard ) {
+			$warnings = array_merge( $warnings, $this->get_email_delivery_action_items() );
+		}
+
+		// A quota running out also belongs on Entries, where an owner notices
+		// submissions arriving but not their emails.
+		if ( $on_dashboard || Helper::validate_request_context( SRFM_ENTRIES, 'page' ) ) {
+			$quota_items = $this->get_email_quota_action_items();
+			$warnings    = array_merge( $warnings, $quota_items );
+
+			// SureForms hides classic notices on its own screens and Entries has no
+			// Form Checks panel, so it gets the warning in its React notice bar. The
+			// bar reads the notices when the page data is filtered, after this.
+			if ( ! $on_dashboard ) {
+				foreach ( $quota_items as $quota_item ) {
+					Notice_Manager::register_notice(
+						[
+							'id'          => 'srfm-' . $quota_item['id'],
+							'variant'     => $quota_item['status'],
+							'title'       => $quota_item['title'],
+							'message'     => $quota_item['message'],
+							'actions'     => [
+								[
+									'label'   => $quota_item['cta_label'],
+									'url'     => $quota_item['cta_url'],
+									'target'  => '_blank',
+									'variant' => 'link',
+								],
+							],
+							'dismissible' => false,
+							'pages'       => [ SRFM_ENTRIES ],
+						]
+					);
+				}
+			}
+		}
+
 		$this->track_action_item_impressions( $warnings );
 
 		/**
@@ -3719,8 +3866,8 @@ JS;
 		 */
 		$items = Helper::apply_filters_as_array( 'srfm_action_items', $warnings );
 
-		// Both URLs normalised once, here, rather than trusting each renderer to do
-		// it. Two things are being fixed at once.
+		// The CTA, guide and connect URLs normalised once, here, rather than
+		// trusting each renderer to do it. Two things are being fixed at once.
 		//
 		// The scheme: the classic notice runs esc_url() and drops anything outside
 		// the allowlist, while React assigns href directly and react-dom 18 leaves
@@ -3741,7 +3888,7 @@ JS;
 				continue;
 			}
 
-			foreach ( [ 'cta_url', 'guide_url' ] as $key ) {
+			foreach ( [ 'cta_url', 'guide_url', 'connect_url' ] as $key ) {
 				if ( ! isset( $item[ $key ] ) ) {
 					continue;
 				}
@@ -3929,6 +4076,24 @@ CSS;
 			],
 		];
 
+		// With SureMail sending, the reason for the failure is in its email log --
+		// a closer next step than a general guide.
+		if ( 'suremail' === Mailer::get_active()['slug'] ) {
+			$categories['notification']['guide']        = Suremail_Adapter::logs_url();
+			$categories['notification']['guide_label']  = __( 'View SureMail Logs', 'sureforms' );
+			$categories['notification']['guide_action'] = 'view_logs';
+		}
+
+		// A form that does not store entries has no saved copy to fall back on: the
+		// email that failed was the only record of that submission. "The entry was
+		// saved" would be false, and the fix differs, so say both.
+		if ( isset( $open['notification'] ) && false === ( $open['notification']['entry_saved'] ?? true ) ) {
+			/* translators: %s: form title. */
+			$categories['notification']['title']   = __( 'A notification failed on %s, and the submission was not stored.', 'sureforms' );
+			$categories['notification']['generic'] = __( 'A notification failed, and the submission was not stored.', 'sureforms' );
+			$categories['notification']['message'] = __( 'This form is set to never store entries, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn off "Never store entry data after form submission" for this form, so submissions are not lost.', 'sureforms' );
+		}
+
 		foreach ( $categories as $category => $copy ) {
 			if ( ! isset( $open[ $category ] ) ) {
 				continue;
@@ -3970,9 +4135,15 @@ CSS;
 			// without a guide needs no branch in either renderer, and neither does
 			// an item contributed through srfm_action_items.
 			if ( ! empty( $copy['guide'] ) ) {
-				$warning['guide_label']  = __( 'Help Me Fix', 'sureforms' );
+				$warning['guide_label']  = $copy['guide_label'] ?? __( 'Help Me Fix', 'sureforms' );
 				$warning['guide_url']    = $copy['guide'];
-				$warning['guide_action'] = 'help_me_fix';
+				$warning['guide_action'] = $copy['guide_action'] ?? 'help_me_fix';
+			}
+
+			// A failed notification on a site with no sending service behind it:
+			// lead with the one-click fix.
+			if ( 'notification' === $category ) {
+				$warning = array_merge( $warning, $this->get_connect_surecontact_action() );
 			}
 
 			$warnings[] = $warning;
@@ -4006,6 +4177,308 @@ CSS;
 		}
 
 		return $warnings;
+	}
+
+	/**
+	 * "Connect SureContact" for a notification failure, when nothing is sending.
+	 *
+	 * Offered while SureMail is not active, or is active with no connection --
+	 * the cases where the failure is almost certainly the missing service. With
+	 * a connection in place the failure is that connection's, and View SureMail
+	 * Logs is the closer next step. Hidden with promotions.
+	 *
+	 * Leads to SureForms -> SMTP while SureMail is not active, which installs
+	 * it; once active, straight to SureMail's SureContact screen. (The SMTP page
+	 * hands over to that screen after install once #3205 is in.) The account
+	 * itself is only ever created behind SureMail's consent.
+	 *
+	 * @since 2.12.9
+	 * @return array<string,string> connect_* keys, or none.
+	 */
+	private function get_connect_surecontact_action() {
+		if ( Helper::hide_promotions() ) {
+			return [];
+		}
+
+		$status = Email_Delivery_Status::get_status();
+		$action = Helper::get_array_value( $status['action'] ?? [] );
+		$type   = Helper::get_string_value( $action['type'] ?? '' );
+
+		if ( 'limited' === Helper::get_string_value( $status['state'] ?? '' ) ) {
+			return [];
+		}
+
+		if ( in_array( $type, [ 'install_activate', 'activate' ], true ) ) {
+			$url = admin_url( 'admin.php?page=sureforms_smtp' );
+		} elseif ( 'open_suremail' === $type && 0 === (int) ( $status['suremail']['connections'] ?? -1 ) ) {
+			$url = Helper::get_string_value( $action['url'] ?? '' );
+		} else {
+			return [];
+		}
+
+		if ( '' === $url ) {
+			return [];
+		}
+
+		return [
+			'connect_label'  => __( 'Connect SureContact', 'sureforms' ),
+			'connect_url'    => $url,
+			'connect_action' => 'connect_surecontact',
+		];
+	}
+
+	/**
+	 * Email delivery advice for the Form Checks panel.
+	 *
+	 * Shown only when a published form actually sends a notification: a site
+	 * with no notifications has nothing for email delivery to break. Advisory and
+	 * dismissible -- an actual failure is reported by notification_error, which
+	 * is not. Hidden with promotions, since the fix is installing SureMail.
+	 *
+	 * @since 2.12.9
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_email_delivery_action_items() {
+		if ( Helper::hide_promotions() ) {
+			return [];
+		}
+
+		$status      = Email_Delivery_Status::get_status();
+		$state       = Helper::get_string_value( $status['state'] ?? '' );
+		$action      = Helper::get_array_value( $status['action'] ?? [] );
+		$action_type = Helper::get_string_value( $action['type'] ?? '' );
+		$installs    = in_array( $action_type, [ 'install_activate', 'activate' ], true );
+		// An unverified SureContact account that failed to send has hit its daily
+		// allowance: the advice is to verify, shown beside the failure itself.
+		$verify = 'verify_surecontact' === $action_type;
+
+		// Keyed off the next step, not only the state: when a notification has
+		// already failed ("attention") and the fix is still to set up or connect
+		// SureMail, that is exactly when the owner needs this button -- found on a
+		// fresh ZipWP site, whose first notification failed with no mailer.
+		if ( 'limited' === $state || $verify ) {
+			$item_id = 'email_delivery_limited';
+		} elseif ( $installs || 'open_suremail' === $action_type ) {
+			$item_id = 'email_delivery_setup';
+		} else {
+			return [];
+		}
+
+		$dismissed = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
+
+		// A real failure brings the advice back even if it was ignored before, and
+		// keeps it until email works: it is no longer optional.
+		$failing = 'attention' === $state;
+
+		if ( ( ! $failing && in_array( $item_id, $dismissed, true ) ) || ! $this->has_form_with_active_notification() ) {
+			return [];
+		}
+
+		$title   = Helper::get_string_value( $status['title'] ?? '' );
+		$message = Helper::get_string_value( $status['message'] ?? '' );
+
+		// The failure itself is notification_error's to report; this item names
+		// the fix, so it does not repeat "a notification was not sent".
+		if ( 'attention' === $state && ! $verify ) {
+			if ( $installs ) {
+				$title   = __( 'Email delivery is not set up', 'sureforms' );
+				$message = __( 'Form notifications have no email service behind them, which is why they can fail. Set up email delivery so new entries reach your inbox.', 'sureforms' );
+			} else {
+				$title   = __( 'SureMail needs a sending connection', 'sureforms' );
+				$message = __( 'SureMail has no working connection, so form notifications are not handed to an email service.', 'sureforms' );
+			}
+		}
+
+		$item = [
+			'id'          => $item_id,
+			'status'      => 'warning',
+			'title'       => $title,
+			'message'     => $message,
+			'cta_label'   => Helper::get_string_value( $action['label'] ?? '' ),
+			'cta_url'     => Helper::get_string_value( $action['url'] ?? '' ),
+			'cta_action'  => 'open_suremail',
+			'dismissible' => ! $failing,
+		];
+
+		// SureMail is active with nothing to send through, and its SureContact
+		// screen is the fix: offer it as the same purple "Connect SureContact" the
+		// failure notice leads with, rather than a second wording of one action.
+		if ( 'open_suremail' === $action_type && ! $verify ) {
+			$connect = $this->get_connect_surecontact_action();
+
+			if ( ! empty( $connect ) && Suremail_Adapter::supports_surecontact() ) {
+				unset( $item['cta_label'], $item['cta_url'], $item['cta_action'] );
+				$item = array_merge( $item, $connect );
+			}
+		}
+
+		// SureMail not active yet. The link is WordPress's own installer, which
+		// works in both renderers without JavaScript; the dashboard panel turns
+		// it into a one-click install when the user may install plugins.
+		if ( $installs ) {
+			$item['cta_url']    = 'Installed' === ( $status['suremail']['plugin_status'] ?? '' )
+				? admin_url( 'plugins.php?plugin_status=inactive' )
+				: admin_url( 'plugin-install.php?s=SureMail&tab=search&type=term' );
+			$item['cta_action'] = 'setup_email_delivery';
+
+			if ( ! empty( $status['can_install'] ) ) {
+				$item['cta_install'] = 'sure_mails';
+			}
+		}
+
+		$has_cta     = '' !== ( $item['cta_label'] ?? '' ) && '' !== ( $item['cta_url'] ?? '' );
+		$has_connect = ! empty( $item['connect_label'] ) && ! empty( $item['connect_url'] );
+
+		return $has_cta || $has_connect ? [ $item ] : [];
+	}
+
+	/**
+	 * Warning when the SureContact sending quota is nearly or fully used up.
+	 *
+	 * Shown on the SureForms dashboard and the Entries screen, where an owner
+	 * waiting on submissions looks. The quota comes from a background refresh,
+	 * which this queues when the cached copy has expired.
+	 *
+	 * Dismissing hides it until the quota recovers (a new period, or an upgrade);
+	 * it comes back, and can no longer be dismissed, once nothing is left.
+	 *
+	 * @since 2.12.9
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_email_quota_action_items() {
+		if ( Helper::hide_promotions() ) {
+			return [];
+		}
+
+		Suremail_Adapter::maybe_schedule_quota_refresh();
+
+		$status      = Email_Delivery_Status::get_status();
+		$surecontact = Helper::get_array_value( $status['surecontact'] ?? [] );
+		$quota       = isset( $surecontact['quota'] ) && is_array( $surecontact['quota'] ) ? $surecontact['quota'] : null;
+		$dismissed   = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
+
+		if ( null === $quota || empty( $surecontact['quota_low'] ) ) {
+			// Recovered: forget the dismissal so the next low point is shown again.
+			if ( null !== $quota && in_array( 'email_delivery_quota', $dismissed, true ) ) {
+				Helper::update_srfm_option( 'dismissed_action_items', array_values( array_diff( $dismissed, [ 'email_delivery_quota' ] ) ) );
+			}
+			return [];
+		}
+
+		$used      = Helper::get_integer_value( $quota['used'] ?? 0 );
+		$limit     = Helper::get_integer_value( $quota['limit'] ?? 0 );
+		$remaining = Helper::get_integer_value( $quota['remaining'] ?? 0 );
+		$monthly   = 'monthly' === ( $quota['period'] ?? '' );
+		$exhausted = 0 === $remaining;
+
+		if ( ! $exhausted && in_array( 'email_delivery_quota', $dismissed, true ) ) {
+			return [];
+		}
+
+		if ( $exhausted ) {
+			$title   = __( 'Your SureContact emails have run out', 'sureforms' );
+			$message = $monthly
+				? sprintf(
+					/* translators: %s: number of emails in the SureContact plan. */
+					__( 'All %s emails for this month are used, so form notifications are not being sent until next month. Upgrade in SureMail to keep sending.', 'sureforms' ),
+					number_format_i18n( $limit )
+				)
+				: sprintf(
+					/* translators: %s: number of emails in the SureContact plan. */
+					__( 'All %s emails are used, so form notifications are not being sent. Upgrade in SureMail to keep sending.', 'sureforms' ),
+					number_format_i18n( $limit )
+				);
+		} else {
+			$title   = empty( $surecontact['is_paid'] )
+				? __( 'Your free SureContact emails are almost used up', 'sureforms' )
+				: __( 'Your SureContact emails are almost used up', 'sureforms' );
+			$message = $monthly
+				? sprintf(
+					/* translators: 1: emails used, 2: emails in the plan. */
+					__( '%1$s of %2$s emails used this month. When they run out, form notifications stop being sent until next month, unless you upgrade.', 'sureforms' ),
+					number_format_i18n( $used ),
+					number_format_i18n( $limit )
+				)
+				: sprintf(
+					/* translators: 1: emails used, 2: emails in the plan. */
+					__( '%1$s of %2$s emails used. When they run out, form notifications stop being sent until you upgrade.', 'sureforms' ),
+					number_format_i18n( $used ),
+					number_format_i18n( $limit )
+				);
+		}
+
+		return [
+			[
+				'id'          => 'email_delivery_quota',
+				'status'      => $exhausted ? 'error' : 'warning',
+				'title'       => $title,
+				'message'     => $message,
+				'cta_label'   => __( 'Upgrade in SureMail', 'sureforms' ),
+				'cta_url'     => Suremail_Adapter::upgrade_url(),
+				'cta_action'  => 'open_suremail',
+				'dismissible' => ! $exhausted,
+			],
+		];
+	}
+
+	/**
+	 * Whether any published form sends at least one email notification.
+	 *
+	 * @since 2.12.9
+	 * @return bool
+	 */
+	private function has_form_with_active_notification() {
+		// In pages, newest first, with each page's meta primed in one query:
+		// usually the first page answers, and sites with many forms whose newest
+		// fifty send nothing are still covered.
+		for ( $page = 1; $page <= 10; $page++ ) {
+			$form_ids = array_map(
+				[ Helper::class, 'get_integer_value' ],
+				get_posts(
+					[
+						'post_type'      => SRFM_FORMS_POST_TYPE,
+						'post_status'    => 'publish',
+						'posts_per_page' => 50,
+						'paged'          => $page,
+						// A stable order across pages: forms published in the same
+						// second would otherwise be returned in any order.
+						'orderby'        => [
+							'date' => 'DESC',
+							'ID'   => 'DESC',
+						],
+						'fields'         => 'ids',
+						'no_found_rows'  => true,
+						'meta_key'       => '_srfm_email_notification', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- SureForms dashboard only, paged by 50.
+					]
+				)
+			);
+
+			if ( empty( $form_ids ) ) {
+				return false;
+			}
+
+			update_meta_cache( 'post', $form_ids );
+
+			foreach ( $form_ids as $form_id ) {
+				$notifications = get_post_meta( $form_id, '_srfm_email_notification', true );
+
+				if ( ! is_array( $notifications ) ) {
+					continue;
+				}
+
+				foreach ( $notifications as $notification ) {
+					if ( is_array( $notification ) && ! empty( $notification['status'] ) ) {
+						return true;
+					}
+				}
+			}
+
+			if ( count( $form_ids ) < 50 ) {
+				return false;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -5026,6 +5499,60 @@ CSS;
 	}
 
 	/**
+	 * Submissions lost on forms that never store entries.
+	 *
+	 * A never-store form keeps no copy of a submission, so when none of its
+	 * notifications is accepted the submission is gone. Lost_Submissions keeps
+	 * the count until the owner acknowledges it here.
+	 *
+	 * @since 2.12.9
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_lost_submissions_action_items() {
+		$lost = Lost_Submissions::get();
+		if ( $lost['count'] < 1 ) {
+			return [];
+		}
+
+		$titles = [];
+		foreach ( $lost['form_ids'] as $form_id ) {
+			$title = get_the_title( $form_id );
+			if ( '' !== $title ) {
+				$titles[] = $title;
+			}
+		}
+
+		$message = __( 'These forms are set to never store entries, and no email notification for them could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn off "Never store entry data after form submission" on these forms.', 'sureforms' );
+		if ( ! empty( $titles ) ) {
+			/* translators: %s: comma-separated form titles. */
+			$message .= ' ' . sprintf( __( 'Forms: %s.', 'sureforms' ), implode( ', ', $titles ) );
+		}
+
+		return [
+			[
+				'id'          => 'lost_submissions',
+				'status'      => 'error',
+				'title'       => sprintf(
+					/* translators: %s: number of lost submissions. */
+					_n( '%s form submission was lost', '%s form submissions were lost', $lost['count'], 'sureforms' ),
+					number_format_i18n( $lost['count'] )
+				),
+				'message'     => $message,
+				'cta_label'   => __( 'Help Me Fix', 'sureforms' ),
+				'cta_url'     => Helper::get_sureforms_website_url(
+					'docs/troubleshooting-email-sending-in-sureforms/',
+					[
+						'utm_medium'  => 'form_checks_notice',
+						'utm_content' => 'lost_submissions',
+					]
+				),
+				'cta_action'  => 'help_me_fix',
+				'dismissible' => true,
+			],
+		];
+	}
+
+	/**
 	 * Record one dismissal, shared by the AJAX and no-JS entry points.
 	 *
 	 * Allowlisted, so only advisory items can be dismissed. A run of failed
@@ -5037,7 +5564,15 @@ CSS;
 	 * @return bool False when the id is not dismissible.
 	 */
 	private function dismiss_action_item( $item_id ) {
-		if ( ! in_array( $item_id, [ 'caching_plugin' ], true ) ) {
+		// "Ignore" on lost submissions means "I have seen them": the record is
+		// cleared rather than hidden, so the next loss shows again.
+		if ( 'lost_submissions' === $item_id ) {
+			Lost_Submissions::acknowledge();
+			$this->track_notice_event( 'lost_submissions_notice_dismiss' );
+			return true;
+		}
+
+		if ( ! in_array( $item_id, [ 'caching_plugin', 'email_delivery_setup', 'email_delivery_limited', 'email_delivery_quota' ], true ) ) {
 			return false;
 		}
 

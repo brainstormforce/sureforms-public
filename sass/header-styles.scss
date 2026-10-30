@@ -54,11 +54,19 @@ body.post-type-sureforms_form .editor-header__back-button {
 }
 
 // keeps the (now icon-less) back link filling the tile and clickable.
+// The link must cover the whole tile: WP 7.1 wraps it in an auto-height
+// element, so with the chevron hidden it collapses to a sliver and the logo
+// tile shows no pointer cursor and ignores clicks.
 body.post-type-sureforms_form .editor-header__back-button a.components-button {
 	color: #fff;
-	height: 100%;
+	inset: 0;
 	justify-content: center;
-	width: 60px;
+	position: absolute;
+}
+
+// hides the "Show button text labels" caption so it never overlaps the logo.
+body.post-type-sureforms_form .editor-header__back-button a.components-button.has-icon::after {
+	content: none;
 }
 
 // hides the default back chevron.

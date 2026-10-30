@@ -71,13 +71,9 @@ const Edit = ( props ) => {
 	const prevSingleSelection = useRef( singleSelection );
 
 	const deleteOption = ( index ) => {
-		const deleteOptions = options.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				options.splice( index, 1 );
-				item = { options };
-			}
-			return item;
-		} );
+		const newOptions = options.filter(
+			( _, thisIndex ) => thisIndex !== index
+		);
 
 		// Update preselected options when an option is deleted
 		const newPreselected = preselectedOptions
@@ -85,7 +81,7 @@ const Edit = ( props ) => {
 			.map( ( i ) => ( i > index ? i - 1 : i ) ); // Adjust indices
 
 		setAttributes( {
-			deleteOptions,
+			options: newOptions,
 			preselectedOptions: newPreselected,
 		} );
 	};

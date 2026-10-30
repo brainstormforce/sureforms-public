@@ -7,6 +7,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -173,6 +174,7 @@ class Gutenberg_Hooks {
 				'plugin_url'      => SRFM_URL,
 				'admin_email'     => get_option( 'admin_email' ),
 				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'free',
+				'pro_tier'        => Helper::get_pro_tier(),
 			]
 		);
 
@@ -220,11 +222,15 @@ class Gutenberg_Hooks {
 				// that route ended up with no real authorization (#2995).
 				'get_form_markup_url'               => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                     => Helper::has_pro(),
+				'pro_tier'                          => Helper::get_pro_tier(),
 				'srfm_default_dynamic_block_option' => wp_parse_args( Helper::get_array_value( get_option( 'srfm_default_dynamic_block_option', [] ) ), Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'               => Helper::current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
+				// Only the SureForms form editor shows it, and only to admins: it names
+				// the mailer and SureMail's admin URLs, and building it can write an option.
+				'email_delivery'                    => $screen && SRFM_FORMS_POST_TYPE === $screen->post_type && Helper::current_user_can() ? Email_Delivery_Status::get_status() : null,
 				'upgrade_url'                       => add_query_arg(
 					[ 'utm_medium' => 'embed_styling_upgrade' ],
 					Helper::get_sureforms_website_url( 'pricing' )

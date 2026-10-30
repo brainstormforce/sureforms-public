@@ -9,6 +9,8 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Tables\Entries as EntriesTable;
+use SRFM\Inc\Email_Delivery\Lost_Submissions;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Submit_Token;
@@ -604,6 +606,53 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * The submission path restores a checkbox the browser never posted.
+	 *
+	 * The unit tests for backfill_unsubmitted_fields() prove the function works; this
+	 * one proves it runs. Without it the only coverage would stay green with the call
+	 * deleted from handle_form_entry(), which is where the field actually goes missing.
+	 *
+	 * The data is captured from srfm_before_fields_processing, the first filter after
+	 * the back-fill, so the assertion does not depend on entry storage or email.
+	 */
+	public function test_handle_form_entry_restores_an_unticked_checkbox() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Consent Form',
+				'post_content' => '<!-- wp:srfm/checkbox {"block_id":"cb123456","slug":"seasonal-offers","label":"Seasonal offers"} /-->',
+			]
+		);
+
+		$captured = null;
+		$capture  = static function ( $data ) use ( &$captured ) {
+			$captured = $data;
+			return $data;
+		};
+		add_filter( 'srfm_before_fields_processing', $capture );
+
+		ob_start();
+		try {
+			$this->form_submit->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+		} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// The handler terminates the request once it is done; the filter has
+			// already run by then.
+		}
+		ob_end_clean();
+
+		remove_filter( 'srfm_before_fields_processing', $capture );
+
+		$key = 'srfm-checkbox-cb123456-lbl-' . Helper::encode( 'Seasonal offers' ) . '-seasonal-offers';
+
+		$this->assertIsArray( $captured, 'the submission reached field processing' );
+		$this->assertArrayHasKey( $key, $captured, 'an unticked checkbox must still reach the entry' );
+		$this->assertSame( '', $captured[ $key ] );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * Test send_email is callable.
 	 */
 	public function test_send_email() {
@@ -826,6 +875,109 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * srfm_submission_accepted fires with the stored entry id, before any mail is sent.
+	 *
+	 * Listeners use it to stop follow-up work for an unfinished copy of the form, so it
+	 * must not wait behind a slow mail transport, and it must carry the non-field keys the
+	 * client sent with the submission.
+	 */
+	public function test_handle_form_entry_fires_submission_accepted_before_mail() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Accepted Hook Form',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_email_notification', [ [ 'id' => 1, 'status' => true ] ] );
+
+		$calls   = [];
+		$mailed  = false;
+		$listen  = static function ( $entry_id, $hook_form_id, $form_data ) use ( &$calls, &$mailed ) {
+			$calls[] = [ $entry_id, $hook_form_id, $form_data, $mailed ];
+		};
+		$parsed  = static function () {
+			return [
+				'to'      => 'owner@example.com',
+				'subject' => 'New entry',
+				'message' => 'An entry arrived.',
+				'headers' => [],
+			];
+		};
+		$sending = static function () use ( &$mailed ) {
+			$mailed = true;
+			return true;
+		};
+
+		add_action( 'srfm_submission_accepted', $listen, 10, 3 );
+		add_filter( 'srfm_email_notification', $parsed, 99 );
+		add_filter( 'pre_wp_mail', $sending, 99 );
+
+		$response = $this->form_submit->handle_form_entry(
+			[
+				'form-id'                 => (string) $form_id,
+				'srfm_partial_session_id' => 'abc-123',
+			]
+		);
+
+		remove_filter( 'pre_wp_mail', $sending, 99 );
+		remove_filter( 'srfm_email_notification', $parsed, 99 );
+		remove_action( 'srfm_submission_accepted', $listen, 10 );
+
+		$entry_id = Helper::get_integer_value( $response['data']['submission_id'] );
+
+		$this->assertTrue( $mailed, 'The notification must still be sent.' );
+		$this->assertCount( 1, $calls );
+		$this->assertSame( $entry_id, $calls[0][0] );
+		$this->assertSame( $form_id, $calls[0][1] );
+		$this->assertSame( 'abc-123', $calls[0][2]['srfm_partial_session_id'] );
+		$this->assertFalse( $calls[0][3], 'The hook must fire before mail is handed to the transport.' );
+
+		EntriesTable::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A submission accepted without storing an entry still fires the hook, with entry id 0.
+	 *
+	 * Otherwise a completed no-store form would look unfinished to every listener.
+	 */
+	public function test_handle_form_entry_fires_submission_accepted_when_not_stored() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'No Store Form',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+
+		$calls  = [];
+		$listen = static function ( $entry_id, $hook_form_id ) use ( &$calls ) {
+			$calls[] = [ $entry_id, $hook_form_id ];
+		};
+		add_action( 'srfm_submission_accepted', $listen, 10, 2 );
+
+		$response = $this->form_submit->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+
+		remove_action( 'srfm_submission_accepted', $listen, 10 );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( [ [ 0, $form_id ] ], $calls );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * One recipient succeeding while another fails is still a failure.
 	 *
 	 * This is the case the flag is hoisted out of the loop for, and the one
@@ -861,22 +1013,20 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 			]
 		);
 
-		// First recipient valid, second empty -- and an empty destination fails in
-		// every environment, where a failing transport does not, because
-		// send_email() falls back to PHP's mail().
 		$calls  = 0;
 		$parsed = static function () use ( &$calls ) {
 			$calls++;
 
 			return [
-				'to'      => 1 === $calls ? 'owner@example.com' : '',
+				'to'      => 'owner@example.com',
 				'subject' => 'New entry',
 				'message' => 'An entry arrived.',
 				'headers' => [],
 			];
 		};
 
-		// Only the first send succeeds; the second falls through to mail( '' ).
+		// Only the first send is accepted. With no raw mail() fallback, a false
+		// from wp_mail() is the failure in every environment.
 		$sent = static function () use ( &$calls ) {
 			return 1 === $calls;
 		};
@@ -907,11 +1057,8 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 * rather than inside it: one recipient succeeding while another fails is still
 	 * a failure, and clearing on the success would erase the report.
 	 *
-	 * Failure is forced with an empty recipient rather than a failing transport.
-	 * send_email() falls back to PHP's mail() when wp_mail() returns false, and
-	 * mail() is not filterable -- on a machine with a working sendmail it succeeds
-	 * and the send is not a failure at all. An empty destination fails in every
-	 * environment.
+	 * wp_mail() is short-circuited to false. There is no raw mail() fallback
+	 * behind it any more, so that is the failure on every machine.
 	 */
 	public function test_send_email_keeps_the_notification_fault_on_failure() {
 		delete_option( Client_Logger::FAILURES_OPTION );
@@ -938,7 +1085,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$parsed = static function () {
 			return [
-				'to'      => '',
+				'to'      => 'owner@example.com',
 				'subject' => 'New entry',
 				'message' => 'An entry arrived.',
 				'headers' => [],
@@ -964,6 +1111,433 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		wp_delete_post( $form_id, true );
 		delete_option( Client_Logger::FAILURES_OPTION );
+	}
+
+	/**
+	 * Run send_email() for a fresh form with one active notification.
+	 *
+	 * @param callable $pre_wp_mail pre_wp_mail callback deciding the outcome.
+	 * @return array{form_id:int,response:array<mixed>,logs:array<mixed>}
+	 */
+	private function send_one_notification( $pre_wp_mail, $to = 'owner@example.com', $form_id = 0, $email_to = 'owner@example.com', $submission_data = [] ) {
+		$keep    = $form_id > 0;
+		$form_id = $keep ? $form_id : wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Delivery Form',
+				'post_status' => 'publish',
+			]
+		);
+
+		update_post_meta(
+			$form_id,
+			'_srfm_email_notification',
+			[
+				[
+					'id'       => 1,
+					'status'   => true,
+					'email_to' => $email_to,
+				],
+			]
+		);
+
+		$parsed = static function () use ( $to ) {
+			return [
+				'to'      => $to,
+				'subject' => 'New entry',
+				'message' => 'An entry arrived.',
+				'headers' => [],
+			];
+		};
+
+		add_filter( 'srfm_email_notification', $parsed, 99 );
+		add_filter( 'pre_wp_mail', $pre_wp_mail, 99, 2 );
+
+		EntriesTable::get_instance()->reset_logs();
+		$response = Form_Submit::send_email( $form_id, $submission_data );
+		$logs     = EntriesTable::get_instance()->get_logs();
+
+		remove_filter( 'pre_wp_mail', $pre_wp_mail, 99 );
+		remove_filter( 'srfm_email_notification', $parsed, 99 );
+		if ( ! $keep ) {
+			wp_delete_post( $form_id, true );
+		}
+
+		return [
+			'form_id'  => $form_id,
+			'response' => $response,
+			'logs'     => $logs,
+		];
+	}
+
+	/**
+	 * Every message on the notification log, flattened.
+	 *
+	 * @param array<mixed> $logs Entry logs.
+	 * @return string
+	 */
+	private function notification_log_text( $logs ) {
+		$text = '';
+		foreach ( $logs as $log ) {
+			$text .= implode( ' ', Helper::get_array_value( $log['messages'] ?? [] ) ) . ' ';
+		}
+		return $text;
+	}
+
+	/**
+	 * Reset the email-delivery state these tests touch.
+	 */
+	private function reset_email_delivery_state() {
+		remove_all_filters( 'pre_option_active_plugins' );
+		remove_all_filters( 'srfm_allow_php_mail_fallback' );
+		delete_option( Email_Delivery_Status::OUTCOMES_OPTION );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Email_Delivery_Status::reset();
+	}
+
+	/**
+	 * A rejected notification is recorded as the site's email state, and raw
+	 * mail() is not tried unless the owner opts in.
+	 */
+	public function test_send_email_does_not_fall_back_to_php_mail_by_default() {
+		$this->reset_email_delivery_state();
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [];
+			}
+		);
+
+		$asked = 0;
+		add_filter(
+			'srfm_allow_php_mail_fallback',
+			static function ( $allow ) use ( &$asked ) {
+				$asked++;
+				return $allow;
+			}
+		);
+
+		$result   = $this->send_one_notification( '__return_false' );
+		$outcomes = Email_Delivery_Status::get_outcomes();
+
+		$this->assertSame( 1, $asked, 'With no mail plugin, the opt-in filter is consulted.' );
+		$this->assertFalse( $result['response']['success'] );
+		$this->assertSame( 'failure', $outcomes['last_result'] );
+		$this->assertSame( $result['form_id'], $outcomes['last_failure_form_id'] );
+		$this->assertSame( 'php_mail_failed', $outcomes['last_failure_reason'] );
+		$this->assertStringContainsString( 'No SMTP plugin detected', $this->notification_log_text( $result['logs'] ) );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * With a mail plugin active, raw mail() would bypass its routing and logs --
+	 * and SureMail, which retries a rejected email itself, would send it twice.
+	 * The opt-in is not even consulted.
+	 */
+	public function test_php_mail_fallback_is_never_consulted_with_a_mail_plugin() {
+		$this->reset_email_delivery_state();
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [ 'suremails/suremails.php' ];
+			}
+		);
+
+		$asked = 0;
+		add_filter(
+			'srfm_allow_php_mail_fallback',
+			static function () use ( &$asked ) {
+				$asked++;
+				return true;
+			}
+		);
+
+		$result = $this->send_one_notification( '__return_false' );
+
+		$this->assertSame( 0, $asked );
+		$this->assertFalse( $result['response']['success'] );
+		$this->assertSame( 'suremail_rejected', Email_Delivery_Status::get_outcomes()['last_failure_reason'] );
+		$this->assertStringContainsString( 'SureMail did not accept this email', $this->notification_log_text( $result['logs'] ) );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * The mailer's own error, reported through wp_mail_failed, is what the log
+	 * records -- not "unknown reason". The listener is scoped to the one send.
+	 */
+	public function test_send_email_records_the_mailers_own_reason() {
+		$this->reset_email_delivery_state();
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [ 'wp-mail-smtp/wp_mail_smtp.php' ];
+			}
+		);
+
+		$listeners_before = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+
+		$result = $this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'SMTP Error: Could not authenticate.' ) );
+				return false;
+			}
+		);
+
+		$listeners_after = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+
+		$this->assertStringContainsString( 'Could not authenticate', $this->notification_log_text( $result['logs'] ) );
+		$this->assertSame( 'mailer_error', Email_Delivery_Status::get_outcomes()['last_failure_reason'] );
+		$this->assertSame( $listeners_before, $listeners_after, 'The wp_mail_failed listener must not outlive the send.' );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * An accepted notification after a failure records the recovery, so the
+	 * email delivery status stops asking for attention.
+	 */
+	public function test_send_email_records_recovery_after_a_failure() {
+		$this->reset_email_delivery_state();
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Recovering Form',
+				'post_status' => 'publish',
+			]
+		);
+		Email_Delivery_Status::record_outcome( false, $form_id, 'mailer_rejected' );
+
+		$result = $this->send_one_notification( '__return_true', 'owner@example.com', $form_id );
+
+		$this->assertTrue( $result['response']['success'] );
+		$this->assertSame( 'success', Email_Delivery_Status::get_outcomes()['last_result'] );
+		$this->assertArrayNotHasKey( $form_id, Email_Delivery_Status::get_outcomes()['open_forms'] );
+
+		wp_delete_post( $form_id, true );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * A recipient from a field the visitor filled in ({form:*}) that PHPMailer
+	 * rejects is logged on the entry, but must not put the whole site into
+	 * "attention" -- a visitor could otherwise hold the dashboard there. The
+	 * same rejection of an address the owner typed still counts.
+	 */
+	public function test_send_email_does_not_open_site_attention_for_a_bad_recipient() {
+		$this->reset_email_delivery_state();
+
+		$invalid_to = static function () {
+			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'Invalid address:  (to): not-an-address' ) );
+			return false;
+		};
+
+		$result = $this->send_one_notification(
+			$invalid_to,
+			'not-an-address',
+			0,
+			'{form:email}',
+			[ 'srfm-email-abc123-lbl-email-email' => 'not-an-address' ]
+		);
+
+		$this->assertStringContainsString( 'Invalid address', $this->notification_log_text( $result['logs'] ) );
+		$this->assertSame( [], Email_Delivery_Status::get_outcomes()['open_forms'], 'The visitor typed it.' );
+
+		// The owner typed the same bad address into the notification: theirs to fix.
+		$this->send_one_notification( $invalid_to, 'not-an-address', 0, 'not-an-address' );
+		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'], 'The owner typed it.' );
+		$this->reset_email_delivery_state();
+
+		// A broken From address is the site's problem and still counts.
+		$this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'Invalid address:  (From): wordpress@localhost' ) );
+				return false;
+			}
+		);
+		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'] );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * On a form that never stores entries, a failed notification loses the
+	 * submission. The visitor still sees success -- from their side it was sent --
+	 * but the failure is recorded as a lost submission, not a missed email.
+	 */
+	public function test_notification_failure_on_a_form_without_entries_is_recorded_as_lost() {
+		$this->reset_email_delivery_state();
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Private Form',
+				'post_status' => 'publish',
+			]
+		);
+
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_email_notification',
+			[
+				[
+					'id'     => 1,
+					'status' => true,
+				],
+			]
+		);
+
+		$parsed = static function () {
+			return [
+				'to'      => 'owner@example.com',
+				'subject' => 'New entry',
+				'message' => 'An entry arrived.',
+				'headers' => [],
+			];
+		};
+
+		add_filter( 'srfm_email_notification', $parsed, 99 );
+		add_filter( 'pre_wp_mail', '__return_false', 99 );
+
+		EntriesTable::get_instance()->reset_logs();
+		$response = $this->form_submit->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+
+		remove_filter( 'pre_wp_mail', '__return_false', 99 );
+		remove_filter( 'srfm_email_notification', $parsed, 99 );
+
+		$this->assertTrue( $response['success'], 'The visitor is not shown an error for a notification failure.' );
+		$this->assertArrayNotHasKey( 'submission_id', $response['data'], 'Precondition: no entry was stored.' );
+
+		$open = Client_Logger::get_open_failures();
+		$this->assertArrayHasKey( 'notification', $open );
+		$this->assertFalse( $open['notification']['entry_saved'] );
+		$this->assertFalse( Email_Delivery_Status::get_outcomes()['last_failure_entry_saved'] );
+
+		wp_delete_post( $form_id, true );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * A notification that only a visitor's own address refused loses nothing:
+	 * the owner would not have received that copy anyway. It must not add to
+	 * the "submissions were lost" count, which shows on every admin screen.
+	 * A refusal of the owner's address on the same never-stored form does.
+	 */
+	public function test_send_email_records_a_lost_submission_only_for_a_site_failure() {
+		$this->reset_email_delivery_state();
+		Lost_Submissions::acknowledge();
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Private Form',
+				'post_status' => 'publish',
+			]
+		);
+		$send    = static function ( $email_to, $to, $refusal ) use ( $form_id ) {
+			update_post_meta(
+				$form_id,
+				'_srfm_email_notification',
+				[
+					[
+						'id'       => 1,
+						'status'   => true,
+						'email_to' => $email_to,
+					],
+				]
+			);
+			$parsed = static function () use ( $to ) {
+				return [
+					'to'      => $to,
+					'subject' => 'New entry',
+					'message' => 'An entry arrived.',
+					'headers' => [],
+				];
+			};
+			$refuse = static function () use ( $refusal ) {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $refusal ) );
+				return false;
+			};
+			add_filter( 'srfm_email_notification', $parsed, 99 );
+			add_filter( 'pre_wp_mail', $refuse, 99 );
+			Form_Submit::send_email(
+				$form_id,
+				[ 'srfm-email-abc123-lbl-email-email' => $to ],
+				[],
+				[ 'entry_saved' => false ]
+			);
+			remove_filter( 'pre_wp_mail', $refuse, 99 );
+			remove_filter( 'srfm_email_notification', $parsed, 99 );
+		};
+
+		// The visitor's own mailbox does not exist.
+		$send(
+			'{form:email}',
+			'typo@example.org',
+			'SMTP Error: The following recipients failed: typo@example.org: <typo@example.org>: Recipient address rejected: User unknown in virtual mailbox table'
+		);
+		$this->assertSame( 0, Lost_Submissions::get()['count'], 'Only the visitor\'s address was refused.' );
+
+		// The relay refuses the owner's address: the submission is gone.
+		$send(
+			'owner@example.com',
+			'owner@example.com',
+			'SMTP Error: The following recipients failed: owner@example.com: <owner@example.com>: Relay access denied'
+		);
+		$this->assertSame( 1, Lost_Submissions::get()['count'] );
+		$this->assertSame( [ $form_id ], Lost_Submissions::get()['form_ids'] );
+
+		wp_delete_post( $form_id, true );
+		Lost_Submissions::acknowledge();
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * A mailer that throws must not leave the wp_mail_failed listener on for
+	 * the next send, or an output buffer open on the submit response.
+	 */
+	public function test_dispatch_notification_cleans_up_when_the_mailer_throws() {
+		$listeners = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+		$level     = ob_get_level();
+		$throw     = static function () {
+			throw new \RuntimeException( 'Mailer exploded' );
+		};
+		add_filter( 'pre_wp_mail', $throw, 99 );
+
+		$dispatch = new \ReflectionMethod( Form_Submit::class, 'dispatch_notification' );
+		$dispatch->setAccessible( true );
+		$thrown = null;
+		try {
+			$dispatch->invoke(
+				null,
+				[
+					'to'      => 'owner@example.com',
+					'subject' => 'New entry',
+					'message' => 'An entry arrived.',
+					'headers' => [],
+				],
+				1
+			);
+		} catch ( \RuntimeException $e ) {
+			$thrown = $e;
+		}
+		remove_filter( 'pre_wp_mail', $throw, 99 );
+
+		$this->assertInstanceOf( \RuntimeException::class, $thrown );
+		$this->assertSame( $level, ob_get_level(), 'The output buffer was closed.' );
+		$after = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+		$this->assertSame( $listeners, $after, 'The wp_mail_failed listener was removed.' );
 	}
 
 	/**
@@ -1576,4 +2150,123 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->set_client_logging( false );
 	}
 
+	public function test_get_visitor_recipients_tells_visitor_fields_from_owner_addresses() {
+		$method = new \ReflectionMethod( Form_Submit::class, 'get_visitor_recipients' );
+		$method->setAccessible( true );
+
+		$owner = $method->invoke( null, [ 'email_to' => '{admin_email}, owner@example.com' ], [] );
+		$this->assertFalse( $owner['only_visitor'] );
+		$this->assertSame( [], $owner['addresses'] );
+
+		$visitor = $method->invoke( null, [ 'email_to' => '{form:email}', 'email_cc' => '', 'email_bcc' => ' ' ], [] );
+		$this->assertTrue( $visitor['only_visitor'], 'Only a visitor field: a missing recipient is the visitor\'s.' );
+
+		$mixed = $method->invoke( null, [ 'email_to' => '{form:email}', 'email_bcc' => 'owner@example.com' ], [] );
+		$this->assertFalse( $mixed['only_visitor'] );
+	}
+
+	/**
+	 * A host's SMTP refusing outside domains words it as a recipient failure.
+	 * The refused address is the owner's, so the site goes into "attention".
+	 */
+	public function test_send_email_counts_relay_denied_as_a_site_failure() {
+		$this->reset_email_delivery_state();
+
+		$this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', "SMTP Error: The following recipients failed: owner@example.com: <owner@example.com>: Relay access denied\r\n" ) );
+				return false;
+			}
+		);
+
+		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'] );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * Whether the submission was stored comes from the server, never the
+	 * request: on the "do not store entries" path a POST that carries an
+	 * entry_id must still be recorded as not saved.
+	 */
+	public function test_entry_saved_is_decided_by_the_server_on_both_paths() {
+		$this->reset_email_delivery_state();
+		$fail = static function () {
+			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'SMTP Error: Could not authenticate.' ) );
+			return false;
+		};
+		add_filter( 'pre_wp_mail', $fail, 99 );
+
+		foreach ( [ 'no-store' => false, 'stored' => true ] as $path => $saved ) {
+			$form_id = wp_insert_post(
+				[
+					'post_type'   => 'sureforms_form',
+					'post_title'  => 'Entry Saved ' . $path,
+					'post_status' => 'publish',
+				]
+			);
+			update_post_meta(
+				$form_id,
+				'_srfm_email_notification',
+				[
+					[
+						'id'         => 1,
+						'status'     => true,
+						'email_to'   => 'owner@example.com',
+						'subject'    => 'New entry',
+						'email_body' => 'An entry arrived.',
+					],
+				]
+			);
+			if ( ! $saved ) {
+				update_post_meta(
+					$form_id,
+					'_srfm_compliance',
+					[
+						[
+							'gdpr'                 => true,
+							'do_not_store_entries' => true,
+						],
+					]
+				);
+			}
+
+			// The visitor's POST claims an entry was stored.
+			$this->form_submit->handle_form_entry(
+				[
+					'form-id'  => (string) $form_id,
+					'entry_id' => '1',
+				]
+			);
+
+			$outcomes = Email_Delivery_Status::get_outcomes();
+			$this->assertArrayHasKey( $form_id, $outcomes['open_forms'], $path );
+			$this->assertSame( $saved, $outcomes['open_details'][ $form_id ]['entry_saved'], $path );
+
+			wp_delete_post( $form_id, true );
+			$this->reset_email_delivery_state();
+		}
+
+		remove_filter( 'pre_wp_mail', $fail, 99 );
+}
+
+	/**
+	 * An address the owner set stays the owner's, even when a visitor also
+	 * typed it into the form.
+	 */
+	public function test_get_visitor_recipients_leaves_owner_addresses_out() {
+		$method = new \ReflectionMethod( Form_Submit::class, 'get_visitor_recipients' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke(
+			null,
+			[
+				'email_to'  => '{form:email}',
+				'email_bcc' => 'Owner@Example.com',
+			],
+			[ 'srfm-email-abc123-lbl-email-email' => 'owner@example.com' ]
+		);
+
+		$this->assertSame( [], $result['addresses'] );
+		$this->assertFalse( $result['only_visitor'] );
+	}
 }

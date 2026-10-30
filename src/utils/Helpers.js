@@ -8,6 +8,7 @@ import { addQueryArgs, cleanForSlug } from '@wordpress/url';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
+import { clearStartChoice } from './form-start';
 import { toast } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { store as blocksStore } from '@wordpress/blocks';
@@ -68,7 +69,8 @@ export const handleAddNewPost = async (
 	templateMetas,
 	isConversational = false,
 	formType = '',
-	onError
+	onError,
+	extraData = {}
 ) => {
 	const reportError = ( message ) => {
 		if ( typeof onError === 'function' ) {
@@ -95,6 +97,8 @@ export const handleAddNewPost = async (
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
 			data: {
+				// First, so extra data can't overwrite the form itself.
+				...extraData,
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
@@ -105,6 +109,9 @@ export const handleAddNewPost = async (
 
 		if ( response?.id ) {
 			const postId = response.id;
+
+			// The start screen attempt ends with this form.
+			clearStartChoice();
 
 			// Store the post ID so the Learn section Lesson 2 can open this form directly.
 			const urlParams = new URLSearchParams( window.location.search );
@@ -1408,3 +1415,16 @@ export function useShouldIframe() {
 		);
 	}, [] );
 }
+
+/**
+ * Free emails a new SureContact account comes with, as localized by the
+ * server (Status::get_offer()); 0 hides the offer.
+ *
+ * @since 2.12.9
+ * @return {number} Free emails.
+ */
+export const getFreeEmails = () =>
+	Math.max(
+		0,
+		Number( window.srfm_admin?.email_delivery_offer?.free_emails ?? 0 ) || 0
+	);

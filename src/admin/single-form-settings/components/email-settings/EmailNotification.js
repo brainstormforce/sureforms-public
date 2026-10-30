@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import EmailConfirmation from './EmailConfirmation';
+import EmailDeliveryStatus from './EmailDeliveryStatus';
 import { useEffect, useState, forwardRef } from '@wordpress/element';
 import {
 	srfmEditFormMeta,
@@ -289,6 +290,7 @@ const EmailNotification = ( {
 			showSaveButton={ false }
 			tabId="email_notification"
 		>
+			<EmailDeliveryStatus />
 			<Table className="rounded-md">
 				<Table.Head>
 					{ headerContent.map( ( header, index ) => (

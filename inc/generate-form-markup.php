@@ -42,6 +42,16 @@ class Generate_Form_Markup {
 	private static $current_block_attrs = [];
 
 	/**
+	 * ID of the form whose content get_form_markup() is rendering, or 0 outside one.
+	 *
+	 * Smart_Tags::render_form() resolves smart tags only inside this content.
+	 *
+	 * @var int
+	 * @since 2.12.9
+	 */
+	private static $rendering_form_id = 0;
+
+	/**
 	 * IDs of the forms known to be on the current request, keyed by form ID.
 	 *
 	 * Seeded at the `wp` hook (collect_queried_form_ids(), before any output) by
@@ -122,6 +132,16 @@ class Generate_Form_Markup {
 	 */
 	public static function get_current_block_attrs() {
 		return self::$current_block_attrs;
+	}
+
+	/**
+	 * Get the ID of the form whose content is being rendered.
+	 *
+	 * @return int Form ID, or 0 when no form content is rendering.
+	 * @since 2.12.9
+	 */
+	public static function get_rendering_form_id() {
+		return self::$rendering_form_id;
 	}
 
 	/**
@@ -350,6 +370,37 @@ class Generate_Form_Markup {
 	 * @since 0.0.1
 	 */
 	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false, $block_attrs = [] ) {
+		// Everything rendered here, including blocks rendered from hooks such as page break
+		// and conversational forms, is form content: smart tags resolve in it. Only a real
+		// form post qualifies, since get_post() accepts any post ID.
+		$form_id                 = Helper::get_integer_value( $id );
+		$previous_form_id        = self::$rendering_form_id;
+		self::$rendering_form_id = $form_id > 0 && SRFM_FORMS_POST_TYPE === get_post_type( $form_id ) ? $form_id : 0;
+
+		try {
+			return self::render_form_markup( $id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs );
+		} finally {
+			self::$rendering_form_id = $previous_form_id;
+		}
+	}
+
+	/**
+	 * Render the form markup for get_form_markup().
+	 *
+	 * Internal: call get_form_markup(), which marks the output as form content. Called
+	 * directly, smart tags in the form are left unresolved.
+	 *
+	 * @param int|string   $id Contains form ID.
+	 * @param bool         $show_title_current_page Boolean to srfm-show/srfm-hide form title.
+	 * @param string       $sf_classname additional class_name.
+	 * @param string       $post_type Contains post type.
+	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<mixed> $block_attrs Block attributes for per-embed styling.
+	 *
+	 * @return string|false
+	 * @since 2.12.9
+	 */
+	public static function render_form_markup( $id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs ) {
 		// SECURITY INVARIANT — a renderer must never read the request to decide what to
 		// render. The caller's `$id` is the only source of truth here; the REST route
 		// owns request parsing (see render_form_markup_endpoint). Reintroducing any
@@ -428,10 +479,13 @@ class Generate_Form_Markup {
 			// Create unique container ID using blockId if available (for multiple embeds of same form).
 			// Base class (without blockId) is needed for JS compatibility - frontend.js and phone.js use form-id attribute to construct selectors.
 			$base_container_class = 'srfm-form-container-' . Helper::get_string_value( $id );
-			$block_id_suffix      = ! empty( $block_attrs['blockId'] ) ? '-' . Helper::get_string_value( $block_attrs['blockId'] ) : '';
-			$container_id         = $base_container_class . $block_id_suffix;
-			$form_styling         = get_post_meta( $id, '_srfm_forms_styling', true );
-			$form_styling         = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+			// blockId reaches a container id and a <style> selector, so it is kept to
+			// characters that are safe in both.
+			$block_id_raw    = Helper::get_string_value( preg_replace( '/[^A-Za-z0-9_-]/', '', Helper::get_string_value( $block_attrs['blockId'] ?? '' ) ) );
+			$block_id_suffix = '' !== $block_id_raw ? '-' . $block_id_raw : '';
+			$container_id    = $base_container_class . $block_id_suffix;
+			$form_styling    = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling    = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 
 			// Apply per-embed styling customization when formTheme is not 'inherit'.
 			if ( Form_Styling::has_custom_styling( $block_attrs ) ) {
@@ -527,6 +581,7 @@ class Generate_Form_Markup {
 				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 				$disable_default_styles ? 'srfm-styling-none' : '', // Marker class when default styling is disabled, so custom CSS can target the state.
 				$background_classes,
+				! empty( get_post_meta( $id, Form_Templates::TEMPLATE_ID_META, true ) ) ? 'srfm-template-form' : '', // Made from a template: scopes the template-only success message colors.
 			];
 
 			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
@@ -1225,7 +1280,7 @@ class Generate_Form_Markup {
 		if ( empty( $submission_data ) ) {
 			return $confirmation_message;
 		}
-		$smart_tags           = new Smart_Tags();
+		$smart_tags           = Smart_Tags::get_instance();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
 		/**
@@ -1321,7 +1376,7 @@ class Generate_Form_Markup {
 		$redirect_url = add_query_arg( $query_params, $redirect_url );
 
 		if ( ! empty( $submission_data ) ) {
-			$smart_tags = new Smart_Tags();
+			$smart_tags = Smart_Tags::get_instance();
 			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
 			$form_data['upload_format_type'] = 'raw';
 			// Skip auto-linking URLs in smart tag values — redirect query params need raw values, not HTML.

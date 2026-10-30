@@ -223,6 +223,37 @@ class AI_Helper {
 	}
 
 	/**
+	 * Check whether the site has any AI-generated form (any status except trash and auto-draft).
+	 *
+	 * Used by the Generate with AI screen to collapse the starter examples once
+	 * the site has made its first AI form.
+	 *
+	 * @since 2.12.9
+	 * @return bool
+	 */
+	public static function has_ai_generated_forms() {
+		$ai_forms = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'post_status'    => 'any',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'orderby'        => 'none',
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-row lookup: on the Generate with AI screen, and once from Analytics behind is_tracked().
+					[
+						'key'     => '_srfm_is_ai_generated',
+						'value'   => '',
+						'compare' => '!=',
+					],
+				],
+			]
+		);
+
+		return ! empty( $ai_forms );
+	}
+
+	/**
 	 * Sanitize an upstream error message before returning it to the client.
 	 *
 	 * The OpenAI / SureForms middleware sometimes echoes infrastructure details

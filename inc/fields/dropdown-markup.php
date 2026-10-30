@@ -106,8 +106,9 @@ class Dropdown_Markup extends Base {
 
 		// Translate the default placeholder text for frontend display. Routed through
 		// the multilingual provider (not just the textdomain) so it is translated on
-		// WPML/Polylang sites too — the default placeholder is not serialized into
-		// block markup, so it never reaches the per-form string package.
+		// WPML/Polylang sites too. A per-form translation of the default placeholder
+		// is applied earlier by String_Translator; this global string is the fallback
+		// when that per-form translation is missing.
 		if ( 'Select an option' === $this->placeholder ) {
 			$this->placeholder = String_Translator::get_instance()->translate_validation_message( 'srfm_dropdown_placeholder', __( 'Select an option', 'sureforms' ) );
 		}
@@ -142,7 +143,7 @@ class Dropdown_Markup extends Base {
 						?>
 					<select
 						class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
-						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?> data-srfm-error-target
 				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>"
 						<?php
 						if ( ! empty( $this->preselected_options ) ) {
@@ -224,7 +225,7 @@ class Dropdown_Markup extends Base {
 			return;
 		}
 
-		$smart_tags = new Smart_Tags();
+		$smart_tags = Smart_Tags::get_instance();
 		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
 
 		if ( empty( $resolved ) || ! is_string( $resolved ) || ! is_array( $this->options ) ) {

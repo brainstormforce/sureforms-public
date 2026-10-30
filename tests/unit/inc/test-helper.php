@@ -1086,18 +1086,19 @@ class Test_Helper extends TestCase {
     }
 
     /**
-     * Test is_any_smtp_plugin_active - should return true when Newsletter plugin is active
+     * Test is_any_smtp_plugin_active - Newsletter is a newsletter sender, not a
+     * wp_mail() transport, so it must not hide "No SMTP plugin detected".
      */
     public function test_is_any_smtp_plugin_active_newsletter() {
         $this->reset_smtp_test_data();
         $this->setup_smtp_plugin_mocks([
-            'newsletter/plugin.php', // Correct file path is plugin.php not newsletter.php
+            'newsletter/plugin.php',
             'akismet/akismet.php'
         ]);
 
         $result = Helper::is_any_smtp_plugin_active();
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     /**
@@ -1271,7 +1272,6 @@ class Test_Helper extends TestCase {
             'post-smtp/postman-smtp.php',
             'easy-wp-smtp/easy-wp-smtp.php',
             'wp-smtp/wp-smtp.php',
-            'newsletter/plugin.php',
             'fluent-smtp/fluent-smtp.php',
             'pepipost-smtp/pepipost-smtp.php',
             'mail-bank/wp-mail-bank.php',
@@ -3344,6 +3344,44 @@ class Test_Helper extends TestCase {
         add_filter( 'srfm_hide_promotions', $truthy );
         $this->assertTrue( Helper::hide_promotions(), 'A truthy filter value is cast to bool.' );
         remove_filter( 'srfm_hide_promotions', $truthy );
+    }
+
+    public function test_get_pro_tier_defaults_to_free_and_follows_the_filter() {
+        if ( defined( 'SRFM_PRO_VER' ) ) {
+            $this->markTestSkipped( 'Pro is loaded in this run.' );
+        }
+        $this->assertSame( 'free', Helper::get_pro_tier(), 'Without SureForms Pro the site is on the free plan.' );
+
+        $tier = static fn() => 'pro';
+        add_filter( 'srfm_pro_tier', $tier );
+        $this->assertSame( 'pro', Helper::get_pro_tier() );
+        remove_filter( 'srfm_pro_tier', $tier );
+
+        $unknown = static fn() => 'enterprise';
+        add_filter( 'srfm_pro_tier', $unknown );
+        $this->assertSame( 'free', Helper::get_pro_tier(), 'An unknown tier is read as free.' );
+        remove_filter( 'srfm_pro_tier', $unknown );
+    }
+
+    public function test_tier_rank_orders_the_plans() {
+        $this->assertSame( 0, Helper::tier_rank( 'free' ) );
+        $this->assertSame( 1, Helper::tier_rank( 'starter' ) );
+        $this->assertSame( 2, Helper::tier_rank( 'pro' ) );
+        $this->assertSame( 3, Helper::tier_rank( 'business' ) );
+        $this->assertSame( 0, Helper::tier_rank( 'enterprise' ), 'Unknown tiers rank as free.' );
+        $this->assertSame( 0, Helper::tier_rank( null ) );
+    }
+
+    public function test_has_tier_compares_with_the_site_plan() {
+        $tier = static fn() => 'pro';
+        add_filter( 'srfm_pro_tier', $tier );
+
+        $this->assertTrue( Helper::has_tier( 'free' ) );
+        $this->assertTrue( Helper::has_tier( 'starter' ) );
+        $this->assertTrue( Helper::has_tier( 'pro' ) );
+        $this->assertFalse( Helper::has_tier( 'business' ) );
+
+        remove_filter( 'srfm_pro_tier', $tier );
     }
 
 }
