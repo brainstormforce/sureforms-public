@@ -15,6 +15,12 @@ import { applyFilters } from '@wordpress/hooks';
 import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
+import useOpenTemplateLibrary from '../use-open-template-library.js';
+import {
+	getStartChoice,
+	reloadAddNewForm,
+	trackStartStep,
+} from '@Utils/form-start';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -25,6 +31,7 @@ const AiFormBuilder = () => {
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 
 	const handleFormCreationError = ( errorMessage ) => {
+		trackStartStep( 'ai_error' );
 		setFormCreationErr(
 			errorMessage ||
 				__( 'Something went wrong. Please try again.', 'sureforms' )
@@ -49,6 +56,12 @@ const AiFormBuilder = () => {
 	const dashboardPromptFromWidget = (
 		urlParams.get( 'srfm_ai_dashboard_prompt' ) || ''
 	).trim();
+	// Typed in for the visitor to send, e.g. a template library search that
+	// found nothing. Unlike the dashboard widget's prompt, it never generates
+	// on its own: that would spend a credit.
+	const [ prefillPrompt ] = useState( () =>
+		( urlParams.get( 'srfm_ai_prompt' ) || '' ).trim()
+	);
 	const [ initialPromptFromWidget ] = useState( dashboardPromptFromWidget );
 	const [ hasHandledWidgetPrompt, setHasHandledWidgetPrompt ] =
 		useState( false );
@@ -58,6 +71,17 @@ const AiFormBuilder = () => {
 
 	const isRTL = srfm_admin?.is_rtl;
 	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
+
+	// Templates still work when AI generations run out, so the limit popup
+	// offers the template library instead.
+	const isAiLimited =
+		srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
+		Boolean( srfm_admin?.srfm_ai_usage_details?.code );
+	const openTemplateLibrary = useOpenTemplateLibrary();
+	const openTemplatesInstead =
+		srfm_admin?.form_templates?.length > 0
+			? openTemplateLibrary
+			: undefined;
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -87,6 +111,7 @@ const AiFormBuilder = () => {
 			form_type: formType,
 		};
 
+		trackStartStep( 'ai_generate' );
 		setIsBuildingForm( true );
 		setPercentBuild( 50 );
 		setMessage( __( 'Generating fields', 'sureforms' ) );
@@ -214,6 +239,7 @@ const AiFormBuilder = () => {
 			{
 				ai_starter: starterInfo?.starterId || '',
 				ai_starter_edited: Boolean( starterInfo?.starterEdited ),
+				start_choice: getStartChoice(),
 			}
 		);
 	};
@@ -233,8 +259,9 @@ const AiFormBuilder = () => {
 		} );
 
 		if ( response?.success ) {
-			window.location.href =
-				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form`;
+			reloadAddNewForm(
+				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&view=ai`
+			);
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
@@ -252,6 +279,15 @@ const AiFormBuilder = () => {
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
 	const resetAt = srfm_admin?.srfm_ai_usage_details?.resetAt;
+
+	useEffect( () => {
+		if ( ! prefillPrompt ) {
+			return;
+		}
+		const url = new URL( window.location.href );
+		url.searchParams.delete( 'srfm_ai_prompt' );
+		window.history.replaceState( window.history.state, '', url.toString() );
+	}, [ prefillPrompt ] );
 
 	useEffect( () => {
 		if ( ! initialPromptFromWidget || hasHandledWidgetPrompt ) {
@@ -304,14 +340,16 @@ const AiFormBuilder = () => {
 		if ( errorCode ) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					title={ srfm_admin?.srfm_ai_usage_details?.title }
 					paraOne={ srfm_admin?.srfm_ai_usage_details?.message }
 					buttonText={ __( 'Try Again', 'sureforms' ) }
-					onclick={ () => {
-						window.location.href =
+					onclick={ () =>
+						reloadAddNewForm(
 							srfm_admin.site_url +
-							'/wp-admin/admin.php?page=add-new-form';
-					} }
+								'/wp-admin/admin.php?page=add-new-form&view=ai'
+						)
+					}
 				/>
 			);
 		}
@@ -327,7 +365,10 @@ const AiFormBuilder = () => {
 			formCreationleft === 0
 		) {
 			return (
-				<LimitReachedPopup deactivatedLicense={ deactivatedLicense } />
+				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
+					deactivatedLicense={ deactivatedLicense }
+				/>
 			);
 		}
 
@@ -342,6 +383,7 @@ const AiFormBuilder = () => {
 		) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
 					paraTitle={ __(
 						"You've reached your daily generation limit.",
@@ -357,11 +399,12 @@ const AiFormBuilder = () => {
 						new Date( resetAt * 1000 ).toLocaleString()
 					) }
 					buttonText={ __( 'Try Again', 'sureforms' ) }
-					onclick={ () => {
-						window.location.href =
+					onclick={ () =>
+						reloadAddNewForm(
 							srfm_admin.site_url +
-							'/wp-admin/admin.php?page=add-new-form';
-					} }
+								'/wp-admin/admin.php?page=add-new-form&view=ai'
+						)
+					}
 				/>
 			);
 		}
@@ -370,6 +413,7 @@ const AiFormBuilder = () => {
 		if ( type === 'registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					paraOne={ __(
 						'You have reached the maximum number of form generations in your Free Plan. SureForms Premium allows:',
 						'sureforms'
@@ -402,6 +446,7 @@ const AiFormBuilder = () => {
 		if ( type === 'non-registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					title={ __( 'Connect to SureForms AI', 'sureforms' ) }
 					paraTitle={ __(
 						'You Have Hit Your Free Limit.',
@@ -421,6 +466,17 @@ const AiFormBuilder = () => {
 			);
 		}
 	};
+
+	// Null when no limit applies, or none of the limit states matches.
+	const limitPopup = isAiLimited ? getLimitReachedPopup() : null;
+
+	// Count the limit popup once per visit as a step of the AI path.
+	const showsLimitPopup = Boolean( limitPopup );
+	useEffect( () => {
+		if ( showsLimitPopup ) {
+			trackStartStep( 'ai_limit' );
+		}
+	}, [ showsLimitPopup ] );
 
 	// shows while the form is being built. The error popup is intentionally
 	// rendered only at the bottom of the component (outer return) — when
@@ -444,7 +500,7 @@ const AiFormBuilder = () => {
 	}
 
 	return (
-		<div className="max-h-screen">
+		<div className="h-screen overflow-y-auto">
 			<Toaster
 				className={ cn(
 					'z-[999999]',
@@ -461,7 +517,7 @@ const AiFormBuilder = () => {
 			<div className="mt-14">
 				<AiFormBuilderForm
 					handleCreateAiForm={ handleCreateAiForm }
-					prefilledPrompt={ initialPromptFromWidget }
+					prefilledPrompt={ initialPromptFromWidget || prefillPrompt }
 					formTypeObj={ formTypeObj }
 					setFormTypeObj={ setFormTypeObj }
 					setFormType={ setFormType }
@@ -473,10 +529,7 @@ const AiFormBuilder = () => {
 				/>
 			</div>
 
-			{ srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
-			srfm_admin?.srfm_ai_usage_details?.code
-				? getLimitReachedPopup()
-				: null }
+			{ limitPopup }
 
 			{ formCreationErr && (
 				<ErrorPopup

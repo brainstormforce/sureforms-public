@@ -116,7 +116,7 @@ class String_Translator {
 	 * @param string              $block_name Block name, e.g. `srfm/phone`.
 	 * @param array<string,mixed> $attrs      Parsed block attributes.
 	 * @param string              $attribute  Attribute key.
-	 * @since 2.12.10
+	 * @since 2.13.0
 	 * @return string The saved or default string, or '' when neither is a string.
 	 */
 	public static function block_attribute_value( string $block_name, array $attrs, string $attribute ): string {

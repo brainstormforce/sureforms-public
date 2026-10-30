@@ -273,6 +273,64 @@ const ICONS = {
 			</defs>
 		</svg>
 	),
+	// Start screen: chips and buttons drawn to match its design.
+	startPayment: (
+		<svg
+			width="11"
+			height="11"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<rect x="2.5" y="5" width="19" height="14" rx="2" />
+			<path d="M2.5 10h19" />
+		</svg>
+	),
+	startQuiz: (
+		<svg
+			width="11"
+			height="11"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<path d="M4 7l2 2 3-3M4 17l2 2 3-3M13 8h7M13 18h7" />
+		</svg>
+	),
+	startSparkle: (
+		<svg
+			width="12"
+			height="12"
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			aria-hidden="true"
+		>
+			<path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9zM19 15l.9 2.6 2.6.9-2.6.9L19 22l-.9-2.6-2.6-.9 2.6-.9z" />
+		</svg>
+	),
+	startArrow: (
+		<svg
+			width="16"
+			height="16"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<path d="M5 12h14M13 6l6 6-6 6" />
+		</svg>
+	),
 };
 
 export default ICONS;

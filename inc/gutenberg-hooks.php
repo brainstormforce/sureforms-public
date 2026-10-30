@@ -174,6 +174,7 @@ class Gutenberg_Hooks {
 				'plugin_url'      => SRFM_URL,
 				'admin_email'     => get_option( 'admin_email' ),
 				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'free',
+				'pro_tier'        => Helper::get_pro_tier(),
 			]
 		);
 
@@ -221,6 +222,7 @@ class Gutenberg_Hooks {
 				// that route ended up with no real authorization (#2995).
 				'get_form_markup_url'               => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                     => Helper::has_pro(),
+				'pro_tier'                          => Helper::get_pro_tier(),
 				'srfm_default_dynamic_block_option' => wp_parse_args( Helper::get_array_value( get_option( 'srfm_default_dynamic_block_option', [] ) ), Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'               => Helper::current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => Helper::current_user_can(),
