@@ -16,6 +16,8 @@ use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
+use SRFM\Inc\Form_Start;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
@@ -2220,19 +2222,28 @@ JS;
 				SRFM_SLUG . '-template-picker',
 				SRFM_SLUG . '_admin',
 				[
-					'site_url'                     => get_site_url(),
-					'plugin_url'                   => SRFM_URL,
-					'admin_url'                    => admin_url( 'admin.php' ),
-					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                   => Helper::current_user_can(),
-					'template_picker_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => Helper::has_pro(),
-					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
-					'has_ai_generated_forms'       => AI_Helper::has_ai_generated_forms(),
-					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
-					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
-					'pricing_page_url'             => Helper::get_sureforms_website_url( 'pricing' ),
-					'licensing_nonce'              => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
+					'site_url'                      => get_site_url(),
+					'plugin_url'                    => SRFM_URL,
+					'admin_url'                     => admin_url( 'admin.php' ),
+					'new_template_picker_base_url'  => admin_url( 'post-new.php?post_type=sureforms_form' ),
+					'capability'                    => Helper::current_user_can(),
+					'template_picker_nonce'         => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'                 => Helper::has_pro(),
+					'srfm_ai_usage_details'         => AI_Helper::get_current_usage_details(),
+					'has_ai_generated_forms'        => AI_Helper::has_ai_generated_forms(),
+					'is_pro_license_active'         => AI_Helper::is_pro_license_active(),
+					'srfm_ai_auth_user_email'       => get_option( 'srfm_ai_auth_user_email' ),
+					'pricing_page_url'              => Helper::get_sureforms_website_url( 'pricing' ),
+					'licensing_nonce'               => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
+					'form_templates'                => Form_Templates::get_templates_for_js(),
+					'pro_tier'                      => Helper::get_pro_tier(),
+					'form_template_categories'      => Form_Templates::get_categories(),
+					'form_template_themes'          => Form_Templates::get_themes_for_js(),
+					'form_template_requests'        => Form_Templates::get_request_settings_for_js(),
+					'form_template_spam_protection' => Form_Templates::is_spam_protection_on(),
+					'form_start'                    => Form_Start::get_settings_for_js(),
+					'site_title'                    => get_bloginfo( 'name' ),
+					'admin_email'                   => get_option( 'admin_email' ),
 				]
 			);
 
@@ -3082,7 +3093,8 @@ JS;
 				'content'     => wp_kses_post( $content_markup ),
 				'button_text' => esc_html( __( 'Build My First Form', 'sureforms' ) ),
 				'dismiss'     => esc_html( __( 'Dismiss', 'sureforms' ) ),
-				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+				// The pointer is about the AI builder, so it skips the start screen.
+				'button_url'  => admin_url( 'admin.php?page=add-new-form&view=ai' ),
 			]
 		);
 	}

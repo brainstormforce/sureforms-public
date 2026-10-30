@@ -55,6 +55,11 @@ $sidebar_width: 290px;
 		padding: 0px;
 	}
 
+	// WordPress leaves room for its mobile admin bar, which is hidden here.
+	#wpbody {
+		padding-top: 0;
+	}
+
 	#bsf-optin-notice,
 	#uagb-admin-rating,
 	.notice-error {

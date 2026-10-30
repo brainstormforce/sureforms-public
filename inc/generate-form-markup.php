@@ -581,6 +581,7 @@ class Generate_Form_Markup {
 				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 				$disable_default_styles ? 'srfm-styling-none' : '', // Marker class when default styling is disabled, so custom CSS can target the state.
 				$background_classes,
+				! empty( get_post_meta( $id, Form_Templates::TEMPLATE_ID_META, true ) ) ? 'srfm-template-form' : '', // Made from a template: scopes the template-only success message colors.
 			];
 
 			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );

@@ -3346,4 +3346,42 @@ class Test_Helper extends TestCase {
         remove_filter( 'srfm_hide_promotions', $truthy );
     }
 
+    public function test_get_pro_tier_defaults_to_free_and_follows_the_filter() {
+        if ( defined( 'SRFM_PRO_VER' ) ) {
+            $this->markTestSkipped( 'Pro is loaded in this run.' );
+        }
+        $this->assertSame( 'free', Helper::get_pro_tier(), 'Without SureForms Pro the site is on the free plan.' );
+
+        $tier = static fn() => 'pro';
+        add_filter( 'srfm_pro_tier', $tier );
+        $this->assertSame( 'pro', Helper::get_pro_tier() );
+        remove_filter( 'srfm_pro_tier', $tier );
+
+        $unknown = static fn() => 'enterprise';
+        add_filter( 'srfm_pro_tier', $unknown );
+        $this->assertSame( 'free', Helper::get_pro_tier(), 'An unknown tier is read as free.' );
+        remove_filter( 'srfm_pro_tier', $unknown );
+    }
+
+    public function test_tier_rank_orders_the_plans() {
+        $this->assertSame( 0, Helper::tier_rank( 'free' ) );
+        $this->assertSame( 1, Helper::tier_rank( 'starter' ) );
+        $this->assertSame( 2, Helper::tier_rank( 'pro' ) );
+        $this->assertSame( 3, Helper::tier_rank( 'business' ) );
+        $this->assertSame( 0, Helper::tier_rank( 'enterprise' ), 'Unknown tiers rank as free.' );
+        $this->assertSame( 0, Helper::tier_rank( null ) );
+    }
+
+    public function test_has_tier_compares_with_the_site_plan() {
+        $tier = static fn() => 'pro';
+        add_filter( 'srfm_pro_tier', $tier );
+
+        $this->assertTrue( Helper::has_tier( 'free' ) );
+        $this->assertTrue( Helper::has_tier( 'starter' ) );
+        $this->assertTrue( Helper::has_tier( 'pro' ) );
+        $this->assertFalse( Helper::has_tier( 'business' ) );
+
+        remove_filter( 'srfm_pro_tier', $tier );
+    }
+
 }
