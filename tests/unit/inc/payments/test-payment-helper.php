@@ -1003,6 +1003,87 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertNotEmpty( $strings['payment_required'] );
 	}
 
+	// --- amount_type fail-open (Patchstack 38174) ---
+
+	/**
+	 * Store a payment block config with a given amount_type directly, bypassing the
+	 * editor/AI writer path, to exercise the validators' defense-in-depth against a
+	 * config that was persisted before the store-time allowlist existed.
+	 */
+	private function set_block_config_amount_type( $form_id, $amount_type ) {
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay01' => [
+					'payment_type'   => 'one-time',
+					'amount_type'    => $amount_type,
+					'fixed_amount'   => 100,
+					'minimum_amount' => 50,
+				],
+			]
+		);
+	}
+
+	/**
+	 * Intent-creation gate must reject an amount_type that is neither fixed nor variable.
+	 */
+	public function test_validate_payment_amount_rejects_unknown_amount_type() {
+		$form_id  = self::factory()->post->create( [ 'post_type' => 'sureforms_form' ] );
+		$currency = Payment_Helper::get_currency();
+
+		// Controls: the supported types behave as before.
+		$this->set_block_config_amount_type( $form_id, 'fixed' );
+		$this->assertTrue( Payment_Helper::validate_payment_amount( 100, $currency, $form_id, 'pay01', 'one-time' )['valid'], 'fixed at the configured amount passes' );
+		$this->assertFalse( Payment_Helper::validate_payment_amount( 0.50, $currency, $form_id, 'pay01', 'one-time' )['valid'], 'fixed below the configured amount is rejected' );
+		$this->set_block_config_amount_type( $form_id, 'variable' );
+		$this->assertFalse( Payment_Helper::validate_payment_amount( 0.50, $currency, $form_id, 'pay01', 'one-time' )['valid'], 'variable below the minimum is rejected' );
+
+		// Fix: any unrecognised amount_type fails closed instead of accepting any amount.
+		foreach ( [ 'user-choice', 'foo', '' ] as $amount_type ) {
+			$this->set_block_config_amount_type( $form_id, $amount_type );
+			$this->assertFalse(
+				Payment_Helper::validate_payment_amount( 0.50, $currency, $form_id, 'pay01', 'one-time' )['valid'],
+				"amount_type '{$amount_type}' must fail closed at intent creation"
+			);
+		}
+	}
+
+	/**
+	 * Post-charge re-check (validate_amount_against_config -> validate_payment_intent_amount)
+	 * must reject an unknown amount_type with the same fail-closed logic.
+	 */
+	public function test_validate_amount_against_config_rejects_unknown_amount_type() {
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form' ] );
+
+		$this->set_block_config_amount_type( $form_id, 'fixed' );
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay01', $form_id, [], 100.0, 'one-time' )['valid'], 'fixed at the configured amount passes the post-charge check' );
+
+		foreach ( [ 'user-choice', 'foo', '' ] as $amount_type ) {
+			$this->set_block_config_amount_type( $form_id, $amount_type );
+			$this->assertFalse(
+				Payment_Helper::validate_amount_against_config( 'pay01', $form_id, [], 0.50, 'one-time' )['valid'],
+				"amount_type '{$amount_type}' must fail closed at the post-charge check"
+			);
+		}
+	}
+
+	/**
+	 * Store-time allowlist: a block saved with an unrecognised amountType is normalised
+	 * to 'fixed', so the AI builder / content importers cannot persist a type the
+	 * validators do not handle.
+	 */
+	public function test_add_block_config_normalizes_unknown_amount_type_to_fixed() {
+		$content = '<!-- wp:srfm/payment {"block_id":"pay03","slug":"srfm-payment","paymentType":"one-time","amountType":"user-choice","fixedAmount":100} /-->';
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => $content ] );
+		\SRFM\Inc\Field_Validation::add_block_config( parse_blocks( $content ), $form_id );
+
+		$config = get_post_meta( $form_id, '_srfm_block_config', true );
+		$this->assertIsArray( $config );
+		$this->assertArrayHasKey( 'pay03', $config );
+		$this->assertSame( 'fixed', $config['pay03']['amount_type'], "an unrecognised amountType is normalised to 'fixed' at store time" );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

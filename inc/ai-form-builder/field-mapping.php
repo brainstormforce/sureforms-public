@@ -9,6 +9,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 
@@ -273,7 +274,10 @@ class Field_Mapping {
 					// for other modes are silently and correctly dropped — there is no
 					// silent conflict. Reviewers: do not flag the flat `required` list
 					// as a scoping bug; it is how OpenAI strict mode works.
-					$amount_types = [ 'fixed', 'variable', 'user-choice' ];
+					// Only the amount types the server-side validators implement. 'user-choice'
+					// was an unused allowlist entry with no validator support; persisting it
+					// left the payment block's amount unvalidated.
+					$amount_types = Payment_Helper::SUPPORTED_AMOUNT_TYPES;
 					$intervals    = [ 'day', 'week', 'month', 'quarter', 'year' ];
 
 					$merged_attributes['customerNameField']   = isset( $question['customerNameField'] ) ? sanitize_text_field( $question['customerNameField'] ) : '';
