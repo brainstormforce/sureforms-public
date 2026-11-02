@@ -5,6 +5,15 @@
 			.srfm-block-wrap {
 				@include srfm-multi-choice-wrap-styles;
 
+				// Options stretch to the tallest in their row, but the box
+				// inside them is `height: auto`, so a description that wraps to
+				// a second line left its neighbours short. Scoped to wraps that
+				// actually carry a description, so a form without any keeps the
+				// heights it has today.
+				&:has( .srfm-option-description ) .srfm-multi-choice-single .srfm-block-content-wrap {
+					height: 100%;
+				}
+
 				.srfm-multi-choice-single {
 					@include srfm-multi-choice-single-styles;
 					transition: 0.2s ease-out;

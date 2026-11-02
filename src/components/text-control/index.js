@@ -197,6 +197,9 @@ const SRFMTextControl = ( rawProps ) => {
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
 									placeholder={ props?.placeholder }
+									// Undefined for every existing caller, which
+									// leaves the input without the attribute.
+									maxLength={ props?.maxLength }
 								/>
 							) }
 							{ props?.variant === 'textarea' && (
@@ -210,6 +213,7 @@ const SRFMTextControl = ( rawProps ) => {
 									onChange={ handleOnChange }
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
+									maxLength={ props?.maxLength }
 								/>
 							) }
 

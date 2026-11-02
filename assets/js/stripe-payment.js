@@ -1431,8 +1431,13 @@ const PAYMENT_UTILITY = {
 				const label = choice.querySelector(
 					'.srfm-option-container label'
 				);
+				// data-option-text holds the submitted value; the visible text
+				// can be a translation.
+				const labelValue =
+					label?.getAttribute( 'data-option-text' ) ||
+					label?.innerText;
 				if (
-					normalizeStr( label?.innerText ) ===
+					normalizeStr( labelValue ) ===
 					normalizeStr( selectedOption )
 				) {
 					const input = choice.querySelector(
