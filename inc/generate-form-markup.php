@@ -654,6 +654,7 @@ class Generate_Form_Markup {
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
 			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
+			$srfm_cf_on_interaction     = false;
 			$srfm_hcaptcha_site_key     = '';
 
 			$google_captcha_site_key = '';
@@ -667,6 +668,7 @@ class Generate_Form_Markup {
 			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
 				$srfm_cf_turnstile_site_key = $global_setting_options['srfm_cf_turnstile_site_key'] ?? '';
 				$srfm_cf_appearance_mode    = $global_setting_options['srfm_cf_appearance_mode'] ?? 'auto';
+				$srfm_cf_on_interaction     = ! empty( $global_setting_options['srfm_cf_turnstile_on_interaction'] );
 			}
 
 			if ( is_array( $global_setting_options ) && 'hcaptcha' === $security_type ) {
@@ -1008,7 +1010,7 @@ class Generate_Form_Markup {
 						}
 
 						if ( 'cf-turnstile' === $security_type ) {
-							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
+							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key, $srfm_cf_on_interaction );
 						}
 
 						if ( 'hcaptcha' === $security_type ) {
@@ -1157,16 +1159,29 @@ class Generate_Form_Markup {
 	 *
 	 * @param string $srfm_cf_appearance_mode appearance mode.
 	 * @param string $srfm_cf_turnstile_site_key site key.
+	 * @param bool   $srfm_cf_on_interaction Run the challenge on first interaction instead of on load.
 	 * @since 1.7.0
 	 * @return void
 	 */
-	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
+	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key, $srfm_cf_on_interaction = false ) {
 		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
 			// Cloudflare Turnstile script.
+			//
+			// Default: the implicit renderer picks up .cf-turnstile and runs the challenge
+			// as soon as api.js executes. With the on-interaction option the script is asked
+			// for explicit rendering instead, so frontend.js owns render() and execute() and
+			// nothing runs until the visitor touches the form. api.js itself still loads with
+			// the page, which is what Cloudflare recommends (execution modes), and the token
+			// is still verified server side on every submission either way.
+			$srfm_cf_api_url = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+			if ( $srfm_cf_on_interaction ) {
+				$srfm_cf_api_url = add_query_arg( 'render', 'explicit', $srfm_cf_api_url );
+			}
+
 			// phpcs:disable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile must be loaded from Cloudflare's servers for token verification; the version is controlled by Cloudflare.
 			wp_enqueue_script(
 				SRFM_SLUG . '-cf-turnstile',
-				'https://challenges.cloudflare.com/turnstile/v0/api.js',
+				$srfm_cf_api_url,
 				[],
 				null,
 				[
@@ -1176,7 +1191,7 @@ class Generate_Form_Markup {
 			// phpcs:enable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent
 			?>
 			<!-- The callback methods below are available on frontend.js. onTurnstileError displays and error in place of recaptcha dialog.  -->
-		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"<?php echo $srfm_cf_on_interaction ? ' data-srfm-execution="execute"' : ''; ?>></div>
 			<?php
 		} else {
 			Helper::render_missing_sitekey_error( 'Turnstile' );

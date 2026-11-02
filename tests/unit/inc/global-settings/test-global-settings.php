@@ -360,6 +360,15 @@ class Test_Global_Settings extends TestCase {
 		$saved = get_option( 'srfm_security_settings_options' );
 		$this->assertSame( 'test-site-key', $saved['srfm_v2_checkbox_site_key'] );
 		$this->assertTrue( $saved['srfm_honeypot'] );
+
+		// The Turnstile execution option is a boolean, and an omitted key means
+		// off -- a save from any other tab must never switch it on.
+		$this->assertFalse( $saved['srfm_cf_turnstile_on_interaction'] );
+
+		$options['srfm_cf_turnstile_on_interaction'] = true;
+		Global_Settings::srfm_save_security_settings( $options );
+		$saved = get_option( 'srfm_security_settings_options' );
+		$this->assertTrue( $saved['srfm_cf_turnstile_on_interaction'] );
 	}
 
 
