@@ -213,6 +213,7 @@ const SRFMTextControl = ( rawProps ) => {
 									onChange={ handleOnChange }
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
+									placeholder={ props?.placeholder }
 									maxLength={ props?.maxLength }
 								/>
 							) }
