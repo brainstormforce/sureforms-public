@@ -87,6 +87,10 @@ trait Form_Field_Schema {
 					'properties' => [
 						'optionTitle' => [ 'type' => 'string' ],
 						'label'       => [ 'type' => 'string' ],
+						'description' => [
+							'type'        => 'string',
+							'description' => __( 'Text shown under the option. Multiple Choice only; Dropdown ignores it.', 'sureforms' ),
+						],
 					],
 				],
 			],
@@ -173,6 +177,9 @@ trait Form_Field_Schema {
 					}
 					if ( isset( $option['label'] ) && is_string( $option['label'] ) ) {
 						$option['label'] = sanitize_text_field( $option['label'] );
+					}
+					if ( isset( $option['description'] ) && is_string( $option['description'] ) ) {
+						$option['description'] = sanitize_text_field( $option['description'] );
 					}
 					$field_options[ $opt_index ] = $option;
 				}

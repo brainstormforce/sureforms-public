@@ -14,17 +14,17 @@
 		}
 	},
 	"require-dev": {
-		"codeinwp/phpcs-ruleset": "dev-main",
 		"phpunit/phpunit": "^9.0.0",
-		"squizlabs/php_codesniffer": "^3.5",
+		"squizlabs/php_codesniffer": "^3.13.6",
 		"yoast/phpunit-polyfills": "^2.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
 		"phpcompatibility/php-compatibility": "^9.3",
-		"wp-coding-standards/wpcs": "^2.3",
+		"wp-coding-standards/wpcs": "^3.4.1",
 		"phpstan/phpstan": "^1.10",
 		"szepeviktor/phpstan-wordpress": "^1.1",
 		"php-stubs/generator": "^0.8.3",
-		"nunomaduro/phpinsights": "^2.11"
+		"nunomaduro/phpinsights": "^2.11",
+		"phpcompatibility/phpcompatibility-wp": "^2.1"
 	},
 	"scripts": {
 		"format": "vendor/bin/phpcbf",

@@ -15,6 +15,7 @@ import {
 	useErrMessage,
 	checkInvalidCharacter,
 	updateSelectedIndicesAfterReorder,
+	indexAfterDelete,
 } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
@@ -42,6 +43,11 @@ import {
 	enhanceMultiChoiceOptions,
 } from '@Components/hooks';
 import { Trash2 } from 'lucide-react';
+import {
+	useOptionDescription,
+	OptionDescriptionToggle,
+	OptionDescriptionControl,
+} from '@Components/option-description';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -60,9 +66,14 @@ const Edit = ( props ) => {
 		minValue,
 		maxValue,
 		showValues,
+		showDescriptions,
 		preselectedOptions = [],
 		dynamicDefaultValue,
 	} = attributes;
+
+	// Turning the toggle off closes the open description, like deselecting.
+	const { openDescription, setOpenDescription, openDescriptionRef } =
+		useOptionDescription( isSelected && showDescriptions );
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState();
@@ -77,13 +88,15 @@ const Edit = ( props ) => {
 
 		// Update preselected options when an option is deleted
 		const newPreselected = preselectedOptions
-			.filter( ( i ) => i !== index ) // Remove deleted option
-			.map( ( i ) => ( i > index ? i - 1 : i ) ); // Adjust indices
+			.map( ( i ) => indexAfterDelete( i, index ) )
+			.filter( ( i ) => i !== null );
 
 		setAttributes( {
 			options: newOptions,
 			preselectedOptions: newPreselected,
 		} );
+		// Keep the open description on the option it was opened for.
+		setOpenDescription( indexAfterDelete( openDescription, index ) );
 	};
 
 	const changeOption = ( option, index ) => {
@@ -297,6 +310,16 @@ const Edit = ( props ) => {
 						/>
 					</div>
 				) }
+				{ showDescriptions && (
+					<OptionDescriptionToggle
+						blockId={ block_id }
+						index={ i }
+						optionLabel={ option.optionTitle }
+						description={ option.description }
+						openDescription={ openDescription }
+						setOpenDescription={ setOpenDescription }
+					/>
+				) }
 				<div className="srfm-options-delete">
 					<Trash2
 						style={ {
@@ -346,6 +369,18 @@ const Edit = ( props ) => {
 								changeOption,
 								deleteOption,
 							}
+						) }
+						{ showDescriptions && openDescription === i && (
+							<OptionDescriptionControl
+								blockId={ block_id }
+								index={ i }
+								optionLabel={ option.optionTitle }
+								description={ option.description }
+								openDescriptionRef={ openDescriptionRef }
+								onChange={ ( value ) =>
+									changeOption( { description: value }, i )
+								}
+							/>
 						) }
 					</div>
 				) }
@@ -402,6 +437,15 @@ const Edit = ( props ) => {
 									options: newOptions,
 									preselectedOptions: updatedPreselected,
 								} );
+								if ( openDescription !== null ) {
+									setOpenDescription(
+										updateSelectedIndicesAfterReorder(
+											[ openDescription ],
+											srcI,
+											destI
+										)[ 0 ]
+									);
+								}
 							}
 						} }
 					>
@@ -610,6 +654,18 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'show-descriptions',
+			component: (
+				<ToggleControl
+					label={ __( 'Option Description', 'sureforms' ) }
+					checked={ showDescriptions }
+					onChange={ ( value ) =>
+						setAttributes( { showDescriptions: value } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'singleSelection',
 			component: (
 				<ToggleControl
@@ -696,6 +752,8 @@ const Edit = ( props ) => {
 			<MultiChoiceComponent
 				blockID={ block_id }
 				{ ...{ attributes, isSelected, setAttributes, optionType } }
+				openDescription={ openDescription }
+				setOpenDescription={ setOpenDescription }
 			/>
 			<div className="srfm-error-wrap"></div>
 		</div>

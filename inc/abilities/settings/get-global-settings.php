@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Abilities\Settings;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -223,6 +224,7 @@ class Get_Global_Settings extends Abstract_Ability {
 				'srfm_v2_invisible_secret_key'     => '',
 				'srfm_v3_site_key'                 => '',
 				'srfm_v3_secret_key'               => '',
+				'srfm_v3_score_threshold'          => 0.5,
 				'srfm_cf_appearance_mode'          => 'auto',
 				'srfm_cf_turnstile_site_key'       => '',
 				'srfm_cf_turnstile_secret_key'     => '',
@@ -232,6 +234,9 @@ class Get_Global_Settings extends Abstract_Ability {
 				'srfm_honeypot'                    => false,
 			];
 		}
+
+		// Report the threshold Form_Submit applies, including for options saved before the setting existed.
+		$settings['srfm_v3_score_threshold'] = Global_Settings::sanitize_recaptcha_v3_threshold( $settings['srfm_v3_score_threshold'] ?? null );
 
 		// Mask all secret key fields with the sentinel value.
 		foreach ( self::$secret_keys as $key ) {

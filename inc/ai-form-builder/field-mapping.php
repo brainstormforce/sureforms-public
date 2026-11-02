@@ -346,6 +346,8 @@ class Field_Mapping {
 						foreach ( $question['fieldOptions'] as &$option ) {
 							$option['icon'] = '';
 						}
+						// Drop the reference, so a later $option loop can't overwrite the last option.
+						unset( $option );
 					}
 
 					// Set options if they are valid.
@@ -366,6 +368,15 @@ class Field_Mapping {
 
 					if ( isset( $question['showValues'] ) ) {
 						$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+					}
+
+					// Descriptions only render while showDescriptions is on, so
+					// turn it on when any option carries one.
+					foreach ( $merged_attributes['options'] ?? [] as $option ) {
+						if ( is_array( $option ) && '' !== trim( Helper::get_string_value( $option['description'] ?? '' ) ) ) {
+							$merged_attributes['showDescriptions'] = true;
+							break;
+						}
 					}
 
 					// Set single selection if provided.
@@ -848,7 +859,7 @@ class Field_Mapping {
 		if ( ! is_array( $options ) ) {
 			return [];
 		}
-		$sanitizable_keys = [ 'label', 'value', 'optionTitle' ];
+		$sanitizable_keys = [ 'label', 'value', 'optionTitle', 'description' ];
 		foreach ( $options as $key => $option ) {
 			if ( ! is_array( $option ) ) {
 				continue;
