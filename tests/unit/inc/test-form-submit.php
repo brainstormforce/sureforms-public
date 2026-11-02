@@ -866,6 +866,157 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A custom smart tag that reads the request context ($form_data) resolves
+	 * the same way in every recipient field as it does in the subject.
+	 */
+	public function test_parse_email_notification_template_passes_form_data_to_recipient_tags() {
+		$this->add_page_email_tag();
+
+		$result = Form_Submit::parse_email_notification_template(
+			[],
+			[
+				'email_to'       => '{acf_email}',
+				'subject'        => 'To {acf_email}',
+				'email_body'     => 'Body',
+				'email_reply_to' => '{acf_email}',
+				'email_cc'       => '{acf_email}',
+				'email_bcc'      => '{acf_email}',
+				'from_email'     => '{acf_email}',
+			],
+			[ '_wp_http_referer' => '/consultant-a/' ]
+		);
+
+		$this->remove_page_email_tag();
+
+		$this->assertSame( 'To consultant@example.com', $result['subject'] );
+		$this->assertSame( 'consultant@example.com', $result['to'] );
+		$this->assertStringContainsString( "Reply-To: consultant@example.com\r\n", $result['headers'] );
+		$this->assertStringContainsString( "Cc: consultant@example.com\r\n", $result['headers'] );
+		$this->assertStringContainsString( "Bcc: consultant@example.com\r\n", $result['headers'] );
+		$this->assertStringContainsString( '<consultant@example.com>', $result['headers'] );
+	}
+
+	/**
+	 * A recipient tag resolving to something that is not an address is still
+	 * dropped from the Reply-To / Cc / Bcc headers.
+	 */
+	public function test_parse_email_notification_template_drops_invalid_resolved_recipient() {
+		$tag = static function ( $parsed, $context ) {
+			return '{bad_email}' === $context['tag'] && ! empty( $context['form_data'] ) ? 'not-an-email' : $parsed;
+		};
+		$list = static function ( $tags ) {
+			return $tags + [ '{bad_email}' => 'Bad Email' ];
+		};
+		add_filter( 'srfm_smart_tag_list', $list );
+		add_filter( 'srfm_parse_smart_tags', $tag, 10, 2 );
+
+		$result = Form_Submit::parse_email_notification_template(
+			[],
+			[
+				'email_to'   => 'admin@example.com',
+				'subject'    => 'S',
+				'email_body' => 'B',
+				'email_cc'   => '{bad_email}, cc@example.com',
+				'email_bcc'  => '{bad_email}',
+			],
+			[ 'form-id' => '1' ]
+		);
+
+		remove_filter( 'srfm_parse_smart_tags', $tag, 10 );
+		remove_filter( 'srfm_smart_tag_list', $list );
+
+		$this->assertStringNotContainsString( 'not-an-email', $result['headers'] );
+		$this->assertStringContainsString( "Cc: cc@example.com\r\n", $result['headers'] );
+	}
+
+	/**
+	 * The From address resolves smart tags with the same request context as
+	 * the rest of the notification.
+	 */
+	public function test_add_from_data_in_header() {
+		$this->add_page_email_tag();
+		$method = new \ReflectionMethod( Form_Submit::class, 'add_from_data_in_header' );
+		$method->setAccessible( true );
+
+		$header = $method->invoke(
+			null,
+			[],
+			[
+				'from_name'  => 'Site',
+				'from_email' => '{acf_email}',
+			],
+			\SRFM\Inc\Smart_Tags::get_instance(),
+			[ '_wp_http_referer' => '/consultant-a/' ]
+		);
+
+		$this->remove_page_email_tag();
+
+		$this->assertSame( "From: Site <consultant@example.com>\r\n", $header );
+	}
+
+	/**
+	 * A From address whose smart tag resolves to something that is not an email
+	 * falls back to admin_email, as an invalid typed From address does.
+	 */
+	public function test_add_from_data_in_header_falls_back_to_admin_email_for_invalid_resolved_tag() {
+		$this->add_page_email_tag();
+		$method = new \ReflectionMethod( Form_Submit::class, 'add_from_data_in_header' );
+		$method->setAccessible( true );
+
+		$header = $method->invoke(
+			null,
+			[],
+			[
+				'from_name'  => 'Site',
+				'from_email' => '{acf_email}',
+			],
+			\SRFM\Inc\Smart_Tags::get_instance(),
+			[ '_wp_http_referer' => '/another-page/' ]
+		);
+
+		$this->remove_page_email_tag();
+
+		$this->assertSame( 'From: Site <' . get_option( 'admin_email' ) . ">\r\n", $header );
+	}
+
+	/**
+	 * Callbacks registered by add_page_email_tag().
+	 *
+	 * @var array<string,callable>
+	 */
+	private $page_email_tag = [];
+
+	/**
+	 * Register a custom {acf_email} smart tag, the way a site adds one through
+	 * srfm_smart_tag_list + srfm_parse_smart_tags, that (like a per-page ACF
+	 * lookup) can only resolve from the request context passed as $form_data.
+	 */
+	private function add_page_email_tag() {
+		$this->page_email_tag = [
+			'srfm_smart_tag_list'   => static function ( $tags ) {
+				return $tags + [ '{acf_email}' => 'ACF Email' ];
+			},
+			'srfm_parse_smart_tags' => static function ( $parsed, $context ) {
+				if ( '{acf_email}' !== $context['tag'] ) {
+					return $parsed;
+				}
+				$referer = is_array( $context['form_data'] ) ? ( $context['form_data']['_wp_http_referer'] ?? '' ) : '';
+				return '/consultant-a/' === $referer ? 'consultant@example.com' : '';
+			},
+		];
+		add_filter( 'srfm_smart_tag_list', $this->page_email_tag['srfm_smart_tag_list'] );
+		add_filter( 'srfm_parse_smart_tags', $this->page_email_tag['srfm_parse_smart_tags'], 10, 2 );
+	}
+
+	/**
+	 * Remove the callbacks added by add_page_email_tag().
+	 */
+	private function remove_page_email_tag() {
+		remove_filter( 'srfm_smart_tag_list', $this->page_email_tag['srfm_smart_tag_list'] );
+		remove_filter( 'srfm_parse_smart_tags', $this->page_email_tag['srfm_parse_smart_tags'], 10 );
+	}
+
+	/**
 	 * Test submit_form_permissions_check rejects request with missing token.
 	 */
 	public function test_submit_form_permissions_check_rejects_missing_token() {
@@ -2685,6 +2836,31 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 			],
 			[ 'srfm-email-abc123-lbl-email-email' => 'owner@example.com' ]
 		);
+
+		$this->assertSame( [], $result['addresses'] );
+		$this->assertFalse( $result['only_visitor'] );
+	}
+
+	/**
+	 * An owner recipient set through a custom tag that needs the request
+	 * context is resolved with it, so it is still recognised as the owner's.
+	 */
+	public function test_get_visitor_recipients_resolves_owner_tags_with_form_data() {
+		$this->add_page_email_tag();
+		$method = new \ReflectionMethod( Form_Submit::class, 'get_visitor_recipients' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke(
+			null,
+			[
+				'email_to'  => '{form:email}',
+				'email_bcc' => '{acf_email}',
+			],
+			[ 'srfm-email-abc123-lbl-email-email' => 'consultant@example.com' ],
+			[ '_wp_http_referer' => '/consultant-a/' ]
+		);
+
+		$this->remove_page_email_tag();
 
 		$this->assertSame( [], $result['addresses'] );
 		$this->assertFalse( $result['only_visitor'] );
