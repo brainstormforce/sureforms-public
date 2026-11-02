@@ -16,7 +16,7 @@ const UpgradePrompt = () => {
 					</span>
 					<p className="srfm-upgrade-prompt__description">
 						{ __(
-							"Get full control over your form's look with custom colors, fonts, and layouts.",
+							"Get full control over your form's look with custom colors and layouts.",
 							'sureforms'
 						) }
 					</p>
