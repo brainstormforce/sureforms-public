@@ -1208,7 +1208,7 @@ class Field_Validation {
 	 * recorded read_only (and with it defaultValue and the minValue/maxValue range).
 	 *
 	 * @param array<mixed> $block_config Stored block config.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return bool
 	 */
 	private static function has_stale_number_config( $block_config ) {

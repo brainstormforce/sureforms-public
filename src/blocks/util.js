@@ -187,7 +187,7 @@ const updateSelectedIndicesAfterReorder = (
 /**
  * Where an option index ends up after another option is deleted.
  *
- * @since x.x.x
+ * @since 2.13.1
  *
  * @param {?number} index        Index to update, or null.
  * @param {number}  deletedIndex Index of the deleted option.
@@ -217,6 +217,6 @@ export {
  * Maximum length of a single option description. Enforced as a native
  * `maxlength`, which also truncates pastes.
  *
- * @since x.x.x
+ * @since 2.13.1
  */
 export const OPTION_DESCRIPTION_MAX_LENGTH = 120;

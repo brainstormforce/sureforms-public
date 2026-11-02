@@ -342,7 +342,7 @@ class Global_Settings {
 	 *
 	 * @param mixed $value   Submitted or stored threshold.
 	 * @param float $default Threshold used when $value is not a finite number.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return float
 	 */
 	public static function sanitize_recaptcha_v3_threshold( $value, $default = 0.5 ) {
