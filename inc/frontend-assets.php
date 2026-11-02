@@ -417,6 +417,8 @@ class Frontend_Assets {
 					'currenciesData'        => Payment_Helper::get_all_currencies_data(),
 					'strings'               => Payment_Helper::get_payment_strings(),
 					'currencySignPosition'  => Payment_Helper::get_currency_sign_position(),
+					// Apple Pay / Google Pay as switched in the Stripe dashboard.
+					'wallets'               => Stripe_Helper::get_wallet_settings(),
 				]
 			);
 		}
