@@ -427,18 +427,12 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 == Changelog ==
 = 2.13.1 - 3rd November 2026 =
+* New: Added a reCAPTCHA v3 score threshold in Spam Protection settings to block low-scoring submissions.
 * New: Multiple Choice options can now show a short description under each option.
 * New: Turnstile can now run its challenge on the visitor's first interaction with the form instead of on page load.
-* Improvement: Forms accept submissions only while published. Draft, private, scheduled and trashed forms now show "This form is currently unavailable." when submitted, and editors previewing an unpublished form see a notice that submissions are disabled until it is published.
-* Improvement: Instant Form pages no longer run constant background checks, so they use less CPU while open.
-* Improvement: reCAPTCHA v3 now rejects submissions that Google scores below the threshold (default 0.5). Set it in Settings > Spam Protection > reCAPTCHA > reCAPTCHA v3 or with the `srfm_recaptcha_v3_score_threshold` filter; blocked submissions log the `score-threshold-not-met` error code to the debug log and browser console.
-* Improvement: The Forms Overview chart on the dashboard now loads faster on sites with many entries.
-* Improvement: Upgrade prompts now refer to SureForms Business.
 * Fix: After-submission actions no longer run twice for the same entry when requests overlap.
 * Fix: Apple Pay and Google Pay now show the form's real amount instead of 120.00, and stay hidden when turned off in your Stripe dashboard.
 * Fix: Custom smart tags now resolve in the To, Reply-To, Cc, Bcc and From fields of email notifications.
-* Fix: Exporting entries from forms with the same title no longer overwrites one form's CSV with another's.
-* Fix: This update addressed a security bug. Props to Patchstack for reporting it responsibly to our team.
 = 2.13.0 - 26th October 2026 =
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
