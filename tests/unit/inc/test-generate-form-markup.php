@@ -1082,4 +1082,31 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * A form that is not published tells someone who can edit it that submissions
+	 * are off, and tells nobody else anything.
+	 */
+	public function test_unpublished_form_notice_is_shown_only_to_editors() {
+		$block   = '<!-- wp:paragraph -->x<!-- /wp:paragraph -->';
+		$notice  = 'Submissions are disabled until this form is published.';
+		$form_id = wp_insert_post( [ 'post_title' => 'Draft Notice', 'post_type' => SRFM_FORMS_POST_TYPE, 'post_status' => 'draft', 'post_content' => $block ] );
+
+		wp_set_current_user( 0 );
+		$this->assertStringNotContainsString( $notice, Generate_Form_Markup::get_form_markup( $form_id ), 'Visitors never see the notice.' );
+
+		$this->set_current_user_with_role( 'subscriber' );
+		$this->assertStringNotContainsString( $notice, Generate_Form_Markup::get_form_markup( $form_id ), 'A user who cannot edit the form never sees the notice.' );
+
+		$this->set_current_user_with_role( 'administrator' );
+		$markup = Generate_Form_Markup::get_form_markup( $form_id );
+		$this->assertStringContainsString( $notice, $markup, 'An editor previewing a draft is told submissions are off.' );
+		$this->assertLessThan( strpos( $markup, '<form ' ), strpos( $markup, $notice ), 'The notice sits above the form.' );
+
+		wp_update_post( [ 'ID' => $form_id, 'post_status' => 'publish' ] );
+		$this->assertStringNotContainsString( $notice, Generate_Form_Markup::get_form_markup( $form_id ), 'A published form shows no notice.' );
+
+		wp_delete_post( $form_id, true );
+	}
 }
+

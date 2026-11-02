@@ -246,6 +246,17 @@ class Form_Submit {
 		$form_id = absint( $request->get_param( 'form-id' ) );
 
 		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			// Only a caller holding a genuine token for this form gets the specific
+			// answer, so it reveals nothing that caller did not already have. Refreshing
+			// cannot help while the form is offline, so the generic retry advice is wrong.
+			if ( Submit_Token::signature_matches( $token, $form_id ) && ! Submit_Token::is_form_open( $form_id ) ) {
+				return new WP_Error(
+					'srfm_form_unavailable',
+					__( 'This form is currently unavailable.', 'sureforms' ),
+					[ 'status' => 403 ]
+				);
+			}
+
 			return new WP_Error(
 				'srfm_token_invalid',
 				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),

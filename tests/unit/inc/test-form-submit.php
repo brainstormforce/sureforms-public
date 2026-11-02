@@ -1117,6 +1117,77 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A token minted while a form was published is refused once the form leaves
+	 * `publish`, with an "unavailable" error instead of the refresh-and-retry one:
+	 * refreshing cannot help, and only a holder of a genuine token for this form
+	 * reaches this branch.
+	 *
+	 * @dataProvider unpublished_status_provider
+	 *
+	 * @param string $status Status the form is moved to after the token is minted.
+	 */
+	public function test_submit_form_permissions_check_rejects_unpublished_form( $status ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Unpublished Form',
+			]
+		);
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( [ 'form-id' => (string) $form_id ] );
+		$request->set_header( 'X-WP-Submit-Token', \SRFM\Inc\Submit_Token::generate( $form_id ) );
+
+		$this->assertTrue( $this->form_submit->submit_form_permissions_check( $request ), 'Precondition: published form accepts the token.' );
+
+		if ( 'trash' === $status ) {
+			wp_trash_post( $form_id );
+		} else {
+			$future = gmdate( 'Y-m-d H:i:s', time() + DAY_IN_SECONDS );
+			wp_update_post(
+				[
+					'ID'            => $form_id,
+					'post_status'   => $status,
+					'post_date'     => 'future' === $status ? $future : '',
+					'post_date_gmt' => 'future' === $status ? $future : '',
+				]
+			);
+		}
+		$this->assertSame( $status, get_post_status( $form_id ), 'Precondition: status change applied.' );
+
+		$result = $this->form_submit->submit_form_permissions_check( $request );
+		$this->assertInstanceOf( \WP_Error::class, $result, "A {$status} form must not accept submissions." );
+		$this->assertSame( 'srfm_form_unavailable', $result->get_error_code() );
+		$this->assertSame( 'This form is currently unavailable.', $result->get_error_message() );
+		$this->assertSame( 403, $result->get_error_data()['status'] );
+
+		// Without a genuine token the response stays the generic one, so the
+		// endpoint does not report a form's publication status to arbitrary callers.
+		$forged = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$forged->set_body_params( [ 'form-id' => (string) $form_id ] );
+		$forged->set_header( 'X-WP-Submit-Token', str_repeat( 'a', 64 ) );
+		$this->assertSame( 'srfm_token_invalid', $this->form_submit->submit_form_permissions_check( $forged )->get_error_code() );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Statuses that take a form offline.
+	 *
+	 * @return array<string, array<string>>
+	 */
+	public function unpublished_status_provider() {
+		return [
+			'draft'   => [ 'draft' ],
+			'pending' => [ 'pending' ],
+			'private' => [ 'private' ],
+			'future'  => [ 'future' ],
+			'trash'   => [ 'trash' ],
+		];
+	}
+
+	/**
 	 * Test register_custom_endpoint registers the submit-form REST route.
 	 */
 	public function test_register_custom_endpoint() {
@@ -2586,15 +2657,19 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	public function test_client_error_log_permissions_check_requires_a_valid_token() {
 		$this->set_client_logging( true );
 
+		// Tokens verify only for a published SureForms form.
+		$form_id       = $this->factory()->post->create( [ 'post_type' => 'sureforms_form' ] );
+		$other_form_id = $this->factory()->post->create( [ 'post_type' => 'sureforms_form' ] );
+
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/log-client-error' );
-		$request->set_param( 'form_id', 7 );
-		$request->set_header( 'X-WP-Submit-Token', Submit_Token::generate( 7 ) );
+		$request->set_param( 'form_id', $form_id );
+		$request->set_header( 'X-WP-Submit-Token', Submit_Token::generate( $form_id ) );
 
 		$this->assertTrue( Form_Submit::get_instance()->client_error_log_permissions_check( $request ) );
 
 		$wrong_form = new WP_REST_Request( 'POST', '/sureforms/v1/log-client-error' );
-		$wrong_form->set_param( 'form_id', 7 );
-		$wrong_form->set_header( 'X-WP-Submit-Token', Submit_Token::generate( 8 ) );
+		$wrong_form->set_param( 'form_id', $form_id );
+		$wrong_form->set_header( 'X-WP-Submit-Token', Submit_Token::generate( $other_form_id ) );
 
 		$refused = Form_Submit::get_instance()->client_error_log_permissions_check( $wrong_form );
 
