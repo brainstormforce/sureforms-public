@@ -23,8 +23,25 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 	protected $form_submit;
 
+	/**
+	 * Decoded JSON of the last captcha submission sent by recaptcha_submission_rejected().
+	 *
+	 * @var array<mixed>|null
+	 */
+	private $last_captcha_response;
+
 	protected function setUp(): void {
 		$this->form_submit = new Form_Submit();
+	}
+
+	/**
+	 * Drop any HTTP mock and captcha settings a test registered, even when it
+	 * exits through an unexpected exception before its own cleanup runs.
+	 */
+	protected function tearDown(): void {
+		remove_all_filters( 'pre_http_request' );
+		delete_option( 'srfm_security_settings_options' );
+		parent::tearDown();
 	}
 
 	/**
@@ -417,6 +434,409 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		wp_delete_post( $form_id, true );
 		delete_option( 'srfm_security_settings_options' );
+	}
+
+	/**
+	 * A siteverify body that does not decode to an array proves nothing, so the
+	 * submission must be rejected rather than treated as verified.
+	 *
+	 * @dataProvider provide_unverifiable_siteverify_bodies
+	 *
+	 * @param string $security_type  Captcha the form is configured with.
+	 * @param string $secret_option  Global settings key holding the secret.
+	 * @param string $token_field    Request field carrying the visitor's token.
+	 * @param string $body           Raw body Cloudflare/hCaptcha replies with.
+	 */
+	public function test_handle_form_submission_rejects_unverifiable_captcha_response( $security_type, $secret_option, $token_field, $body ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Captcha Test Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', $security_type );
+		update_option( 'srfm_security_settings_options', [ $secret_option => 'secret-key' ] );
+
+		$siteverify = static function () use ( $body ) {
+			return [
+				'headers'  => [],
+				'body'     => $body,
+				'response' => [
+					'code'    => 200,
+					'message' => 'OK',
+				],
+			];
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'               => (string) $form_id,
+				'srfm-honeypot-field'   => '',
+				$token_field            => 'visitor-token',
+			]
+		);
+
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+
+			remove_filter( 'pre_http_request', $siteverify );
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'Captcha validation failed', $data['data']['detail_message'] );
+			return;
+		}
+		ob_end_clean();
+
+		remove_filter( 'pre_http_request', $siteverify );
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+		$this->fail( 'A siteverify response that does not prove success must not be accepted.' );
+	}
+
+	/**
+	 * The happy path still passes: a success:true response is accepted, so the
+	 * stricter guard cannot be satisfied by rejecting everything.
+	 */
+	public function test_handle_form_submission_accepts_verified_captcha() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Verified Captcha Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'cf-turnstile' );
+		update_option( 'srfm_security_settings_options', [ 'srfm_cf_turnstile_secret_key' => 'secret-key' ] );
+
+		$siteverify = static function () {
+			return [
+				'headers'  => [],
+				'body'     => '{"success":true}',
+				'response' => [
+					'code'    => 200,
+					'message' => 'OK',
+				],
+			];
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'               => (string) $form_id,
+				'srfm-honeypot-field'   => '',
+				'cf-turnstile-response' => 'visitor-token',
+			]
+		);
+
+		ob_start();
+		try {
+			$result = $this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+
+			remove_filter( 'pre_http_request', $siteverify );
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+
+			// The submission may still stop for unrelated reasons, but never
+			// because the captcha was treated as unverified.
+			$this->assertIsArray( $data );
+			$this->assertArrayNotHasKey( 'detail_message', (array) $data['data'], 'A verified captcha must not be reported as a captcha failure.' );
+			return;
+		}
+		ob_end_clean();
+
+		remove_filter( 'pre_http_request', $siteverify );
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+
+		$this->assertNotInstanceOf( \WP_Error::class, $result, 'A verified captcha must let the submission through.' );
+	}
+
+	/**
+	 * Bodies that decode to something other than a success:true array.
+	 *
+	 * @return array<string,array<string>>
+	 */
+	public function provide_unverifiable_siteverify_bodies() {
+		return [
+			'turnstile empty body'    => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '' ],
+			'turnstile malformed'     => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '<html>503</html>' ],
+			'turnstile no success'    => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '{"error-codes":[]}' ],
+			'turnstile success null'  => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '{"success":null}' ],
+			'hcaptcha empty body'     => [ 'hcaptcha', 'srfm_hcaptcha_secret_key', 'h-captcha-response', '' ],
+			'hcaptcha malformed'      => [ 'hcaptcha', 'srfm_hcaptcha_secret_key', 'h-captcha-response', '<html>503</html>' ],
+			'hcaptcha no success'     => [ 'hcaptcha', 'srfm_hcaptcha_secret_key', 'h-captcha-response', '{"error-codes":[]}' ],
+		];
+	}
+
+	/**
+	 * Submit a Google reCAPTCHA form whose siteverify call returns $body.
+	 *
+	 * @param string $version          Form's reCAPTCHA variant (v2-checkbox, v3-reCAPTCHA, ...).
+	 * @param string $body             Raw siteverify response body.
+	 * @param bool   $honeypot_present Whether the request carries an empty honeypot field.
+	 * @param array  $extra_options    Additional global security settings to store.
+	 * @return bool True when the submission was rejected as a captcha failure.
+	 */
+	private function recaptcha_submission_rejected( $version, $body, $honeypot_present, $extra_options = [] ) {
+		$secret_keys = [
+			'v2-checkbox'  => 'srfm_v2_checkbox_secret_key',
+			'v2-invisible' => 'srfm_v2_invisible_secret_key',
+			'v3-reCAPTCHA' => 'srfm_v3_secret_key',
+		];
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'reCAPTCHA Test Form',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
+		update_option(
+			'srfm_security_settings_options',
+			array_merge(
+				[
+					$secret_keys[ $version ] => 'secret-key',
+					'srfm_honeypot'          => false,
+				],
+				$extra_options
+			)
+		);
+
+		$verified   = false;
+		$siteverify = static function () use ( $body, &$verified ) {
+			$verified = true;
+			return [
+				'headers'  => [],
+				'body'     => $body,
+				'response' => [
+					'code'    => 200,
+					'message' => 'OK',
+				],
+			];
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$params = [
+			'form-id'              => (string) $form_id,
+			'g-recaptcha-response' => 'visitor-token',
+		];
+		if ( $honeypot_present ) {
+			$params['srfm-honeypot-field'] = '';
+		}
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( $params );
+
+		$rejected = false;
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+			ob_end_clean();
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+			// Entry processing may still stop for unrelated reasons; only a
+			// captcha error response counts: recaptcha_error_message() alone sets
+			// detail_message (no provider code) or log_message (with one).
+			$rejected = is_array( $data ) && ( isset( $data['data']['detail_message'] ) || isset( $data['data']['log_message'] ) );
+
+			$this->last_captcha_response = is_array( $data ) ? $data : null;
+		}
+
+		remove_filter( 'pre_http_request', $siteverify );
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+
+		// Every verdict must come from the captcha gate, not an earlier exit.
+		$this->assertTrue( $verified, 'The submission never reached reCAPTCHA siteverify.' );
+
+		return $rejected;
+	}
+
+	/**
+	 * A v3 token is only a pass when Google scored it at or above the threshold.
+	 *
+	 * @dataProvider provide_recaptcha_verdicts
+	 *
+	 * @param string $version       Form's reCAPTCHA variant.
+	 * @param string $body          Raw siteverify response body.
+	 * @param bool   $want_rejected Expected verdict.
+	 */
+	public function test_handle_form_submission_recaptcha_verdict( $version, $body, $want_rejected ) {
+		foreach ( [ true, false ] as $honeypot_present ) {
+			$this->assertSame(
+				$want_rejected,
+				$this->recaptcha_submission_rejected( $version, $body, $honeypot_present ),
+				sprintf( '%s with honeypot %s', $body, $honeypot_present ? 'present' : 'absent' )
+			);
+		}
+	}
+
+	/**
+	 * Siteverify bodies and whether each must be rejected.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_recaptcha_verdicts() {
+		return [
+			'v3 score 0.0'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.0,"action":"submit"}', true ],
+			'v3 score 0.4'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.4}', true ],
+			'v3 score missing'      => [ 'v3-reCAPTCHA', '{"success":true}', true ],
+			'v3 score null'         => [ 'v3-reCAPTCHA', '{"success":true,"score":null}', true ],
+			'v3 score non-numeric'  => [ 'v3-reCAPTCHA', '{"success":true,"score":"high"}', true ],
+			'v3 score array'        => [ 'v3-reCAPTCHA', '{"success":true,"score":[0.9]}', true ],
+			'v3 high score failed'  => [ 'v3-reCAPTCHA', '{"success":false,"score":0.9}', true ],
+			'v3 malformed body'     => [ 'v3-reCAPTCHA', '<html>503</html>', true ],
+			'v3 score 0.5'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.5}', false ],
+			'v3 score 0.9'          => [ 'v3-reCAPTCHA', '{"success":true,"score":0.9,"action":"submit"}', false ],
+			'v2 checkbox no score'  => [ 'v2-checkbox', '{"success":true}', false ],
+			'v2 invisible no score' => [ 'v2-invisible', '{"success":true}', false ],
+			'v2 checkbox failed'    => [ 'v2-checkbox', '{"success":false}', true ],
+			'v2 checkbox malformed' => [ 'v2-checkbox', '<html>503</html>', true ],
+		];
+	}
+
+	/**
+	 * A v3 rejection for a low score is reported with its own reason code, while a
+	 * rejection Google explains keeps Google's code.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_low_score_reason_code() {
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.1}', true ) );
+		$this->assertSame( [ 'score-threshold-not-met' ], $this->last_captcha_response['data']['api_response']['error-codes'] );
+		$this->assertStringContainsString( 'The reCAPTCHA v3 score was below the accepted threshold.', $this->last_captcha_response['data']['log_message'] );
+		$this->assertStringContainsString( 'Error Code: score-threshold-not-met', $this->last_captcha_response['data']['log_message'] );
+
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":false,"error-codes":["timeout-or-duplicate"]}', true ) );
+		$this->assertSame( [ 'timeout-or-duplicate' ], $this->last_captcha_response['data']['api_response']['error-codes'] );
+
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v2-checkbox', '{"success":false}', true ) );
+		$this->assertArrayNotHasKey( 'error-codes', $this->last_captcha_response['data']['api_response'] );
+	}
+
+	/**
+	 * The v3 threshold is filterable per form; a bad filter return keeps the default.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_threshold_filter() {
+		$strict = static function () {
+			return 0.95;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.9}', true ) );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+
+		$garbage = static function () {
+			return 'not-a-number';
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $garbage );
+		$this->assertTrue( $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.1}', true ) );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $garbage );
+	}
+
+	/**
+	 * The v3 threshold saved in global settings decides the verdict, in both
+	 * acceptance branches; an unusable stored value falls back to 0.5.
+	 *
+	 * @dataProvider provide_stored_v3_thresholds
+	 *
+	 * @param mixed  $stored        Stored srfm_v3_score_threshold value.
+	 * @param string $body          Raw siteverify response body.
+	 * @param bool   $want_rejected Expected verdict.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_stored_threshold( $stored, $body, $want_rejected ) {
+		foreach ( [ true, false ] as $honeypot_present ) {
+			$this->assertSame(
+				$want_rejected,
+				$this->recaptcha_submission_rejected( 'v3-reCAPTCHA', $body, $honeypot_present, [ 'srfm_v3_score_threshold' => $stored ] ),
+				sprintf( 'threshold %s, %s, honeypot %s', var_export( $stored, true ), $body, $honeypot_present ? 'present' : 'absent' )
+			);
+		}
+	}
+
+	/**
+	 * Stored thresholds, siteverify bodies and whether each must be rejected.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_stored_v3_thresholds() {
+		return [
+			'lowered 0.3 accepts 0.4'      => [ 0.3, '{"success":true,"score":0.4}', false ],
+			'lowered 0.3 rejects 0.2'      => [ 0.3, '{"success":true,"score":0.2}', true ],
+			'raised 0.9 rejects 0.8'       => [ 0.9, '{"success":true,"score":0.8}', true ],
+			'raised 0.9 accepts 0.9'       => [ 0.9, '{"success":true,"score":0.9}', false ],
+			'numeric string 0.7'           => [ '0.7', '{"success":true,"score":0.6}', true ],
+			'non-numeric falls back 0.5'   => [ 'abc', '{"success":true,"score":0.4}', true ],
+			'empty string falls back 0.5'  => [ '', '{"success":true,"score":0.4}', true ],
+			'array falls back 0.5'         => [ [ 0.1 ], '{"success":true,"score":0.4}', true ],
+			'above 1 clamps to 1'          => [ 5, '{"success":true,"score":0.9}', true ],
+			'below 0 clamps to 0'          => [ -1, '{"success":true,"score":0.0}', false ],
+		];
+	}
+
+	/**
+	 * The filter receives the stored threshold as its default and still wins.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_filter_overrides_stored_threshold() {
+		$seen   = null;
+		$strict = static function ( $threshold ) use ( &$seen ) {
+			$seen = $threshold;
+			return 0.95;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+		$rejected = $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.9}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $strict );
+
+		$this->assertTrue( $rejected );
+		$this->assertSame( 0.3, $seen );
+	}
+
+	/**
+	 * A filter return that is not a finite number falls back to the stored threshold.
+	 *
+	 * @dataProvider provide_unusable_filter_thresholds
+	 *
+	 * @param mixed $returned Value the filter returns.
+	 */
+	public function test_handle_form_submission_recaptcha_v3_unusable_filter_uses_stored_threshold( $returned ) {
+		$filter = static function () use ( $returned ) {
+			return $returned;
+		};
+		add_filter( 'srfm_recaptcha_v3_score_threshold', $filter );
+		$accepts_0_4 = ! $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.4}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		$rejects_0_2 = $this->recaptcha_submission_rejected( 'v3-reCAPTCHA', '{"success":true,"score":0.2}', true, [ 'srfm_v3_score_threshold' => 0.3 ] );
+		remove_filter( 'srfm_recaptcha_v3_score_threshold', $filter );
+
+		$this->assertTrue( $accepts_0_4, 'Score 0.4 must pass the stored 0.3.' );
+		$this->assertTrue( $rejects_0_2, 'Score 0.2 must fail the stored 0.3.' );
+	}
+
+	/**
+	 * Filter returns that are not a finite number.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_unusable_filter_thresholds() {
+		return [
+			'non-numeric' => [ 'not-a-number' ],
+			'null'        => [ null ],
+			'nan'         => [ NAN ],
+			'infinity'    => [ INF ],
+		];
 	}
 
 	/**

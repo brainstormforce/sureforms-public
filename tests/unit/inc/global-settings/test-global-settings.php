@@ -362,6 +362,127 @@ class Test_Global_Settings extends TestCase {
 		$this->assertTrue( $saved['srfm_honeypot'] );
 	}
 
+	/**
+	 * The reCAPTCHA v3 threshold is stored as a float clamped to 0-1, and an absent
+	 * or unusable value is stored as the 0.5 default.
+	 *
+	 * @dataProvider provide_v3_score_thresholds
+	 *
+	 * @param array<string,mixed> $options Settings passed to the save.
+	 * @param float               $want    Threshold expected in the stored option.
+	 */
+	public function test_srfm_save_security_settings_v3_score_threshold( $options, $want ) {
+		Global_Settings::srfm_save_security_settings( $options );
+
+		$saved = get_option( 'srfm_security_settings_options' );
+		delete_option( 'srfm_security_settings_options' );
+
+		$this->assertSame( $want, $saved['srfm_v3_score_threshold'] );
+	}
+
+	/**
+	 * Submitted thresholds and the value each must be stored as.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_v3_score_thresholds() {
+		return [
+			'absent'         => [ [], 0.5 ],
+			'float'          => [ [ 'srfm_v3_score_threshold' => 0.3 ], 0.3 ],
+			'numeric string' => [ [ 'srfm_v3_score_threshold' => '0.7' ], 0.7 ],
+			'zero'           => [ [ 'srfm_v3_score_threshold' => 0 ], 0.0 ],
+			'empty string'   => [ [ 'srfm_v3_score_threshold' => '' ], 0.5 ],
+			'non-numeric'    => [ [ 'srfm_v3_score_threshold' => 'abc' ], 0.5 ],
+			'array'          => [ [ 'srfm_v3_score_threshold' => [ 0.2 ] ], 0.5 ],
+			'above 1'        => [ [ 'srfm_v3_score_threshold' => 5 ], 1.0 ],
+			'below 0'        => [ [ 'srfm_v3_score_threshold' => -0.4 ], 0.0 ],
+		];
+	}
+
+	/**
+	 * The threshold helper returns a float in 0-1 for numeric input and 0.5 otherwise.
+	 *
+	 * @dataProvider provide_raw_v3_thresholds
+	 *
+	 * @param mixed $value Raw threshold.
+	 * @param float $want  Sanitized threshold.
+	 */
+	public function test_sanitize_recaptcha_v3_threshold( $value, $want ) {
+		$this->assertSame( $want, Global_Settings::sanitize_recaptcha_v3_threshold( $value ) );
+	}
+
+	/**
+	 * Raw thresholds and their sanitized values.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_raw_v3_thresholds() {
+		return [
+			'null'           => [ null, 0.5 ],
+			'true'           => [ true, 0.5 ],
+			'false'          => [ false, 0.5 ],
+			'empty string'   => [ '', 0.5 ],
+			'non-numeric'    => [ 'abc', 0.5 ],
+			'array'          => [ [ 0.2 ], 0.5 ],
+			'int zero'       => [ 0, 0.0 ],
+			'int one'        => [ 1, 1.0 ],
+			'numeric string' => [ '0.7', 0.7 ],
+			'leading dot'    => [ '.65', 0.65 ],
+			'long decimal'   => [ '0.658787878', 0.66 ],
+			'rounds down'    => [ 0.123, 0.12 ],
+			'exponent'       => [ '1e-1', 0.1 ],
+			'above 1'        => [ 5, 1.0 ],
+			'below 0'        => [ -0.4, 0.0 ],
+			'infinity'       => [ INF, 0.5 ],
+			'nan'            => [ NAN, 0.5 ],
+		];
+	}
+
+	/**
+	 * An unusable value falls back to the default the caller passes.
+	 */
+	public function test_sanitize_recaptcha_v3_threshold_uses_given_default() {
+		$this->assertSame( 0.3, Global_Settings::sanitize_recaptcha_v3_threshold( 'abc', 0.3 ) );
+		$this->assertSame( 0.3, Global_Settings::sanitize_recaptcha_v3_threshold( NAN, 0.3 ) );
+		$this->assertSame( 0.8, Global_Settings::sanitize_recaptcha_v3_threshold( '0.8', 0.3 ) );
+	}
+
+
+	/**
+	 * The Settings UI read reports the threshold in effect when the stored option
+	 * predates the setting or holds an unusable value.
+	 *
+	 * @dataProvider provide_stored_options_for_threshold_read
+	 *
+	 * @param array<string,mixed> $stored Stored security option.
+	 * @param float               $want   Threshold the read must report.
+	 */
+	public function test_srfm_get_general_settings_reports_v3_threshold( $stored, $want ) {
+		update_option( 'srfm_security_settings_options', $stored );
+
+		$request = new \WP_REST_Request( 'GET', '/sureforms/v1/srfm-global-settings' );
+		$request->set_param( 'options_to_fetch', 'srfm_security_settings_options' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$response = Global_Settings::srfm_get_general_settings( $request );
+		delete_option( 'srfm_security_settings_options' );
+
+		$data = $response instanceof \WP_REST_Response ? $response->get_data() : $response;
+
+		$this->assertSame( $want, $data['srfm_security_settings_options']['srfm_v3_score_threshold'] ?? null );
+	}
+
+	/**
+	 * Stored security options and the threshold the read must report.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_stored_options_for_threshold_read() {
+		return [
+			'key absent'  => [ [ 'srfm_v3_site_key' => 'site-key' ], 0.5 ],
+			'non-numeric' => [ [ 'srfm_v3_score_threshold' => 'abc' ], 0.5 ],
+			'stored 0.7'  => [ [ 'srfm_v3_score_threshold' => 0.7 ], 0.7 ],
+		];
+	}
 
 	/**
 	 * Every path that reports the logging default must agree with the runtime.

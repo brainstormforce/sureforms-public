@@ -14,6 +14,7 @@ use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -501,9 +502,9 @@ class Form_Submit {
 
 			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
-			// If the cloudflare validation fails, return an error.
-			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$this->recaptcha_error_response( 'cf-turnstile', $turnstile_validation_result );
+			// Anything short of a confirmed success is a failed validation.
+			if ( ! self::is_captcha_verified( $turnstile_validation_result ) ) {
+				$this->recaptcha_error_response( 'cf-turnstile', is_array( $turnstile_validation_result ) ? $turnstile_validation_result : [] );
 			}
 		}
 
@@ -526,9 +527,9 @@ class Form_Submit {
 			$remote_ip                  = $gdpr || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
 			$hcaptcha_validation_result = self::validate_hcaptcha_token( $srfm_hcaptcha_secret_key, $hcaptcha_response, $remote_ip );
 
-			// If the hcaptcha validation fails, return an error.
-			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$this->recaptcha_error_response( 'hcaptcha', $hcaptcha_validation_result );
+			// Anything short of a confirmed success is a failed validation.
+			if ( ! self::is_captcha_verified( $hcaptcha_validation_result ) ) {
+				$this->recaptcha_error_response( 'hcaptcha', is_array( $hcaptcha_validation_result ) ? $hcaptcha_validation_result : [] );
 			}
 		}
 
@@ -557,8 +558,13 @@ class Form_Submit {
 						]
 					);
 				}
-				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
+				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+				}
+
+				// A confirmed token that still did not pass is a v3 score below the threshold; Google sends no code for it.
+				if ( self::is_captcha_verified( $sureforms_captcha_data ) ) {
+					$sureforms_captcha_data['error-codes'] = [ 'score-threshold-not-met' ];
 				}
 
 				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
@@ -602,8 +608,13 @@ class Form_Submit {
 						]
 					);
 				}
-				if ( true === $sureforms_captcha_data['success'] ) {
+				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+				}
+
+				// A confirmed token that still did not pass is a v3 score below the threshold; Google sends no code for it.
+				if ( self::is_captcha_verified( $sureforms_captcha_data ) ) {
+					$sureforms_captcha_data['error-codes'] = [ 'score-threshold-not-met' ];
 				}
 
 				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
@@ -1485,12 +1496,14 @@ class Form_Submit {
 		// Google reCAPTCHA error codes.
 		// Reference: (https://developers.google.com/recaptcha/docs/verify#error-code-reference).
 		$google_recaptcha_error = [
-			'missing-input-secret'   => 'The secret parameter is missing.',
-			'invalid-input-secret'   => 'The secret parameter is invalid or malformed.',
-			'missing-input-response' => 'The response parameter is missing.',
-			'invalid-input-response' => 'The response parameter is invalid or malformed.',
-			'bad-request'            => 'The request is invalid or malformed.',
-			'timeout-or-duplicate'   => 'The response is no longer valid: either is too old or has been used previously.',
+			'missing-input-secret'    => 'The secret parameter is missing.',
+			'invalid-input-secret'    => 'The secret parameter is invalid or malformed.',
+			'missing-input-response'  => 'The response parameter is missing.',
+			'invalid-input-response'  => 'The response parameter is invalid or malformed.',
+			'bad-request'             => 'The request is invalid or malformed.',
+			'timeout-or-duplicate'    => 'The response is no longer valid: either is too old or has been used previously.',
+			// Set by SureForms, not Google: the v3 score was under srfm_recaptcha_v3_score_threshold.
+			'score-threshold-not-met' => 'The reCAPTCHA v3 score was below the accepted threshold.',
 		];
 
 		// hCaptcha error codes.
@@ -2080,5 +2093,63 @@ class Form_Submit {
 		}
 
 		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) ) . '>' . "\r\n";
+	}
+
+	/**
+	 * Whether a captcha siteverify response proves the token is valid.
+	 *
+	 * The verdict comes from the decoded response only. A body that does not decode
+	 * to an array, an array without a success key, or any value other than boolean
+	 * true means the token was never confirmed, so it is not treated as verified.
+	 *
+	 * @param mixed $result Return value of one of the validate_*_token() methods.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function is_captcha_verified( $result ) {
+		return is_array( $result ) && isset( $result['success'] ) && true === $result['success'];
+	}
+
+	/**
+	 * Whether a Google reCAPTCHA siteverify response is a pass for this form.
+	 *
+	 * Every variant needs a confirmed success. For v3, success only means the token
+	 * is valid; the verdict is the score, so a v3 response passes only when it carries
+	 * a numeric score at or above the srfm_recaptcha_v3_score_threshold value. A
+	 * missing or non-numeric score is not a pass.
+	 *
+	 * @param mixed  $result       Decoded siteverify response.
+	 * @param string $captcha_type The form's stored reCAPTCHA variant (_srfm_form_recaptcha).
+	 * @param int    $form_id      Form post ID.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function is_recaptcha_verified( $result, $captcha_type, $form_id ) {
+		if ( ! self::is_captcha_verified( $result ) ) {
+			return false;
+		}
+
+		if ( 'v3-reCAPTCHA' !== $captcha_type ) {
+			return true;
+		}
+
+		$security_options = get_option( 'srfm_security_settings_options' );
+		$stored_threshold = is_array( $security_options ) ? Global_Settings::sanitize_recaptcha_v3_threshold( $security_options['srfm_v3_score_threshold'] ?? null ) : 0.5;
+
+		/**
+		 * Filter the lowest reCAPTCHA v3 score a submission is accepted at.
+		 *
+		 * Scores run from 0.0 (likely automated) to 1.0 (likely human). A return that
+		 * is not a finite number falls back to the global setting; the value is
+		 * clamped to 0-1.
+		 *
+		 * @param float $threshold Minimum score. Default is the global reCAPTCHA v3 setting (0.5 when unset).
+		 * @param int   $form_id   Form post ID.
+		 * @since x.x.x
+		 */
+		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', $stored_threshold, $form_id );
+		$threshold = Global_Settings::sanitize_recaptcha_v3_threshold( $threshold, $stored_threshold );
+
+		return is_array( $result ) && isset( $result['score'] ) && is_numeric( $result['score'] ) && (float) $result['score'] >= $threshold;
 	}
 }
