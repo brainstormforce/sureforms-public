@@ -153,17 +153,18 @@ class Field_Validation {
 		// Retrieve the block config from post meta.
 		// Example: $block_config = [ 'block-1' => [ ... ], 'block-2' => [ ... ] ].
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
-		if ( ! empty( $block_config ) && is_array( $block_config ) ) {
+		$stored       = ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
+		if ( null !== $stored && ! self::has_stale_number_config( $stored ) ) {
 			// If it exists and is an array, return it directly (no migration needed).
 			// Example: Returning the existing $block_config array.
-			return $block_config;
+			return $stored;
 		}
 
 		// Get the post by ID and validate.
 		// Example: $post = get_post( 123 ); $post->post_content should contain block markup.
 		$post = get_post( $form_id );
 		if ( ! ( $post instanceof \WP_Post ) || empty( $post->post_content ) ) {
-			return null;
+			return $stored;
 		}
 
 		// Parse the blocks from the post content and attempt migration.
@@ -179,7 +180,7 @@ class Field_Validation {
 		// Example: After migration, $block_config should now be an array if successful.
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 
-		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
+		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : $stored;
 	}
 
 	/**
@@ -1155,14 +1156,19 @@ class Field_Validation {
 		// Extract format type (us-style or eu-style).
 		$number_config['format_type'] = isset( $attrs['formatType'] ) && is_string( $attrs['formatType'] ) ? sanitize_text_field( $attrs['formatType'] ) : 'us-style';
 
-		// Extract min value.
-		if ( isset( $attrs['min'] ) ) {
-			$number_config['min'] = floatval( $attrs['min'] );
+		// Range, stored only when Number_Markup renders it as the input's min/max attribute.
+		if ( ! empty( $attrs['minValue'] ) && is_numeric( $attrs['minValue'] ) ) {
+			$number_config['min'] = floatval( $attrs['minValue'] );
+		}
+		if ( ! empty( $attrs['maxValue'] ) && is_numeric( $attrs['maxValue'] ) ) {
+			$number_config['max'] = floatval( $attrs['maxValue'] );
 		}
 
-		// Extract max value.
-		if ( isset( $attrs['max'] ) ) {
-			$number_config['max'] = floatval( $attrs['max'] );
+		// Read-only state and default, so a value the form defines can be read from stored config.
+		// Always emitted: get_or_migrate_block_config_for_legacy_form() rebuilds number configs without it.
+		$number_config['read_only'] = ! empty( $attrs['readOnly'] );
+		if ( isset( $attrs['defaultValue'] ) && is_scalar( $attrs['defaultValue'] ) ) {
+			$number_config['defaultValue'] = sanitize_text_field( (string) $attrs['defaultValue'] );
 		}
 
 		// Capture calculation config (Pro feature) so a calculation-driven number field used as a
@@ -1176,5 +1182,23 @@ class Field_Validation {
 		}
 
 		return $number_config;
+	}
+
+	/**
+	 * Whether a stored block config holds a number config saved before process_number_block()
+	 * recorded read_only (and with it defaultValue and the minValue/maxValue range).
+	 *
+	 * @param array<mixed> $block_config Stored block config.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function has_stale_number_config( $block_config ) {
+		foreach ( $block_config as $config ) {
+			if ( is_array( $config ) && isset( $config['block_name'] ) && 'srfm/number' === $config['block_name'] && ! array_key_exists( 'read_only', $config ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

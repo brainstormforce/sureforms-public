@@ -26,7 +26,7 @@ const ConditionalLogicPreview = () => {
 						'sureforms'
 					) }
 					tooltipContent={ __(
-						'Upgrade to the SureForms Starter Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience.',
+						'Upgrade to SureForms Business to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience.',
 						'sureforms'
 					) }
 					tooltipPosition={ 'bottom' }

@@ -110,6 +110,19 @@ class Test_Get_Global_Settings extends TestCase {
 		$this->assertArrayNotHasKey( 'security', $result );
 	}
 
+	/**
+	 * An option saved before the threshold setting existed reports the 0.5 in effect.
+	 */
+	public function test_execute_security_reports_default_v3_threshold_for_older_option() {
+		update_option( 'srfm_security_settings_options', [ 'srfm_v3_site_key' => 'site-key' ] );
+
+		$result = $this->ability->execute( [ 'categories' => [ 'security' ] ] );
+		delete_option( 'srfm_security_settings_options' );
+
+		$this->assertIsArray( $result );
+		$this->assertSame( 0.5, $result['security']['srfm_v3_score_threshold'] );
+	}
+
 
 
 }

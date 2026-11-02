@@ -99,13 +99,7 @@ class StripePayment {
 		// Read submit token from form element for server-side verification.
 		const formElement = paymentInput.closest( 'form' );
 		data.append( 'token', formElement?.getAttribute( 'data-submit-token' ) || '' );
-		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
-		const formattedAmount =
-			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
-				currency.toUpperCase()
-			)
-				? parseInt( amount )
-				: parseInt( amount * 100 );
+		const formattedAmount = StripePayment.toMinorUnits( amount, currency );
 		data.append( 'amount', formattedAmount );
 		data.append( 'currency', currency );
 		data.append( 'description', description );
@@ -256,11 +250,20 @@ class StripePayment {
 
 		const stripe = StripePayment.stripeInstances[ compositeKey ];
 
-		// Build elements configuration based on payment type
+		// Build elements configuration based on payment type. The amount is what
+		// Apple Pay / Google Pay show in their sheet, so it is the form's real
+		// amount, kept current by syncElementsAmount(). A variable amount nobody
+		// has picked yet has no value, and Stripe needs one to mount: the
+		// smallest unit stands in until the donor picks.
+		const currency = paymentInput.dataset.currency || 'usd';
+		const initialAmount = StripePayment.getPaymentAmount( paymentInput );
 		const elementsConfig = {
 			mode: paymentType === 'subscription' ? 'subscription' : 'payment',
-			currency: paymentInput.dataset.currency || 'usd',
-			amount: 12000,
+			currency,
+			amount:
+				false === initialAmount
+					? 1
+					: StripePayment.toMinorUnits( initialAmount, currency ),
 			appearance: {
 				theme: 'stripe',
 				variables: {
@@ -294,9 +297,13 @@ class StripePayment {
 			elementsConfig.paymentMethodTypes = [ 'card' ];
 		}
 
-		// Create and mount payment element
+		// Create and mount payment element. `wallets` follows the Stripe
+		// dashboard: with an explicit paymentMethodTypes list Stripe no longer
+		// reads it, and Apple Pay / Google Pay would show even when turned off.
 		const elements = stripe.elements( elementsConfig );
-		const paymentElement = elements.create( 'payment' );
+		const paymentElement = elements.create( 'payment', {
+			wallets: window?.srfmStripe?.wallets || {},
+		} );
 		paymentElement.mount( elementContainer );
 
 		// Store references (structure varies by payment type)
@@ -304,6 +311,7 @@ class StripePayment {
 			stripe,
 			elements,
 			paymentElement,
+			amount: elementsConfig.amount,
 			clientSecret: null, // Will be set when payment/subscription intent is created
 			paymentType,
 		};
@@ -333,6 +341,62 @@ class StripePayment {
 				StripePayment.reinitInProgress.delete( compositeKey );
 			}
 		} );
+	}
+
+	/**
+	 * An amount in the currency's minor units, as Stripe takes it.
+	 *
+	 * @param {number} amount   - Amount in major units.
+	 * @param {string} currency - Currency code.
+	 * @return {number} Amount in minor units.
+	 */
+	static toMinorUnits( amount, currency ) {
+		// Zero-decimal currencies (JPY, KRW, ...) are not multiplied by 100.
+		// Rounded, not truncated: 19.99 * 100 is 1998.9999999999998.
+		return window?.srfmStripe?.zeroDecimalCurrencies?.includes(
+			String( currency || '' ).toUpperCase()
+		)
+			? Math.round( amount )
+			: Math.round( amount * 100 );
+	}
+
+	/**
+	 * Tell Stripe Elements the form's current amount, so the Apple Pay /
+	 * Google Pay sheet shows what will be charged. Updating only the amount
+	 * keeps the card details the donor typed.
+	 *
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {void}
+	 */
+	static syncElementsAmount( paymentInput ) {
+		const form = paymentInput?.closest( 'form' );
+		const paymentBlock = paymentInput?.closest( '.srfm-payment-block' );
+		if ( ! form || ! paymentBlock ) {
+			return;
+		}
+
+		const compositeKey = getPaymentKey(
+			form,
+			paymentBlock.getAttribute( 'data-block-id' )
+		);
+		const elementData = StripePayment.paymentElements[ compositeKey ];
+		const amount = StripePayment.getPaymentAmount( paymentInput );
+
+		if ( ! elementData?.elements || false === amount ) {
+			return;
+		}
+
+		const minorAmount = StripePayment.toMinorUnits(
+			amount,
+			paymentInput.dataset.currency || 'usd'
+		);
+
+		if ( elementData.amount === minorAmount ) {
+			return;
+		}
+
+		elementData.elements.update( { amount: minorAmount } );
+		elementData.amount = minorAmount;
 	}
 
 	/**
@@ -626,6 +690,18 @@ class StripePayment {
 	 */
 	static async srfmConfirmPayment( compositeKey, paymentData, form ) {
 		const { elements } = paymentData;
+
+		// The wallet sheet opens inside elements.submit() and shows the
+		// Elements amount, so it must be the amount the intent was created
+		// with. compositeKey is "instanceId-blockId".
+		const separator = compositeKey.indexOf( '-' );
+		const keyBlockId =
+			separator > -1 ? compositeKey.substring( separator + 1 ) : compositeKey;
+		StripePayment.syncElementsAmount(
+			form.querySelector(
+				`[data-block-id="${ keyBlockId }"] .srfm-payment-input`
+			)
+		);
 
 		// Validate card details AFTER payment intent is created but BEFORE confirmation
 		// This is the correct timing to avoid card data loss
@@ -1032,6 +1108,9 @@ const PAYMENT_UTILITY = {
 			'data-dynamic-amount-format-type',
 			inputFormatType
 		);
+
+		// Keep the wallet sheet's amount in step with the form.
+		StripePayment.syncElementsAmount( paymentInput );
 	},
 	listenAmountChanges: () => {
 		const paymentInputs = PAYMENT_UTILITY.currentForm.querySelectorAll(
@@ -1352,8 +1431,13 @@ const PAYMENT_UTILITY = {
 				const label = choice.querySelector(
 					'.srfm-option-container label'
 				);
+				// data-option-text holds the submitted value; the visible text
+				// can be a translation.
+				const labelValue =
+					label?.getAttribute( 'data-option-text' ) ||
+					label?.innerText;
 				if (
-					normalizeStr( label?.innerText ) ===
+					normalizeStr( labelValue ) ===
 					normalizeStr( selectedOption )
 				) {
 					const input = choice.querySelector(

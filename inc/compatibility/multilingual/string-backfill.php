@@ -48,7 +48,7 @@ class String_Backfill {
 	 *
 	 * @since 2.12.3
 	 */
-	public const SCHEMA_VERSION = '3';
+	public const SCHEMA_VERSION = '4';
 
 	/**
 	 * Option holding the in-progress run lock: [ 'schema' => string, 'started' => int ].

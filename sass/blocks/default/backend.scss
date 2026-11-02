@@ -176,10 +176,28 @@
 			.srfm-block-wrap {
 				pointer-events: initial;
 			}
+
+			// With option descriptions on, clicking an option of the selected
+			// block opens its description in the inspector.
+			.srfm-descriptions-on .srfm-block-content-wrap {
+				cursor: pointer;
+			}
 		}
 
 		.srfm-block-wrap {
 			@include srfm-multi-choice-wrap-styles;
+
+			// Same equal-height rule as the front end, which is scoped to
+			// .srfm-form and so never reaches the canvas.
+			&:has( .srfm-option-description ) .srfm-multi-choice-single .srfm-block-content-wrap {
+				height: 100% !important;
+			}
+
+			// The option whose description is open in the inspector.
+			.srfm-multi-choice-single.srfm-editing .srfm-block-content-wrap {
+				border-color: var( --srfm-color-scheme-primary ) !important;
+				background: var( --srfm-color-input-selected ) !important;
+			}
 
 			.srfm-multi-choice-single {
 				@include srfm-multi-choice-single-styles;

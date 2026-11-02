@@ -10,6 +10,9 @@ export const MultiChoiceComponent = ( {
 	attributes,
 	blockID,
 	setAttributes,
+	isSelected,
+	openDescription,
+	setOpenDescription,
 } ) => {
 	const {
 		label,
@@ -20,6 +23,7 @@ export const MultiChoiceComponent = ( {
 		singleSelection,
 		verticalLayout,
 		optionType,
+		showDescriptions,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -51,12 +55,37 @@ export const MultiChoiceComponent = ( {
 			<div
 				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${
 					verticalLayout ? ' srfm-vertical-layout' : ''
-				}` }
+				}${ showDescriptions ? ' srfm-descriptions-on' : '' }` }
 			>
 				{ options.map( ( option, key ) => {
 					return (
-						<label key={ key } className="srfm-multi-choice-single">
-							<div className="srfm-block-content-wrap">
+						<label
+							key={ key }
+							className={ `srfm-multi-choice-single${
+								openDescription === key ? ' srfm-editing' : ''
+							}` }
+						>
+							<div
+								className="srfm-block-content-wrap"
+								// Clicking an option in the canvas opens that
+								// same option's description in the inspector,
+								// so the author can click what they see instead
+								// of counting rows. Same gesture as the row's
+								// menu button. Only once the block is selected,
+								// so the click that selects it doesn't also
+								// open a description and move focus.
+								onClick={ () => {
+									if (
+										isSelected &&
+										showDescriptions &&
+										setOpenDescription
+									) {
+										setOpenDescription( key );
+									}
+								} }
+								onKeyDown={ () => {} }
+								role="presentation"
+							>
 								<div className="srfm-option-container">
 									{ optionType === 'icon' && option.icon && (
 										<span className="srfm-option-icon">
@@ -73,7 +102,22 @@ export const MultiChoiceComponent = ( {
 											/>
 										</span>
 									) }
-									<p>{ option.optionTitle }</p>
+									{ /* Mirrors the wrapper and span in
+									     Multichoice_Markup::markup(). Tag, class
+									     and placement must stay in sync with the
+									     PHP, and an option without a description
+									     renders the bare <p> it always did. */ }
+									{ showDescriptions &&
+									option.description?.trim() ? (
+											<div className="srfm-option-text">
+												<p>{ option.optionTitle }</p>
+												<span className="srfm-option-description">
+													{ option.description }
+												</span>
+											</div>
+										) : (
+											<p>{ option.optionTitle }</p>
+										) }
 								</div>
 								<div className="srfm-icon-container">
 									<span

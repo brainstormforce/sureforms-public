@@ -758,6 +758,84 @@ class Test_Rest_Api extends TestCase {
 	}
 
 	/**
+	 * The chart endpoint returns one {date, count} row per calendar day of the
+	 * stored created_at value, oldest first, honouring the date range and form
+	 * filter -- not one row per entry.
+	 */
+	public function test_get_entries_chart_data_returns_daily_counts() {
+		global $wpdb;
+
+		wp_set_current_user( $this->create_test_admin() );
+
+		$form_id  = 990001;
+		$other_id = 990002;
+		$created  = [
+			[ $form_id, '2001-03-10 00:00:00' ],
+			[ $form_id, '2001-03-10 23:59:59' ],
+			[ $form_id, '2001-03-12 08:15:00' ],
+			[ $form_id, '2001-03-20 09:00:00' ], // After the range.
+			[ $form_id, '2001-03-01 09:00:00' ], // Before the range.
+			[ $other_id, '2001-03-10 12:00:00' ], // Other form.
+		];
+		foreach ( $created as $row ) {
+			\SRFM\Inc\Database\Tables\Entries::add(
+				[
+					'form_id'    => $row[0],
+					'form_data'  => [],
+					'created_at' => $row[1],
+				]
+			);
+		}
+
+		$request = new \WP_REST_Request( 'GET', '/sureforms/v1/entries-chart-data' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_param( 'after', '2001-03-05T00:00:00.000Z' );
+		$request->set_param( 'before', '2001-03-15T00:00:00.000Z' );
+		$request->set_param( 'form', (string) $form_id );
+
+		try {
+			$this->assertSame(
+				[
+					[
+						'date'  => '2001-03-10',
+						'count' => 2,
+					],
+					[
+						'date'  => '2001-03-12',
+						'count' => 1,
+					],
+				],
+				$this->rest_api->get_entries_chart_data( $request )
+			);
+
+			// Without the form filter every form in the range is counted.
+			$request->set_param( 'form', '' );
+			$this->assertSame(
+				[
+					[
+						'date'  => '2001-03-10',
+						'count' => 3,
+					],
+					[
+						'date'  => '2001-03-12',
+						'count' => 1,
+					],
+				],
+				$this->rest_api->get_entries_chart_data( $request )
+			);
+
+			// An empty range is an empty list.
+			$request->set_param( 'after', '2001-01-01T00:00:00.000Z' );
+			$request->set_param( 'before', '2001-01-31T00:00:00.000Z' );
+			$this->assertSame( [], $this->rest_api->get_entries_chart_data( $request ) );
+		} finally {
+			$table = \SRFM\Inc\Database\Tables\Entries::get_instance()->get_tablename();
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE form_id IN (%d, %d)", $form_id, $other_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			wp_set_current_user( 0 );
+		}
+	}
+
+	/**
 	 * Test set_onboarding_status is callable.
 	 */
 	public function test_set_onboarding_status() {
