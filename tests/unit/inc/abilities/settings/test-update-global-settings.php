@@ -114,6 +114,58 @@ class Test_Update_Global_Settings extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
 
+	/**
+	 * The security category accepts the reCAPTCHA v3 threshold and stores it clamped.
+	 */
+	public function test_execute_security_saves_v3_score_threshold() {
+		$result = $this->ability->execute(
+			[
+				'category' => 'security',
+				'settings' => [ 'srfm_v3_score_threshold' => '3' ],
+			]
+		);
+		$saved = get_option( 'srfm_security_settings_options' );
+		delete_option( 'srfm_security_settings_options' );
 
+		$this->assertIsArray( $result );
+		$this->assertTrue( $result['saved'] );
+		$this->assertSame( 1.0, $saved['srfm_v3_score_threshold'] );
+	}
 
+	/**
+	 * A security update keeps every stored key the caller did not send, and still
+	 * writes the keys it did send, including an explicit empty value.
+	 */
+	public function test_execute_security_partial_update_keeps_unsent_keys() {
+		update_option(
+			'srfm_security_settings_options',
+			[
+				'srfm_v3_site_key'       => 'site-key',
+				'srfm_v3_secret_key'     => 'secret-key',
+				'srfm_hcaptcha_site_key' => 'h-site-key',
+				'srfm_honeypot'          => true,
+				'srfm_v3_score_threshold' => 0.3,
+			]
+		);
+
+		$result = $this->ability->execute(
+			[
+				'category' => 'security',
+				'settings' => [
+					'srfm_v3_score_threshold' => 0.7,
+					'srfm_hcaptcha_site_key'  => '',
+				],
+			]
+		);
+		$saved = get_option( 'srfm_security_settings_options' );
+		delete_option( 'srfm_security_settings_options' );
+
+		$this->assertIsArray( $result );
+		$this->assertTrue( $result['saved'] );
+		$this->assertSame( 0.7, $saved['srfm_v3_score_threshold'] );
+		$this->assertSame( 'site-key', $saved['srfm_v3_site_key'] );
+		$this->assertSame( 'secret-key', $saved['srfm_v3_secret_key'] );
+		$this->assertTrue( $saved['srfm_honeypot'] );
+		$this->assertSame( '', $saved['srfm_hcaptcha_site_key'] );
+	}
 }

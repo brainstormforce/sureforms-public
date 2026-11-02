@@ -1,6 +1,19 @@
 import { Button, Input, Title, Tabs } from '@bsf/force-ui';
 import { __, sprintf } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
+
+// Mirror Global_Settings::sanitize_recaptcha_v3_threshold(): clamp to 0-1, round to 2 decimals, 0.5 when not a finite number.
+const normalizeThreshold = ( value ) => {
+	const parsed = parseFloat( value );
+	if ( ! Number.isFinite( parsed ) ) {
+		return 0.5;
+	}
+	return (
+		Math.round(
+			( Math.min( 1, Math.max( 0, parsed ) ) + Number.EPSILON ) * 100
+		) / 100
+	);
+};
 
 const RECAPTCHA_TYPES = [
 	{
@@ -36,6 +49,18 @@ const INPUT_FIELDS = [
 
 const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 	const [ activeTab, setActiveTab ] = useState( RECAPTCHA_TYPES[ 0 ].value );
+	const storedThreshold = securitytabOptions.srfm_v3_score_threshold ?? 0.5;
+	// The typed text, kept apart from the stored number so "0." survives while typing.
+	const [ thresholdInput, setThresholdInput ] = useState(
+		String( storedThreshold )
+	);
+
+	// Follow external changes (settings load, discard) without clobbering text that already parses to the stored value.
+	useEffect( () => {
+		setThresholdInput( ( input ) =>
+			Number( input ) === storedThreshold ? input : String( storedThreshold )
+		);
+	}, [ storedThreshold ] );
 
 	return (
 		<div className="w-full space-y-6">
@@ -68,7 +93,7 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 					<div className="pl-2 inline-flex items-center">
 						<Button
 							tag="a"
-							href="https://developers.google.com/recaptcha/intro"
+							href="https://docs.cloud.google.com/recaptcha/docs"
 							className="[&>span]:p-0 no-underline hover:no-underline"
 							variant="link"
 							target="_blank"
@@ -127,6 +152,54 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 								} }
 							/>
 						) ) }
+						{ 'v3' === type.value && (
+							<div className="space-y-1.5">
+								<Input
+									type="number"
+									label={ __( 'Score Threshold', 'sureforms' ) }
+									name="srfm_v3_score_threshold"
+									size="md"
+									min={ 0 }
+									max={ 1 }
+									step={ 0.1 }
+									aria-describedby="srfm-v3-score-threshold-help"
+									value={ thresholdInput }
+									onChange={ ( value ) => {
+										setThresholdInput( value );
+										// Store a number, never the typed string, so retyping the saved value leaves Save inactive.
+										const parsed = Number( value );
+										if ( '' !== value && Number.isFinite( parsed ) ) {
+											updateGlobalSettings(
+												'srfm_v3_score_threshold',
+												parsed,
+												'security-settings'
+											);
+										}
+									} }
+									onBlur={ () => {
+										const normalized =
+											normalizeThreshold( thresholdInput );
+										setThresholdInput( String( normalized ) );
+										if ( normalized !== storedThreshold ) {
+											updateGlobalSettings(
+												'srfm_v3_score_threshold',
+												normalized,
+												'security-settings'
+											);
+										}
+									} }
+								/>
+								<p
+									id="srfm-v3-score-threshold-help"
+									className="text-xs text-text-tertiary m-0"
+								>
+									{ __(
+										'Submissions that Google scores below this value are blocked. Scores run from 0.0 (likely a bot) to 1.0 (likely a human). Default is 0.5. Set 0 to accept any score.',
+										'sureforms'
+									) }
+								</p>
+							</div>
+						) }
 					</Tabs.Panel>
 				) ) }
 			</Tabs>
