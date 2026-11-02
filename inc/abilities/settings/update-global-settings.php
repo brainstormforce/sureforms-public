@@ -91,6 +91,7 @@ class Update_Global_Settings extends Abstract_Ability {
 			'srfm_v2_invisible_secret_key',
 			'srfm_v3_site_key',
 			'srfm_v3_secret_key',
+			'srfm_v3_score_threshold',
 			'srfm_cf_appearance_mode',
 			'srfm_cf_turnstile_site_key',
 			'srfm_cf_turnstile_secret_key',
@@ -355,6 +356,10 @@ class Update_Global_Settings extends Abstract_Ability {
 			}
 		}
 
+		if ( isset( $settings['srfm_v3_score_threshold'] ) ) {
+			$settings['srfm_v3_score_threshold'] = Global_Settings::sanitize_recaptcha_v3_threshold( $settings['srfm_v3_score_threshold'] );
+		}
+
 		return $settings;
 	}
 
@@ -399,6 +404,7 @@ class Update_Global_Settings extends Abstract_Ability {
 			}
 		}
 
-		return Global_Settings::srfm_save_security_settings( $settings );
+		// srfm_save_security_settings() rebuilds the whole option, so keys the caller did not send keep their stored values.
+		return Global_Settings::srfm_save_security_settings( wp_parse_args( $settings, $existing ) );
 	}
 }

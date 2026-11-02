@@ -518,6 +518,149 @@ class Test_Entries extends TestCase {
 	}
 
 	/**
+	 * Create a published form with one entry whose single field holds $value.
+	 *
+	 * @param string $title Form title.
+	 * @param string $value Field value written to the entry.
+	 * @return int Entry ID.
+	 */
+	private function make_form_entry( $title, $value ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+				'post_title'  => $title,
+			]
+		);
+
+		return (int) \SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [ 'srfm-input-abc12345-lbl-' . rtrim( base64_encode( 'Name' ), '=' ) . '-input' => $value ],
+			]
+		);
+	}
+
+	/**
+	 * Two forms whose titles sanitize identically each keep their own CSV member
+	 * and rows inside the ZIP.
+	 */
+	public function test_export_entries_keeps_same_titled_forms_separate() {
+		$entry_a = $this->make_form_entry( 'Contact', 'MARKER_A' );
+		$entry_b = $this->make_form_entry( 'Contact', 'MARKER_B' );
+
+		$result = Entries::export_entries( [ 'entry_ids' => [ $entry_a, $entry_b ] ] );
+
+		$this->assertTrue( $result['success'] );
+		$this->assertSame( 'zip', $result['type'] );
+
+		$zip = new \ZipArchive();
+		$this->assertTrue( $zip->open( $result['filepath'] ) );
+
+		$members = [];
+		for ( $i = 0; $i < $zip->numFiles; $i++ ) {
+			$name             = $zip->getNameIndex( $i );
+			$members[ $name ] = $zip->getFromName( $name );
+		}
+		$zip->close();
+		wp_delete_file( $result['filepath'] );
+
+		$this->assertCount( 2, $members, 'Each form needs its own CSV member.' );
+		$all = implode( "\n", $members );
+		$this->assertStringContainsString( 'MARKER_A', $all );
+		$this->assertStringContainsString( 'MARKER_B', $all );
+	}
+
+	/**
+	 * A second export of the same form must not replace the file of an earlier,
+	 * not-yet-downloaded export.
+	 */
+	public function test_export_entries_does_not_reuse_an_earlier_export_file() {
+		$entry_a = $this->make_form_entry( 'Survey', 'MARKER_A' );
+		$first   = Entries::export_entries( [ 'entry_ids' => [ $entry_a ] ] );
+
+		$entry_b = $this->make_form_entry( 'Survey', 'MARKER_B' );
+		$second  = Entries::export_entries( [ 'entry_ids' => [ $entry_b ] ] );
+
+		$this->assertTrue( $first['success'] );
+		$this->assertTrue( $second['success'] );
+		$this->assertNotSame( $first['filepath'], $second['filepath'] );
+		$this->assertStringContainsString( 'MARKER_A', (string) file_get_contents( $first['filepath'] ) );
+		$this->assertStringContainsString( 'MARKER_B', (string) file_get_contents( $second['filepath'] ) );
+
+		wp_delete_file( $first['filepath'] );
+		wp_delete_file( $second['filepath'] );
+	}
+
+	/**
+	 * Export paths are unique per call, inside the temp dir, and survive the
+	 * sanitize_file_name() the download handler applies.
+	 */
+	public function test_get_export_temp_filepath() {
+		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );
+		$first    = Entries::get_export_temp_filepath( 'srfm-entries-%d0%bf', 'csv' );
+		$second   = Entries::get_export_temp_filepath( 'srfm-entries-%d0%bf', 'csv' );
+
+		$this->assertNotSame( $first, $second );
+		$this->assertSame( 0, strpos( $first, $temp_dir ) );
+		$this->assertSame( basename( $first ), sanitize_file_name( basename( $first ) ) );
+		$this->assertMatchesRegularExpression( '/^srfm-entries-d0bf-[a-f0-9]{32}\.csv$/', basename( $first ) );
+	}
+
+	/**
+	 * The per-export token is dropped from the name the browser saves.
+	 */
+	public function test_get_export_download_filename() {
+		$token = str_repeat( 'a1', 16 );
+
+		$this->assertSame( 'srfm-entries-contact.csv', Entries::get_export_download_filename( "srfm-entries-contact-{$token}.csv" ) );
+		$this->assertSame( 'srfm-partial-entries-contact.csv', Entries::get_export_download_filename( "srfm-partial-entries-contact-{$token}.csv" ) );
+		// Names without a token (older callers) are served unchanged.
+		$this->assertSame( 'srfm-entries-event-registration.csv', Entries::get_export_download_filename( 'srfm-entries-event-registration.csv' ) );
+	}
+
+	/**
+	 * open_export_zip() returns null when ZipArchive::open() reports an error
+	 * code, and never reuses an existing archive.
+	 */
+	public function test_open_export_zip() {
+		$path = Entries::get_export_temp_filepath( 'srfm-entries-export', 'zip' );
+
+		$zip = Entries::open_export_zip( $path );
+		$this->assertInstanceOf( \ZipArchive::class, $zip );
+		$zip->addFromString( 'a.csv', 'a' );
+		$zip->close();
+
+		$this->assertNull( Entries::open_export_zip( $path ), 'An existing archive must not be reopened.' );
+		wp_delete_file( $path );
+	}
+
+	/**
+	 * Abandoned export files older than a day are removed; fresh exports and
+	 * files this plugin did not name are left alone.
+	 */
+	public function test_delete_stale_export_files() {
+		$stale = Entries::get_export_temp_filepath( 'srfm-entries-contact', 'csv' );
+		$fresh = Entries::get_export_temp_filepath( 'srfm-entries-contact', 'csv' );
+		$other = wp_normalize_path( trailingslashit( get_temp_dir() ) ) . 'srfm-entries-unrelated.csv';
+
+		foreach ( [ $stale, $fresh, $other ] as $file ) {
+			file_put_contents( $file, 'x' );
+		}
+		touch( $stale, time() - DAY_IN_SECONDS - 60 );
+		touch( $other, time() - DAY_IN_SECONDS - 60 );
+
+		Entries::delete_stale_export_files();
+
+		$this->assertFileDoesNotExist( $stale );
+		$this->assertFileExists( $fresh );
+		$this->assertFileExists( $other );
+
+		wp_delete_file( $fresh );
+		wp_delete_file( $other );
+	}
+
+	/**
 	 * Helper method to call private static methods for testing.
 	 */
 	private function call_private_method_static( $class, $method_name, $parameters = [] ) {

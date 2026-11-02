@@ -62,6 +62,7 @@ const defaultKeys = {
 	first_page_label: { default: __( 'Page Break Label', 'sureforms' ) },
 	next_button_text: { default: __( 'Next', 'sureforms' ) },
 	back_button_text: { default: __( 'Back', 'sureforms' ) },
+	review_step_label: { default: __( 'Review', 'sureforms' ) },
 	// Style Tab
 	// Form Container
 	primary_color: { default: '#111C44' },

@@ -112,11 +112,12 @@ class Rest_Api {
 	}
 
 	/**
-	 * Get the data for generating entries chart.
+	 * Get per-day entry counts for the dashboard entries chart.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @since 1.0.0
-	 * @return array<mixed>
+	 * @since x.x.x Returns `{ date: 'Y-m-d', count: int }` rows, oldest first, instead of one `created_at` row per entry.
+	 * @return array<int,array{date:string,count:int}>
 	 */
 	public function get_entries_chart_data( $request ) {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
@@ -163,10 +164,24 @@ class Rest_Api {
 			];
 		}
 
-		return Entries::get_instance()->get_results(
+		// One row per calendar day of the stored created_at value, so the payload
+		// is bounded by the number of days in the range, not the number of entries.
+		$rows = Entries::get_instance()->get_results(
 			$where,
-			'created_at',
-			[ 'ORDER BY created_at DESC' ]
+			'DATE(created_at) AS date, COUNT(*) AS count',
+			[ 'GROUP BY DATE(created_at) ORDER BY DATE(created_at) ASC' ],
+			false
+		);
+
+		return array_map(
+			static function( $row ) {
+				$row = Helper::get_array_value( $row );
+				return [
+					'date'  => Helper::get_string_value( $row['date'] ?? '' ),
+					'count' => Helper::get_integer_value( $row['count'] ?? 0 ),
+				];
+			},
+			$rows
 		);
 	}
 

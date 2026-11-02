@@ -952,6 +952,7 @@ class Generate_Form_Markup {
 			// cannot emit an orphaned pill. Works for every embed method (block,
 			// shortcode, widget) because they all render through this function.
 			self::render_edit_form_button( (int) $id );
+			self::render_unpublished_notice( (int) $id );
 
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
@@ -1577,6 +1578,37 @@ class Generate_Form_Markup {
 				<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'sureforms' ); ?></span>
 			</a>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Tell someone who can edit a form that it does not accept submissions yet.
+	 *
+	 * Submit_Token::verify() refuses every form that is not published, so a draft
+	 * preview renders a form that cannot be submitted. Printed only for users who
+	 * can edit this form; visitors receive no extra markup.
+	 *
+	 * @param int $form_id Form post ID.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	private static function render_unpublished_notice( $form_id ) {
+		if ( SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) || ! current_user_can( 'edit_post', $form_id ) || Submit_Token::is_form_open( $form_id ) ) {
+			return;
+		}
+
+		// Same inline-only handle pattern as the Edit Form pill: deduped across forms
+		// and printed in the footer, so no style attribute meets a strict CSP.
+		if ( ! wp_style_is( 'srfm-unpublished-notice', 'registered' ) ) {
+			wp_register_style( 'srfm-unpublished-notice', false, [], SRFM_VER );
+			wp_add_inline_style( 'srfm-unpublished-notice', '.srfm-unpublished-notice{margin:0 0 12px;padding:8px 12px;border-inline-start:4px solid #dba617;background:#fcf9e8;color:#1e293b;font-size:14px}' );
+		}
+		wp_enqueue_style( 'srfm-unpublished-notice' );
+		?>
+		<p class="srfm-unpublished-notice" role="status">
+			<?php esc_html_e( 'Submissions are disabled until this form is published.', 'sureforms' ); ?>
+		</p>
 		<?php
 	}
 

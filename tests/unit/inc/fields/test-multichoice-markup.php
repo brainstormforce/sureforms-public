@@ -42,6 +42,143 @@ class Test_Multichoice_Markup extends TestCase {
 		$this->multichoice_markup = new Multichoice_Markup( $attributes );
 	}
 
+	protected function tearDown(): void {
+		remove_all_filters( 'srfm_multilingual_provider' );
+		$this->reset_multilingual_manager();
+		parent::tearDown();
+	}
+
+	/**
+	 * Build a multi-choice field whose options carry descriptions.
+	 *
+	 * @param bool $enabled Whether the block opts into descriptions.
+	 * @return string Rendered markup.
+	 */
+	private function markup_with_descriptions( $enabled ) {
+		$field = new Multichoice_Markup(
+			[
+				'label'                  => 'Ticket',
+				'block_id'               => 'mc002',
+				'formId'                 => '1',
+				'slug'                   => 'ticket',
+				'help'                   => 'Pick one ticket.',
+				'singleSelection'        => true,
+				'optionType'             => 'icon',
+				'showDescriptions' => $enabled,
+				'options'                => [
+					[ 'optionTitle' => 'Early Bird', 'description' => '$149 until 1 March', 'icon' => '', 'image' => '' ],
+					[ 'optionTitle' => 'Standard', 'icon' => '', 'image' => '' ],
+				],
+			]
+		);
+
+		return (string) $field->markup();
+	}
+
+	/**
+	 * The description renders as its own element, and only once the block opts in.
+	 */
+	public function test_markup_renders_option_descriptions() {
+		$off = $this->markup_with_descriptions( false );
+		$this->assertStringNotContainsString( 'srfm-option-description', $off );
+		$this->assertStringNotContainsString( '$149 until 1 March', $off );
+		$this->assertStringNotContainsString( 'srfm-option-text', $off );
+
+		$on = $this->markup_with_descriptions( true );
+		$this->assertStringContainsString( 'class="srfm-option-description" id="srfm-multi-choice-mc002-0-description"', $on );
+		$this->assertStringContainsString( '$149 until 1 March', $on );
+
+		// The option that has no description gets no wrapper and no stray element.
+		$this->assertSame( 1, substr_count( $on, 'srfm-option-description' ) );
+		$this->assertSame( 1, substr_count( $on, 'srfm-option-text' ) );
+	}
+
+	/**
+	 * The submitted value is read from the label, so the description must stay
+	 * out of it: data-option-text and the label text remain the option title
+	 * alone, whether or not a description is shown.
+	 */
+	public function test_markup_keeps_option_description_out_of_the_label() {
+		$markup = $this->markup_with_descriptions( true );
+
+		$this->assertStringContainsString( 'data-option-text="Early Bird"', $markup );
+
+		$this->assertSame(
+			1,
+			preg_match( '#<label[^>]*data-option-text="Early Bird"[^>]*>Early Bird</label>#', $markup ),
+			'the label must hold the title and nothing else'
+		);
+	}
+
+	/**
+	 * Each option points at its own description, and the first option keeps the
+	 * field-level help id it carried before descriptions existed.
+	 */
+	public function test_markup_links_option_descriptions_for_screen_readers() {
+		$markup = $this->markup_with_descriptions( true );
+
+		$this->assertStringContainsString(
+			'aria-describedby="srfm-description-mc002 srfm-multi-choice-mc002-0-description"',
+			$markup
+		);
+
+		// The second option has no description, so it gains no attribute at all.
+		$this->assertSame( 1, substr_count( $markup, 'aria-describedby=' ) );
+	}
+
+	/**
+	 * Descriptions are author input and are escaped on output.
+	 */
+	public function test_markup_escapes_option_descriptions() {
+		$field = new Multichoice_Markup(
+			[
+				'label'                  => 'Ticket',
+				'block_id'               => 'mc003',
+				'formId'                 => '1',
+				'slug'                   => 'ticket',
+				'showDescriptions' => true,
+				'options'                => [
+					[ 'optionTitle' => 'Early Bird', 'description' => '<script>alert(1)</script>', 'icon' => '', 'image' => '' ],
+				],
+			]
+		);
+
+		$markup = (string) $field->markup();
+
+		$this->assertStringNotContainsString( '<script>', $markup );
+		$this->assertStringContainsString( '&lt;script&gt;', $markup );
+	}
+
+	/**
+	 * With a multilingual provider active, the label shows the translated title
+	 * while data-option-text keeps the submitted value.
+	 */
+	public function test_markup_shows_the_translated_title_but_keeps_the_value() {
+		$this->use_active_multilingual_provider();
+		$field = new Multichoice_Markup(
+			[
+				'label'           => 'Ticket',
+				'block_id'        => 'mc003',
+				'formId'          => '1',
+				'slug'            => 'ticket',
+				'singleSelection' => true,
+				'optionType'      => 'icon',
+				'options'         => [
+					[
+						'optionTitle'     => 'Early Bird',
+						'translatedTitle' => 'Frühbucher',
+						'icon'            => '',
+					],
+				],
+			]
+		);
+		$markup = $field->markup();
+
+		$this->assertStringContainsString( 'data-option-text="Early Bird"', $markup );
+		$this->assertStringContainsString( '>Frühbucher</label>', $markup );
+		$this->assertStringNotContainsString( '>Early Bird</label>', $markup );
+	}
+
 	/**
 	 * Test markup contains checkbox inputs for multi-select mode.
 	 */
@@ -137,5 +274,29 @@ class Test_Multichoice_Markup extends TestCase {
 		);
 
 		unset( $_SERVER['QUERY_STRING'] );
+	}
+
+	/**
+	 * Make a mock multilingual provider the active one until tearDown().
+	 */
+	private function use_active_multilingual_provider() {
+		$provider = $this->createMock( \SRFM\Inc\Compatibility\Multilingual\Providers\Provider::class );
+		$provider->method( 'is_active' )->willReturn( true );
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $provider ) {
+				return $provider;
+			}
+		);
+		$this->reset_multilingual_manager();
+	}
+
+	/**
+	 * Drop the cached manager so the next call resolves the provider again.
+	 */
+	private function reset_multilingual_manager() {
+		$prop = new \ReflectionProperty( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class, 'instance' );
+		$prop->setAccessible( true );
+		$prop->setValue( null, null );
 	}
 }

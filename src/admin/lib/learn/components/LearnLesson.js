@@ -537,7 +537,7 @@ const LearnLesson = ( {
 														);
 													} }
 												>
-													{ __( 'Upgrade to Pro', 'sureforms' ) }
+													{ __( 'Upgrade to Business', 'sureforms' ) }
 												</Button>
 											) }
 											<Button
