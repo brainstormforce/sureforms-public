@@ -1166,7 +1166,7 @@ JS;
 			ob_start();
 			?>
 			<a href="<?php echo esc_url( $upsell_link ); ?>" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">
-				<?php echo esc_html__( 'Get SureForms Pro', 'sureforms' ); ?>
+				<?php echo esc_html__( 'Get SureForms Business', 'sureforms' ); ?>
 			</a>
 			<?php
 			$links[] = trim( ob_get_clean() );
@@ -1850,7 +1850,7 @@ JS;
 			'check_three_days_threshold'   => self::check_first_form_creation_threshold(),
 			'check_eight_days_threshold'   => self::check_first_form_creation_threshold( 8 ),
 			'pro_plugin_version'           => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'              => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'pro_plugin_name'              => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Business',
 			'sureforms_pricing_page'       => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'           => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'        => version_compare( $wp_version, '6.6.2', '<=' ),
@@ -2384,9 +2384,9 @@ JS;
 
 		// Register version outdated notice for React pages.
 		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			$pro_plugin_name        = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+			$pro_plugin_name        = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Business';
 			$react_outdated_message = sprintf(
-				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
+				// translators: %1$s: SureForms version, %2$s: SureForms Business plugin name, %3$s: SureForms Business version.
 				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),
 				esc_html( SRFM_VER ),
 				esc_html( $pro_plugin_name ),
@@ -2668,7 +2668,7 @@ JS;
 			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
 		}
 
-		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Business';
 		$message         = '';
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
 		if ( 'unlicensed' === $srfm_pro_license_status ) {
@@ -2677,7 +2677,7 @@ JS;
 			<p>
 				<?php
 				printf(
-					// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+					// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Business plugin name.
 					esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
 					'<a href="' . esc_url( $url ) . '">',
 					'</a>',
@@ -2695,7 +2695,7 @@ JS;
 			<p>
 				<?php
 				printf(
-					// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+					// translators: %1$s: SureForms version, %2$s: SureForms Business plugin name, %3$s: SureForms Business version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
 					esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
 					esc_html( SRFM_VER ),
 					esc_html( $pro_plugin_name ),
@@ -5456,7 +5456,7 @@ CSS;
 				sprintf( 'Site: %s', home_url() ),
 				sprintf( 'SureForms: %s', SRFM_VER ),
 				sprintf(
-					'SureForms Pro: %s',
+					'SureForms Business: %s',
 					Helper::has_pro() && defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : 'not active'
 				),
 				sprintf( 'WordPress: %s', Helper::get_string_value( $wp_version ) ),
