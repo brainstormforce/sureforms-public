@@ -104,7 +104,7 @@ class Submit_Token {
 	 *
 	 * @since  2.6.0
 	 * @since  2.12.6 Added the $namespace parameter.
-	 * @since  x.x.x Returns false unless the form is currently published.
+	 * @since  2.13.1 Returns false unless the form is currently published.
 	 * @param  string $token     Token value received from the client.
 	 * @param  int    $form_id   Form post ID extracted from the request body.
 	 * @param  string $namespace Purpose the token must have been minted for.
@@ -121,7 +121,7 @@ class Submit_Token {
 	 * comparison throughout. Says nothing about the form's current state; callers
 	 * authorising a request must use verify().
 	 *
-	 * @since  x.x.x
+	 * @since  2.13.1
 	 * @param  string $token     Token value received from the client.
 	 * @param  int    $form_id   Form post ID extracted from the request body.
 	 * @param  string $namespace Purpose the token must have been minted for.
@@ -149,7 +149,7 @@ class Submit_Token {
 	/**
 	 * Whether a form currently accepts tokens: a SureForms form with `publish` status.
 	 *
-	 * @since  x.x.x
+	 * @since  2.13.1
 	 * @param  int $form_id Form post ID.
 	 * @return bool
 	 */

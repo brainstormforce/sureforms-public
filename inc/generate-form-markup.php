@@ -1591,7 +1591,7 @@ class Generate_Form_Markup {
 	 * @param int $form_id Form post ID.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.13.1
 	 */
 	private static function render_unpublished_notice( $form_id ) {
 		if ( SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) || ! current_user_can( 'edit_post', $form_id ) || Submit_Token::is_form_open( $form_id ) ) {

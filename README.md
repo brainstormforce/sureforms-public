@@ -2,9 +2,9 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** forms, ai forms, contact form, form builder, payment form  
 **Requires at least:** 6.4  
-**Tested up to:** 7.1.3  
+**Tested up to:** 7.1.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.13.0  
+**Stable tag:** 2.13.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -426,9 +426,10 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 ## Changelog ##
-### x.x.x ###
-* Improvement: Forms using reCAPTCHA v3 now reject submissions that Google scores below the threshold (default 0.5), set in Settings > Spam Protection > reCAPTCHA > reCAPTCHA v3 or with the `srfm_recaptcha_v3_score_threshold` filter. A blocked submission is reported with the error code `score-threshold-not-met` in the debug log and browser console.
-* Improvement: Forms accept submissions only while they are published. A draft, private, scheduled or trashed form now shows "This form is currently unavailable." when submitted, and editors previewing an unpublished form see a notice that submissions are disabled until it is published.
+### 2.13.1 - 3rd November 2026 ###
+* Improvement: Forms accept submissions only while published. Draft, private, scheduled and trashed forms now show "This form is currently unavailable." when submitted, and editors previewing an unpublished form see a notice that submissions are disabled until it is published.
+* Improvement: reCAPTCHA v3 now rejects submissions that Google scores below the threshold (default 0.5). Set it in Settings > Spam Protection > reCAPTCHA > reCAPTCHA v3 or with the `srfm_recaptcha_v3_score_threshold` filter; blocked submissions log the `score-threshold-not-met` error code to the debug log and browser console.
+* Fix: This update addressed a security bug. Props to Patchstack for reporting it responsibly to our team.
 ### 2.13.0 - 26th October 2026 ###
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
@@ -444,10 +445,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Fix: The submit button now stays disabled while a form redirects, preventing duplicate submissions.
 * Fix: Unticked Checkbox fields now appear in entries and notification emails.
 * Fix: This update addressed a security bug. Props to dzaku from Patchstack for reporting it responsibly to our team.
-### 2.12.8 - 25th September 2026 ###
-* Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
-* Fix: Entry Logs now record the email notification sent when a form is submitted.
-* Fix: Resolved an editor crash that prevented forms containing a Register block from opening.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 ## Upgrade Notice ##

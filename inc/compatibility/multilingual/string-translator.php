@@ -317,7 +317,7 @@ class String_Translator {
 	 * @param int    $option_index Option index.
 	 * @param string $field        Option key: `label` (dropdown), `optionTitle` or `description` (multi-choice).
 	 * @since 2.11.0
-	 * @since x.x.x Added the $field parameter.
+	 * @since 2.13.1 Added the $field parameter.
 	 * @return string
 	 */
 	public static function block_option_name( string $block_id, int $option_index, string $field = 'label' ): string {
@@ -530,7 +530,7 @@ class String_Translator {
 	 * @param int    $option_index Zero-based index of the option within the block's options array.
 	 * @param string $field        Option key being translated.
 	 * @param string $value        Original value.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_block_option_field( int $form_id, string $block_id, int $option_index, string $field, string $value ): string {

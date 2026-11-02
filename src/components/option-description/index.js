@@ -6,7 +6,7 @@
  * open at a time, a 120 character cap with a live counter, focus moved into the
  * field when it opens, and the row closed again when the block is deselected.
  *
- * @since x.x.x
+ * @since 2.13.1
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';

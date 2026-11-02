@@ -461,7 +461,7 @@ class Entries {
 	 * @param string $name      Name prefix, e.g. 'srfm-entries-contact'.
 	 * @param string $extension File extension without the dot.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return string Absolute, normalized file path.
 	 */
 	public static function get_export_temp_filepath( $name, $extension ) {
@@ -477,7 +477,7 @@ class Entries {
 	 * happened. It runs at the start of each export and on the daily
 	 * `srfm_daily_scheduled_action`. Only names carrying the export token are matched.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return void
 	 */
 	public static function delete_stale_export_files() {
@@ -495,7 +495,7 @@ class Entries {
 	 *
 	 * @param string $basename Temp file basename from get_export_temp_filepath().
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return string Download filename.
 	 */
 	public static function get_export_download_filename( $basename ) {
@@ -510,7 +510,7 @@ class Entries {
 	 *
 	 * @param string $filepath Archive path.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return \ZipArchive|null Open archive, or null when it could not be created.
 	 */
 	public static function open_export_zip( $filepath ) {
