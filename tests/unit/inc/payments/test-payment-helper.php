@@ -1084,6 +1084,18 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertSame( 'fixed', $config['pay03']['amount_type'], "an unrecognised amountType is normalised to 'fixed' at store time" );
 	}
 
+	/**
+	 * Only the amount types the validators implement pass through; anything
+	 * else, including non-strings, is read as 'fixed'.
+	 */
+	public function test_get_supported_amount_type() {
+		$this->assertSame( 'fixed', Payment_Helper::get_supported_amount_type( 'fixed' ) );
+		$this->assertSame( 'variable', Payment_Helper::get_supported_amount_type( 'variable' ) );
+		foreach ( [ 'user-choice', 'Variable', ' variable', '', null, 1, [ 'variable' ] ] as $raw ) {
+			$this->assertSame( 'fixed', Payment_Helper::get_supported_amount_type( $raw ), 'Unsupported: ' . var_export( $raw, true ) );
+		}
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
