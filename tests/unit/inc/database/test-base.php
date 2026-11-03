@@ -128,6 +128,56 @@ class Test_Database_Base extends TestCase {
 	}
 
 
+	/**
+	 * A 4-byte character such as an emoji survives a JSON column whose charset is
+	 * not utf8mb4: it is stored as a JSON escape that decodes back to itself.
+	 * WordPress otherwise refuses the whole insert.
+	 *
+	 * The column is reported as utf8 through wpdb's own pre_get_col_charset filter,
+	 * which both wpdb's insert check and the plugin read, rather than altered: DDL
+	 * commits the test database's open transaction and leaks data into later tests.
+	 */
+	public function test_prepare_data_keeps_emoji_on_a_utf8_column() {
+		$table   = $this->entries_table->get_tablename();
+		$utf8    = static function ( $charset, $for_table, $column ) use ( $table ) {
+			return $for_table === $table && 'form_data' === $column ? 'utf8' : $charset;
+		};
+		$value   = "Hi \u{1F600} \u{65E5}\u{672C} \u{00FC}";
+		$key     = 'srfm-textarea-em000001-lbl-TWVzc2FnZQ-message';
+		$entries = $this->entries_table;
+
+		add_filter( 'pre_get_col_charset', $utf8, 10, 3 );
+		try {
+			$id = Entries::add(
+				[
+					'form_id'   => 1,
+					'form_data' => [ $key => $value ],
+				]
+			);
+		} finally {
+			remove_filter( 'pre_get_col_charset', $utf8, 10 );
+		}
+
+		$this->assertIsInt( $id, 'The insert is not refused.' );
+		$this->assertSame( $value, Entries::get( $id )['form_data'][ $key ], 'The emoji reads back unchanged.' );
+
+		$entries->delete( [ 'ID' => $id ] );
+	}
+
+	/**
+	 * On a utf8mb4 column the value is stored as it is, so nothing changes for the
+	 * usual install.
+	 */
+	public function test_prepare_data_leaves_utf8mb4_columns_unchanged() {
+		$method = new \ReflectionMethod( $this->entries_table, 'prepare_data' );
+		$method->setAccessible( true );
+		$value = "Hi \u{1F600}";
+
+		$prepared = $method->invoke( $this->entries_table, [ 'form_data' => [ 'k' => $value ] ] );
+
+		$this->assertStringContainsString( "\u{1F600}", $prepared['data']['form_data'] );
+	}
+
 	// ---------------------------------------------------------------
 	// get_total_count
 	// ---------------------------------------------------------------

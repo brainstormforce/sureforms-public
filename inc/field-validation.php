@@ -459,12 +459,17 @@ class Field_Validation {
 	 * its configuration. Only fields with keys containing '-lbl-' (SureForms fields) are processed.
 	 * If a field fails validation, its error message is added to the $not_valid_fields array.
 	 *
+	 * Then applies the form's own field rules (Field_Rules): required, email
+	 * format, number range, options, selection limits and maximum length.
+	 *
 	 * @param array<mixed> $form_data        The submitted form data (sanitized).
 	 * @param int|mixed    $current_form_id  The ID of the form being validated.
+	 * @param array<mixed> $raw_form_data    The same request before sanitizing. Defaults to $form_data.
 	 * @since 1.12.2
+	 * @since 2.13.1 Added $raw_form_data and the field rules.
 	 * @return array An array of invalid fields and their error messages. Empty if all fields are valid.
 	 */
-	public static function validate_form_data( $form_data, $current_form_id ) {
+	public static function validate_form_data( $form_data, $current_form_id, $raw_form_data = [] ) {
 		if ( ! is_array( $form_data ) || ! is_numeric( $current_form_id ) ) {
 			return [];
 		}
@@ -580,9 +585,10 @@ class Field_Validation {
 			}
 		}
 
-		// Return the array of invalid fields and their error messages.
+		// Return the array of invalid fields and their error messages. The checks
+		// above keep their message for a field; the field rules add theirs.
 		// Example: [ 'srfm-email-c867d9d9-lbl-email' => 'This field is required.' ].
-		return $not_valid_fields;
+		return $not_valid_fields + Field_Rules::validate( $form_data, empty( $raw_form_data ) ? $form_data : $raw_form_data, Helper::get_integer_value( $current_form_id ) );
 	}
 
 	/**

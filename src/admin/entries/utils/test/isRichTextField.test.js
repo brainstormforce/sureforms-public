@@ -12,7 +12,19 @@
 import { createElement } from '@wordpress/element';
 import { isRichTextField, withBlockName } from '../sanitizeEntryValue';
 
-const richText = ( value ) => ( { block_name: 'srfm-textarea', value } );
+// A textarea the server reports as using the rich-text editor.
+const richText = ( value ) => ( {
+	block_name: 'srfm-textarea',
+	is_rich_text: true,
+	value,
+} );
+
+// A textarea without the rich-text editor: its answer is plain text.
+const plainTextarea = ( value ) => ( {
+	block_name: 'srfm-textarea',
+	is_rich_text: false,
+	value,
+} );
 
 describe( 'isRichTextField', () => {
 	it( 'selects the HTML branch only for the rich-text textarea block', () => {
@@ -22,6 +34,23 @@ describe( 'isRichTextField', () => {
 				block_name: 'srfm-input',
 				value: '<p>hi</p>',
 			} )
+		).toBe( false );
+	} );
+
+	it( 'keeps a plain textarea on the text path whatever it contains', () => {
+		// BUG-03: a visitor typing markup into a plain textarea saw it rendered.
+		for ( const value of [
+			'<i>italic</i>',
+			'<img src="x"/>',
+			'<p>para</p>',
+			'<widget>',
+		] ) {
+			expect( isRichTextField( plainTextarea( value ) ) ).toBe( false );
+		}
+
+		// A textarea with no flag at all (an older response) is text too.
+		expect(
+			isRichTextField( { block_name: 'srfm-textarea', value: '<i>x</i>' } )
 		).toBe( false );
 	} );
 
@@ -94,7 +123,11 @@ describe( 'isRichTextField', () => {
  * from sureforms-pro/src/admin/entries/components/EntryDataSection.js.
  */
 describe( 'withBlockName', () => {
-	const field = { block_name: 'srfm-textarea', value: '<p>hi</p>' };
+	const field = {
+		block_name: 'srfm-textarea',
+		is_rich_text: true,
+		value: '<p>hi</p>',
+	};
 
 	it( 'restores block_name on the default object shape', () => {
 		// Pro's `default:` branch — the load-bearing case.
@@ -107,8 +140,20 @@ describe( 'withBlockName', () => {
 			block_name: 'srfm-textarea',
 			label: 'Message',
 			value: '<p>hi</p>',
+			is_rich_text: true,
 		} );
 		expect( isRichTextField( out ) ).toBe( true );
+	} );
+
+	it( 'takes is_rich_text from the server field only', () => {
+		// A formatter cannot turn a plain textarea's value into HTML.
+		const out = withBlockName( plainTextarea( '<i>x</i>' ), {
+			value: '<i>x</i>',
+			is_rich_text: true,
+		} );
+
+		expect( out.is_rich_text ).toBe( false );
+		expect( isRichTextField( out ) ).toBe( false );
 	} );
 
 	it( 'never widens a block_name Pro set itself', () => {
@@ -160,6 +205,7 @@ describe( 'withBlockName', () => {
 		expect( withBlockName( undefined, { value: 'x' } ) ).toEqual( {
 			block_name: undefined,
 			value: 'x',
+			is_rich_text: false,
 		} );
 	} );
 } );
