@@ -181,7 +181,9 @@ class Field_Validation {
 		// Example: After migration, $block_config should now be an array if successful.
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 
-		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : $stored;
+		// The rebuild either stored a config or deleted the meta, so return what is
+		// stored now: the stale config is no longer what later requests will read.
+		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
 	}
 
 	/**
@@ -919,22 +921,6 @@ class Field_Validation {
 	}
 
 	/**
-	 * Normalise a stored payment amount type to the supported allowlist.
-	 *
-	 * Anything that is not a non-empty supported type (fixed/variable) becomes
-	 * 'fixed', so the persisted block config can never carry an amount type the
-	 * server-side validators do not handle.
-	 *
-	 * @param mixed $raw Raw amountType block attribute.
-	 * @since 2.13.1
-	 * @return string One of Payment_Helper::SUPPORTED_AMOUNT_TYPES.
-	 */
-	private static function normalize_amount_type( $raw ) {
-		$amount_type = is_string( $raw ) ? sanitize_text_field( $raw ) : '';
-		return in_array( $amount_type, Payment_Helper::SUPPORTED_AMOUNT_TYPES, true ) ? $amount_type : 'fixed';
-	}
-
-	/**
 	 * Process payment block configuration.
 	 *
 	 * @param array<mixed> $attrs Block attributes.
@@ -967,7 +953,7 @@ class Field_Validation {
 		// Extract amount type (fixed or minimum). Normalise anything outside the
 		// supported allowlist to 'fixed' so the editor, AI form builder or an imported
 		// block cannot persist a type the server-side validators do not handle.
-		$payment_config['amount_type'] = self::normalize_amount_type( $attrs['amountType'] ?? null );
+		$payment_config['amount_type'] = Payment_Helper::get_supported_amount_type( $attrs['amountType'] ?? null );
 
 		$payment_config['fixed_amount'] = isset( $attrs['fixedAmount'] ) ? floatval( $attrs['fixedAmount'] ) : 10;
 
@@ -992,7 +978,7 @@ class Field_Validation {
 		// BOTH MODE: store per-type amount configs so server-side validation can
 		// use the correct config based on which flow the user actually chose.
 		if ( 'both' === $payment_config['payment_type'] ) {
-			$payment_config['one_time_amount_type']    = self::normalize_amount_type( $attrs['oneTimeAmountType'] ?? null );
+			$payment_config['one_time_amount_type']    = Payment_Helper::get_supported_amount_type( $attrs['oneTimeAmountType'] ?? null );
 			$payment_config['one_time_fixed_amount']   = isset( $attrs['oneTimeFixedAmount'] ) ? floatval( $attrs['oneTimeFixedAmount'] ) : 10;
 			$payment_config['one_time_minimum_amount'] = isset( $attrs['oneTimeMinimumAmount'] ) ? floatval( $attrs['oneTimeMinimumAmount'] ) : 0;
 
@@ -1009,7 +995,7 @@ class Field_Validation {
 				}
 			}
 
-			$payment_config['subscription_amount_type']    = self::normalize_amount_type( $attrs['subscriptionAmountType'] ?? null );
+			$payment_config['subscription_amount_type']    = Payment_Helper::get_supported_amount_type( $attrs['subscriptionAmountType'] ?? null );
 			$payment_config['subscription_fixed_amount']   = isset( $attrs['subscriptionFixedAmount'] ) ? floatval( $attrs['subscriptionFixedAmount'] ) : 10;
 			$payment_config['subscription_minimum_amount'] = isset( $attrs['subscriptionMinimumAmount'] ) ? floatval( $attrs['subscriptionMinimumAmount'] ) : 0;
 

@@ -40,6 +40,24 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * A payment block's amount type, or 'fixed' when it is not one the
+	 * server-side validators implement.
+	 *
+	 * The one normaliser for every reader of a block's amountType: the stored
+	 * block config (Field_Validation::process_payment_block()) and the rendered
+	 * payment field (Payment_Markup), so the browser and the server always
+	 * agree on the type. 'fixed' is also what the editor shows for any other
+	 * value.
+	 *
+	 * @param mixed $raw amountType, oneTimeAmountType or subscriptionAmountType attribute.
+	 * @since 2.13.1
+	 * @return string One of SUPPORTED_AMOUNT_TYPES.
+	 */
+	public static function get_supported_amount_type( $raw ) {
+		return is_string( $raw ) && in_array( $raw, self::SUPPORTED_AMOUNT_TYPES, true ) ? $raw : 'fixed';
+	}
+
+	/**
 	 * Get all payment settings (global settings + all gateways).
 	 *
 	 * Retrieves the complete payment settings structure:

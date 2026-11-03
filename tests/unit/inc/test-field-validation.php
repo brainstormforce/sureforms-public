@@ -317,7 +317,8 @@ class Test_Field_Validation extends TestCase {
 				'post_type'    => 'sureforms_form',
 				'post_status'  => 'publish',
 				'post_title'   => 'Test Form',
-				'post_content' => '<!-- wp:srfm/payment {"block_id":"pay1","slug":"payment","paymentType":"both","amountType":"user-choice","fixedAmount":40,"oneTimeAmountType":"user-choice","oneTimeFixedAmount":40,"subscriptionAmountType":"variable","subscriptionMinimumAmount":5} /-->',
+				'post_content' => '<!-- wp:srfm/payment {"block_id":"pay1","slug":"payment","paymentType":"both","amountType":"user-choice","fixedAmount":40,"oneTimeAmountType":"user-choice","oneTimeFixedAmount":40,"subscriptionAmountType":"variable","subscriptionMinimumAmount":5} /-->'
+					. '<!-- wp:srfm/number {"block_id":"num1","slug":"qty","minValue":1,"maxValue":9} /-->',
 			]
 		);
 		update_post_meta(
@@ -341,7 +342,45 @@ class Test_Field_Validation extends TestCase {
 		$this->assertSame( 'fixed', $result['pay1']['one_time_amount_type'] );
 		$this->assertSame( 'variable', $result['pay1']['subscription_amount_type'], 'A supported type is kept.' );
 		$this->assertSame( 40.0, $result['pay1']['fixed_amount'] );
+		$this->assertSame( 1.0, $result['num1']['min'], 'The other blocks are rebuilt from the same content.' );
+		$this->assertSame( 9.0, $result['num1']['max'] );
 		$this->assertSame( $result, get_post_meta( $form_id, '_srfm_block_config', true ), 'The rebuilt config is stored, so the next read is not stale.' );
+
+		$writes = 0;
+		$count  = static function ( $check, $object_id, $meta_key ) use ( &$writes, $form_id ) {
+			if ( $form_id === $object_id && '_srfm_block_config' === $meta_key ) {
+				++$writes;
+			}
+			return $check;
+		};
+		add_filter( 'update_post_metadata', $count, 10, 3 );
+		add_filter( 'delete_post_metadata', $count, 10, 3 );
+		try {
+			$this->assertSame( $result, Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id ) );
+		} finally {
+			remove_filter( 'update_post_metadata', $count, 10 );
+			remove_filter( 'delete_post_metadata', $count, 10 );
+		}
+		$this->assertSame( 0, $writes, 'A rebuilt config is read as is: the rebuild happens once.' );
+	}
+
+	/**
+	 * Test get_or_migrate_block_config_for_legacy_form returns null when the rebuild of a stale
+	 * config stores nothing, matching the deleted meta later requests will read.
+	 */
+	public function test_get_or_migrate_block_config_for_legacy_form_returns_null_after_empty_rebuild() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Test Form',
+				'post_content' => '<!-- wp:paragraph --><p>No fields that need a config.</p><!-- /wp:paragraph -->',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_block_config', [ 'pay1' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'user-choice' ] ] );
+
+		$this->assertNull( Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id ) );
+		$this->assertSame( '', get_post_meta( $form_id, '_srfm_block_config', true ) );
 	}
 
 	/**
