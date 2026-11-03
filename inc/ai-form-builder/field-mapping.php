@@ -689,10 +689,11 @@ class Field_Mapping {
 		/**
 		 * Filters whether the field mapper emits SureForms Business fields.
 		 *
-		 * @param bool $has_business True when the Business build of SureForms Pro is active.
+		 * @param bool $has_business True when the site's plan includes the Business tier (Helper::has_tier()).
 		 * @since 2.13.0
+		 * @since 2.13.1 Read from Helper::has_tier() instead of a Pro class that 2.13.1 no longer ships.
 		 */
-		return (bool) apply_filters( 'srfm_ai_field_mapping_has_business', defined( 'SRFM_PRO_VER' ) && class_exists( 'SRFM_Pro\Inc\Business\Init' ) );
+		return (bool) apply_filters( 'srfm_ai_field_mapping_has_business', Helper::has_tier( 'business' ) );
 	}
 
 	/**

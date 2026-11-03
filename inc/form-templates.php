@@ -2533,7 +2533,9 @@ class Form_Templates {
 				];
 
 			case 'paypal':
-				$connected = [ '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper', 'is_paypal_connected' ];
+				// Pro 2.13.1 moved the class; builds before it ship the Business name.
+				$helper    = class_exists( '\SRFM_Pro\Inc\Payments\PayPal\Helper' ) ? '\SRFM_Pro\Inc\Payments\PayPal\Helper' : '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper';
+				$connected = [ $helper, 'is_paypal_connected' ];
 				if ( ! class_exists( $connected[0] ) || ! is_callable( $connected ) ) {
 					return null;
 				}

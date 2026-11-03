@@ -284,4 +284,29 @@ class Test_Field_Mapping extends TestCase {
 		$this->assertArrayHasKey( 'status', $data );
 		$this->assertSame( 400, $data['status'] );
 	}
+
+	/**
+	 * Business fields follow the site's plan tier, which Pro 2.13.1 reports
+	 * through SRFM_PRO_PRODUCT rather than a per-tier loader class.
+	 */
+	public function test_has_business_fields_follows_the_site_tier() {
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$this->markTestSkipped( 'Pro is loaded in this run.' );
+		}
+
+		$method = new ReflectionMethod( Field_Mapping::class, 'has_business_fields' );
+		$method->setAccessible( true );
+
+		$this->assertFalse( $method->invoke( null ), 'Without Pro there are no Business fields.' );
+
+		$business = static fn() => 'business';
+		add_filter( 'srfm_pro_tier', $business );
+		$this->assertTrue( $method->invoke( null ), 'A Business plan emits Business fields.' );
+		remove_filter( 'srfm_pro_tier', $business );
+
+		$pro = static fn() => 'pro';
+		add_filter( 'srfm_pro_tier', $pro );
+		$this->assertFalse( $method->invoke( null ), 'The Pro plan does not include Business fields.' );
+		remove_filter( 'srfm_pro_tier', $pro );
+	}
 }
