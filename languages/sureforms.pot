@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-02T13:22:05+00:00\n"
+"POT-Creation-Date: 2026-11-03T13:14:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: sureforms\n"
@@ -241,7 +241,7 @@ msgstr ""
 
 #: admin/admin.php:1557
 #: admin/admin.php:1558
-#: inc/form-templates.php:2823
+#: inc/form-templates.php:2825
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -315,7 +315,7 @@ msgstr ""
 
 #: admin/admin.php:2464
 #: admin/admin.php:2548
-#: inc/rest-api.php:1477
+#: inc/rest-api.php:1481
 msgid "SureForms could not finish updating the database. Your hosting may not allow SureForms to create database tables — please contact your hosting provider or SureForms support."
 msgstr ""
 
@@ -806,7 +806,7 @@ msgstr ""
 #: inc/abilities/entries/bulk-get-entries.php:172
 #: inc/abilities/entries/get-entry.php:121
 #: inc/rest-api.php:823
-#: inc/rest-api.php:968
+#: inc/rest-api.php:972
 msgid "Entry not found."
 msgstr ""
 
@@ -831,7 +831,7 @@ msgstr ""
 #. translators: %d is the form ID.
 #: inc/abilities/entries/entry-parser.php:72
 #: inc/compatibility/multilingual/string-translator.php:225
-#: inc/rest-api.php:896
+#: inc/rest-api.php:900
 #, php-format
 msgid "SureForms Form #%d"
 msgstr ""
@@ -1319,7 +1319,7 @@ msgid "OttoKit is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:276
-#: inc/form-submit.php:1361
+#: inc/form-submit.php:1362
 msgid "Invalid form ID."
 msgstr ""
 
@@ -1424,8 +1424,8 @@ msgid "You are not allowed to perform this action."
 msgstr ""
 
 #: inc/admin/editor-nudge.php:237
-#: inc/helper.php:2258
-#: inc/helper.php:2266
+#: inc/helper.php:2282
+#: inc/helper.php:2290
 msgid "Invalid security token."
 msgstr ""
 
@@ -1456,9 +1456,9 @@ msgstr ""
 
 #: inc/admin/html-form-detector.php:268
 #: inc/form-submit.php:262
-#: inc/form-submit.php:568
-#: inc/form-submit.php:618
-#: inc/form-submit.php:1357
+#: inc/form-submit.php:569
+#: inc/form-submit.php:619
+#: inc/form-submit.php:1358
 #: inc/migrator/bootstrap.php:357
 #: inc/payments/front-end.php:79
 #: inc/payments/front-end.php:266
@@ -1473,10 +1473,10 @@ msgstr ""
 #: inc/rest-api.php:723
 #: inc/rest-api.php:772
 #: inc/rest-api.php:805
-#: inc/rest-api.php:946
-#: inc/rest-api.php:1031
-#: inc/rest-api.php:1091
-#: inc/rest-api.php:1466
+#: inc/rest-api.php:950
+#: inc/rest-api.php:1035
+#: inc/rest-api.php:1095
+#: inc/rest-api.php:1470
 #: inc/single-form-settings/form-settings-api.php:89
 msgid "Security verification failed. Please refresh the page and try again."
 msgstr ""
@@ -1666,29 +1666,29 @@ msgstr ""
 msgid "Text Field"
 msgstr ""
 
-#: inc/ai-form-builder/field-mapping.php:747
+#: inc/ai-form-builder/field-mapping.php:748
 msgid "Address Line 1"
 msgstr ""
 
-#: inc/ai-form-builder/field-mapping.php:748
+#: inc/ai-form-builder/field-mapping.php:749
 msgid "Address Line 2"
 msgstr ""
 
-#: inc/ai-form-builder/field-mapping.php:749
+#: inc/ai-form-builder/field-mapping.php:750
 #: inc/form-templates/catalog/accounts.php:261
 #: modules/gutenberg/icons/icons-v6-0.php:4355
 msgid "City"
 msgstr ""
 
-#: inc/ai-form-builder/field-mapping.php:750
+#: inc/ai-form-builder/field-mapping.php:751
 msgid "State"
 msgstr ""
 
-#: inc/ai-form-builder/field-mapping.php:751
+#: inc/ai-form-builder/field-mapping.php:752
 msgid "Postal Code"
 msgstr ""
 
-#: inc/ai-form-builder/field-mapping.php:752
+#: inc/ai-form-builder/field-mapping.php:753
 msgid "Country"
 msgstr ""
 
@@ -2204,26 +2204,47 @@ msgstr ""
 msgid "Unable to import form."
 msgstr ""
 
-#: inc/field-validation.php:534
+#: inc/field-rules.php:229
+#: inc/field-rules.php:605
+#: inc/field-validation.php:541
 msgid "Field is not valid."
 msgstr ""
 
+#. translators: %s: maximum number of characters.
+#: inc/field-rules.php:306
+#, php-format
+msgid "Please enter no more than %s characters."
+msgstr ""
+
+#: inc/field-rules.php:363
+msgid "Enter a valid number."
+msgstr ""
+
+#: inc/field-rules.php:450
+msgid "Select a valid option."
+msgstr ""
+
+#: inc/field-rules.php:584
+#: inc/helper.php:73
+msgid "This field is required."
+msgstr ""
+
 #. translators: %s represents the minimum number of characters required
-#: inc/field-validation.php:547
+#: inc/field-validation.php:554
 #: inc/translatable.php:94
 #, php-format
 msgid "Please enter at least %s characters."
 msgstr ""
 
 #. translators: %s: maximum characters allowed before the @ symbol.
-#: inc/field-validation.php:569
+#: inc/field-validation.php:576
 #: inc/translatable.php:97
 #, php-format
 msgid "The part before @ may not exceed %s characters."
 msgstr ""
 
 #. translators: %s: maximum characters allowed after the @ symbol.
-#: inc/field-validation.php:575
+#: inc/field-validation.php:582
 #: inc/translatable.php:100
 #, php-format
 msgid "The part after @ may not exceed %s characters."
@@ -2263,11 +2284,11 @@ msgstr ""
 msgid "Multi Choice"
 msgstr ""
 
-#: inc/fields/payment-markup.php:246
+#: inc/fields/payment-markup.php:248
 msgid "One-Time Payment"
 msgstr ""
 
-#: inc/fields/payment-markup.php:247
+#: inc/fields/payment-markup.php:249
 #: inc/payments/admin/admin-handler.php:969
 #: inc/payments/payment-history-shortcode.php:371
 #: assets/build/blocks.js:172
@@ -2275,86 +2296,86 @@ msgstr ""
 msgid "Subscription"
 msgstr ""
 
-#: inc/fields/payment-markup.php:349
-#: inc/payments/payment-helper.php:557
+#: inc/fields/payment-markup.php:351
+#: inc/payments/payment-helper.php:575
 msgid "Subscription Plan"
 msgstr ""
 
-#: inc/fields/payment-markup.php:489
+#: inc/fields/payment-markup.php:491
 msgid "Processing payment..."
 msgstr ""
 
-#: inc/fields/payment-markup.php:540
+#: inc/fields/payment-markup.php:542
 msgid "Choose payment type"
 msgstr ""
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:650
+#: inc/fields/payment-markup.php:652
 #, php-format
 msgid "%1$s per %2$s (until cancelled)"
 msgstr ""
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
-#: inc/fields/payment-markup.php:659
+#: inc/fields/payment-markup.php:661
 #, php-format
 msgid "%1$s per %2$s (%3$s payments)"
 msgstr ""
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:669
+#: inc/fields/payment-markup.php:671
 #, php-format
 msgid "%1$s per %2$s"
 msgstr ""
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:692
+#: inc/fields/payment-markup.php:694
 #, php-format
 msgid "{amount} per %s (until cancelled)"
 msgstr ""
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
-#: inc/fields/payment-markup.php:695
+#: inc/fields/payment-markup.php:697
 #, php-format
 msgid "{amount} per %1$s (%2$s payments)"
 msgstr ""
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:698
+#: inc/fields/payment-markup.php:700
 #, php-format
 msgid "{amount} per %s"
 msgstr ""
 
 #. translators: %s: Minimum amount with currency
-#: inc/fields/payment-markup.php:718
+#: inc/fields/payment-markup.php:720
 #, php-format
 msgid "Minimum amount: %s"
 msgstr ""
 
-#: inc/fields/payment-markup.php:884
+#: inc/fields/payment-markup.php:886
 msgid "day"
 msgstr ""
 
-#: inc/fields/payment-markup.php:885
+#: inc/fields/payment-markup.php:887
 msgid "week"
 msgstr ""
 
-#: inc/fields/payment-markup.php:886
+#: inc/fields/payment-markup.php:888
 msgid "month"
 msgstr ""
 
-#: inc/fields/payment-markup.php:887
+#: inc/fields/payment-markup.php:889
 msgid "quarter"
 msgstr ""
 
-#: inc/fields/payment-markup.php:888
+#: inc/fields/payment-markup.php:890
 msgid "year"
 msgstr ""
 
-#: inc/fields/payment-markup.php:913
+#: inc/fields/payment-markup.php:915
 msgid "Test mode is enabled:"
 msgstr ""
 
-#: inc/fields/payment-markup.php:915
+#: inc/fields/payment-markup.php:917
 msgid "Click here to enable live mode and accept payment"
 msgstr ""
 
@@ -2413,109 +2434,109 @@ msgstr ""
 msgid "hCaptcha response is missing."
 msgstr ""
 
-#: inc/form-submit.php:395
-#: inc/form-submit.php:664
+#: inc/form-submit.php:396
+#: inc/form-submit.php:665
 msgid "Form data is not found."
 msgstr ""
 
-#: inc/form-submit.php:401
+#: inc/form-submit.php:402
 msgid "Form ID is missing."
 msgstr ""
 
-#: inc/form-submit.php:433
+#: inc/form-submit.php:434
 msgid "You do not have permission to submit this form."
 msgstr ""
 
-#: inc/form-submit.php:443
+#: inc/form-submit.php:444
 msgid "This form is no longer available."
 msgstr ""
 
-#: inc/form-submit.php:461
+#: inc/form-submit.php:462
 msgid "Please check the form for errors."
 msgstr ""
 
-#: inc/form-submit.php:593
-#: inc/form-submit.php:639
+#: inc/form-submit.php:594
+#: inc/form-submit.php:640
 msgid "Your submission was flagged as spam. Please try again."
 msgstr ""
 
-#: inc/form-submit.php:657
+#: inc/form-submit.php:658
 msgid "Form data was not found."
 msgstr ""
 
-#: inc/form-submit.php:938
+#: inc/form-submit.php:939
 msgid "Unable to submit form. Please try again."
 msgstr ""
 
-#: inc/form-submit.php:1128
+#: inc/form-submit.php:1129
 msgid "Email notification passed to the sending server"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:1218
+#: inc/form-submit.php:1219
 #, php-format
 msgid "Email notification recipient: %s"
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:1232
+#: inc/form-submit.php:1233
 #, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
-#: inc/form-submit.php:1290
+#: inc/form-submit.php:1291
 msgid "No emails were sent."
 msgstr ""
 
-#: inc/form-submit.php:1366
+#: inc/form-submit.php:1367
 msgid "Invalid form."
 msgstr ""
 
-#: inc/form-submit.php:1371
+#: inc/form-submit.php:1372
 msgid "Too many requests. Please try again shortly."
 msgstr ""
 
-#: inc/form-submit.php:1496
+#: inc/form-submit.php:1497
 msgid "Captcha validation failed. No error code provided."
 msgstr ""
 
-#: inc/form-submit.php:1497
+#: inc/form-submit.php:1498
 msgid "Captcha validation failed."
 msgstr ""
 
-#: inc/form-submit.php:1554
+#: inc/form-submit.php:1555
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:1558
+#: inc/form-submit.php:1559
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
 msgstr ""
 
-#: inc/form-submit.php:1562
+#: inc/form-submit.php:1563
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
-#: inc/form-submit.php:1566
+#: inc/form-submit.php:1567
 msgid "Unknown Captcha"
 msgstr ""
 
-#: inc/form-submit.php:1567
+#: inc/form-submit.php:1568
 msgid "Invalid captcha type."
 msgstr ""
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1580
+#: inc/form-submit.php:1581
 #, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr ""
 
 #: inc/form-templates.php:829
-#: inc/form-templates.php:3172
+#: inc/form-templates.php:3174
 msgid "Hi {form:full-name},"
 msgstr ""
 
@@ -2588,141 +2609,141 @@ msgstr ""
 msgid "Connect Stripe"
 msgstr ""
 
-#: inc/form-templates.php:2542
+#: inc/form-templates.php:2544
 msgid "Connect PayPal"
 msgstr ""
 
-#: inc/form-templates.php:2551
+#: inc/form-templates.php:2553
 msgid "Add a Google Maps API key"
 msgstr ""
 
-#: inc/form-templates.php:2572
+#: inc/form-templates.php:2574
 msgid "Update SureForms Premium to use this template."
 msgstr ""
 
-#: inc/form-templates.php:2573
+#: inc/form-templates.php:2575
 msgid "This template needs a SureForms Premium plan."
 msgstr ""
 
-#: inc/form-templates.php:2598
+#: inc/form-templates.php:2600
 msgid "(live poll results)"
 msgstr ""
 
-#: inc/form-templates.php:2622
+#: inc/form-templates.php:2624
 msgid "Order payment"
 msgstr ""
 
-#: inc/form-templates.php:2680
+#: inc/form-templates.php:2682
 msgid "Pass"
 msgstr ""
 
-#: inc/form-templates.php:2680
+#: inc/form-templates.php:2682
 msgid "Fail"
 msgstr ""
 
 #. translators: 1: points scored, 2: most points.
-#: inc/form-templates.php:2684
+#: inc/form-templates.php:2686
 #, php-format
 msgid "%1$s of %2$s points"
 msgstr ""
 
 #. translators: 1: right answers, 2: questions.
-#: inc/form-templates.php:2686
+#: inc/form-templates.php:2688
 #, php-format
 msgid "%1$d of %2$d answers correct"
 msgstr ""
 
-#: inc/form-templates.php:2795
+#: inc/form-templates.php:2797
 msgid "Contact & Leads"
 msgstr ""
 
-#: inc/form-templates.php:2799
+#: inc/form-templates.php:2801
 msgid "Bookings & Events"
 msgstr ""
 
-#: inc/form-templates.php:2803
+#: inc/form-templates.php:2805
 msgid "Feedback"
 msgstr ""
 
-#: inc/form-templates.php:2807
+#: inc/form-templates.php:2809
 msgid "Sign-ups & Applications"
 msgstr ""
 
-#: inc/form-templates.php:2811
+#: inc/form-templates.php:2813
 msgid "Support"
 msgstr ""
 
-#: inc/form-templates.php:2815
+#: inc/form-templates.php:2817
 msgid "Calculators"
 msgstr ""
 
-#: inc/form-templates.php:2819
+#: inc/form-templates.php:2821
 msgid "Quizzes & Polls"
 msgstr ""
 
-#: inc/form-templates.php:2827
+#: inc/form-templates.php:2829
 msgid "Agreements"
 msgstr ""
 
-#: inc/form-templates.php:2831
+#: inc/form-templates.php:2833
 msgid "Accounts & Submissions"
 msgstr ""
 
-#: inc/form-templates.php:2974
+#: inc/form-templates.php:2976
 msgid "Confirmation to the submitter"
 msgstr ""
 
-#: inc/form-templates.php:2992
+#: inc/form-templates.php:2994
 msgid "Step 1"
 msgstr ""
 
-#: inc/form-templates.php:3047
-#: inc/form-templates.php:3048
+#: inc/form-templates.php:3049
+#: inc/form-templates.php:3050
 #: inc/form-templates/catalog/quizzes.php:282
 msgid "Bright Bakery"
 msgstr ""
 
-#: inc/form-templates.php:3049
+#: inc/form-templates.php:3051
 msgid "Question about my order"
 msgstr ""
 
-#: inc/form-templates.php:3052
+#: inc/form-templates.php:3054
 msgid "Oak dining table"
 msgstr ""
 
-#: inc/form-templates.php:3053
+#: inc/form-templates.php:3055
 msgid "Marketing Manager"
 msgstr ""
 
-#: inc/form-templates.php:3054
+#: inc/form-templates.php:3056
 msgid "The checkout button does nothing"
 msgstr ""
 
-#: inc/form-templates.php:3055
+#: inc/form-templates.php:3057
 #: inc/form-templates/catalog/quizzes.php:705
 msgid "Pricing"
 msgstr ""
 
-#: inc/form-templates.php:3079
+#: inc/form-templates.php:3081
 msgid "A short message from the visitor."
 msgstr ""
 
-#: inc/form-templates.php:3080
+#: inc/form-templates.php:3082
 #: inc/form-templates/catalog/feedback.php:180
 #: inc/form-templates/catalog/quizzes.php:416
 #: inc/form-templates/catalog/signup.php:79
 msgid "Yes"
 msgstr ""
 
-#: inc/form-templates.php:3084
+#: inc/form-templates.php:3086
 msgid "e.g."
 msgstr ""
 
-#: inc/form-templates.php:3097
+#: inc/form-templates.php:3099
 msgid "Their answer"
 msgstr ""
 
-#: inc/form-templates.php:3191
+#: inc/form-templates.php:3193
 msgid "Thanks,"
 msgstr ""
 
@@ -8010,10 +8031,6 @@ msgstr ""
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr ""
 
-#: inc/helper.php:73
-msgid "This field is required."
-msgstr ""
-
 #: inc/helper.php:74
 msgid "Value needs to be unique."
 msgstr ""
@@ -8117,19 +8134,19 @@ msgstr ""
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr ""
 
-#: inc/helper.php:2248
+#: inc/helper.php:2272
 msgid "Invalid nonce action or name."
 msgstr ""
 
-#: inc/helper.php:2273
+#: inc/helper.php:2297
 msgid "Invalid request type."
 msgstr ""
 
-#: inc/helper.php:2281
+#: inc/helper.php:2305
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: inc/helper.php:2441
+#: inc/helper.php:2465
 msgid "Blank Form"
 msgstr ""
 
@@ -9061,7 +9078,7 @@ msgstr ""
 
 #: inc/payments/front-end.php:99
 #: inc/payments/front-end.php:306
-#: inc/payments/payment-helper.php:609
+#: inc/payments/payment-helper.php:627
 msgid "Invalid form configuration."
 msgstr ""
 
@@ -9334,494 +9351,494 @@ msgstr ""
 msgid "Failed to create Stripe guest customer."
 msgstr ""
 
-#: inc/payments/payment-helper.php:202
+#: inc/payments/payment-helper.php:220
 msgid "US Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:207
+#: inc/payments/payment-helper.php:225
 msgid "Euro"
 msgstr ""
 
-#: inc/payments/payment-helper.php:212
+#: inc/payments/payment-helper.php:230
 msgid "British Pound"
 msgstr ""
 
-#: inc/payments/payment-helper.php:217
+#: inc/payments/payment-helper.php:235
 msgid "Japanese Yen"
 msgstr ""
 
-#: inc/payments/payment-helper.php:222
+#: inc/payments/payment-helper.php:240
 msgid "Australian Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:227
+#: inc/payments/payment-helper.php:245
 msgid "Canadian Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:232
+#: inc/payments/payment-helper.php:250
 msgid "Swiss Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:237
+#: inc/payments/payment-helper.php:255
 msgid "Chinese Yuan"
 msgstr ""
 
-#: inc/payments/payment-helper.php:242
+#: inc/payments/payment-helper.php:260
 msgid "Swedish Krona"
 msgstr ""
 
-#: inc/payments/payment-helper.php:247
+#: inc/payments/payment-helper.php:265
 msgid "New Zealand Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:252
+#: inc/payments/payment-helper.php:270
 msgid "Mexican Peso"
 msgstr ""
 
-#: inc/payments/payment-helper.php:257
+#: inc/payments/payment-helper.php:275
 msgid "Singapore Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:262
+#: inc/payments/payment-helper.php:280
 msgid "Hong Kong Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:267
+#: inc/payments/payment-helper.php:285
 msgid "Norwegian Krone"
 msgstr ""
 
-#: inc/payments/payment-helper.php:272
+#: inc/payments/payment-helper.php:290
 msgid "Polish Złoty"
 msgstr ""
 
-#: inc/payments/payment-helper.php:277
+#: inc/payments/payment-helper.php:295
 msgid "South Korean Won"
 msgstr ""
 
-#: inc/payments/payment-helper.php:282
+#: inc/payments/payment-helper.php:300
 msgid "Turkish Lira"
 msgstr ""
 
-#: inc/payments/payment-helper.php:287
+#: inc/payments/payment-helper.php:305
 msgid "Russian Ruble"
 msgstr ""
 
-#: inc/payments/payment-helper.php:292
+#: inc/payments/payment-helper.php:310
 msgid "Indian Rupee"
 msgstr ""
 
-#: inc/payments/payment-helper.php:297
+#: inc/payments/payment-helper.php:315
 msgid "Brazilian Real"
 msgstr ""
 
-#: inc/payments/payment-helper.php:302
+#: inc/payments/payment-helper.php:320
 msgid "South African Rand"
 msgstr ""
 
-#: inc/payments/payment-helper.php:307
+#: inc/payments/payment-helper.php:325
 msgid "UAE Dirham"
 msgstr ""
 
-#: inc/payments/payment-helper.php:312
+#: inc/payments/payment-helper.php:330
 msgid "Philippine Peso"
 msgstr ""
 
-#: inc/payments/payment-helper.php:317
+#: inc/payments/payment-helper.php:335
 msgid "Indonesian Rupiah"
 msgstr ""
 
-#: inc/payments/payment-helper.php:322
+#: inc/payments/payment-helper.php:340
 msgid "Malaysian Ringgit"
 msgstr ""
 
-#: inc/payments/payment-helper.php:327
+#: inc/payments/payment-helper.php:345
 msgid "Thai Baht"
 msgstr ""
 
-#: inc/payments/payment-helper.php:332
+#: inc/payments/payment-helper.php:350
 msgid "Burundian Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:337
+#: inc/payments/payment-helper.php:355
 msgid "Chilean Peso"
 msgstr ""
 
-#: inc/payments/payment-helper.php:342
+#: inc/payments/payment-helper.php:360
 msgid "Djiboutian Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:347
+#: inc/payments/payment-helper.php:365
 msgid "Guinean Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:352
+#: inc/payments/payment-helper.php:370
 msgid "Comorian Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:357
+#: inc/payments/payment-helper.php:375
 msgid "Malagasy Ariary"
 msgstr ""
 
-#: inc/payments/payment-helper.php:362
+#: inc/payments/payment-helper.php:380
 msgid "Paraguayan Guaraní"
 msgstr ""
 
-#: inc/payments/payment-helper.php:367
+#: inc/payments/payment-helper.php:385
 msgid "Rwandan Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:372
+#: inc/payments/payment-helper.php:390
 msgid "Ugandan Shilling"
 msgstr ""
 
-#: inc/payments/payment-helper.php:377
+#: inc/payments/payment-helper.php:395
 msgid "Vietnamese Đồng"
 msgstr ""
 
-#: inc/payments/payment-helper.php:382
+#: inc/payments/payment-helper.php:400
 msgid "Vanuatu Vatu"
 msgstr ""
 
-#: inc/payments/payment-helper.php:387
+#: inc/payments/payment-helper.php:405
 msgid "Central African CFA Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:392
+#: inc/payments/payment-helper.php:410
 msgid "West African CFA Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:397
+#: inc/payments/payment-helper.php:415
 msgid "CFP Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:493
+#: inc/payments/payment-helper.php:511
 msgid "An unknown error occurred. Please try again or contact the site administrator."
 msgstr ""
 
-#: inc/payments/payment-helper.php:495
+#: inc/payments/payment-helper.php:513
 msgid "Payment is currently unavailable. Please contact the site administrator."
 msgstr ""
 
-#: inc/payments/payment-helper.php:496
+#: inc/payments/payment-helper.php:514
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the payment amount."
 msgstr ""
 
-#: inc/payments/payment-helper.php:497
+#: inc/payments/payment-helper.php:515
 msgid "Invalid payment amount"
 msgstr ""
 
-#: inc/payments/payment-helper.php:498
+#: inc/payments/payment-helper.php:516
 msgid "Payment amount must be at least {symbol}{amount}."
 msgstr ""
 
-#: inc/payments/payment-helper.php:499
+#: inc/payments/payment-helper.php:517
 msgid "This form requires a payment. Please complete the payment and submit again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:502
+#: inc/payments/payment-helper.php:520
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the customer name field."
 msgstr ""
 
-#: inc/payments/payment-helper.php:503
+#: inc/payments/payment-helper.php:521
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the customer email field."
 msgstr ""
 
-#: inc/payments/payment-helper.php:504
+#: inc/payments/payment-helper.php:522
 msgid "Please enter your name."
 msgstr ""
 
-#: inc/payments/payment-helper.php:505
+#: inc/payments/payment-helper.php:523
 msgid "Please enter your email."
 msgstr ""
 
-#: inc/payments/payment-helper.php:508
+#: inc/payments/payment-helper.php:526
 msgid "Payment failed"
 msgstr ""
 
-#: inc/payments/payment-helper.php:509
+#: inc/payments/payment-helper.php:527
 msgid "Payment successful"
 msgstr ""
 
-#: inc/payments/payment-helper.php:510
+#: inc/payments/payment-helper.php:528
 msgid "Unable to complete payment. Please try again or contact support."
 msgstr ""
 
-#: inc/payments/payment-helper.php:513
-#: inc/payments/payment-helper.php:514
+#: inc/payments/payment-helper.php:531
+#: inc/payments/payment-helper.php:532
 msgid "Your card was declined. Please try a different payment method or contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:515
+#: inc/payments/payment-helper.php:533
 msgid "Your card has insufficient funds. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:516
+#: inc/payments/payment-helper.php:534
 msgid "Your card was declined because it has been reported as lost. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:517
+#: inc/payments/payment-helper.php:535
 msgid "Your card was declined because it has been reported as stolen. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:518
+#: inc/payments/payment-helper.php:536
 msgid "Your card has expired. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:519
-#: inc/payments/payment-helper.php:540
+#: inc/payments/payment-helper.php:537
+#: inc/payments/payment-helper.php:558
 msgid "Your card was declined. Please contact your bank for more information."
 msgstr ""
 
-#: inc/payments/payment-helper.php:520
+#: inc/payments/payment-helper.php:538
 msgid "Your card was declined due to restrictions. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:521
+#: inc/payments/payment-helper.php:539
 msgid "Your card was declined due to a security violation. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:522
+#: inc/payments/payment-helper.php:540
 msgid "Your card does not support this type of purchase. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:523
+#: inc/payments/payment-helper.php:541
 msgid "A stop payment order has been placed on this card. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:524
+#: inc/payments/payment-helper.php:542
 msgid "A test card was used in a live environment. Please use a real card."
 msgstr ""
 
-#: inc/payments/payment-helper.php:525
+#: inc/payments/payment-helper.php:543
 msgid "Your card has exceeded its withdrawal limit. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:526
+#: inc/payments/payment-helper.php:544
 msgid "Your card's security code is incorrect. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:527
+#: inc/payments/payment-helper.php:545
 msgid "Your card number is incorrect. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:528
+#: inc/payments/payment-helper.php:546
 msgid "Your card's security code is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:529
+#: inc/payments/payment-helper.php:547
 msgid "Your card's expiration month is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:530
+#: inc/payments/payment-helper.php:548
 msgid "Your card's expiration year is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:531
+#: inc/payments/payment-helper.php:549
 msgid "Your card number is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:532
+#: inc/payments/payment-helper.php:550
 msgid "Unable to process card. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:533
+#: inc/payments/payment-helper.php:551
 msgid "Unable to process transaction. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:534
+#: inc/payments/payment-helper.php:552
 msgid "Your card is not supported for this transaction. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:535
+#: inc/payments/payment-helper.php:553
 msgid "Your card does not support the currency used for this transaction. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:536
+#: inc/payments/payment-helper.php:554
 msgid "A transaction with identical details was submitted recently. Please wait a moment and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:537
+#: inc/payments/payment-helper.php:555
 msgid "The account associated with your card is invalid. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:538
+#: inc/payments/payment-helper.php:556
 msgid "The payment amount is invalid. Please contact the site administrator."
 msgstr ""
 
-#: inc/payments/payment-helper.php:539
+#: inc/payments/payment-helper.php:557
 msgid "Unable to reach card issuer. Please try again later."
 msgstr ""
 
-#: inc/payments/payment-helper.php:541
+#: inc/payments/payment-helper.php:559
 msgid "Your card information needs to be updated. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:542
+#: inc/payments/payment-helper.php:560
 msgid "The card cannot be used for this transaction. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:543
+#: inc/payments/payment-helper.php:561
 msgid "The transaction is not permitted. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:544
+#: inc/payments/payment-helper.php:562
 msgid "Your card requires offline PIN authentication. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:545
+#: inc/payments/payment-helper.php:563
 msgid "Your card requires PIN authentication. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:546
+#: inc/payments/payment-helper.php:564
 msgid "You have exceeded the maximum number of PIN attempts. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:547
+#: inc/payments/payment-helper.php:565
 msgid "All authorizations for this card have been revoked. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:548
+#: inc/payments/payment-helper.php:566
 msgid "The authorization for this transaction has been revoked. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:549
+#: inc/payments/payment-helper.php:567
 msgid "This transaction is not allowed. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:550
+#: inc/payments/payment-helper.php:568
 msgid "Unable to process transaction. Please try again later."
 msgstr ""
 
-#: inc/payments/payment-helper.php:551
+#: inc/payments/payment-helper.php:569
 msgid "Your card was declined. Your request was in live mode, but used a known test card."
 msgstr ""
 
-#: inc/payments/payment-helper.php:552
+#: inc/payments/payment-helper.php:570
 msgid "Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing."
 msgstr ""
 
-#: inc/payments/payment-helper.php:555
+#: inc/payments/payment-helper.php:573
 msgid "SureForms Subscription"
 msgstr ""
 
-#: inc/payments/payment-helper.php:556
+#: inc/payments/payment-helper.php:574
 msgid "SureForms Payment"
 msgstr ""
 
-#: inc/payments/payment-helper.php:558
+#: inc/payments/payment-helper.php:576
 msgid "SureForms Customer"
 msgstr ""
 
-#: inc/payments/payment-helper.php:560
+#: inc/payments/payment-helper.php:578
 msgid "Complete the form to view the amount."
 msgstr ""
 
-#: inc/payments/payment-helper.php:561
+#: inc/payments/payment-helper.php:579
 msgid "Unable to create payment. Please contact support."
 msgstr ""
 
-#: inc/payments/payment-helper.php:578
+#: inc/payments/payment-helper.php:596
 msgid "Unknown error"
 msgstr ""
 
-#: inc/payments/payment-helper.php:617
+#: inc/payments/payment-helper.php:635
 msgid "Payment configuration not found for this form."
 msgstr ""
 
 #. translators: 1: expected currency, 2: received currency
-#: inc/payments/payment-helper.php:628
+#: inc/payments/payment-helper.php:646
 #, php-format
 msgid "Currency mismatch: expected %1$s, received %2$s."
 msgstr ""
 
-#: inc/payments/payment-helper.php:641
+#: inc/payments/payment-helper.php:659
 msgid "Payment type does not match the form configuration."
 msgstr ""
 
-#: inc/payments/payment-helper.php:660
-#: inc/payments/payment-helper.php:1417
+#: inc/payments/payment-helper.php:678
+#: inc/payments/payment-helper.php:1435
 msgid "Unsupported payment amount type."
 msgstr ""
 
 #. translators: 1: expected amount with currency
-#: inc/payments/payment-helper.php:674
+#: inc/payments/payment-helper.php:692
 #, php-format
 msgid "Payment amount must be exactly %1$s."
 msgstr ""
 
 #. translators: 1: minimum amount with currency
-#: inc/payments/payment-helper.php:685
+#: inc/payments/payment-helper.php:703
 #, php-format
 msgid "Payment amount must be at least %1$s."
 msgstr ""
 
-#: inc/payments/payment-helper.php:762
+#: inc/payments/payment-helper.php:780
 msgid "Invalid payment verification parameters."
 msgstr ""
 
-#: inc/payments/payment-helper.php:773
+#: inc/payments/payment-helper.php:791
 msgid "Payment verification failed. Invalid payment intent."
 msgstr ""
 
-#: inc/payments/payment-helper.php:785
+#: inc/payments/payment-helper.php:803
 msgid "Payment verification failed. Payment type mismatch."
 msgstr ""
 
-#: inc/payments/payment-helper.php:909
+#: inc/payments/payment-helper.php:927
 #: modules/gutenberg/icons/icons-v6-3.php:1812
 #: assets/build/payments.js:172
 msgid "Stripe"
 msgstr ""
 
-#: inc/payments/payment-helper.php:910
+#: inc/payments/payment-helper.php:928
 msgid "Pay with credit or debit card"
 msgstr ""
 
-#: inc/payments/payment-helper.php:1320
-#: inc/payments/payment-helper.php:1517
-#: inc/payments/payment-helper.php:1554
+#: inc/payments/payment-helper.php:1338
+#: inc/payments/payment-helper.php:1535
+#: inc/payments/payment-helper.php:1572
 msgid "Variable amount field configuration not found."
 msgstr ""
 
-#: inc/payments/payment-helper.php:1341
+#: inc/payments/payment-helper.php:1359
 msgid "No payment options are configured for this field."
 msgstr ""
 
 #. translators: %s: currency code
-#: inc/payments/payment-helper.php:1367
+#: inc/payments/payment-helper.php:1385
 msgid "Invalid payment amount. Please select a valid amount from the available options."
 msgstr ""
 
 #. translators: %1$s: expected amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1403
+#: inc/payments/payment-helper.php:1421
 msgid "Payment configuration not found."
 msgstr ""
 
 #. translators: %1$s: expected amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1430
-#: inc/payments/payment-helper.php:1541
-#: inc/payments/payment-helper.php:1567
-#: inc/payments/payment-helper.php:1602
+#: inc/payments/payment-helper.php:1448
+#: inc/payments/payment-helper.php:1559
+#: inc/payments/payment-helper.php:1585
+#: inc/payments/payment-helper.php:1620
 #, php-format
 msgid "Payment amount mismatch. Expected %1$s, received %2$s."
 msgstr ""
 
 #. translators: %1$s: minimum amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1482
-#: inc/payments/payment-helper.php:1642
+#: inc/payments/payment-helper.php:1500
+#: inc/payments/payment-helper.php:1660
 #, php-format
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr ""
 
-#: inc/payments/payment-helper.php:1494
-#: inc/payments/payment-helper.php:1532
-#: inc/payments/payment-helper.php:1580
-#: inc/payments/payment-helper.php:1627
+#: inc/payments/payment-helper.php:1512
+#: inc/payments/payment-helper.php:1550
+#: inc/payments/payment-helper.php:1598
+#: inc/payments/payment-helper.php:1645
 msgid "Payment amount could not be verified for this form. Please edit and re-save the form, then try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:1506
-#: inc/payments/payment-helper.php:1594
+#: inc/payments/payment-helper.php:1524
+#: inc/payments/payment-helper.php:1612
 msgid "Variable amount field value is required."
 msgstr ""
 
@@ -10784,45 +10801,45 @@ msgid "Invalid action. Use \"trash\" or \"restore\"."
 msgstr ""
 
 #: inc/rest-api.php:814
-#: inc/rest-api.php:959
+#: inc/rest-api.php:963
 msgid "Entry ID is required."
 msgstr ""
 
-#: inc/rest-api.php:1105
+#: inc/rest-api.php:1109
 msgid "Select at least one form and specify an action."
 msgstr ""
 
-#: inc/rest-api.php:1120
+#: inc/rest-api.php:1124
 msgid "Form not found or is not a valid form type."
 msgstr ""
 
-#: inc/rest-api.php:1132
+#: inc/rest-api.php:1136
 msgid "This form is already in the trash."
 msgstr ""
 
-#: inc/rest-api.php:1143
+#: inc/rest-api.php:1147
 msgid "This form is not in the trash."
 msgstr ""
 
-#: inc/rest-api.php:1159
+#: inc/rest-api.php:1163
 msgid "Use the restore action to recover a trashed form before switching it to draft."
 msgstr ""
 
-#: inc/rest-api.php:1164
+#: inc/rest-api.php:1168
 msgid "This form is already a draft."
 msgstr ""
 
-#: inc/rest-api.php:1179
+#: inc/rest-api.php:1183
 msgid "Invalid action."
 msgstr ""
 
 #. translators: %s: action name
-#: inc/rest-api.php:1194
+#: inc/rest-api.php:1198
 #, php-format
 msgid "Failed to %s this form. Please try again."
 msgstr ""
 
-#: inc/rest-api.php:1968
+#: inc/rest-api.php:1972
 msgid " (Copy)"
 msgstr ""
 
