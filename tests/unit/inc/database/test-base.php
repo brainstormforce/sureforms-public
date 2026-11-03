@@ -179,6 +179,33 @@ class Test_Database_Base extends TestCase {
 	}
 
 	// ---------------------------------------------------------------
+	// encode_by_datatype
+	// ---------------------------------------------------------------
+
+	/**
+	 * encode_by_datatype() casts each value to the storage shape its data type
+	 * calls for: scalars to string / int / bool, an array to a JSON string, and
+	 * a datetime straight through.
+	 */
+	public function test_encode_by_datatype() {
+		$encode = new \ReflectionMethod( $this->entries_table, 'encode_by_datatype' );
+		$encode->setAccessible( true );
+
+		$this->assertSame( '42', $encode->invoke( $this->entries_table, 42, 'string' ) );
+		$this->assertSame( 42, $encode->invoke( $this->entries_table, '42', 'number' ) );
+		$this->assertTrue( $encode->invoke( $this->entries_table, 1, 'boolean' ) );
+		$this->assertFalse( $encode->invoke( $this->entries_table, 0, 'boolean' ) );
+
+		// 'array' is JSON-encoded so it round-trips back to the same array.
+		$json = $encode->invoke( $this->entries_table, [ 'a' => 1 ], 'array' );
+		$this->assertIsString( $json );
+		$this->assertSame( [ 'a' => 1 ], json_decode( $json, true ) );
+
+		// 'datetime' is already SQL-shaped, so it is returned untouched.
+		$this->assertSame( '2026-01-01 00:00:00', $encode->invoke( $this->entries_table, '2026-01-01 00:00:00', 'datetime' ) );
+	}
+
+	// ---------------------------------------------------------------
 	// get_total_count
 	// ---------------------------------------------------------------
 
