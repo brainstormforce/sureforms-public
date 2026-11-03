@@ -262,7 +262,7 @@ class Test_Form_Templates_UI extends TestCase {
 
 	public function test_setup_skips_pro_steps_without_pro_and_reads_maps_key() {
 		$ids = array_column( Form_Templates::get_setup( [ 'setup' => [ 'paypal', 'google_maps' ] ] ), 'done', 'id' );
-		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
+		if ( ! class_exists( '\SRFM_Pro\Inc\Payments\PayPal\Helper' ) && ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
 			$this->assertArrayNotHasKey( 'paypal', $ids );
 		}
 		$this->assertFalse( $ids['google_maps'] );
