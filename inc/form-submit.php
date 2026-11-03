@@ -389,7 +389,8 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+		$raw_form_data = $request->get_params();
+		$form_data     = Helper::sanitize_by_field_type( $raw_form_data );
 
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error( [ 'message' => __( 'Form data is not found.', 'sureforms' ) ] );
@@ -450,7 +451,7 @@ class Form_Submit {
 		// rebuilt form (see #2665) stay fully readable on the read/export paths.
 		$form_data = Field_Validation::strip_unknown_field_keys( $form_data, $current_form_id );
 
-		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id );
+		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id, is_array( $raw_form_data ) ? $raw_form_data : [] );
 
 		if ( ! empty( $validated_form_data ) ) {
 			// Get the first error message to display as the main message.

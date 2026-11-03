@@ -433,7 +433,10 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Fix: After-submission actions no longer run twice for the same entry when requests overlap.
 * Fix: Apple Pay and Google Pay now show the form's real amount instead of 120.00, and stay hidden when turned off in your Stripe dashboard.
 * Fix: Custom smart tags now resolve in the To, Reply-To, Cc, Bcc and From fields of email notifications.
-* Fix: Security hardening improvements.
+* Fix: Required fields, email format, number range, choice options and character limits are now also checked on the server, so a submission that skips the form's checks is rejected.
+* Fix: Emoji in answers are now saved on sites whose database tables cannot store them directly.
+* Fix: Text typed into a plain Textarea now shows as typed in the entry details instead of being rendered as HTML.
+* Fix: This update addressed a security bug. Props to fccsec.dev from Patchstack for reporting it responsibly to our team.
 ### 2.13.0 - 26th October 2026 ###
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
