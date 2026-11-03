@@ -308,6 +308,62 @@ class Test_Field_Validation extends TestCase {
 	}
 
 	/**
+	 * Test get_or_migrate_block_config_for_legacy_form rebuilds a payment config stored with an
+	 * amount type the payment validators refuse (the AI builder could save 'user-choice').
+	 */
+	public function test_get_or_migrate_block_config_for_legacy_form_normalizes_stale_amount_type() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Test Form',
+				'post_content' => '<!-- wp:srfm/payment {"block_id":"pay1","slug":"payment","paymentType":"both","amountType":"user-choice","fixedAmount":40,"oneTimeAmountType":"user-choice","oneTimeFixedAmount":40,"subscriptionAmountType":"variable","subscriptionMinimumAmount":5} /-->',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay1' => [
+					'block_name'               => 'srfm/payment',
+					'payment_type'             => 'both',
+					'amount_type'              => 'user-choice',
+					'fixed_amount'             => 40.0,
+					'one_time_amount_type'     => 'user-choice',
+					'subscription_amount_type' => 'variable',
+				],
+			]
+		);
+
+		$result = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+
+		$this->assertSame( 'fixed', $result['pay1']['amount_type'] );
+		$this->assertSame( 'fixed', $result['pay1']['one_time_amount_type'] );
+		$this->assertSame( 'variable', $result['pay1']['subscription_amount_type'], 'A supported type is kept.' );
+		$this->assertSame( 40.0, $result['pay1']['fixed_amount'] );
+		$this->assertSame( $result, get_post_meta( $form_id, '_srfm_block_config', true ), 'The rebuilt config is stored, so the next read is not stale.' );
+	}
+
+	/**
+	 * Test has_stale_config flags only configs that need a rebuild.
+	 */
+	public function test_has_stale_config() {
+		$method = new ReflectionMethod( Field_Validation::class, 'has_stale_config' );
+		$method->setAccessible( true );
+
+		$this->assertFalse( $method->invoke( null, [] ) );
+		$this->assertFalse( $method->invoke( null, [ 'n' => [ 'block_name' => 'srfm/number', 'read_only' => false ] ] ) );
+		$this->assertTrue( $method->invoke( null, [ 'n' => [ 'block_name' => 'srfm/number' ] ] ), 'A number config without read_only is stale.' );
+		$this->assertFalse( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed' ] ] ) );
+		$this->assertFalse( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment' ] ] ), 'An absent amount type is read as fixed by the validators.' );
+		foreach ( [ 'user-choice', '', 'foo', null, 1 ] as $type ) {
+			$this->assertTrue( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => $type ] ] ), 'Unsupported amount type: ' . var_export( $type, true ) );
+		}
+		$this->assertTrue( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed', 'subscription_amount_type' => 'user-choice' ] ] ), 'Each per-type amount type is checked.' );
+		$this->assertFalse( $method->invoke( null, [ 'x' => 'not-an-array', 'y' => [ 'slug' => 'no-block-name' ] ] ) );
+	}
+
+	/**
 	 * Test get_or_migrate_block_config_for_legacy_form keeps a stale config it cannot rebuild.
 	 */
 	public function test_get_or_migrate_block_config_for_legacy_form_keeps_stale_config_without_content() {

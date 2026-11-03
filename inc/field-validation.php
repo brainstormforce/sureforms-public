@@ -155,7 +155,7 @@ class Field_Validation {
 		// Example: $block_config = [ 'block-1' => [ ... ], 'block-2' => [ ... ] ].
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 		$stored       = ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
-		if ( null !== $stored && ! self::has_stale_number_config( $stored ) ) {
+		if ( null !== $stored && ! self::has_stale_config( $stored ) ) {
 			// If it exists and is an array, return it directly (no migration needed).
 			// Example: Returning the existing $block_config array.
 			return $stored;
@@ -1204,17 +1204,35 @@ class Field_Validation {
 	}
 
 	/**
-	 * Whether a stored block config holds a number config saved before process_number_block()
-	 * recorded read_only (and with it defaultValue and the minValue/maxValue range).
+	 * Whether a stored block config has to be rebuilt from the form's blocks.
+	 *
+	 * Stale when it holds a number config saved before process_number_block()
+	 * recorded read_only (and with it defaultValue and the minValue/maxValue
+	 * range), or a payment config whose amount type is outside
+	 * Payment_Helper::SUPPORTED_AMOUNT_TYPES. The payment validators refuse
+	 * such a type, and process_payment_block() normalises it, so the rebuild
+	 * gives the form the amount type its editor shows.
 	 *
 	 * @param array<mixed> $block_config Stored block config.
 	 * @since 2.13.1
 	 * @return bool
 	 */
-	private static function has_stale_number_config( $block_config ) {
+	private static function has_stale_config( $block_config ) {
 		foreach ( $block_config as $config ) {
-			if ( is_array( $config ) && isset( $config['block_name'] ) && 'srfm/number' === $config['block_name'] && ! array_key_exists( 'read_only', $config ) ) {
+			if ( ! is_array( $config ) || ! isset( $config['block_name'] ) ) {
+				continue;
+			}
+
+			if ( 'srfm/number' === $config['block_name'] && ! array_key_exists( 'read_only', $config ) ) {
 				return true;
+			}
+
+			if ( 'srfm/payment' === $config['block_name'] ) {
+				foreach ( [ 'amount_type', 'one_time_amount_type', 'subscription_amount_type' ] as $key ) {
+					if ( array_key_exists( $key, $config ) && ! in_array( $config[ $key ], Payment_Helper::SUPPORTED_AMOUNT_TYPES, true ) ) {
+						return true;
+					}
+				}
 			}
 		}
 
