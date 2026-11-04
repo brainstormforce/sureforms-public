@@ -654,6 +654,7 @@ class Generate_Form_Markup {
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
 			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
+			$srfm_cf_on_interaction     = false;
 			$srfm_hcaptcha_site_key     = '';
 
 			$google_captcha_site_key = '';
@@ -667,6 +668,7 @@ class Generate_Form_Markup {
 			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
 				$srfm_cf_turnstile_site_key = $global_setting_options['srfm_cf_turnstile_site_key'] ?? '';
 				$srfm_cf_appearance_mode    = $global_setting_options['srfm_cf_appearance_mode'] ?? 'auto';
+				$srfm_cf_on_interaction     = ! empty( $global_setting_options['srfm_cf_turnstile_on_interaction'] );
 			}
 
 			if ( is_array( $global_setting_options ) && 'hcaptcha' === $security_type ) {
@@ -950,6 +952,7 @@ class Generate_Form_Markup {
 			// cannot emit an orphaned pill. Works for every embed method (block,
 			// shortcode, widget) because they all render through this function.
 			self::render_edit_form_button( (int) $id );
+			self::render_unpublished_notice( (int) $id );
 
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
@@ -1008,7 +1011,7 @@ class Generate_Form_Markup {
 						}
 
 						if ( 'cf-turnstile' === $security_type ) {
-							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
+							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key, $srfm_cf_on_interaction );
 						}
 
 						if ( 'hcaptcha' === $security_type ) {
@@ -1157,16 +1160,29 @@ class Generate_Form_Markup {
 	 *
 	 * @param string $srfm_cf_appearance_mode appearance mode.
 	 * @param string $srfm_cf_turnstile_site_key site key.
+	 * @param bool   $srfm_cf_on_interaction Run the challenge on first interaction instead of on load.
 	 * @since 1.7.0
 	 * @return void
 	 */
-	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
+	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key, $srfm_cf_on_interaction = false ) {
 		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
 			// Cloudflare Turnstile script.
+			//
+			// Default: the implicit renderer picks up .cf-turnstile and runs the challenge
+			// as soon as api.js executes. With the on-interaction option the script is asked
+			// for explicit rendering instead, so frontend.js owns render() and execute() and
+			// nothing runs until the visitor touches the form. api.js itself still loads with
+			// the page, which is what Cloudflare recommends (execution modes), and the token
+			// is still verified server side on every submission either way.
+			$srfm_cf_api_url = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+			if ( $srfm_cf_on_interaction ) {
+				$srfm_cf_api_url = add_query_arg( 'render', 'explicit', $srfm_cf_api_url );
+			}
+
 			// phpcs:disable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile must be loaded from Cloudflare's servers for token verification; the version is controlled by Cloudflare.
 			wp_enqueue_script(
 				SRFM_SLUG . '-cf-turnstile',
-				'https://challenges.cloudflare.com/turnstile/v0/api.js',
+				$srfm_cf_api_url,
 				[],
 				null,
 				[
@@ -1176,7 +1192,7 @@ class Generate_Form_Markup {
 			// phpcs:enable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent
 			?>
 			<!-- The callback methods below are available on frontend.js. onTurnstileError displays and error in place of recaptcha dialog.  -->
-		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"<?php echo $srfm_cf_on_interaction ? ' data-srfm-execution="execute"' : ''; ?>></div>
 			<?php
 		} else {
 			Helper::render_missing_sitekey_error( 'Turnstile' );
@@ -1562,6 +1578,37 @@ class Generate_Form_Markup {
 				<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'sureforms' ); ?></span>
 			</a>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Tell someone who can edit a form that it does not accept submissions yet.
+	 *
+	 * Submit_Token::verify() refuses every form that is not published, so a draft
+	 * preview renders a form that cannot be submitted. Printed only for users who
+	 * can edit this form; visitors receive no extra markup.
+	 *
+	 * @param int $form_id Form post ID.
+	 *
+	 * @return void
+	 * @since 2.13.1
+	 */
+	private static function render_unpublished_notice( $form_id ) {
+		if ( SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) || ! current_user_can( 'edit_post', $form_id ) || Submit_Token::is_form_open( $form_id ) ) {
+			return;
+		}
+
+		// Same inline-only handle pattern as the Edit Form pill: deduped across forms
+		// and printed in the footer, so no style attribute meets a strict CSP.
+		if ( ! wp_style_is( 'srfm-unpublished-notice', 'registered' ) ) {
+			wp_register_style( 'srfm-unpublished-notice', false, [], SRFM_VER );
+			wp_add_inline_style( 'srfm-unpublished-notice', '.srfm-unpublished-notice{margin:0 0 12px;padding:8px 12px;border-inline-start:4px solid #dba617;background:#fcf9e8;color:#1e293b;font-size:14px}' );
+		}
+		wp_enqueue_style( 'srfm-unpublished-notice' );
+		?>
+		<p class="srfm-unpublished-notice" role="status">
+			<?php esc_html_e( 'Submissions are disabled until this form is published.', 'sureforms' ); ?>
+		</p>
 		<?php
 	}
 

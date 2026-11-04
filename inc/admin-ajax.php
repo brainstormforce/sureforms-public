@@ -490,7 +490,8 @@ class Admin_Ajax {
 		// Get and sanitize the file parameter.
 		$file = isset( $_GET['file'] ) ? sanitize_file_name( wp_unslash( $_GET['file'] ) ) : '';
 
-		if ( empty( $file ) ) {
+		// Only files named by an export (every one starts with `srfm-`) are served.
+		if ( empty( $file ) || 0 !== strpos( $file, 'srfm-' ) ) {
 			wp_die( esc_html__( 'Invalid file request.', 'sureforms' ) );
 		}
 
@@ -514,7 +515,7 @@ class Admin_Ajax {
 
 		// Determine content type and filename based on file extension.
 		$content_type = 'application/octet-stream';
-		$filename     = $file_info['basename'];
+		$filename     = Entries::get_export_download_filename( $file_info['basename'] );
 		if ( isset( $file_info['extension'] ) ) {
 			if ( 'csv' === $file_info['extension'] ) {
 				$content_type = 'text/csv';

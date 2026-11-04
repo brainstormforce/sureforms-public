@@ -41,6 +41,32 @@ class Test_Form_Field_Schema extends TestCase {
 	}
 
 	/**
+	 * Option descriptions are serialized into block markup like the titles are,
+	 * so they go through the same sanitizer on the way in.
+	 */
+	public function test_sanitize_form_fields_sanitizes_option_descriptions() {
+		$reflection = new \ReflectionMethod( $this->ability, 'sanitize_form_fields' );
+		$reflection->setAccessible( true );
+
+		$result = $reflection->invoke(
+			$this->ability,
+			[
+				[
+					'fieldType'    => 'multi-choice',
+					'fieldOptions' => [
+						[
+							'optionTitle' => 'Early Bird',
+							'description' => '<script>alert(1)</script>$149',
+						],
+					],
+				],
+			]
+		);
+
+		$this->assertSame( '$149', $result[0]['fieldOptions'][0]['description'] );
+	}
+
+	/**
 	 * Test get_form_field_schema returns array with expected field types.
 	 */
 	public function test_get_form_field_schema() {

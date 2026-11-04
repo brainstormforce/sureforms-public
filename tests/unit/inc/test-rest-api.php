@@ -758,6 +758,84 @@ class Test_Rest_Api extends TestCase {
 	}
 
 	/**
+	 * The chart endpoint returns one {date, count} row per calendar day of the
+	 * stored created_at value, oldest first, honouring the date range and form
+	 * filter -- not one row per entry.
+	 */
+	public function test_get_entries_chart_data_returns_daily_counts() {
+		global $wpdb;
+
+		wp_set_current_user( $this->create_test_admin() );
+
+		$form_id  = 990001;
+		$other_id = 990002;
+		$created  = [
+			[ $form_id, '2001-03-10 00:00:00' ],
+			[ $form_id, '2001-03-10 23:59:59' ],
+			[ $form_id, '2001-03-12 08:15:00' ],
+			[ $form_id, '2001-03-20 09:00:00' ], // After the range.
+			[ $form_id, '2001-03-01 09:00:00' ], // Before the range.
+			[ $other_id, '2001-03-10 12:00:00' ], // Other form.
+		];
+		foreach ( $created as $row ) {
+			\SRFM\Inc\Database\Tables\Entries::add(
+				[
+					'form_id'    => $row[0],
+					'form_data'  => [],
+					'created_at' => $row[1],
+				]
+			);
+		}
+
+		$request = new \WP_REST_Request( 'GET', '/sureforms/v1/entries-chart-data' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_param( 'after', '2001-03-05T00:00:00.000Z' );
+		$request->set_param( 'before', '2001-03-15T00:00:00.000Z' );
+		$request->set_param( 'form', (string) $form_id );
+
+		try {
+			$this->assertSame(
+				[
+					[
+						'date'  => '2001-03-10',
+						'count' => 2,
+					],
+					[
+						'date'  => '2001-03-12',
+						'count' => 1,
+					],
+				],
+				$this->rest_api->get_entries_chart_data( $request )
+			);
+
+			// Without the form filter every form in the range is counted.
+			$request->set_param( 'form', '' );
+			$this->assertSame(
+				[
+					[
+						'date'  => '2001-03-10',
+						'count' => 3,
+					],
+					[
+						'date'  => '2001-03-12',
+						'count' => 1,
+					],
+				],
+				$this->rest_api->get_entries_chart_data( $request )
+			);
+
+			// An empty range is an empty list.
+			$request->set_param( 'after', '2001-01-01T00:00:00.000Z' );
+			$request->set_param( 'before', '2001-01-31T00:00:00.000Z' );
+			$this->assertSame( [], $this->rest_api->get_entries_chart_data( $request ) );
+		} finally {
+			$table = \SRFM\Inc\Database\Tables\Entries::get_instance()->get_tablename();
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE form_id IN (%d, %d)", $form_id, $other_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			wp_set_current_user( 0 );
+		}
+	}
+
+	/**
 	 * Test set_onboarding_status is callable.
 	 */
 	public function test_set_onboarding_status() {
@@ -811,6 +889,72 @@ class Test_Rest_Api extends TestCase {
 	 */
 	public function test_get_entry_details() {
 		$this->assertTrue( method_exists( $this->rest_api, 'get_entry_details' ) );
+	}
+
+	/**
+	 * Each textarea field says whether the form renders it as rich text, read from
+	 * the saved form, so the entry screen renders only those fields as HTML.
+	 */
+	public function test_get_entry_details_flags_rich_text_fields() {
+		wp_set_current_user( $this->create_test_admin() );
+
+		$pattern = wp_insert_post(
+			[
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_title'   => 'Shared rich text',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"rt000002","slug":"bio","label":"Bio","isRichText":true} /-->',
+			]
+		);
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Rich text flags',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"rt000001","slug":"notes","label":"Notes","isRichText":true} /-->'
+					. '<!-- wp:srfm/textarea {"block_id":"pt000001","slug":"message","label":"Message"} /-->'
+					. '<!-- wp:srfm/input {"block_id":"ip000001","slug":"name","label":"Name"} /-->'
+					. '<!-- wp:block {"ref":' . $pattern . '} /-->',
+			]
+		);
+		$rich    = 'srfm-textarea-rt000001-lbl-' . \SRFM\Inc\Helper::encode( 'Notes' ) . '-notes';
+		$plain   = 'srfm-textarea-pt000001-lbl-' . \SRFM\Inc\Helper::encode( 'Message' ) . '-message';
+		$input   = 'srfm-input-ip000001-lbl-' . \SRFM\Inc\Helper::encode( 'Name' ) . '-name';
+		$shared  = 'srfm-textarea-rt000002-lbl-' . \SRFM\Inc\Helper::encode( 'Bio' ) . '-bio';
+		// A rich-text field whose block was rebuilt keeps its slug.
+		$drifted = 'srfm-textarea-zz999999-lbl-' . \SRFM\Inc\Helper::encode( 'Notes' ) . '-notes';
+
+		$entry_id = \SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [
+					$rich  => htmlspecialchars( '<p><em>Hi</em></p>' ),
+					$plain => htmlspecialchars( '<i>italic</i>' ),
+					$input  => 'Jane',
+					$shared => htmlspecialchars( '<p>Bio</p>' ),
+				],
+			]
+		);
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/entry/' . $entry_id . '/details' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$data = rest_get_server()->dispatch( $request )->get_data();
+
+		$flags = array_column( $data['form_data'], 'is_rich_text', 'field_name' );
+		$this->assertTrue( $flags[ $rich ], 'A rich-text textarea is flagged.' );
+		$this->assertFalse( $flags[ $plain ], 'A plain textarea is not, whatever its value looks like.' );
+		$this->assertFalse( $flags[ $input ], 'Only textareas can be rich text.' );
+		$this->assertTrue( $flags[ $shared ], 'A rich-text textarea inside a reusable block is flagged.' );
+
+		\SRFM\Inc\Database\Tables\Entries::update( $entry_id, [ 'form_data' => [ $drifted => 'x' ] ] );
+		$data  = rest_get_server()->dispatch( $request )->get_data();
+		$flags = array_column( $data['form_data'], 'is_rich_text', 'field_name' );
+		$this->assertTrue( $flags[ $drifted ], 'A drifted block id falls back to the slug.' );
+
+		\SRFM\Inc\Database\Tables\Entries::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+		wp_delete_post( $pattern, true );
+		wp_set_current_user( 0 );
 	}
 
 	/**

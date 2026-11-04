@@ -384,6 +384,37 @@ class Test_Admin_Ajax extends SRFM_Unit_Test_Case {
 		$this->assertNotSame( 0, strpos( wp_normalize_path( $unsafe ), $temp_dir ) );
 	}
 
+	/**
+	 * The download serves only SureForms export files: a name without the
+	 * `srfm-` prefix is refused and left in place, even for an administrator
+	 * with a valid nonce, while an export name still reaches the lookup.
+	 */
+	public function test_download_export_file_serves_only_export_files() {
+		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );
+		$foreign  = $temp_dir . 'other-plugin-export-' . uniqid() . '.csv';
+		file_put_contents( $foreign, 'not ours' );
+
+		try {
+			wp_set_current_user( $this->make_user( 'administrator' ) );
+			$_GET['_wpnonce'] = wp_create_nonce( 'srfm_download_export' );
+			$_GET['file']     = basename( $foreign );
+			$body             = $this->run_log_handler( 'download_export_file', $_GET['_wpnonce'] );
+
+			$this->assertStringContainsString( 'Invalid file request', $body );
+			$this->assertFileExists( $foreign, 'A refused file must not be deleted.' );
+
+			wp_set_current_user( $this->make_user( 'administrator' ) );
+			$_GET['_wpnonce'] = wp_create_nonce( 'srfm_download_export' );
+			$_GET['file']     = 'srfm-entries-contact-' . str_repeat( 'a', 32 ) . '.csv';
+			$body             = $this->run_log_handler( 'download_export_file', $_GET['_wpnonce'] );
+
+			$this->assertStringContainsString( 'File not found', $body, 'An export name must pass the prefix check.' );
+		} finally {
+			unset( $_GET['_wpnonce'], $_GET['file'] );
+			wp_delete_file( $foreign );
+		}
+	}
+
 	// ---------------------------------------------------------------
 	// Tests for generate_data_for_suretriggers_integration() guards
 	// ---------------------------------------------------------------

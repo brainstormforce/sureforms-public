@@ -957,6 +957,56 @@ class Test_Generate_Form_Markup extends TestCase {
 	}
 
 	/**
+	 * The on-interaction option switches Turnstile to explicit rendering, and
+	 * leaves the default configuration exactly as it was.
+	 */
+	public function test_get_cf_turnstile_script_on_interaction() {
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+
+		// Default (option off): implicit rendering, plain api.js, no marker.
+		ob_start();
+		Generate_Form_Markup::get_cf_turnstile_script( 'auto', 'test-turnstile-key' );
+		$default_output = ob_get_clean();
+		$this->assertStringNotContainsString( 'data-srfm-execution', $default_output );
+		$this->assertSame(
+			'https://challenges.cloudflare.com/turnstile/v0/api.js',
+			$this->registered_turnstile_src(),
+			'The default must keep loading the implicit renderer.'
+		);
+		wp_dequeue_script( SRFM_SLUG . '-cf-turnstile' );
+		wp_deregister_script( SRFM_SLUG . '-cf-turnstile' );
+
+		// Option on: explicit rendering so frontend.js owns render()/execute(),
+		// and the container carries the marker the renderer looks for.
+		ob_start();
+		Generate_Form_Markup::get_cf_turnstile_script( 'auto', 'test-turnstile-key', true );
+		$deferred_output = ob_get_clean();
+		$this->assertStringContainsString( 'data-srfm-execution="execute"', $deferred_output );
+		$this->assertStringContainsString( 'cf-turnstile', $deferred_output );
+		$this->assertStringContainsString( 'test-turnstile-key', $deferred_output );
+		$this->assertStringContainsString(
+			'render=explicit',
+			$this->registered_turnstile_src(),
+			'Explicit rendering is what stops Cloudflare running the challenge on load.'
+		);
+		wp_dequeue_script( SRFM_SLUG . '-cf-turnstile' );
+		wp_deregister_script( SRFM_SLUG . '-cf-turnstile' );
+
+		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+	}
+
+	/**
+	 * The URL the Turnstile handle is registered with.
+	 *
+	 * @return string
+	 */
+	private function registered_turnstile_src() {
+		$scripts = wp_scripts();
+		$handle  = SRFM_SLUG . '-cf-turnstile';
+		return isset( $scripts->registered[ $handle ] ) ? (string) $scripts->registered[ $handle ]->src : '';
+	}
+
+	/**
 	 * Create a published form with optional Custom CSS / disable-styling meta.
 	 *
 	 * @param string $custom_css Custom CSS meta value.
@@ -1082,4 +1132,31 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * A form that is not published tells someone who can edit it that submissions
+	 * are off, and tells nobody else anything.
+	 */
+	public function test_unpublished_form_notice_is_shown_only_to_editors() {
+		$block   = '<!-- wp:paragraph -->x<!-- /wp:paragraph -->';
+		$notice  = 'Submissions are disabled until this form is published.';
+		$form_id = wp_insert_post( [ 'post_title' => 'Draft Notice', 'post_type' => SRFM_FORMS_POST_TYPE, 'post_status' => 'draft', 'post_content' => $block ] );
+
+		wp_set_current_user( 0 );
+		$this->assertStringNotContainsString( $notice, Generate_Form_Markup::get_form_markup( $form_id ), 'Visitors never see the notice.' );
+
+		$this->set_current_user_with_role( 'subscriber' );
+		$this->assertStringNotContainsString( $notice, Generate_Form_Markup::get_form_markup( $form_id ), 'A user who cannot edit the form never sees the notice.' );
+
+		$this->set_current_user_with_role( 'administrator' );
+		$markup = Generate_Form_Markup::get_form_markup( $form_id );
+		$this->assertStringContainsString( $notice, $markup, 'An editor previewing a draft is told submissions are off.' );
+		$this->assertLessThan( strpos( $markup, '<form ' ), strpos( $markup, $notice ), 'The notice sits above the form.' );
+
+		wp_update_post( [ 'ID' => $form_id, 'post_status' => 'publish' ] );
+		$this->assertStringNotContainsString( $notice, Generate_Form_Markup::get_form_markup( $form_id ), 'A published form shows no notice.' );
+
+		wp_delete_post( $form_id, true );
+	}
 }
+

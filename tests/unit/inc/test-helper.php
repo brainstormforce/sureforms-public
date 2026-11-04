@@ -3363,6 +3363,15 @@ class Test_Helper extends TestCase {
         remove_filter( 'srfm_pro_tier', $unknown );
     }
 
+    public function test_tier_from_product_maps_each_build_name() {
+        $this->assertSame( 'business', Helper::tier_from_product( 'SureForms Business' ), 'The single 2.13.1 build is Business.' );
+        $this->assertSame( 'pro', Helper::tier_from_product( 'SureForms Pro' ) );
+        $this->assertSame( 'starter', Helper::tier_from_product( 'SureForms Starter' ) );
+        $this->assertSame( 'starter', Helper::tier_from_product( '' ), 'No product name unlocks nothing beyond Starter.' );
+        $this->assertSame( 'starter', Helper::tier_from_product( 'SureForms Enterprise' ), 'An unknown build unlocks nothing beyond Starter.' );
+        $this->assertSame( 'starter', Helper::tier_from_product( null ) );
+    }
+
     public function test_tier_rank_orders_the_plans() {
         $this->assertSame( 0, Helper::tier_rank( 'free' ) );
         $this->assertSame( 1, Helper::tier_rank( 'starter' ) );

@@ -101,7 +101,8 @@ class Background_Process {
 			return new \WP_Error(
 				'process_already_triggered',
 				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
-				[ 'status' => 403 ]
+				// 409, not 403: another request owns this entry's hooks, so this is not a fault for Client_Logger::is_fault().
+				[ 'status' => 409 ]
 			);
 		}
 
@@ -119,6 +120,17 @@ class Background_Process {
 				'incomplete_request',
 				__( 'Submission id missing.', 'sureforms' ),
 				[ 'status' => 403 ]
+			);
+		}
+
+		// The check above is only a fast path. Overlapping requests can all pass
+		// it, so the hooks run only for the request that wins the atomic claim.
+		if ( ! $this->claim_submission( $this->submission_id ) ) {
+			return new \WP_Error(
+				'process_already_triggered',
+				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
+				// 409, not 403: another request owns this entry's hooks, so this is not a fault for Client_Logger::is_fault().
+				[ 'status' => 409 ]
 			);
 		}
 
@@ -158,24 +170,56 @@ class Background_Process {
 		 */
 		do_action( 'srfm_after_submission_process', $form_data );
 
-		// Update the extras column to track that the after submission process was triggered.
-		if ( 0 < $this->submission_id ) {
-			$extras = $this->get_extras_data( $this->submission_id );
+		return true;
+	}
 
-			// Merge new data.
-			$updated_extras = array_merge(
-				$extras,
-				[ 'is_after_submission_process_triggered' => true ]
-			);
+	/**
+	 * Atomically mark the after-submission process as triggered for an entry.
+	 *
+	 * The flag is written with a compare-and-set UPDATE whose WHERE clause carries
+	 * the extras value read just before it, so of any number of overlapping calls
+	 * for one entry at most one updates the row and returns true. It is taken
+	 * before srfm_after_submission_process runs and is not released if a callback
+	 * fails: callbacks have non-idempotent side effects, so a partial run is
+	 * recovered per integration (such as a webhook retry), not by running
+	 * every callback again.
+	 *
+	 * @param int $submission_id Entry ID.
+	 * @since 2.13.1
+	 * @return bool True only for the call that set the flag.
+	 */
+	protected function claim_submission( $submission_id ) {
+		global $wpdb;
 
-			// Update entry.
-			Entries::update(
-				$this->submission_id,
-				[ 'extras' => $updated_extras ]
-			);
+		$entries = Entries::get_instance();
+		$table   = $entries->get_tablename();
+
+		// A write to another extras key between the read and the UPDATE also fails
+		// the compare, so re-read and retry a bounded number of times.
+		for ( $attempt = 0; $attempt < 3; $attempt++ ) {
+			// Read directly, not through the table's per-request cache, so a retry sees the row as it is now.
+			$raw = $wpdb->get_var( $wpdb->prepare( "SELECT extras FROM {$table} WHERE ID = %d", $submission_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_tablename(); the compare-and-set needs the uncached value.
+
+			$extras = Helper::get_array_value( json_decode( Helper::get_string_value( $raw ), true ) );
+			if ( ! empty( $extras['is_after_submission_process_triggered'] ) ) {
+				return false;
+			}
+
+			$extras['is_after_submission_process_triggered'] = true;
+
+			// A null $raw becomes `extras IS NULL`; a missing row matches nothing.
+			if ( 1 === $entries->use_update(
+				[ 'extras' => $extras ],
+				[
+					'ID'     => $submission_id,
+					'extras' => $raw,
+				]
+			) ) {
+				return true;
+			}
 		}
 
-		return true;
+		return false;
 	}
 
 	/**

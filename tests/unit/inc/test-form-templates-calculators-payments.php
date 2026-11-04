@@ -94,7 +94,7 @@ class Test_Form_Templates_Calculators_Payments extends TestCase {
 	public function test_setup_lists_stripe_and_skips_paypal_without_pro() {
 		$setup = array_column( Form_Templates::get_setup( Form_Templates::get_template( 'donation-form' ) ), 'id' );
 		$this->assertContains( 'stripe', $setup );
-		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
+		if ( ! class_exists( '\SRFM_Pro\Inc\Payments\PayPal\Helper' ) && ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
 			$this->assertNotContains( 'paypal', $setup );
 		}
 	}

@@ -13,7 +13,7 @@ const GoogleMapsPage = ( { loading, toast } ) => {
 				'sureforms'
 			) }
 			description={ __(
-				'Upgrade to the SureForms Business Plan to add Google-powered address autocomplete with interactive map preview to your forms.',
+				'Upgrade to SureForms Business to add Google-powered address autocomplete with interactive map preview to your forms.',
 				'sureforms'
 			) }
 			features={ [

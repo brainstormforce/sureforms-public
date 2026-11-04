@@ -9,7 +9,7 @@ const AddEntryButton = () => {
 		<UpgradeTooltip
 			heading={ __( 'Unlock Add Note', 'sureforms' ) }
 			content={ __(
-				'With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking.',
+				'With SureForms Business, enhance your submitted form entries by adding personalized notes for better clarity and tracking.',
 				'sureforms'
 			) }
 			placement="top-start"
