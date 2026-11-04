@@ -40,6 +40,43 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Throttle unauthenticated payment-object creation per IP + form, so one scraped
+	 * submit token cannot drive unbounded Stripe/PayPal object creation on the
+	 * merchant account. Returns true when the caller is over the limit.
+	 *
+	 * The limit (default 30 per minute) is filterable via
+	 * `srfm_payment_rate_limit_per_minute`; a value <= 0 disables throttling. It fails
+	 * open when the client IP cannot be determined, so a proxy that hides the IP never
+	 * blocks a real checkout.
+	 *
+	 * @param int    $form_id Form id.
+	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
+	 * @since 2.13.1
+	 * @return bool True when the request should be rejected.
+	 */
+	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- validated as an IP below.
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( '' === $ip || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return false;
+		}
+
+		$limit = (int) apply_filters( 'srfm_payment_rate_limit_per_minute', 30, (int) $form_id, $context );
+		if ( $limit <= 0 ) {
+			return false;
+		}
+
+		$transient_key = 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_' . md5( $ip . '_' . (int) $form_id );
+		$attempts      = (int) get_transient( $transient_key );
+		if ( $attempts >= $limit ) {
+			return true;
+		}
+
+		set_transient( $transient_key, $attempts + 1, MINUTE_IN_SECONDS );
+		return false;
+	}
+
+	/**
 	 * A payment block's amount type, or 'fixed' when it is not one the
 	 * server-side validators implement.
 	 *

@@ -79,6 +79,12 @@ class Front_End {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
+		// Throttle unauthenticated intent creation per IP + form so one scraped submit
+		// token cannot drive unbounded Stripe object creation on the merchant account.
+		if ( Payment_Helper::is_payment_rate_limited( $form_id, 'stripe-intent' ) ) {
+			wp_send_json_error( __( 'Too many payment attempts. Please wait a moment and try again.', 'sureforms' ) );
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$amount         = intval( $_POST['amount'] ?? 0 );
 		$currency       = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
@@ -264,6 +270,13 @@ class Front_End {
 		$form_id = isset( $_POST['form_id'] ) && is_numeric( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( ! Submit_Token::verify( $token, $form_id ) ) {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
+		}
+
+		// Throttle unauthenticated subscription-intent creation per IP + form so one
+		// scraped submit token cannot drive unbounded Stripe customer/subscription
+		// creation on the merchant account.
+		if ( Payment_Helper::is_payment_rate_limited( $form_id, 'stripe-subscription' ) ) {
+			wp_send_json_error( __( 'Too many payment attempts. Please wait a moment and try again.', 'sureforms' ) );
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.

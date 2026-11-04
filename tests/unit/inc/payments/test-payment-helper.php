@@ -1096,6 +1096,31 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	public function test_is_payment_rate_limited_throttles_per_ip_and_form() {
+		$_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+		// Default limit is 30/min: the first 30 pass, the 31st is throttled.
+		for ( $i = 0; $i < 30; $i++ ) {
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit' ), "request {$i} should pass" );
+		}
+		$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unit' ), 'the 31st request is throttled' );
+
+		// A different form is an independent bucket.
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 456, 'unit' ) );
+
+		// The filter can disable throttling.
+		add_filter( 'srfm_payment_rate_limit_per_minute', '__return_zero' );
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit' ) );
+		remove_filter( 'srfm_payment_rate_limit_per_minute', '__return_zero' );
+
+		unset( $_SERVER['REMOTE_ADDR'] );
+	}
+
+	public function test_is_payment_rate_limited_fails_open_without_ip() {
+		unset( $_SERVER['REMOTE_ADDR'] );
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
