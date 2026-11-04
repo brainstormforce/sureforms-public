@@ -426,7 +426,7 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
-= 2.13.1 - 3rd November 2026 =
+= 2.13.1 - 4th November 2026 =
 * New: Added a reCAPTCHA v3 score threshold in Spam Protection settings to block low-scoring submissions.
 * New: Multiple Choice options can now show a short description under each option.
 * New: Turnstile can now run its challenge on the visitor's first interaction with the form instead of on page load.
