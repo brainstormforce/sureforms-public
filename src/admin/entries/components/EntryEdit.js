@@ -35,7 +35,7 @@ const EditEntryButton = ( { onClick, disabled } ) => {
 		<UpgradeTooltip
 			heading={ __( 'Unlock Edit Form Entires', 'sureforms' ) }
 			content={ __(
-				'With the SureForms Starter plan, you can easily edit your entries to suit your needs.',
+				'With SureForms Business, you can easily edit your entries to suit your needs.',
 				'sureforms'
 			) }
 			placement="top"

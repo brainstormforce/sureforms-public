@@ -112,11 +112,12 @@ class Rest_Api {
 	}
 
 	/**
-	 * Get the data for generating entries chart.
+	 * Get per-day entry counts for the dashboard entries chart.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @since 1.0.0
-	 * @return array<mixed>
+	 * @since 2.13.1 Returns `{ date: 'Y-m-d', count: int }` rows, oldest first, instead of one `created_at` row per entry.
+	 * @return array<int,array{date:string,count:int}>
 	 */
 	public function get_entries_chart_data( $request ) {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
@@ -163,10 +164,24 @@ class Rest_Api {
 			];
 		}
 
-		return Entries::get_instance()->get_results(
+		// One row per calendar day of the stored created_at value, so the payload
+		// is bounded by the number of days in the range, not the number of entries.
+		$rows = Entries::get_instance()->get_results(
 			$where,
-			'created_at',
-			[ 'ORDER BY created_at DESC' ]
+			'DATE(created_at) AS date, COUNT(*) AS count',
+			[ 'GROUP BY DATE(created_at) ORDER BY DATE(created_at) ASC' ],
+			false
+		);
+
+		return array_map(
+			static function( $row ) {
+				$row = Helper::get_array_value( $row );
+				return [
+					'date'  => Helper::get_string_value( $row['date'] ?? '' ),
+					'count' => Helper::get_integer_value( $row['count'] ?? 0 ),
+				];
+			},
+			$rows
 		);
 	}
 
@@ -818,6 +833,7 @@ class Rest_Api {
 		$form_data       = [];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		$entry_form_data = $entry['form_data'] ?? [];
+		$rich_text       = $this->get_rich_text_textareas( Helper::get_string_value( get_post_field( 'post_content', $entry['form_id'] ) ) );
 
 		if ( is_array( $entry_form_data ) ) {
 			foreach ( $entry_form_data as $field_name => $value ) {
@@ -863,10 +879,13 @@ class Rest_Api {
 				);
 
 				$form_data[] = [
-					'field_name' => $field_name,
-					'label'      => $label,
-					'value'      => $value,
-					'block_name' => $field_block_name,
+					'field_name'   => $field_name,
+					'label'        => $label,
+					'value'        => $value,
+					'block_name'   => $field_block_name,
+					// The entry screen renders a value as HTML only when this is true.
+					'is_rich_text' => 'srfm-textarea' === $field_block_name
+						&& ( isset( $rich_text['ids'][ Helper::get_block_id_from_key( $field_name ) ] ) || isset( $rich_text['slugs'][ Field_Validation::get_slug_from_key( $field_name ) ] ) ),
 				];
 			}
 		}
@@ -1957,5 +1976,55 @@ class Rest_Api {
 				],
 			]
 		);
+	}
+
+	/**
+	 * The form's textareas that use the rich-text editor, by block id and by slug.
+	 *
+	 * A rich-text textarea submits markup, and the entry screen renders its value
+	 * as sanitized HTML. Every other value, including a plain textarea whose answer
+	 * happens to contain tag-shaped text, is shown as text. The slug finds a field
+	 * whose block id changed after the entry was saved. Reusable blocks are
+	 * followed, once each, as the form renders them.
+	 *
+	 * @param string $form_content The form's post content.
+	 * @since 2.13.1
+	 * @return array{ids:array<string,true>,slugs:array<string,true>}
+	 */
+	private function get_rich_text_textareas( $form_content ) {
+		$found   = [
+			'ids'   => [],
+			'slugs' => [],
+		];
+		$visited = [];
+		$walk    = static function ( $blocks ) use ( &$walk, &$found, &$visited ) {
+			foreach ( is_array( $blocks ) ? $blocks : [] as $block ) {
+				$attrs = is_array( $block ) && isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
+				if ( is_array( $block ) && 'srfm/textarea' === ( $block['blockName'] ?? '' ) && ! empty( $attrs['isRichText'] ) ) {
+					if ( ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
+						$found['ids'][ $attrs['block_id'] ] = true;
+					}
+					if ( ! empty( $attrs['slug'] ) && is_string( $attrs['slug'] ) ) {
+						$found['slugs'][ $attrs['slug'] ] = true;
+					}
+				}
+				$ref = 'core/block' === ( $block['blockName'] ?? '' ) && isset( $attrs['ref'] ) && is_scalar( $attrs['ref'] ) ? absint( $attrs['ref'] ) : 0;
+				if ( $ref > 0 && ! isset( $visited[ $ref ] ) ) {
+					$visited[ $ref ] = true;
+					$ref_post        = get_post( $ref );
+					if ( $ref_post instanceof \WP_Post && 'wp_block' === $ref_post->post_type ) {
+						$walk( parse_blocks( $ref_post->post_content ) );
+					}
+				}
+				if ( is_array( $block ) && ! empty( $block['innerBlocks'] ) ) {
+					$walk( $block['innerBlocks'] );
+				}
+			}
+		};
+		if ( '' !== $form_content && function_exists( 'parse_blocks' ) ) {
+			$walk( parse_blocks( $form_content ) );
+		}
+
+		return $found;
 	}
 }

@@ -31,7 +31,7 @@ export default () => {
 			<Container.Item className="flex justify-center p-2">
 				<img
 					src={ upgradeToProPlaceholder }
-					alt={ __( 'Upgrade to Pro', 'sureforms' ) }
+					alt={ __( 'Upgrade to SureForms Business', 'sureforms' ) }
 					className="w-60 h-auto"
 				/>
 			</Container.Item>

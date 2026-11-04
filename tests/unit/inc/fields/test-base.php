@@ -17,6 +17,12 @@ class Test_Base extends TestCase {
 		$this->base = new Base();
 	}
 
+	protected function tearDown(): void {
+		remove_all_filters( 'srfm_multilingual_provider' );
+		$this->reset_multilingual_manager();
+		parent::tearDown();
+	}
+
 	/**
 	 * Test that markup() returns empty string by default.
 	 */
@@ -116,6 +122,92 @@ class Test_Base extends TestCase {
 		$this->assertSame( 'srfm-description-b1', trim( $this->get_private_property( $base, 'aria_described_by' ) ) );
 	}
 
+	/**
+	 * The description only renders once the block opts in, so an option array
+	 * saved before the setting existed renders exactly as it did before.
+	 */
+	public function test_get_option_description() {
+		$option = [ 'optionTitle' => 'Early Bird', 'description' => '  $149 until 1 March  ' ];
+
+		// Opted out: the stored description is ignored.
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ $option ] ) );
+
+		$this->set_private_property( $this->base, 'show_descriptions', true );
+
+		$this->assertSame( '$149 until 1 March', $this->call_private_method( $this->base, 'get_option_description', [ $option ] ) );
+
+		// Nothing to show: absent, blank, non-scalar, and a non-array option all
+		// land on the same empty string rather than on a notice or on "Array".
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ [ 'optionTitle' => 'Plain' ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ [ 'description' => '   ' ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ [ 'description' => [ 'nested' ] ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ 'not-an-array' ] ) );
+
+		// A numeric description is still a description.
+		$this->assertSame( '0', $this->call_private_method( $this->base, 'get_option_description', [ [ 'description' => 0 ] ] ) );
+	}
+
+	/**
+	 * The visible title uses the render-time translation only while a
+	 * multilingual provider is active, and the entered optionTitle otherwise.
+	 */
+	public function test_get_option_display_title() {
+		$translated = [ 'optionTitle' => 'Early Bird', 'translatedTitle' => 'Frühbucher' ];
+
+		// Single-language site: a stored translatedTitle is never shown.
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ $translated ] ) );
+
+		$this->use_active_multilingual_provider();
+		$this->assertSame( 'Frühbucher', $this->call_private_method( $this->base, 'get_option_display_title', [ $translated ] ) );
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird' ] ] ) );
+
+		// A blank or non-string translation never hides the title.
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird', 'translatedTitle' => '' ] ] ) );
+		$this->assertSame( 'Early Bird', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 'Early Bird', 'translatedTitle' => [ 'x' ] ] ] ) );
+
+		$this->assertSame( '5', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => 5 ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_display_title', [ [ 'optionTitle' => [ 'nested' ] ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_display_title', [ 'not-an-array' ] ) );
+	}
+
+	/**
+	 * Only the first option carries the field-level ids, which is what the field
+	 * did before descriptions existed; each option points at its own description.
+	 */
+	public function test_get_option_described_by() {
+		$this->set_private_property( $this->base, 'aria_described_by', ' srfm-description-b1' );
+
+		$this->assertSame(
+			'aria-describedby="srfm-description-b1 opt-0-desc" ',
+			$this->call_private_method( $this->base, 'get_option_described_by', [ 0, 'opt-0-desc' ] )
+		);
+
+		// Later options never repeat the field-level ids.
+		$this->assertSame(
+			'aria-describedby="opt-2-desc" ',
+			$this->call_private_method( $this->base, 'get_option_described_by', [ 2, 'opt-2-desc' ] )
+		);
+
+		// First option without a description keeps exactly the old attribute.
+		$this->assertSame(
+			'aria-describedby="srfm-description-b1" ',
+			$this->call_private_method( $this->base, 'get_option_described_by', [ 0, '' ] )
+		);
+
+		// Nothing to point at anywhere: no empty attribute left in the markup.
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_described_by', [ 1, '' ] ) );
+
+		$plain = new Base();
+		$this->assertSame( '', $this->call_private_method( $plain, 'get_option_described_by', [ 0, '' ] ) );
+	}
+
+	private function set_private_property( $object, $property_name, $value ) {
+		$reflection = new \ReflectionClass( get_class( $object ) );
+		$property   = $reflection->getProperty( $property_name );
+		$property->setAccessible( true );
+		$property->setValue( $object, $value );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );
@@ -128,5 +220,29 @@ class Test_Base extends TestCase {
 		$property   = $reflection->getProperty( $property_name );
 		$property->setAccessible( true );
 		return $property->getValue( $object );
+	}
+
+	/**
+	 * Make a mock multilingual provider the active one until tearDown().
+	 */
+	private function use_active_multilingual_provider() {
+		$provider = $this->createMock( \SRFM\Inc\Compatibility\Multilingual\Providers\Provider::class );
+		$provider->method( 'is_active' )->willReturn( true );
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $provider ) {
+				return $provider;
+			}
+		);
+		$this->reset_multilingual_manager();
+	}
+
+	/**
+	 * Drop the cached manager so the next call resolves the provider again.
+	 */
+	private function reset_multilingual_manager() {
+		$prop = new \ReflectionProperty( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class, 'instance' );
+		$prop->setAccessible( true );
+		$prop->setValue( null, null );
 	}
 }

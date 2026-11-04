@@ -1,4 +1,4 @@
-import { Button, Input, Label, RadioButton, Title } from '@bsf/force-ui';
+import { Button, Input, Label, RadioButton, Switch, Title } from '@bsf/force-ui';
 import { __, sprintf } from '@wordpress/i18n';
 
 const APPEARANCE_MODES = [
@@ -104,6 +104,28 @@ const Turnstile = ( { securitytabOptions, updateGlobalSettings } ) => {
 					) ) }
 				</RadioButton.Group>
 			</div>
+
+			<Switch
+				label={ {
+					heading: __(
+						'Run the Challenge on First Interaction',
+						'sureforms'
+					),
+					description: __(
+						'The challenge runs when a visitor first interacts with the form instead of when the page loads, and the widget only appears if they need to do something. Submissions wait for the challenge to finish, and every submission is still verified on your server.',
+						'sureforms'
+					),
+				} }
+				size="sm"
+				checked={ !! securitytabOptions.srfm_cf_turnstile_on_interaction }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_cf_turnstile_on_interaction',
+						value,
+						'security-settings'
+					)
+				}
+			/>
 
 			{ INPUT_FIELDS.map( ( field ) => (
 				<Input

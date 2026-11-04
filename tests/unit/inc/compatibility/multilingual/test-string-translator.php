@@ -445,6 +445,27 @@ class Test_String_Translator extends TestCase {
 		$this->assertCount( 0, $this->stub->calls );
 	}
 
+	public function test_translate_block_option_field_uses_a_field_specific_name() {
+		$this->stub->translate_returns = 'Frühbucher';
+
+		$out = String_Translator::get_instance()->translate_block_option_field( 42, 'mc1', 2, 'optionTitle', 'Early Bird' );
+
+		$this->assertSame( 'Frühbucher', $out );
+		$this->assertSame( 'form_42_block_mc1_option_2_optionTitle', $this->stub->calls[0]['name'] );
+		$this->assertSame( 'Early Bird', $this->stub->calls[0]['value'] );
+		// The dropdown label name is unchanged, so existing translations still match.
+		$this->assertSame( 'block_mc1_option_2_label', String_Translator::block_option_name( 'mc1', 2 ) );
+	}
+
+	public function test_translate_block_option_field_returns_original_when_inputs_missing() {
+		$translator = String_Translator::get_instance();
+
+		$this->assertSame( '', $translator->translate_block_option_field( 1, 'b', 0, 'description', '' ) );
+		$this->assertSame( 'Early Bird', $translator->translate_block_option_field( 1, '', 0, 'optionTitle', 'Early Bird' ) );
+		$this->assertSame( 'Early Bird', $translator->translate_block_option_field( 1, 'b', 0, '', 'Early Bird' ) );
+		$this->assertCount( 0, $this->stub->calls );
+	}
+
 	public function test_translate_form_content_translates_label_and_option_labels() {
 		// Stub returns "DE:<original>" so substitution is visible in the output.
 		$this->stub->translate_returns = '';
@@ -490,6 +511,63 @@ class Test_String_Translator extends TestCase {
 		$out = String_Translator::get_instance()->translate_form_content( 4244, $content );
 
 		$this->assertStringContainsString( '"label":"DE:Phone Number"', $out );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
+	public function test_translate_form_content_translates_multi_choice_display_text_but_not_the_value() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		$content = '<!-- wp:srfm/multi-choice {"block_id":"mcxl1","label":"Ticket","showDescriptions":true,"options":[{"optionTitle":"Early Bird","description":"Until 1 March"}]} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4245, $content );
+
+		// The title is the submitted value and conditional-logic key, so it stays as entered.
+		$this->assertStringContainsString( '"optionTitle":"Early Bird"', $out );
+		$this->assertStringContainsString( '"translatedTitle":"DE:Early Bird"', $out );
+		$this->assertStringContainsString( '"description":"DE:Until 1 March"', $out );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
+	public function test_translate_form_content_drops_a_stored_translated_title() {
+		// The stub translates every string to itself, so there is nothing to show.
+		$content = '<!-- wp:srfm/multi-choice {"block_id":"mcxl2","options":[{"optionTitle":"Early Bird","translatedTitle":"Stored"}]} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4246, $content );
+
+		$this->assertStringContainsString( '"optionTitle":"Early Bird"', $out );
+		$this->assertStringNotContainsString( 'translatedTitle', $out );
+	}
+
+	public function test_translate_form_content_leaves_dropdown_option_titles_alone() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		// AI- and Abilities-built dropdowns can carry optionTitle next to label.
+		$content = '<!-- wp:srfm/dropdown {"block_id":"ddxl1","options":[{"label":"Friend","optionTitle":"Friend"}]} /-->';
+
+		$out = String_Translator::get_instance()->translate_form_content( 4247, $content );
+
+		$this->assertStringContainsString( '"label":"DE:Friend"', $out );
+		$this->assertStringNotContainsString( 'translatedTitle', $out );
 
 		remove_all_filters( 'srfm_multilingual_provider' );
 	}

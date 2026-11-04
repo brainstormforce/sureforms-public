@@ -25,6 +25,7 @@ class Events_Scheduler {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'srfm_schedule_daily_action' ] );
+		add_action( 'srfm_daily_scheduled_action', [ Entries::class, 'delete_stale_export_files' ] );
 	}
 
 	/**

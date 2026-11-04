@@ -20,6 +20,7 @@ import {
 	cn,
 } from '@Utils/Helpers';
 import { useState, useEffect, useRef } from '@wordpress/element';
+import dateFromYmd from './utils/dateFromYmd';
 
 // Text for chart when data is loading or no data is available
 const ChartText = ( { text, color = '', weight = '', size = 'md' } ) => (
@@ -102,31 +103,12 @@ export default () => {
 				// Fetch data from API
 				const response = await apiFetch( { path: endpoint } );
 
-				// Process the data to create the chart.
-				const postsData = {};
-
-				response.forEach( ( post ) => {
-					const postDate = new Date(
-						post.created_at
-					).toLocaleDateString();
-
-					if ( ! postsData[ postDate ] ) {
-						postsData[ postDate ] = 1;
-					} else {
-						postsData[ postDate ]++;
-					}
-				} );
-
-				// Convert date strings to Date objects and sort by date
-				const sortedDataArray = Object.entries( postsData )
-					.sort(
-						( [ dateA ], [ dateB ] ) =>
-							new Date( dateA ) - new Date( dateB )
-					)
-					.map( ( [ date, count ] ) => ( {
-						month: format( new Date( date ), 'MMM dd, yyyy' ),
-						entries: count,
-					} ) );
+				// The endpoint returns one { date: 'yyyy-MM-dd', count } row per
+				// day, oldest first.
+				const sortedDataArray = response.map( ( { date, count } ) => ( {
+					month: format( dateFromYmd( date ), 'MMM dd, yyyy' ),
+					entries: count,
+				} ) );
 
 				// Prepare the data for the chart.
 				setDataToShow( sortedDataArray );

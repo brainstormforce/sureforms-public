@@ -540,4 +540,141 @@ class Test_Stripe_Helper extends TestCase {
 
 		$this->assertSame( $expected, $result );
 	}
+
+	// ──────────────────────────────────────────────
+	// get_wallet_settings
+	// ──────────────────────────────────────────────
+
+	/**
+	 * Connect a test Stripe account, answer Stripe with the given body and
+	 * status, and count the requests.
+	 *
+	 * @param array<string,mixed> $body   Response body.
+	 * @param int                 $status HTTP status.
+	 * @return object Holds the request count.
+	 */
+	private function stub_wallet_api( $body, $status = 200 ) {
+		$settings = Stripe_Helper::get_all_stripe_settings();
+		Stripe_Helper::update_all_stripe_settings(
+			array_merge(
+				is_array( $settings ) ? $settings : [],
+				[
+					'stripe_connected'       => true,
+					'stripe_test_secret_key' => 'sk_test_wallets',
+				]
+			)
+		);
+		Stripe_Helper::clear_wallet_settings_cache();
+
+		$calls = (object) [ 'count' => 0 ];
+		add_filter(
+			'pre_http_request',
+			static function ( $preempt, $args, $url ) use ( $body, $status, $calls ) {
+				unset( $preempt, $args );
+				if ( false === strpos( $url, 'payment_method_configurations' ) ) {
+					return false;
+				}
+				++$calls->count;
+				return [
+					'headers'  => [],
+					'body'     => wp_json_encode( $body ),
+					'response' => [
+						'code'    => $status,
+						'message' => '',
+					],
+					'cookies'  => [],
+					'filename' => null,
+				];
+			},
+			10,
+			3
+		);
+
+		return $calls;
+	}
+
+	private function wallet_configuration( $apple, $google, $is_default = true ) {
+		return [
+			'id'         => 'pmc_' . wp_rand(),
+			'active'     => true,
+			'is_default' => $is_default,
+			'apple_pay'  => [ 'display_preference' => [ 'value' => $apple ] ],
+			'google_pay' => [ 'display_preference' => [ 'value' => $google ] ],
+		];
+	}
+
+	private function reset_wallet_stub() {
+		remove_all_filters( 'pre_http_request' );
+		Stripe_Helper::clear_wallet_settings_cache();
+		Stripe_Helper::update_all_stripe_settings( Stripe_Helper::get_default_stripe_settings() );
+	}
+
+	/**
+	 * Wallets follow the account's default payment method configuration.
+	 */
+	public function test_get_wallet_settings() {
+		$this->stub_wallet_api(
+			[
+				'data' => [
+					$this->wallet_configuration( 'on', 'on', false ),
+					$this->wallet_configuration( 'on', 'off' ),
+				],
+			]
+		);
+
+		$this->assertSame(
+			[
+				'applePay'  => 'auto',
+				'googlePay' => 'never',
+			],
+			Stripe_Helper::get_wallet_settings(),
+			'only the default configuration counts'
+		);
+
+		$this->reset_wallet_stub();
+	}
+
+	/**
+	 * The lookup is cached until the cache is cleared.
+	 */
+	public function test_clear_wallet_settings_cache() {
+		$calls = $this->stub_wallet_api( [ 'data' => [ $this->wallet_configuration( 'off', 'off' ) ] ] );
+
+		Stripe_Helper::get_wallet_settings();
+		$this->assertSame( 'never', Stripe_Helper::get_wallet_settings()['applePay'] );
+		$this->assertSame( 1, $calls->count );
+
+		Stripe_Helper::clear_wallet_settings_cache();
+		Stripe_Helper::get_wallet_settings();
+		$this->assertSame( 2, $calls->count );
+
+		$this->reset_wallet_stub();
+	}
+
+	public function test_a_failed_lookup_leaves_wallets_to_stripe_and_is_cached() {
+		$calls = $this->stub_wallet_api( [ 'error' => [ 'message' => 'nope' ] ], 403 );
+
+		$this->assertSame(
+			[
+				'applePay'  => 'auto',
+				'googlePay' => 'auto',
+			],
+			Stripe_Helper::get_wallet_settings()
+		);
+		Stripe_Helper::get_wallet_settings();
+		$this->assertSame( 1, $calls->count, 'a failure is not retried on every page view' );
+
+		$this->reset_wallet_stub();
+	}
+
+	public function test_no_lookup_without_a_connected_account() {
+		$calls = $this->stub_wallet_api( [ 'data' => [ $this->wallet_configuration( 'off', 'off' ) ] ] );
+		Stripe_Helper::update_all_stripe_settings( Stripe_Helper::get_default_stripe_settings() );
+
+		$this->assertSame( 'auto', Stripe_Helper::get_wallet_settings()['googlePay'] );
+		$this->assertSame( 0, $calls->count );
+		$this->assertFalse( get_transient( Stripe_Helper::WALLET_SETTINGS_TRANSIENT . 'test' ), 'nothing cached for a disconnected site' );
+
+		$this->reset_wallet_stub();
+	}
 }

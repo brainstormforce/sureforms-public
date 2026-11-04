@@ -669,6 +669,46 @@ class Test_String_Collector extends TestCase {
 		$this->assertContains( 'form_' . $form_id . '_block_def456_option_1_label', $names );
 	}
 
+	public function test_collect_block_strings_skips_dropdown_option_titles() {
+		$stub    = $this->install_stub_provider();
+		$content = '<!-- wp:srfm/dropdown {"block_id":"dd7","label":"How?","options":[{"label":"Friend","optionTitle":"Friend","description":"Hidden"}]} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		$stub->registered = [];
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$names = $this->registered_names();
+		$this->assertContains( 'form_' . $form_id . '_block_dd7_option_0_label', $names );
+		$this->assertNotContains( 'form_' . $form_id . '_block_dd7_option_0_optionTitle', $names );
+	}
+
+	public function test_collect_block_strings_registers_multi_choice_option_titles_and_descriptions() {
+		$stub    = $this->install_stub_provider();
+		$content = '<!-- wp:srfm/multi-choice {"block_id":"mc1","label":"Ticket","showDescriptions":true,"options":[{"optionTitle":"Early Bird","description":"Until 1 March"},{"optionTitle":"Standard"}]} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		$stub->registered = [];
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$registered = array_column( $stub->registered, 'value', 'name' );
+		$this->assertSame( 'Early Bird', $registered[ 'form_' . $form_id . '_block_mc1_option_0_optionTitle' ] ?? null );
+		$this->assertSame( 'Standard', $registered[ 'form_' . $form_id . '_block_mc1_option_1_optionTitle' ] ?? null );
+		$this->assertSame( 'Until 1 March', $registered[ 'form_' . $form_id . '_block_mc1_option_0_description' ] ?? null );
+	}
+
+	public function test_collect_block_strings_skips_option_descriptions_while_they_are_hidden() {
+		$stub    = $this->install_stub_provider();
+		$content = '<!-- wp:srfm/multi-choice {"block_id":"mc2","label":"Ticket","options":[{"optionTitle":"Early Bird","description":"Until 1 March"}]} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		$stub->registered = [];
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$names = $this->registered_names();
+		$this->assertContains( 'form_' . $form_id . '_block_mc2_option_0_optionTitle', $names );
+		$this->assertNotContains( 'form_' . $form_id . '_block_mc2_option_0_description', $names );
+	}
+
 	public function test_collect_block_strings_noops_on_empty_content() {
 		$stub    = $this->install_stub_provider();
 		$form_id = $this->make_form( [ 'post_content' => '' ] );
