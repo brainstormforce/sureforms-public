@@ -1096,6 +1096,15 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	public function test_sanitize_stripe_customer_id_rejects_reserved_patterns() {
+		// A genuine Stripe customer id is preserved (backward compatible).
+		$this->assertSame( 'cus_T4Apjla33GlYAk', Payment_Helper::sanitize_stripe_customer_id( 'cus_T4Apjla33GlYAk' ) );
+		// Reserved internal ownership keys cannot be stored on a Stripe row.
+		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'wp_user_14' ) );
+		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'guest_abc123' ) );
+		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( '' ) );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

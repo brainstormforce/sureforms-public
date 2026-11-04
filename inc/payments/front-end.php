@@ -635,7 +635,7 @@ class Front_End {
 			];
 		}
 
-		$customer_id     = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
+		$customer_id     = Payment_Helper::sanitize_stripe_customer_id( $subscription_value['customerId'] ?? '' );
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 
 		// Verify payment intent with comprehensive validation including form data.
@@ -1716,7 +1716,7 @@ class Front_End {
 		return [
 			'name'        => ! empty( $input_value['name'] ) && is_string( $input_value['name'] ) ? sanitize_text_field( $input_value['name'] ) : '',
 			'email'       => $email,
-			'customer_id' => ! empty( $input_value['customerId'] ) && is_string( $input_value['customerId'] ) ? sanitize_text_field( $input_value['customerId'] ) : '',
+			'customer_id' => Payment_Helper::sanitize_stripe_customer_id( $input_value['customerId'] ?? '' ),
 		];
 	}
 }
