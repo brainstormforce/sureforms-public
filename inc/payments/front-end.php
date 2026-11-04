@@ -648,6 +648,19 @@ class Front_End {
 			];
 		}
 
+		// Bind the submitted subscription to the one this payment session created. The
+		// setup-intent transient stores the server-created subscription_id; a submitted
+		// subscriptionId that does not match it is a substituted subscription and is
+		// rejected. When the session recorded no subscription_id (legacy/edge) the check
+		// is skipped, so existing flows are unaffected.
+		$session_metadata        = get_transient( 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $setup_intent_id ) );
+		$session_subscription_id = is_array( $session_metadata ) && ! empty( $session_metadata['subscription_id'] ) && is_string( $session_metadata['subscription_id'] ) ? $session_metadata['subscription_id'] : '';
+		if ( '' !== $session_subscription_id && $session_subscription_id !== $subscription_id ) {
+			return [
+				'error' => __( 'Subscription does not match the payment session.', 'sureforms' ),
+			];
+		}
+
 		if ( empty( $customer_id ) ) {
 			return [
 				'error' => __( 'Customer ID not found for the payment.', 'sureforms' ),
