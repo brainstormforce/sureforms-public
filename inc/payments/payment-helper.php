@@ -40,6 +40,41 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Atomically claim a provider payment reference (transaction or subscription id)
+	 * so that concurrent or duplicate submissions of the same completed payment cannot
+	 * each create a paid entry. The first caller wins the claim; later callers get
+	 * false. Backed by the unique wp_options.option_name index, so the claim is atomic
+	 * without a schema change. An empty reference is never blocked.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.13.1
+	 * @return bool True if this caller won the claim, false if it was already claimed.
+	 */
+	public static function claim_payment_reference( $reference ) {
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return true;
+		}
+		return add_option( 'srfm_pay_claim_' . md5( $reference ), time(), '', 'no' );
+	}
+
+	/**
+	 * Release a payment reference claimed by claim_payment_reference(), so a legitimate
+	 * retry is not blocked when the paid row could not be created.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.13.1
+	 * @return void
+	 */
+	public static function release_payment_reference( $reference ) {
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return;
+		}
+		delete_option( 'srfm_pay_claim_' . md5( $reference ) );
+	}
+
+	/**
 	 * A payment block's amount type, or 'fixed' when it is not one the
 	 * server-side validators implement.
 	 *

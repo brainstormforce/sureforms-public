@@ -930,6 +930,14 @@ class Front_End {
 				],
 			];
 
+			// Atomically claim this subscription so concurrent or duplicate submits of
+			// the same activated subscription cannot each create a paid entry.
+			if ( ! Payment_Helper::claim_payment_reference( $subscription_id ) ) {
+				return [
+					'error' => __( 'This payment has already been processed.', 'sureforms' ),
+				];
+			}
+
 			// Save to database.
 			$payment_entry_id = Payments::add( $entry_data );
 
@@ -956,6 +964,9 @@ class Front_End {
 					'payment_id' => $payment_entry_id,
 				];
 			}
+
+			// Insert failed: release the claim so a legitimate retry is not blocked.
+			Payment_Helper::release_payment_reference( $subscription_id );
 		} catch ( \Exception $e ) {
 			return [
 				'error' => empty( $e->getMessage() ) ? __( 'Failed to verify subscription.', 'sureforms' ) : $e->getMessage(),
@@ -1360,6 +1371,15 @@ class Front_End {
 				],
 			];
 
+			// Atomically claim this PaymentIntent so concurrent or duplicate submits of
+			// the same completed payment cannot each create a paid entry.
+			if ( ! Payment_Helper::claim_payment_reference( $confirm_payment_id ) ) {
+				Payment_Helper::delete_payment_intent_metadata( $block_id, $payment_id );
+				return [
+					'error' => __( 'This payment has already been processed.', 'sureforms' ),
+				];
+			}
+
 			$get_payment_entry_id = Payments::add( $entry_data );
 
 			if ( $get_payment_entry_id ) {
@@ -1382,6 +1402,9 @@ class Front_End {
 					'payment_id' => $get_payment_entry_id,
 				];
 			}
+
+			// Insert failed: release the claim so a legitimate retry is not blocked.
+			Payment_Helper::release_payment_reference( $confirm_payment_id );
 		} catch ( \Exception $e ) {
 			return [
 				'error' => $e->getMessage(),

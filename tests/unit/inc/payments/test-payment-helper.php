@@ -1096,6 +1096,21 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	// --- claim_payment_reference (non-atomic intent claim / duplicate paid entries) ---
+
+	public function test_claim_payment_reference_is_single_use() {
+		$this->assertTrue( Payment_Helper::claim_payment_reference( 'pi_unit_1' ), 'the first caller wins the claim' );
+		$this->assertFalse( Payment_Helper::claim_payment_reference( 'pi_unit_1' ), 'a second claim for the same reference is blocked' );
+
+		// An empty reference is never blocked.
+		$this->assertTrue( Payment_Helper::claim_payment_reference( '' ) );
+
+		// Release frees the reference for a legitimate retry.
+		Payment_Helper::release_payment_reference( 'pi_unit_1' );
+		$this->assertTrue( Payment_Helper::claim_payment_reference( 'pi_unit_1' ), 'the claim succeeds again after release' );
+		Payment_Helper::release_payment_reference( 'pi_unit_1' );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
