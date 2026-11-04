@@ -9,6 +9,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 
@@ -273,7 +274,10 @@ class Field_Mapping {
 					// for other modes are silently and correctly dropped — there is no
 					// silent conflict. Reviewers: do not flag the flat `required` list
 					// as a scoping bug; it is how OpenAI strict mode works.
-					$amount_types = [ 'fixed', 'variable', 'user-choice' ];
+					// Only the amount types the server-side validators implement. 'user-choice'
+					// was an unused allowlist entry with no validator support; persisting it
+					// left the payment block's amount unvalidated.
+					$amount_types = Payment_Helper::SUPPORTED_AMOUNT_TYPES;
 					$intervals    = [ 'day', 'week', 'month', 'quarter', 'year' ];
 
 					$merged_attributes['customerNameField']   = isset( $question['customerNameField'] ) ? sanitize_text_field( $question['customerNameField'] ) : '';
@@ -342,6 +346,8 @@ class Field_Mapping {
 						foreach ( $question['fieldOptions'] as &$option ) {
 							$option['icon'] = '';
 						}
+						// Drop the reference, so a later $option loop can't overwrite the last option.
+						unset( $option );
 					}
 
 					// Set options if they are valid.
@@ -362,6 +368,15 @@ class Field_Mapping {
 
 					if ( isset( $question['showValues'] ) ) {
 						$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+					}
+
+					// Descriptions only render while showDescriptions is on, so
+					// turn it on when any option carries one.
+					foreach ( $merged_attributes['options'] ?? [] as $option ) {
+						if ( is_array( $option ) && '' !== trim( Helper::get_string_value( $option['description'] ?? '' ) ) ) {
+							$merged_attributes['showDescriptions'] = true;
+							break;
+						}
 					}
 
 					// Set single selection if provided.
@@ -674,10 +689,11 @@ class Field_Mapping {
 		/**
 		 * Filters whether the field mapper emits SureForms Business fields.
 		 *
-		 * @param bool $has_business True when the Business build of SureForms Pro is active.
+		 * @param bool $has_business True when the site's plan includes the Business tier (Helper::has_tier()).
 		 * @since 2.13.0
+		 * @since 2.13.1 Read from Helper::has_tier() instead of a Pro class that 2.13.1 no longer ships.
 		 */
-		return (bool) apply_filters( 'srfm_ai_field_mapping_has_business', defined( 'SRFM_PRO_VER' ) && class_exists( 'SRFM_Pro\Inc\Business\Init' ) );
+		return (bool) apply_filters( 'srfm_ai_field_mapping_has_business', Helper::has_tier( 'business' ) );
 	}
 
 	/**
@@ -844,7 +860,7 @@ class Field_Mapping {
 		if ( ! is_array( $options ) ) {
 			return [];
 		}
-		$sanitizable_keys = [ 'label', 'value', 'optionTitle' ];
+		$sanitizable_keys = [ 'label', 'value', 'optionTitle', 'description' ];
 		foreach ( $options as $key => $option ) {
 			if ( ! is_array( $option ) ) {
 				continue;

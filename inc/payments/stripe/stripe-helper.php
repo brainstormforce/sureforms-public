@@ -23,6 +23,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Stripe_Helper {
 	/**
+	 * Transient prefix for the cached wallet settings, suffixed with the mode.
+	 *
+	 * @since 2.13.1
+	 */
+	public const WALLET_SETTINGS_TRANSIENT = 'srfm_stripe_wallet_settings_';
+
+	/**
 	 * Static cache for webhook verification results during the same request.
 	 *
 	 * @since 2.0.0
@@ -208,10 +215,12 @@ class Stripe_Helper {
 			'Content-Type'  => 'application/x-www-form-urlencoded',
 		];
 
+		$timeout = isset( $extra_args['timeout'] ) && is_int( $extra_args['timeout'] ) && $extra_args['timeout'] > 0 ? $extra_args['timeout'] : 30;
+
 		$args = [
 			'method'  => $method,
 			'headers' => $headers,
-			'timeout' => 30,
+			'timeout' => $timeout,
 		];
 
 		if ( ! empty( $data ) && in_array( $method, [ 'POST', 'PUT', 'PATCH' ], true ) ) {
@@ -756,6 +765,89 @@ class Stripe_Helper {
 	}
 
 	/**
+	 * Whether the Payment Element may offer Apple Pay and Google Pay, taken from
+	 * the connected account's own payment method settings in the Stripe
+	 * dashboard.
+	 *
+	 * One-time payments pass `paymentMethodTypes: [ 'card' ]`, and an explicit
+	 * list makes Stripe ignore the dashboard settings: the wallets ride on card
+	 * and appear even when switched off there. The account's default payment
+	 * method configuration is read instead and passed as the Payment Element's
+	 * `wallets` option. Cached per mode for an hour; a failed lookup is cached
+	 * too and leaves both wallets as Stripe would show them ('auto').
+	 *
+	 * @since 2.13.1
+	 * @return array{applePay:string,googlePay:string} 'auto' or 'never' for each.
+	 */
+	public static function get_wallet_settings() {
+		$wallets = [
+			'applePay'  => 'auto',
+			'googlePay' => 'auto',
+		];
+
+		if ( ! self::is_stripe_connected() ) {
+			return $wallets;
+		}
+
+		$mode   = (string) self::get_stripe_mode();
+		$key    = self::WALLET_SETTINGS_TRANSIENT . $mode;
+		$cached = get_transient( $key );
+
+		if ( is_array( $cached ) ) {
+			foreach ( $wallets as $wallet => $value ) {
+				$wallets[ $wallet ] = isset( $cached[ $wallet ] ) && 'never' === $cached[ $wallet ] ? 'never' : $value;
+			}
+			return $wallets;
+		}
+
+		// Short timeout: this runs while a payment form page renders.
+		$response = self::stripe_api_request(
+			'payment_method_configurations',
+			'GET',
+			[ 'limit' => 100 ],
+			'',
+			[
+				'mode'    => $mode,
+				'timeout' => 5,
+			]
+		);
+
+		$configurations = ! empty( $response['success'] ) && isset( $response['data']['data'] ) && is_array( $response['data']['data'] ) ? $response['data']['data'] : [];
+
+		foreach ( $configurations as $configuration ) {
+			if ( ! is_array( $configuration ) || empty( $configuration['is_default'] ) || empty( $configuration['active'] ) ) {
+				continue;
+			}
+
+			foreach ( [
+				'applePay'  => 'apple_pay',
+				'googlePay' => 'google_pay',
+			] as $wallet => $stripe_key ) {
+				$value = $configuration[ $stripe_key ]['display_preference']['value'] ?? '';
+				if ( 'off' === $value ) {
+					$wallets[ $wallet ] = 'never';
+				}
+			}
+			break;
+		}
+
+		set_transient( $key, $wallets, HOUR_IN_SECONDS );
+
+		return $wallets;
+	}
+
+	/**
+	 * Forget the cached wallet settings, e.g. when the Stripe account changes.
+	 *
+	 * @since 2.13.1
+	 * @return void
+	 */
+	public static function clear_wallet_settings_cache() {
+		delete_transient( self::WALLET_SETTINGS_TRANSIENT . 'test' );
+		delete_transient( self::WALLET_SETTINGS_TRANSIENT . 'live' );
+	}
+
+	/**
 	 * Clear webhook data from settings for a specific mode.
 	 *
 	 * Removes webhook_secret, webhook_id, and webhook_url for the specified mode.
@@ -836,4 +928,5 @@ class Stripe_Helper {
 		}
 		return Licensing::get_instance();
 	}
+
 }

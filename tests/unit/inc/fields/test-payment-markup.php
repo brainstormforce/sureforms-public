@@ -202,6 +202,44 @@ class Test_Payment_Markup extends TestCase {
 		$this->assertSame( '', $prop->getValue( $payment ) );
 	}
 
+	/**
+	 * A block saved with an amount type the validators refuse renders as
+	 * 'fixed', the type the stored config is rebuilt to, so the browser does
+	 * not compute an amount the server will not accept.
+	 */
+	public function test_markup_normalizes_unsupported_amount_type() {
+		$property = static function ( $object, $name ) {
+			$reflection = new \ReflectionProperty( $object, $name );
+			$reflection->setAccessible( true );
+			return $reflection->getValue( $object );
+		};
+
+		$one_time = new Payment_Markup(
+			[
+				'block_id'    => 'pay004',
+				'slug'        => 'payment',
+				'paymentType' => 'one-time',
+				'amountType'  => 'user-choice',
+				'fixedAmount' => 25,
+			]
+		);
+		$this->assertSame( 'fixed', $property( $one_time, 'amount_type' ), 'data-amount-type is rendered from this property.' );
+
+		$both = new Payment_Markup(
+			[
+				'block_id'               => 'pay005',
+				'slug'                   => 'payment',
+				'paymentType'            => 'both',
+				'oneTimeAmountType'      => 'user-choice',
+				'subscriptionAmountType' => 'variable',
+				'defaultPaymentChoice'   => 'one-time',
+			]
+		);
+		$this->assertSame( 'fixed', $property( $both, 'one_time_config' )['amount_type'] );
+		$this->assertSame( 'variable', $property( $both, 'subscription_config' )['amount_type'], 'A supported type is kept.' );
+		$this->assertSame( 'fixed', $property( $both, 'amount_type' ), 'The active (default) choice renders as fixed.' );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );

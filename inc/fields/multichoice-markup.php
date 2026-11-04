@@ -123,6 +123,7 @@ class Multichoice_Markup extends Base {
 		$this->choice_width_attr   = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
 		$this->show_values         = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
+		$this->show_descriptions   = ! empty( $attributes['showDescriptions'] );
 		$this->resolve_dynamic_default( $attributes );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
@@ -154,11 +155,25 @@ class Multichoice_Markup extends Base {
 					<?php if ( is_array( $this->options ) ) { ?>
 						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
+								<?php
+									/*
+									 * The description is mirrored by the canvas preview in
+									 * src/blocks/multi-choice/components/default.js; tag, class and
+									 * placement must stay in sync with it. It sits outside the
+									 * <label> so the accessible name, the conditional-logic value
+									 * and the URL pre-fill match stay the option title alone.
+									 * Nothing extra is emitted for an option without a description,
+									 * so an existing form gets no extra elements or attributes.
+									 */
+									$option_description = $this->get_option_description( $option );
+									$description_id     = '' === $option_description ? '' : 'srfm-' . $this->slug . '-' . $this->block_id . '-' . $i . '-description';
+								?>
 								<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>"
 										id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"
 										class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>
-										<?php echo 0 === $i ? ( ! empty( $this->aria_described_by ) ? 'aria-describedby="' . esc_attr( trim( $this->aria_described_by ) ) . '" ' : '' ) . 'data-srfm-error-target' : ''; ?>
+										<?php echo wp_kses_post( $this->get_option_described_by( $i, $description_id ) ); ?>
+										<?php echo 0 === $i ? 'data-srfm-error-target' : ''; ?>
 										<?php echo 0 === $i ? 'aria-required="' . ( ! empty( $this->data_require_attr ) ? esc_attr( $this->data_require_attr ) : '' ) . '"' : ''; ?>
 										<?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?>
 										<?php echo is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true ) ? 'checked' : ''; ?>
@@ -174,10 +189,17 @@ class Multichoice_Markup extends Base {
 												<img src="<?php echo esc_url( $option['image'] ); ?>"/>
 											</span>
 											<?php } ?>
+											<?php if ( '' !== $option_description ) { ?>
+											<div class="srfm-option-text">
+											<?php } ?>
 											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values.
 											The markup should remain unchanged.
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
-											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" data-option-text="<?php echo isset( $option['optionTitle'] ) ? esc_attr( $option['optionTitle'] ) : ''; ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
+											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" data-option-text="<?php echo isset( $option['optionTitle'] ) ? esc_attr( $option['optionTitle'] ) : ''; ?>"><?php echo esc_html( $this->get_option_display_title( $option ) ); ?></label>
+											<?php if ( '' !== $option_description ) { ?>
+												<span class="srfm-option-description" id="<?php echo esc_attr( $description_id ); ?>"><?php echo esc_html( $option_description ); ?></span>
+											</div>
+											<?php } ?>
 										</div>
 										<div class="srfm-icon-container"><?php echo wp_kses( $check_svg, $allowed_tags_svg ) . wp_kses( $unchecked_svg, $allowed_tags_svg ); ?></div>
 									</div>

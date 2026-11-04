@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Abilities\Settings;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -217,20 +218,25 @@ class Get_Global_Settings extends Abstract_Ability {
 
 		if ( empty( $settings ) || ! is_array( $settings ) ) {
 			$settings = [
-				'srfm_v2_checkbox_site_key'    => '',
-				'srfm_v2_checkbox_secret_key'  => '',
-				'srfm_v2_invisible_site_key'   => '',
-				'srfm_v2_invisible_secret_key' => '',
-				'srfm_v3_site_key'             => '',
-				'srfm_v3_secret_key'           => '',
-				'srfm_cf_appearance_mode'      => 'auto',
-				'srfm_cf_turnstile_site_key'   => '',
-				'srfm_cf_turnstile_secret_key' => '',
-				'srfm_hcaptcha_site_key'       => '',
-				'srfm_hcaptcha_secret_key'     => '',
-				'srfm_honeypot'                => false,
+				'srfm_v2_checkbox_site_key'        => '',
+				'srfm_v2_checkbox_secret_key'      => '',
+				'srfm_v2_invisible_site_key'       => '',
+				'srfm_v2_invisible_secret_key'     => '',
+				'srfm_v3_site_key'                 => '',
+				'srfm_v3_secret_key'               => '',
+				'srfm_v3_score_threshold'          => 0.5,
+				'srfm_cf_appearance_mode'          => 'auto',
+				'srfm_cf_turnstile_site_key'       => '',
+				'srfm_cf_turnstile_secret_key'     => '',
+				'srfm_cf_turnstile_on_interaction' => false,
+				'srfm_hcaptcha_site_key'           => '',
+				'srfm_hcaptcha_secret_key'         => '',
+				'srfm_honeypot'                    => false,
 			];
 		}
+
+		// Report the threshold Form_Submit applies, including for options saved before the setting existed.
+		$settings['srfm_v3_score_threshold'] = Global_Settings::sanitize_recaptcha_v3_threshold( $settings['srfm_v3_score_threshold'] ?? null );
 
 		// Mask all secret key fields with the sentinel value.
 		foreach ( self::$secret_keys as $key ) {

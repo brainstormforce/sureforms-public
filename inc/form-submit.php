@@ -14,6 +14,7 @@ use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -245,6 +246,17 @@ class Form_Submit {
 		$form_id = absint( $request->get_param( 'form-id' ) );
 
 		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			// Only a caller holding a genuine token for this form gets the specific
+			// answer, so it reveals nothing that caller did not already have. Refreshing
+			// cannot help while the form is offline, so the generic retry advice is wrong.
+			if ( Submit_Token::signature_matches( $token, $form_id ) && ! Submit_Token::is_form_open( $form_id ) ) {
+				return new WP_Error(
+					'srfm_form_unavailable',
+					__( 'This form is currently unavailable.', 'sureforms' ),
+					[ 'status' => 403 ]
+				);
+			}
+
 			return new WP_Error(
 				'srfm_token_invalid',
 				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
@@ -377,7 +389,8 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+		$raw_form_data = $request->get_params();
+		$form_data     = Helper::sanitize_by_field_type( $raw_form_data );
 
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error( [ 'message' => __( 'Form data is not found.', 'sureforms' ) ] );
@@ -438,7 +451,7 @@ class Form_Submit {
 		// rebuilt form (see #2665) stay fully readable on the read/export paths.
 		$form_data = Field_Validation::strip_unknown_field_keys( $form_data, $current_form_id );
 
-		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id );
+		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id, is_array( $raw_form_data ) ? $raw_form_data : [] );
 
 		if ( ! empty( $validated_form_data ) ) {
 			// Get the first error message to display as the main message.
@@ -501,9 +514,9 @@ class Form_Submit {
 
 			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
-			// If the cloudflare validation fails, return an error.
-			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$this->recaptcha_error_response( 'cf-turnstile', $turnstile_validation_result );
+			// Anything short of a confirmed success is a failed validation.
+			if ( ! self::is_captcha_verified( $turnstile_validation_result ) ) {
+				$this->recaptcha_error_response( 'cf-turnstile', is_array( $turnstile_validation_result ) ? $turnstile_validation_result : [] );
 			}
 		}
 
@@ -526,9 +539,9 @@ class Form_Submit {
 			$remote_ip                  = $gdpr || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
 			$hcaptcha_validation_result = self::validate_hcaptcha_token( $srfm_hcaptcha_secret_key, $hcaptcha_response, $remote_ip );
 
-			// If the hcaptcha validation fails, return an error.
-			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$this->recaptcha_error_response( 'hcaptcha', $hcaptcha_validation_result );
+			// Anything short of a confirmed success is a failed validation.
+			if ( ! self::is_captcha_verified( $hcaptcha_validation_result ) ) {
+				$this->recaptcha_error_response( 'hcaptcha', is_array( $hcaptcha_validation_result ) ? $hcaptcha_validation_result : [] );
 			}
 		}
 
@@ -557,8 +570,13 @@ class Form_Submit {
 						]
 					);
 				}
-				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
+				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+				}
+
+				// A confirmed token that still did not pass is a v3 score below the threshold; Google sends no code for it.
+				if ( self::is_captcha_verified( $sureforms_captcha_data ) ) {
+					$sureforms_captcha_data['error-codes'] = [ 'score-threshold-not-met' ];
 				}
 
 				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
@@ -602,8 +620,13 @@ class Form_Submit {
 						]
 					);
 				}
-				if ( true === $sureforms_captcha_data['success'] ) {
+				if ( self::is_recaptcha_verified( $sureforms_captcha_data, $selected_captcha_type, Helper::get_integer_value( $current_form_id ) ) ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+				}
+
+				// A confirmed token that still did not pass is a v3 score below the threshold; Google sends no code for it.
+				if ( self::is_captcha_verified( $sureforms_captcha_data ) ) {
+					$sureforms_captcha_data['error-codes'] = [ 'score-threshold-not-met' ];
 				}
 
 				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
@@ -1015,7 +1038,7 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$to            = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
+		$to            = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data, $form_data ) );
 		$subject       = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
 		$email_body    = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
 		$is_raw_format = isset( $item['is_raw_format'] ) && true === $item['is_raw_format'];
@@ -1044,21 +1067,21 @@ class Form_Submit {
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
 		// Add the From: to the headers.
-		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
+		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data );
 
 		// Handle Reply-To with proper sanitization.
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data, $form_data ) ) ) . "\r\n";
 		}
 
 		// Handle CC with proper sanitization.
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data, $form_data ) ) ) . "\r\n";
 		}
 
 		// Handle BCC with proper sanitization.
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data, $form_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
@@ -1179,7 +1202,7 @@ class Form_Submit {
 							// even with debug logging switched off. A rejected
 							// recipient address (often what a visitor typed) is
 							// logged on the entry but says nothing about the site.
-							$recipients = self::get_visitor_recipients( $item, $submission_data );
+							$recipients = self::get_visitor_recipients( $item, $submission_data, $form_data );
 							if ( ! Mailer::is_visitor_recipient_failure( $email_report, $recipients['addresses'], $recipients['only_visitor'] ) ) {
 								$site_failed = true;
 								Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'], $entry_saved );
@@ -1485,12 +1508,14 @@ class Form_Submit {
 		// Google reCAPTCHA error codes.
 		// Reference: (https://developers.google.com/recaptcha/docs/verify#error-code-reference).
 		$google_recaptcha_error = [
-			'missing-input-secret'   => 'The secret parameter is missing.',
-			'invalid-input-secret'   => 'The secret parameter is invalid or malformed.',
-			'missing-input-response' => 'The response parameter is missing.',
-			'invalid-input-response' => 'The response parameter is invalid or malformed.',
-			'bad-request'            => 'The request is invalid or malformed.',
-			'timeout-or-duplicate'   => 'The response is no longer valid: either is too old or has been used previously.',
+			'missing-input-secret'    => 'The secret parameter is missing.',
+			'invalid-input-secret'    => 'The secret parameter is invalid or malformed.',
+			'missing-input-response'  => 'The response parameter is missing.',
+			'invalid-input-response'  => 'The response parameter is invalid or malformed.',
+			'bad-request'             => 'The request is invalid or malformed.',
+			'timeout-or-duplicate'    => 'The response is no longer valid: either is too old or has been used previously.',
+			// Set by SureForms, not Google: the v3 score was under srfm_recaptcha_v3_score_threshold.
+			'score-threshold-not-met' => 'The reCAPTCHA v3 score was below the accepted threshold.',
 		];
 
 		// hCaptcha error codes.
@@ -1665,10 +1690,12 @@ class Form_Submit {
 	 *
 	 * @param array<mixed> $item            Notification settings.
 	 * @param array<mixed> $submission_data Submission data.
+	 * @param array<mixed> $form_data       Request context, resolved the same way as when the notification was parsed.
 	 * @since 2.12.9
+	 * @since 2.13.1 Added $form_data.
 	 * @return array{addresses:array<int,string>,only_visitor:bool}
 	 */
-	private static function get_visitor_recipients( $item, $submission_data ) {
+	private static function get_visitor_recipients( $item, $submission_data, $form_data = [] ) {
 		$smart_tags   = Smart_Tags::get_instance();
 		$addresses    = [];
 		$owner        = [];
@@ -1681,7 +1708,7 @@ class Form_Submit {
 				if ( '' === $part ) {
 					continue;
 				}
-				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) ) ) );
+				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data, $form_data ) ) ) );
 				if ( false === strpos( $part, '{form:' ) ) {
 					$only_visitor = false;
 					$owner        = array_merge( $owner, $resolved );
@@ -2062,10 +2089,12 @@ class Form_Submit {
 	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
 	 * @param Smart_Tags    $smart_tags Smart Tags instance.
+	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
+	 * @since 2.13.1 Added $form_data.
 	 * @return string The formatted "From" email header.
 	 */
-	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
+	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {
 		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? sanitize_text_field( Helper::get_string_value( $item['from_name'] ) ) : '{site_title}';
 		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
 
@@ -2079,6 +2108,70 @@ class Form_Submit {
 			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) ) . '>' . "\r\n";
+		// A From address resolved from a smart tag gets the same admin_email fallback.
+		$resolved_from = Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data, $form_data ) );
+		if ( ! is_email( $resolved_from ) ) {
+			$resolved_from = Helper::get_string_value( get_option( 'admin_email' ) );
+		}
+
+		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) ) ) . ' <' . esc_html( $resolved_from ) . '>' . "\r\n";
+	}
+
+	/**
+	 * Whether a captcha siteverify response proves the token is valid.
+	 *
+	 * The verdict comes from the decoded response only. A body that does not decode
+	 * to an array, an array without a success key, or any value other than boolean
+	 * true means the token was never confirmed, so it is not treated as verified.
+	 *
+	 * @param mixed $result Return value of one of the validate_*_token() methods.
+	 * @since 2.13.1
+	 * @return bool
+	 */
+	private static function is_captcha_verified( $result ) {
+		return is_array( $result ) && isset( $result['success'] ) && true === $result['success'];
+	}
+
+	/**
+	 * Whether a Google reCAPTCHA siteverify response is a pass for this form.
+	 *
+	 * Every variant needs a confirmed success. For v3, success only means the token
+	 * is valid; the verdict is the score, so a v3 response passes only when it carries
+	 * a numeric score at or above the srfm_recaptcha_v3_score_threshold value. A
+	 * missing or non-numeric score is not a pass.
+	 *
+	 * @param mixed  $result       Decoded siteverify response.
+	 * @param string $captcha_type The form's stored reCAPTCHA variant (_srfm_form_recaptcha).
+	 * @param int    $form_id      Form post ID.
+	 * @since 2.13.1
+	 * @return bool
+	 */
+	private static function is_recaptcha_verified( $result, $captcha_type, $form_id ) {
+		if ( ! self::is_captcha_verified( $result ) ) {
+			return false;
+		}
+
+		if ( 'v3-reCAPTCHA' !== $captcha_type ) {
+			return true;
+		}
+
+		$security_options = get_option( 'srfm_security_settings_options' );
+		$stored_threshold = is_array( $security_options ) ? Global_Settings::sanitize_recaptcha_v3_threshold( $security_options['srfm_v3_score_threshold'] ?? null ) : 0.5;
+
+		/**
+		 * Filter the lowest reCAPTCHA v3 score a submission is accepted at.
+		 *
+		 * Scores run from 0.0 (likely automated) to 1.0 (likely human). A return that
+		 * is not a finite number falls back to the global setting; the value is
+		 * clamped to 0-1.
+		 *
+		 * @param float $threshold Minimum score. Default is the global reCAPTCHA v3 setting (0.5 when unset).
+		 * @param int   $form_id   Form post ID.
+		 * @since 2.13.1
+		 */
+		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', $stored_threshold, $form_id );
+		$threshold = Global_Settings::sanitize_recaptcha_v3_threshold( $threshold, $stored_threshold );
+
+		return is_array( $result ) && isset( $result['score'] ) && is_numeric( $result['score'] ) && (float) $result['score'] >= $threshold;
 	}
 }

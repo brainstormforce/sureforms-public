@@ -164,6 +164,12 @@
 				align-items: center;
 				justify-content: center;
 				height: 100%;
+
+				.srfm-option-text {
+					align-items: center;
+					flex: 0 1 auto;
+					text-align: center;
+				}
 				.srfm-option-icon {
 					min-width: var( --srfm-multi-choice-vertical-svg-size );
 					width: var( --srfm-multi-choice-vertical-svg-size );
@@ -235,6 +241,23 @@
 		flex: 1;
 		gap: var( --srfm-multi-choice-internal-option-gap );
 		align-items: center;
+
+		// Only rendered when the option carries a description, so an option
+		// without one keeps the label as a direct child and its existing layout.
+		.srfm-option-text {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 2px;
+		}
+
+		.srfm-option-description {
+			@include srfm-description-styles;
+			margin-top: 0;
+			// The label above gets `word-break: break-word`, this span does not,
+			// so a long unbroken string ran straight out of the option box.
+			overflow-wrap: anywhere;
+		}
 		.srfm-option-icon {
 			display: flex;
 			min-width: var( --srfm-multi-choice-horizontal-svg-size );

@@ -97,17 +97,37 @@ class Submit_Token {
 	/**
 	 * Verify a token submitted with a form.
 	 *
-	 * Checks the token against every accepted window, from newest to oldest,
-	 * using constant-time comparison throughout.
+	 * A token is accepted only when its signature matches (see signature_matches())
+	 * and the form is currently open (see is_form_open()). Tokens outlive the page
+	 * that embedded them, so publication state is re-read on every verification
+	 * rather than trusted from when the token was minted.
 	 *
 	 * @since  2.6.0
 	 * @since  2.12.6 Added the $namespace parameter.
+	 * @since  2.13.1 Returns false unless the form is currently published.
 	 * @param  string $token     Token value received from the client.
 	 * @param  int    $form_id   Form post ID extracted from the request body.
 	 * @param  string $namespace Purpose the token must have been minted for.
-	 * @return bool True if the token is valid for the given form, false otherwise.
+	 * @return bool True if the token is valid for the given, currently published form, false otherwise.
 	 */
 	public static function verify( string $token, int $form_id, string $namespace = self::NAMESPACE_SUBMIT ): bool {
+		return self::signature_matches( $token, $form_id, $namespace ) && self::is_form_open( $form_id );
+	}
+
+	/**
+	 * Whether a token was minted for this form and namespace within an accepted window.
+	 *
+	 * Checks every accepted window, from newest to oldest, using constant-time
+	 * comparison throughout. Says nothing about the form's current state; callers
+	 * authorising a request must use verify().
+	 *
+	 * @since  2.13.1
+	 * @param  string $token     Token value received from the client.
+	 * @param  int    $form_id   Form post ID extracted from the request body.
+	 * @param  string $namespace Purpose the token must have been minted for.
+	 * @return bool True if the signature matches, false otherwise.
+	 */
+	public static function signature_matches( string $token, int $form_id, string $namespace = self::NAMESPACE_SUBMIT ): bool {
 		if ( '' === $token || $form_id <= 0 ) {
 			return false;
 		}
@@ -124,6 +144,18 @@ class Submit_Token {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Whether a form currently accepts tokens: a SureForms form with `publish` status.
+	 *
+	 * @since  2.13.1
+	 * @param  int $form_id Form post ID.
+	 * @return bool
+	 */
+	public static function is_form_open( int $form_id ): bool {
+		$form = get_post( $form_id );
+		return $form instanceof \WP_Post && SRFM_FORMS_POST_TYPE === $form->post_type && 'publish' === $form->post_status;
 	}
 
 	/**

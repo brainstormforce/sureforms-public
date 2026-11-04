@@ -43,7 +43,7 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
 		<UpgradeTooltip
 			heading={ __( 'Unlock Resend Email Notification', 'sureforms' ) }
 			content={ __(
-				'With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease.',
+				'With SureForms Business, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease.',
 				'sureforms'
 			) }
 			utmMedium="entry_resend_email_notification"

@@ -28,6 +28,36 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Payment_Helper {
 	/**
+	 * Amount types the server-side validators implement.
+	 *
+	 * The single source of truth shared by the amount validators and the writers
+	 * that persist a payment block's amount type (Field_Validation::process_payment_block
+	 * and the AI form builder). Any value outside this list has no server-side amount
+	 * check, so it must be normalised to 'fixed' on store and rejected at validation.
+	 *
+	 * @since 2.13.1
+	 */
+	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
+
+	/**
+	 * A payment block's amount type, or 'fixed' when it is not one the
+	 * server-side validators implement.
+	 *
+	 * The one normaliser for every reader of a block's amountType: the stored
+	 * block config (Field_Validation::process_payment_block()) and the rendered
+	 * payment field (Payment_Markup), so the browser and the server always
+	 * agree on the type. 'fixed' is also what the editor shows for any other
+	 * value.
+	 *
+	 * @param mixed $raw amountType, oneTimeAmountType or subscriptionAmountType attribute.
+	 * @since 2.13.1
+	 * @return string One of SUPPORTED_AMOUNT_TYPES.
+	 */
+	public static function get_supported_amount_type( $raw ) {
+		return is_string( $raw ) && in_array( $raw, self::SUPPORTED_AMOUNT_TYPES, true ) ? $raw : 'fixed';
+	}
+
+	/**
 	 * Get all payment settings (global settings + all gateways).
 	 *
 	 * Retrieves the complete payment settings structure:
@@ -637,6 +667,17 @@ class Payment_Helper {
 
 		// Get amount type (fixed or minimum).
 		$amount_type = $resolved_config['amount_type'] ?? 'fixed';
+
+		// Fail closed on any amount type the validators do not implement. Only 'fixed'
+		// and 'variable' have a server-side amount check; without this guard an
+		// unrecognised stored amount_type falls through to the "validation passed"
+		// return below and accepts any submitted amount.
+		if ( ! in_array( $amount_type, self::SUPPORTED_AMOUNT_TYPES, true ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Unsupported payment amount type.', 'sureforms' ),
+			];
+		}
 
 		// Validate based on amount type.
 		if ( 'fixed' === $amount_type ) {
@@ -1384,6 +1425,16 @@ class Payment_Helper {
 		$payment_config  = $block_config[ $block_id ];
 		$resolved_config = self::resolve_payment_config_for_active_type( $payment_config, $active_type );
 		$amount_type     = $resolved_config['amount_type'] ?? 'fixed';
+
+		// Fail closed on any amount type the validators do not implement, matching
+		// validate_payment_amount(). This is the post-charge gate, so without it the
+		// charged amount is accepted for an unrecognised amount_type.
+		if ( ! in_array( $amount_type, self::SUPPORTED_AMOUNT_TYPES, true ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Unsupported payment amount type.', 'sureforms' ),
+			];
+		}
 
 		// For fixed amounts, validate against configured amount.
 		if ( 'fixed' === $amount_type ) {
