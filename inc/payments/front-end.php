@@ -823,6 +823,18 @@ class Front_End {
 			$is_subscription_active = in_array( $subscription['status'], [ 'active', 'trialing' ], true );
 			$final_status           = $is_subscription_active ? 'active' : 'failed';
 
+			// Accept the submission only for a subscription whose first payment completed
+			// (active or trialing). An incomplete/past_due/unpaid subscription — for
+			// example a PaymentIntent left in requires_action after an abandoned 3DS step —
+			// must not mark the block verified, mirroring the one-time path which rejects
+			// any status other than succeeded/requires_capture. Returning an error here
+			// stops require_verified_payments from treating the entry as paid.
+			if ( ! $is_subscription_active ) {
+				return [
+					'error' => __( 'Subscription payment was not completed.', 'sureforms' ),
+				];
+			}
+
 			$amount              = isset( $paid_invoice['amount'] ) && ! empty( $paid_invoice['amount'] ) ? $paid_invoice['amount'] : 0;
 			$currency            = isset( $paid_invoice['currency'] ) && ! empty( $paid_invoice['currency'] ) ? $paid_invoice['currency'] : 'usd';
 			$form_id             = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? $form_data['form-id'] : 0;
