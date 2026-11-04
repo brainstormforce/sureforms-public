@@ -1069,7 +1069,20 @@ class Payment_Helper {
 		}
 
 		// 2. Fall back to a user matching the customer email.
-		$customer_email = ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
+		//
+		// The customer email comes from the submitted payment data and is not a
+		// verified identity claim, so matching a guest payment to the account that
+		// owns that email attributes the payment to a user who may not have made it.
+		// This match defaults to true to preserve existing behaviour; a site whose
+		// payment-lifecycle hook consumers (membership, LMS, etc.) grant or revoke
+		// access by the context user_id should return false here so guest payments
+		// resolve to 0, as the hook contract documents.
+		//
+		// @since 2.13.1
+		// @param bool                 $match_by_email Whether to resolve a guest payment to the account owning customer_email.
+		// @param array<string, mixed> $payment        The payment record.
+		$match_by_email = (bool) apply_filters( 'srfm_resolve_guest_payment_user_by_email', true, $payment );
+		$customer_email = $match_by_email && ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
 		if ( ! empty( $customer_email ) ) {
 			$user = get_user_by( 'email', $customer_email );
 			if ( $user instanceof \WP_User ) {

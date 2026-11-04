@@ -1096,6 +1096,23 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	// --- guest payment email -> user resolution (unverified email binding) ---
+
+	public function test_resolve_payment_user_email_match_can_be_disabled() {
+		$user_id = self::factory()->user->create( [ 'user_email' => 'guest9@example.test' ] );
+		$payment = [ 'entry_id' => 0, 'customer_email' => 'guest9@example.test' ];
+
+		// Default behaviour is preserved: a guest payment resolves to the account
+		// that owns the submitted email (backward compatible).
+		$this->assertSame( $user_id, Payment_Helper::resolve_payment_user( $payment ) );
+
+		// A site that opts out gets the documented "0 for guests" instead of an
+		// unverified attribution.
+		add_filter( 'srfm_resolve_guest_payment_user_by_email', '__return_false' );
+		$this->assertSame( 0, Payment_Helper::resolve_payment_user( $payment ) );
+		remove_filter( 'srfm_resolve_guest_payment_user_by_email', '__return_false' );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
