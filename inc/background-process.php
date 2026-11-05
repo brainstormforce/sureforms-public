@@ -185,7 +185,7 @@ class Background_Process {
 	 * every callback again.
 	 *
 	 * @param int $submission_id Entry ID.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return bool True only for the call that set the flag.
 	 */
 	protected function claim_submission( $submission_id ) {

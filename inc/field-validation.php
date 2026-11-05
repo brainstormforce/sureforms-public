@@ -11,6 +11,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Compatibility\Multilingual\String_Translator;
+use SRFM\Inc\Payments\Payment_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -154,7 +155,7 @@ class Field_Validation {
 		// Example: $block_config = [ 'block-1' => [ ... ], 'block-2' => [ ... ] ].
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 		$stored       = ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
-		if ( null !== $stored && ! self::has_stale_number_config( $stored ) ) {
+		if ( null !== $stored && ! self::has_stale_config( $stored ) ) {
 			// If it exists and is an array, return it directly (no migration needed).
 			// Example: Returning the existing $block_config array.
 			return $stored;
@@ -180,7 +181,9 @@ class Field_Validation {
 		// Example: After migration, $block_config should now be an array if successful.
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 
-		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : $stored;
+		// The rebuild either stored a config or deleted the meta, so return what is
+		// stored now: the stale config is no longer what later requests will read.
+		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
 	}
 
 	/**
@@ -456,12 +459,17 @@ class Field_Validation {
 	 * its configuration. Only fields with keys containing '-lbl-' (SureForms fields) are processed.
 	 * If a field fails validation, its error message is added to the $not_valid_fields array.
 	 *
+	 * Then applies the form's own field rules (Field_Rules): required, email
+	 * format, number range, options, selection limits and maximum length.
+	 *
 	 * @param array<mixed> $form_data        The submitted form data (sanitized).
 	 * @param int|mixed    $current_form_id  The ID of the form being validated.
+	 * @param array<mixed> $raw_form_data    The same request before sanitizing. Defaults to $form_data.
 	 * @since 1.12.2
+	 * @since 2.13.1 Added $raw_form_data and the field rules.
 	 * @return array An array of invalid fields and their error messages. Empty if all fields are valid.
 	 */
-	public static function validate_form_data( $form_data, $current_form_id ) {
+	public static function validate_form_data( $form_data, $current_form_id, $raw_form_data = [] ) {
 		if ( ! is_array( $form_data ) || ! is_numeric( $current_form_id ) ) {
 			return [];
 		}
@@ -577,9 +585,10 @@ class Field_Validation {
 			}
 		}
 
-		// Return the array of invalid fields and their error messages.
+		// Return the array of invalid fields and their error messages. The checks
+		// above keep their message for a field; the field rules add theirs.
 		// Example: [ 'srfm-email-c867d9d9-lbl-email' => 'This field is required.' ].
-		return $not_valid_fields;
+		return $not_valid_fields + Field_Rules::validate( $form_data, empty( $raw_form_data ) ? $form_data : $raw_form_data, Helper::get_integer_value( $current_form_id ) );
 	}
 
 	/**
@@ -947,8 +956,10 @@ class Field_Validation {
 			}
 		}
 
-		// Extract amount type (fixed or minimum).
-		$payment_config['amount_type'] = isset( $attrs['amountType'] ) && is_string( $attrs['amountType'] ) ? sanitize_text_field( $attrs['amountType'] ) : 'fixed';
+		// Extract amount type (fixed or minimum). Normalise anything outside the
+		// supported allowlist to 'fixed' so the editor, AI form builder or an imported
+		// block cannot persist a type the server-side validators do not handle.
+		$payment_config['amount_type'] = Payment_Helper::get_supported_amount_type( $attrs['amountType'] ?? null );
 
 		$payment_config['fixed_amount'] = isset( $attrs['fixedAmount'] ) ? floatval( $attrs['fixedAmount'] ) : 10;
 
@@ -973,7 +984,7 @@ class Field_Validation {
 		// BOTH MODE: store per-type amount configs so server-side validation can
 		// use the correct config based on which flow the user actually chose.
 		if ( 'both' === $payment_config['payment_type'] ) {
-			$payment_config['one_time_amount_type']    = isset( $attrs['oneTimeAmountType'] ) && is_string( $attrs['oneTimeAmountType'] ) ? sanitize_text_field( $attrs['oneTimeAmountType'] ) : 'fixed';
+			$payment_config['one_time_amount_type']    = Payment_Helper::get_supported_amount_type( $attrs['oneTimeAmountType'] ?? null );
 			$payment_config['one_time_fixed_amount']   = isset( $attrs['oneTimeFixedAmount'] ) ? floatval( $attrs['oneTimeFixedAmount'] ) : 10;
 			$payment_config['one_time_minimum_amount'] = isset( $attrs['oneTimeMinimumAmount'] ) ? floatval( $attrs['oneTimeMinimumAmount'] ) : 0;
 
@@ -990,7 +1001,7 @@ class Field_Validation {
 				}
 			}
 
-			$payment_config['subscription_amount_type']    = isset( $attrs['subscriptionAmountType'] ) && is_string( $attrs['subscriptionAmountType'] ) ? sanitize_text_field( $attrs['subscriptionAmountType'] ) : 'fixed';
+			$payment_config['subscription_amount_type']    = Payment_Helper::get_supported_amount_type( $attrs['subscriptionAmountType'] ?? null );
 			$payment_config['subscription_fixed_amount']   = isset( $attrs['subscriptionFixedAmount'] ) ? floatval( $attrs['subscriptionFixedAmount'] ) : 10;
 			$payment_config['subscription_minimum_amount'] = isset( $attrs['subscriptionMinimumAmount'] ) ? floatval( $attrs['subscriptionMinimumAmount'] ) : 0;
 
@@ -1185,17 +1196,35 @@ class Field_Validation {
 	}
 
 	/**
-	 * Whether a stored block config holds a number config saved before process_number_block()
-	 * recorded read_only (and with it defaultValue and the minValue/maxValue range).
+	 * Whether a stored block config has to be rebuilt from the form's blocks.
+	 *
+	 * Stale when it holds a number config saved before process_number_block()
+	 * recorded read_only (and with it defaultValue and the minValue/maxValue
+	 * range), or a payment config whose amount type is outside
+	 * Payment_Helper::SUPPORTED_AMOUNT_TYPES. The payment validators refuse
+	 * such a type, and process_payment_block() normalises it, so the rebuild
+	 * gives the form the amount type its editor shows.
 	 *
 	 * @param array<mixed> $block_config Stored block config.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return bool
 	 */
-	private static function has_stale_number_config( $block_config ) {
+	private static function has_stale_config( $block_config ) {
 		foreach ( $block_config as $config ) {
-			if ( is_array( $config ) && isset( $config['block_name'] ) && 'srfm/number' === $config['block_name'] && ! array_key_exists( 'read_only', $config ) ) {
+			if ( ! is_array( $config ) || ! isset( $config['block_name'] ) ) {
+				continue;
+			}
+
+			if ( 'srfm/number' === $config['block_name'] && ! array_key_exists( 'read_only', $config ) ) {
 				return true;
+			}
+
+			if ( 'srfm/payment' === $config['block_name'] ) {
+				foreach ( [ 'amount_type', 'one_time_amount_type', 'subscription_amount_type' ] as $key ) {
+					if ( array_key_exists( $key, $config ) && ! in_array( $config[ $key ], Payment_Helper::SUPPORTED_AMOUNT_TYPES, true ) ) {
+						return true;
+					}
+				}
 			}
 		}
 

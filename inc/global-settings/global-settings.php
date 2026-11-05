@@ -304,27 +304,30 @@ class Global_Settings {
 		$srfm_cf_appearance_mode      = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_cf_appearance_mode'] ?? 'auto' ) );
 		$srfm_cf_turnstile_site_key   = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_cf_turnstile_site_key'] ?? '' ) );
 		$srfm_cf_turnstile_secret_key = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_cf_turnstile_secret_key'] ?? '' ) );
-		$srfm_hcaptcha_site_key       = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_hcaptcha_site_key'] ?? '' ) );
-		$srfm_hcaptcha_secret_key     = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_hcaptcha_secret_key'] ?? '' ) );
-		$srfm_honeypot                = $setting_options['srfm_honeypot'] ?? false;
-		$srfm_v3_score_threshold      = self::sanitize_recaptcha_v3_threshold( $setting_options['srfm_v3_score_threshold'] ?? null );
+		// Stored as a boolean: the challenge either waits for the visitor or it does not.
+		$srfm_cf_turnstile_on_interaction = ! empty( $setting_options['srfm_cf_turnstile_on_interaction'] );
+		$srfm_hcaptcha_site_key           = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_hcaptcha_site_key'] ?? '' ) );
+		$srfm_hcaptcha_secret_key         = sanitize_text_field( Helper::get_string_value( $setting_options['srfm_hcaptcha_secret_key'] ?? '' ) );
+		$srfm_honeypot                    = $setting_options['srfm_honeypot'] ?? false;
+		$srfm_v3_score_threshold          = self::sanitize_recaptcha_v3_threshold( $setting_options['srfm_v3_score_threshold'] ?? null );
 
 		return update_option(
 			'srfm_security_settings_options',
 			[
-				'srfm_v2_checkbox_site_key'    => $srfm_v2_checkbox_site_key,
-				'srfm_v2_checkbox_secret_key'  => $srfm_v2_checkbox_secret_key,
-				'srfm_v2_invisible_site_key'   => $srfm_v2_invisible_site_key,
-				'srfm_v2_invisible_secret_key' => $srfm_v2_invisible_secret_key,
-				'srfm_v3_site_key'             => $srfm_v3_site_key,
-				'srfm_v3_secret_key'           => $srfm_v3_secret_key,
-				'srfm_v3_score_threshold'      => $srfm_v3_score_threshold,
-				'srfm_cf_appearance_mode'      => $srfm_cf_appearance_mode,
-				'srfm_cf_turnstile_site_key'   => $srfm_cf_turnstile_site_key,
-				'srfm_cf_turnstile_secret_key' => $srfm_cf_turnstile_secret_key,
-				'srfm_hcaptcha_site_key'       => $srfm_hcaptcha_site_key,
-				'srfm_hcaptcha_secret_key'     => $srfm_hcaptcha_secret_key,
-				'srfm_honeypot'                => $srfm_honeypot,
+				'srfm_v2_checkbox_site_key'        => $srfm_v2_checkbox_site_key,
+				'srfm_v2_checkbox_secret_key'      => $srfm_v2_checkbox_secret_key,
+				'srfm_v2_invisible_site_key'       => $srfm_v2_invisible_site_key,
+				'srfm_v2_invisible_secret_key'     => $srfm_v2_invisible_secret_key,
+				'srfm_v3_site_key'                 => $srfm_v3_site_key,
+				'srfm_v3_secret_key'               => $srfm_v3_secret_key,
+				'srfm_v3_score_threshold'          => $srfm_v3_score_threshold,
+				'srfm_cf_appearance_mode'          => $srfm_cf_appearance_mode,
+				'srfm_cf_turnstile_site_key'       => $srfm_cf_turnstile_site_key,
+				'srfm_cf_turnstile_secret_key'     => $srfm_cf_turnstile_secret_key,
+				'srfm_cf_turnstile_on_interaction' => $srfm_cf_turnstile_on_interaction,
+				'srfm_hcaptcha_site_key'           => $srfm_hcaptcha_site_key,
+				'srfm_hcaptcha_secret_key'         => $srfm_hcaptcha_secret_key,
+				'srfm_honeypot'                    => $srfm_honeypot,
 			]
 		);
 	}
@@ -339,7 +342,7 @@ class Global_Settings {
 	 *
 	 * @param mixed $value   Submitted or stored threshold.
 	 * @param float $default Threshold used when $value is not a finite number.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return float
 	 */
 	public static function sanitize_recaptcha_v3_threshold( $value, $default = 0.5 ) {
@@ -733,19 +736,20 @@ class Global_Settings {
 		}
 		if ( empty( $global_setting_options['srfm_security_settings_options'] ) ) {
 			$global_setting_options['srfm_security_settings_options'] = [
-				'srfm_v2_checkbox_site_key'    => '',
-				'srfm_v2_checkbox_secret_key'  => '',
-				'srfm_v2_invisible_site_key'   => '',
-				'srfm_v2_invisible_secret_key' => '',
-				'srfm_v3_site_key'             => '',
-				'srfm_v3_secret_key'           => '',
-				'srfm_v3_score_threshold'      => 0.5,
-				'srfm_cf_appearance_mode'      => 'auto',
-				'srfm_cf_turnstile_site_key'   => '',
-				'srfm_cf_turnstile_secret_key' => '',
-				'srfm_hcaptcha_site_key'       => '',
-				'srfm_hcaptcha_secret_key'     => '',
-				'srfm_honeypot'                => false,
+				'srfm_v2_checkbox_site_key'        => '',
+				'srfm_v2_checkbox_secret_key'      => '',
+				'srfm_v2_invisible_site_key'       => '',
+				'srfm_v2_invisible_secret_key'     => '',
+				'srfm_v3_site_key'                 => '',
+				'srfm_v3_secret_key'               => '',
+				'srfm_v3_score_threshold'          => 0.5,
+				'srfm_cf_appearance_mode'          => 'auto',
+				'srfm_cf_turnstile_site_key'       => '',
+				'srfm_cf_turnstile_secret_key'     => '',
+				'srfm_cf_turnstile_on_interaction' => false,
+				'srfm_hcaptcha_site_key'           => '',
+				'srfm_hcaptcha_secret_key'         => '',
+				'srfm_honeypot'                    => false,
 			];
 		}
 

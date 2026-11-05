@@ -389,7 +389,8 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+		$raw_form_data = $request->get_params();
+		$form_data     = Helper::sanitize_by_field_type( $raw_form_data );
 
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error( [ 'message' => __( 'Form data is not found.', 'sureforms' ) ] );
@@ -450,7 +451,7 @@ class Form_Submit {
 		// rebuilt form (see #2665) stay fully readable on the read/export paths.
 		$form_data = Field_Validation::strip_unknown_field_keys( $form_data, $current_form_id );
 
-		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id );
+		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id, is_array( $raw_form_data ) ? $raw_form_data : [] );
 
 		if ( ! empty( $validated_form_data ) ) {
 			// Get the first error message to display as the main message.
@@ -1691,7 +1692,7 @@ class Form_Submit {
 	 * @param array<mixed> $submission_data Submission data.
 	 * @param array<mixed> $form_data       Request context, resolved the same way as when the notification was parsed.
 	 * @since 2.12.9
-	 * @since x.x.x Added $form_data.
+	 * @since 2.13.1 Added $form_data.
 	 * @return array{addresses:array<int,string>,only_visitor:bool}
 	 */
 	private static function get_visitor_recipients( $item, $submission_data, $form_data = [] ) {
@@ -2090,7 +2091,7 @@ class Form_Submit {
 	 * @param Smart_Tags    $smart_tags Smart Tags instance.
 	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
-	 * @since x.x.x Added $form_data.
+	 * @since 2.13.1 Added $form_data.
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {
@@ -2124,7 +2125,7 @@ class Form_Submit {
 	 * true means the token was never confirmed, so it is not treated as verified.
 	 *
 	 * @param mixed $result Return value of one of the validate_*_token() methods.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return bool
 	 */
 	private static function is_captcha_verified( $result ) {
@@ -2142,7 +2143,7 @@ class Form_Submit {
 	 * @param mixed  $result       Decoded siteverify response.
 	 * @param string $captcha_type The form's stored reCAPTCHA variant (_srfm_form_recaptcha).
 	 * @param int    $form_id      Form post ID.
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return bool
 	 */
 	private static function is_recaptcha_verified( $result, $captcha_type, $form_id ) {
@@ -2166,7 +2167,7 @@ class Form_Submit {
 		 *
 		 * @param float $threshold Minimum score. Default is the global reCAPTCHA v3 setting (0.5 when unset).
 		 * @param int   $form_id   Form post ID.
-		 * @since x.x.x
+		 * @since 2.13.1
 		 */
 		$threshold = apply_filters( 'srfm_recaptcha_v3_score_threshold', $stored_threshold, $form_id );
 		$threshold = Global_Settings::sanitize_recaptcha_v3_threshold( $threshold, $stored_threshold );

@@ -1225,6 +1225,10 @@ abstract class Base {
 
 			$format[]      = $this->get_format_by_datatype( $value['type'] ); // Format for the WP database methods.
 			$_data[ $key ] = $this->encode_by_datatype( $data[ $key ], $value['type'] );
+
+			if ( 'array' === $value['type'] ) {
+				$_data[ $key ] = $this->fit_json_to_column( $_data[ $key ], $key );
+			}
 		}
 		return [
 			'data'   => $_data,
@@ -1310,5 +1314,43 @@ abstract class Base {
 				// For datetime, we will return the value as it is because we are using sql DATETIME format.
 				return $value;
 		}
+	}
+
+	/**
+	 * Keep characters outside the Basic Multilingual Plane, such as emoji, in a
+	 * JSON column that cannot store them.
+	 *
+	 * A `utf8` (utf8mb3) column holds at most three bytes per character, and wpdb
+	 * refuses a whole insert or update that carries a four-byte one. Such a
+	 * character is written as its JSON escape (`😀`), which is ASCII and
+	 * which json_decode() turns back into the same character, so the value reads
+	 * back unchanged. A utf8mb4 column, and any value without such a character, is
+	 * stored as it is.
+	 *
+	 * @param mixed  $json   JSON from encode_by_datatype().
+	 * @param string $column Column name.
+	 * @since 2.13.1
+	 * @return mixed
+	 */
+	private function fit_json_to_column( $json, $column ) {
+		if ( ! is_string( $json ) || 1 !== preg_match( '/[\x{10000}-\x{10FFFF}]/u', $json ) ) {
+			return $json;
+		}
+
+		$charset = $this->wpdb->get_col_charset( $this->get_tablename(), $column );
+		if ( ! is_string( $charset ) || 'utf8mb4' === $charset ) {
+			return $json;
+		}
+
+		$escaped = preg_replace_callback(
+			'/[\x{10000}-\x{10FFFF}]/u',
+			static function ( $character ) {
+				// Without JSON_UNESCAPED_UNICODE, the character comes back as its surrogate-pair escape.
+				return substr( (string) wp_json_encode( $character[0] ), 1, -1 );
+			},
+			$json
+		);
+
+		return is_string( $escaped ) ? $escaped : $json;
 	}
 }

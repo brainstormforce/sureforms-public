@@ -25,7 +25,7 @@ class Stripe_Helper {
 	/**
 	 * Transient prefix for the cached wallet settings, suffixed with the mode.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 */
 	public const WALLET_SETTINGS_TRANSIENT = 'srfm_stripe_wallet_settings_';
 
@@ -776,7 +776,7 @@ class Stripe_Helper {
 	 * `wallets` option. Cached per mode for an hour; a failed lookup is cached
 	 * too and leaves both wallets as Stripe would show them ('auto').
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return array{applePay:string,googlePay:string} 'auto' or 'never' for each.
 	 */
 	public static function get_wallet_settings() {
@@ -839,7 +839,7 @@ class Stripe_Helper {
 	/**
 	 * Forget the cached wallet settings, e.g. when the Stripe account changes.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.1
 	 * @return void
 	 */
 	public static function clear_wallet_settings_cache() {

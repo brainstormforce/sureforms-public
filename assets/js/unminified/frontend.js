@@ -286,6 +286,195 @@ function showErrorMessageOnRecaptchaError( args ) {
 	} );
 }
 
+/**
+ * Cloudflare Turnstile — on-interaction execution.
+ *
+ * Only active when the Turnstile settings have "Run the challenge on first
+ * interaction" enabled; PHP then marks the widget container with
+ * data-srfm-execution="execute" and loads api.js with render=explicit, so
+ * Cloudflare renders nothing on its own.
+ *
+ * The challenge runs on the visitor's first interaction with the form, or on
+ * submit if they never interacted (keyboard-only autofill, programmatic
+ * submit). Submission waits for the token rather than failing, and an expired
+ * token is reset so the next submit asks for a fresh one.
+ *
+ * Nothing here runs for the default, implicit configuration.
+ */
+const SRFM_TURNSTILE_TOKEN_WAIT = 15000;
+
+window.srfmTurnstile = window.srfmTurnstile || {
+	// Container element -> { id, token, waiting, resolvers[] }.
+	states: new WeakMap(),
+
+	isDeferred( container ) {
+		return !! container && 'execute' === container.dataset?.srfmExecution;
+	},
+
+	/**
+	 * Resolve with the widget's token, running the challenge if it has not run.
+	 *
+	 * @param {Element} container The .cf-turnstile element.
+	 * @return {Promise<string>} The token, or '' when it could not be obtained.
+	 */
+	getToken( container ) {
+		const state = this.states.get( container );
+		if ( ! state ) {
+			return Promise.resolve( '' );
+		}
+		if ( state.token ) {
+			return Promise.resolve( state.token );
+		}
+
+		return new Promise( ( resolve ) => {
+			state.resolvers.push( resolve );
+			this.run( container );
+
+			// A challenge that never calls back must not hold the submission
+			// open: resolving empty lets the existing captcha error show.
+			setTimeout( () => {
+				const index = state.resolvers.indexOf( resolve );
+				if ( -1 !== index ) {
+					state.resolvers.splice( index, 1 );
+					resolve( state.token || '' );
+				}
+			}, SRFM_TURNSTILE_TOKEN_WAIT );
+		} );
+	},
+
+	/**
+	 * Ask Cloudflare to run the challenge, once per outstanding token.
+	 *
+	 * @param {Element} container The .cf-turnstile element.
+	 * @return {void}
+	 */
+	run( container ) {
+		const state = this.states.get( container );
+		if ( ! state || state.waiting || state.token || ! window.turnstile ) {
+			return;
+		}
+		state.waiting = true;
+		try {
+			window.turnstile.execute( state.id );
+		} catch ( e ) {
+			state.waiting = false;
+		}
+	},
+
+	settle( container, token ) {
+		const state = this.states.get( container );
+		if ( ! state ) {
+			return;
+		}
+		state.token = token;
+		state.waiting = false;
+		const resolvers = state.resolvers.splice( 0 );
+		resolvers.forEach( ( resolve ) => resolve( token ) );
+	},
+};
+
+/**
+ * Render every deferred widget and arm its first-interaction trigger.
+ *
+ * @return {void}
+ */
+function srfmRenderDeferredTurnstile() {
+	if ( ! window.turnstile?.render ) {
+		return;
+	}
+
+	document
+		.querySelectorAll(
+			'.cf-turnstile[data-srfm-execution="execute"]:not([data-srfm-rendered])'
+		)
+		.forEach( ( container ) => {
+			container.setAttribute( 'data-srfm-rendered', 'true' );
+
+			const state = { id: null, token: '', waiting: false, resolvers: [] };
+			window.srfmTurnstile.states.set( container, state );
+
+			state.id = window.turnstile.render( container, {
+				sitekey: container.dataset.sitekey,
+				theme: container.dataset.theme || 'auto',
+				// The challenge waits for turnstile.execute(), and the widget
+				// only becomes visible if the visitor has to do something.
+				execution: 'execute',
+				appearance: 'interaction-only',
+				callback: ( token ) => {
+					window.srfmTurnstile.settle( container, token );
+					onSuccess( token );
+				},
+				'error-callback': () => {
+					window.srfmTurnstile.settle( container, '' );
+					onTurnstileError();
+				},
+				'expired-callback': () => {
+					window.srfmTurnstile.settle( container, '' );
+					window.turnstile.reset( state.id );
+				},
+				'timeout-callback': () => {
+					window.srfmTurnstile.settle( container, '' );
+					window.turnstile.reset( state.id );
+				},
+			} );
+
+			const form = container.closest( '.srfm-form' );
+			if ( ! form ) {
+				return;
+			}
+
+			const trigger = () => window.srfmTurnstile.run( container );
+			[ 'focusin', 'keydown', 'touchstart', 'change' ].forEach( ( type ) =>
+				form.addEventListener( type, trigger, {
+					once: true,
+					passive: true,
+				} )
+			);
+		} );
+}
+
+/**
+ * api.js is deferred and may land before or after this script, and with
+ * render=explicit it never calls back on its own. Polling for the global keeps
+ * the two independent of load order; it stops as soon as the widgets render.
+ *
+ * @return {void}
+ */
+function srfmWatchForTurnstile() {
+	if ( ! document.querySelector( '.cf-turnstile[data-srfm-execution="execute"]' ) ) {
+		return;
+	}
+
+	srfmRenderDeferredTurnstile();
+
+	if ( window.turnstile?.render ) {
+		return;
+	}
+
+	const started = Date.now();
+	const poll = setInterval( () => {
+		if ( window.turnstile?.render ) {
+			clearInterval( poll );
+			srfmRenderDeferredTurnstile();
+		} else if ( Date.now() - started > SRFM_TURNSTILE_TOKEN_WAIT ) {
+			clearInterval( poll );
+		}
+	}, 100 );
+}
+
+if ( 'loading' === document.readyState ) {
+	document.addEventListener( 'DOMContentLoaded', srfmWatchForTurnstile );
+} else {
+	srfmWatchForTurnstile();
+}
+
+// A form can arrive after the page has loaded -- an Elementor popup, a page
+// builder preview, anything dispatching srfm_form_initialize. form-submit.js
+// re-runs its handlers for those and announces each one here, which is the only
+// signal this renderer needs: without it a late form would have no widget, and
+// so no way to produce a token.
+document.addEventListener( 'srfm_form_after_initialization', srfmWatchForTurnstile );
+
 // eslint-disable-next-line
 function onTurnstileError() {
 	showErrorMessageOnRecaptchaError( {

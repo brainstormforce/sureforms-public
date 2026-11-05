@@ -229,9 +229,11 @@ class Payment_Markup extends Base {
 
 		$this->payment_type      = $attributes['paymentType'] ?? 'one-time';
 		$this->subscription_plan = $attributes['subscriptionPlan'] ?? [];
-		$this->amount_type       = $attributes['amountType'] ?? 'fixed';
-		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
-		$this->minimum_amount    = $attributes['minimumAmount'] ?? 0;
+		// Normalised exactly as the stored block config is, so the browser
+		// computes the amount for the same type the server validates.
+		$this->amount_type    = Payment_Helper::get_supported_amount_type( $attributes['amountType'] ?? 'fixed' );
+		$this->fixed_amount   = $attributes['fixedAmount'] ?? 10;
+		$this->minimum_amount = $attributes['minimumAmount'] ?? 0;
 
 		// Set customer field mappings.
 		$this->customer_name_field  = $attributes['customerNameField'] ?? '';
@@ -251,14 +253,14 @@ class Payment_Markup extends Base {
 		}
 
 		$this->one_time_config = [
-			'amount_type'    => $attributes['oneTimeAmountType'] ?? 'fixed',
+			'amount_type'    => Payment_Helper::get_supported_amount_type( $attributes['oneTimeAmountType'] ?? 'fixed' ),
 			'fixed_amount'   => isset( $attributes['oneTimeFixedAmount'] ) ? (float) $attributes['oneTimeFixedAmount'] : 10.0,
 			'minimum_amount' => isset( $attributes['oneTimeMinimumAmount'] ) ? (float) $attributes['oneTimeMinimumAmount'] : 0.0,
 			'variable_field' => $attributes['oneTimeVariableAmountField'] ?? '',
 		];
 
 		$this->subscription_config = [
-			'amount_type'    => $attributes['subscriptionAmountType'] ?? 'fixed',
+			'amount_type'    => Payment_Helper::get_supported_amount_type( $attributes['subscriptionAmountType'] ?? 'fixed' ),
 			'fixed_amount'   => isset( $attributes['subscriptionFixedAmount'] ) ? (float) $attributes['subscriptionFixedAmount'] : 10.0,
 			'minimum_amount' => isset( $attributes['subscriptionMinimumAmount'] ) ? (float) $attributes['subscriptionMinimumAmount'] : 0.0,
 			'variable_field' => $attributes['subscriptionVariableAmountField'] ?? '',

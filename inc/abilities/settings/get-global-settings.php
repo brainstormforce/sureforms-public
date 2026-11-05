@@ -218,19 +218,20 @@ class Get_Global_Settings extends Abstract_Ability {
 
 		if ( empty( $settings ) || ! is_array( $settings ) ) {
 			$settings = [
-				'srfm_v2_checkbox_site_key'    => '',
-				'srfm_v2_checkbox_secret_key'  => '',
-				'srfm_v2_invisible_site_key'   => '',
-				'srfm_v2_invisible_secret_key' => '',
-				'srfm_v3_site_key'             => '',
-				'srfm_v3_secret_key'           => '',
-				'srfm_v3_score_threshold'      => 0.5,
-				'srfm_cf_appearance_mode'      => 'auto',
-				'srfm_cf_turnstile_site_key'   => '',
-				'srfm_cf_turnstile_secret_key' => '',
-				'srfm_hcaptcha_site_key'       => '',
-				'srfm_hcaptcha_secret_key'     => '',
-				'srfm_honeypot'                => false,
+				'srfm_v2_checkbox_site_key'        => '',
+				'srfm_v2_checkbox_secret_key'      => '',
+				'srfm_v2_invisible_site_key'       => '',
+				'srfm_v2_invisible_secret_key'     => '',
+				'srfm_v3_site_key'                 => '',
+				'srfm_v3_secret_key'               => '',
+				'srfm_v3_score_threshold'          => 0.5,
+				'srfm_cf_appearance_mode'          => 'auto',
+				'srfm_cf_turnstile_site_key'       => '',
+				'srfm_cf_turnstile_secret_key'     => '',
+				'srfm_cf_turnstile_on_interaction' => false,
+				'srfm_hcaptcha_site_key'           => '',
+				'srfm_hcaptcha_secret_key'         => '',
+				'srfm_honeypot'                    => false,
 			];
 		}
 

@@ -196,18 +196,8 @@ const SERVER_MARKUP_BLOCKS = [ 'srfm-payment' ];
  *
  * This is a heuristic, NOT a parser: `if a<b then c>d` still matches it, because
  * distinguishing that from real markup requires actually parsing HTML. It exists
- * only to keep a plain-text answer typed into a textarea off the HTML path in the
- * common case. The real discriminator is `block_name`.
- *
- * KNOWN RESIDUAL — `srfm-textarea` is the textarea BLOCK, not "rich text": the
- * block's `isRichText` attribute defaults to false (inc/blocks/textarea/block.json),
- * so most textareas are plain multi-line answers. One that happens to contain
- * tag-shaped text still reaches the sanitizer, which removes it: `I tried <div>
- * and <span>` renders as `I tried and`. That is not a regression — the previous
- * content-sniffing discriminator did the same to EVERY field type — but it is not
- * fixed either. Fixing it properly needs `isRichText` on the wire (the entries
- * REST response assembles per-field context in inc/rest-api.php and could carry
- * it); until then this is the one field type still exposed to it.
+ * only to keep a value without markup off the HTML path. The real discriminators
+ * are `block_name` and, for a textarea, `is_rich_text`.
  */
 const HTML_TAG_PATTERN = /<[a-z!/][^<>]*>/i;
 
@@ -215,6 +205,10 @@ const HTML_TAG_PATTERN = /<[a-z!/][^<>]*>/i;
  * Should this field's value be rendered as HTML rather than as escaped text?
  *
  * The discriminator is the server's `block_name`, not the shape of the value.
+ * A textarea is rendered as HTML only when the server reports it uses the
+ * rich-text editor (`is_rich_text`, read from the saved form in
+ * Rest_Api::get_entry_details()). A plain textarea's answer is text whatever it
+ * contains: `<i>italic</i>` typed into one shows as those characters.
  * Content-sniffing every value with a loose `/<[^>]+>/` test silently destroys
  * plain-text answers: `<not a tag>` renders as an empty cell and `x<y>z` as
  * `xz`, because DOMPurify quite correctly removes what looks like an unknown
@@ -234,7 +228,7 @@ const HTML_TAG_PATTERN = /<[a-z!/][^<>]*>/i;
  * @return {boolean} True when the value must be sanitized and inserted as HTML.
  */
 export const isRichTextField = ( field ) =>
-	( field?.block_name === RICH_TEXT_BLOCK ||
+	( ( field?.block_name === RICH_TEXT_BLOCK && true === field?.is_rich_text ) ||
 		SERVER_MARKUP_BLOCKS.includes( field?.block_name ) ) &&
 	typeof field.value === 'string' &&
 	HTML_TAG_PATTERN.test( field.value );
@@ -310,20 +304,29 @@ export const sanitizeFieldValue = ( field ) =>
  * `srfm-repeater`, since each row's cells are separate fields whose own block
  * names Pro does not currently carry.
  *
+ * `is_rich_text` is taken from the original field only, never from `formatted`:
+ * it is the server's reading of the saved form, and nothing a formatter returns
+ * can turn a plain textarea's value into HTML.
+ *
  * Long term Pro should spread `...field` in its formatter and this can go away.
  *
  * @since 2.12.3
+ * @since 2.13.1 Also carries `is_rich_text`.
  *
  * @param {Object} field     The original field, which still has `block_name`.
  * @param {*}      formatted Whatever the Pro filter returned.
- * @return {*} `formatted`, with `block_name` restored when it is a plain object.
+ * @return {*} `formatted`, with `block_name` and `is_rich_text` restored when it is a plain object.
  */
 export const withBlockName = ( field, formatted ) =>
 	formatted &&
 	typeof formatted === 'object' &&
 	! Array.isArray( formatted ) &&
 	! isValidElement( formatted )
-		? { block_name: field?.block_name, ...formatted }
+		? {
+			block_name: field?.block_name,
+			...formatted,
+			is_rich_text: true === field?.is_rich_text,
+		  }
 		: formatted;
 
 /**

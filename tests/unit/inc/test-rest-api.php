@@ -892,6 +892,72 @@ class Test_Rest_Api extends TestCase {
 	}
 
 	/**
+	 * Each textarea field says whether the form renders it as rich text, read from
+	 * the saved form, so the entry screen renders only those fields as HTML.
+	 */
+	public function test_get_entry_details_flags_rich_text_fields() {
+		wp_set_current_user( $this->create_test_admin() );
+
+		$pattern = wp_insert_post(
+			[
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_title'   => 'Shared rich text',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"rt000002","slug":"bio","label":"Bio","isRichText":true} /-->',
+			]
+		);
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Rich text flags',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"rt000001","slug":"notes","label":"Notes","isRichText":true} /-->'
+					. '<!-- wp:srfm/textarea {"block_id":"pt000001","slug":"message","label":"Message"} /-->'
+					. '<!-- wp:srfm/input {"block_id":"ip000001","slug":"name","label":"Name"} /-->'
+					. '<!-- wp:block {"ref":' . $pattern . '} /-->',
+			]
+		);
+		$rich    = 'srfm-textarea-rt000001-lbl-' . \SRFM\Inc\Helper::encode( 'Notes' ) . '-notes';
+		$plain   = 'srfm-textarea-pt000001-lbl-' . \SRFM\Inc\Helper::encode( 'Message' ) . '-message';
+		$input   = 'srfm-input-ip000001-lbl-' . \SRFM\Inc\Helper::encode( 'Name' ) . '-name';
+		$shared  = 'srfm-textarea-rt000002-lbl-' . \SRFM\Inc\Helper::encode( 'Bio' ) . '-bio';
+		// A rich-text field whose block was rebuilt keeps its slug.
+		$drifted = 'srfm-textarea-zz999999-lbl-' . \SRFM\Inc\Helper::encode( 'Notes' ) . '-notes';
+
+		$entry_id = \SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [
+					$rich  => htmlspecialchars( '<p><em>Hi</em></p>' ),
+					$plain => htmlspecialchars( '<i>italic</i>' ),
+					$input  => 'Jane',
+					$shared => htmlspecialchars( '<p>Bio</p>' ),
+				],
+			]
+		);
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/entry/' . $entry_id . '/details' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$data = rest_get_server()->dispatch( $request )->get_data();
+
+		$flags = array_column( $data['form_data'], 'is_rich_text', 'field_name' );
+		$this->assertTrue( $flags[ $rich ], 'A rich-text textarea is flagged.' );
+		$this->assertFalse( $flags[ $plain ], 'A plain textarea is not, whatever its value looks like.' );
+		$this->assertFalse( $flags[ $input ], 'Only textareas can be rich text.' );
+		$this->assertTrue( $flags[ $shared ], 'A rich-text textarea inside a reusable block is flagged.' );
+
+		\SRFM\Inc\Database\Tables\Entries::update( $entry_id, [ 'form_data' => [ $drifted => 'x' ] ] );
+		$data  = rest_get_server()->dispatch( $request )->get_data();
+		$flags = array_column( $data['form_data'], 'is_rich_text', 'field_name' );
+		$this->assertTrue( $flags[ $drifted ], 'A drifted block id falls back to the slug.' );
+
+		\SRFM\Inc\Database\Tables\Entries::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+		wp_delete_post( $pattern, true );
+		wp_set_current_user( 0 );
+	}
+
+	/**
 	 * Test get_entry_logs is callable.
 	 */
 	public function test_get_entry_logs() {
