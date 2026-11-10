@@ -813,6 +813,21 @@ class Front_End {
 						}
 
 						$subscription = $subscription_response['data'];
+
+						// The PaymentIntent has succeeded, so Stripe activates the subscription; a read
+						// taken in the same moment can still report 'incomplete'. Read it once more so a
+						// charged customer is not rejected. Any non-active result is still rejected below.
+						if ( is_array( $subscription ) && isset( $subscription['status'] ) && 'incomplete' === $subscription['status'] ) {
+							$subscription_response = Stripe_Helper::stripe_api_request(
+								'subscriptions',
+								'GET',
+								[],
+								$subscription_id
+							);
+							if ( $subscription_response['success'] ) {
+								$subscription = $subscription_response['data'];
+							}
+						}
 					}
 				} catch ( \Exception $e ) {
 					return [
