@@ -790,6 +790,14 @@ class Front_End {
 
 						$paid_invoice = $paid_invoice_response['data'];
 
+						// The block is verified only when the first invoice's PaymentIntent has succeeded.
+						$paid_invoice_status = is_array( $paid_invoice ) && isset( $paid_invoice['status'] ) && is_string( $paid_invoice['status'] ) ? $paid_invoice['status'] : '';
+						if ( 'succeeded' !== $paid_invoice_status ) {
+							return [
+								'error' => __( 'Subscription payment was not completed.', 'sureforms' ),
+							];
+						}
+
 						// Get the subscription.
 						$subscription_response = Stripe_Helper::stripe_api_request(
 							'subscriptions',
@@ -819,17 +827,9 @@ class Front_End {
 				];
 			}
 
-			// Use simple-stripe-subscriptions validation logic - check if subscription is in good state.
-			$is_subscription_active = in_array( $subscription['status'], [ 'active', 'trialing' ], true );
-			$final_status           = $is_subscription_active ? 'active' : 'failed';
-
-			// Accept the submission only for a subscription whose first payment completed
-			// (active or trialing). An incomplete/past_due/unpaid subscription — for
-			// example a PaymentIntent left in requires_action after an abandoned 3DS step —
-			// must not mark the block verified, mirroring the one-time path which rejects
-			// any status other than succeeded/requires_capture. Returning an error here
-			// stops require_verified_payments from treating the entry as paid.
-			if ( ! $is_subscription_active ) {
+			// The block is verified only for an active subscription. Forms have no trial
+			// option, so any other status (trialing included) means the first payment was not collected.
+			if ( ! is_array( $subscription ) || ! isset( $subscription['status'] ) || 'active' !== $subscription['status'] ) {
 				return [
 					'error' => __( 'Subscription payment was not completed.', 'sureforms' ),
 				];
@@ -877,7 +877,7 @@ class Front_End {
 			$entry_data = [
 				'form_id'             => $form_id,
 				'block_id'            => $block_id,
-				'status'              => $final_status,
+				'status'              => 'active',
 				'total_amount'        => Stripe_Helper::amount_from_stripe_format( $amount, $currency ),
 				'currency'            => $currency,
 				'entry_id'            => 0,
@@ -906,7 +906,7 @@ class Front_End {
 				/* translators: Message for guest user in payment logs */
 				: __( 'Guest User', 'sureforms' );
 
-			// If invoice is not paid then we need to set the status in the subscription log and return error.
+			// Record the first-invoice status in the subscription log.
 			$paid_invoice_log = '';
 			if ( 'paid' !== $invoice_status ) {
 				/* translators: %s: Invoice status */

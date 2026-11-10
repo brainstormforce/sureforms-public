@@ -59,15 +59,16 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 	}
 
 	/**
-	 * Stub every Stripe HTTP call. The confirmed PaymentIntent is requires_action
-	 * (unpaid); the subscription status is whatever the test provides.
+	 * Stub every Stripe HTTP call with the given subscription and confirmed
+	 * first-invoice PaymentIntent statuses.
 	 *
 	 * @param string $subscription_status Stripe subscription status to return.
+	 * @param string $intent_status       Status of the confirmed first-invoice PaymentIntent.
 	 */
-	private function stub_stripe( $subscription_status ) {
+	private function stub_stripe( $subscription_status, $intent_status ) {
 		add_filter(
 			'pre_http_request',
-			static function ( $pre, $args, $url ) use ( $subscription_status ) {
+			static function ( $pre, $args, $url ) use ( $subscription_status, $intent_status ) {
 				$json = static function ( $data ) {
 					return [
 						'response' => [ 'code' => 200 ],
@@ -84,7 +85,7 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 					return $json( [ 'id' => 'in_x', 'payment_intent' => 'pi_x', 'auto_advance' => true, 'status' => 'open' ] );
 				}
 				if ( false !== strpos( $url, '/payment_intents/' ) ) {
-					return $json( [ 'id' => 'pi_x', 'status' => 'requires_action', 'amount' => 1000, 'currency' => 'usd' ] );
+					return $json( [ 'id' => 'pi_x', 'status' => $intent_status, 'amount' => 1000, 'currency' => 'usd' ] );
 				}
 				return new WP_Error( 'blocked', 'blocked outbound ' . $url );
 			},
@@ -93,8 +94,8 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 		);
 	}
 
-	private function run_submit( $subscription_status ) {
-		$this->stub_stripe( $subscription_status );
+	private function run_submit( $subscription_status, $intent_status = 'succeeded' ) {
+		$this->stub_stripe( $subscription_status, $intent_status );
 		$subscription_value = [
 			'subscriptionId' => 'sub_x',
 			'customerId'     => 'cus_x',
@@ -106,10 +107,25 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 	}
 
 	public function test_incomplete_subscription_is_rejected() {
-		$result = $this->run_submit( 'incomplete' );
+		$result = $this->run_submit( 'incomplete', 'requires_action' );
 		$this->assertIsArray( $result );
 		$this->assertArrayHasKey( 'error', $result, 'an incomplete (unpaid) subscription must not be accepted' );
 		$this->assertArrayNotHasKey( 'payment_id', $result, 'an incomplete subscription must not mark the block verified' );
+	}
+
+	public function test_unpaid_first_invoice_is_rejected_even_if_subscription_reports_active() {
+		$result = $this->run_submit( 'active', 'requires_action' );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'error', $result, 'the first invoice PaymentIntent must have succeeded' );
+		$this->assertArrayNotHasKey( 'payment_id', $result );
+	}
+
+	public function test_trialing_subscription_is_rejected() {
+		// SureForms forms have no trial option, so a trialing subscription was not created by this form.
+		$result = $this->run_submit( 'trialing' );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'error', $result, 'a trialing subscription must not mark the block verified' );
+		$this->assertArrayNotHasKey( 'payment_id', $result );
 	}
 
 	public function test_active_subscription_is_accepted() {
