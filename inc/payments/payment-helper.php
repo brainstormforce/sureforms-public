@@ -40,6 +40,23 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Default subscription interval for a payment block whose plan was left at the
+	 * editor default. Gutenberg omits an attribute equal to its block.json default,
+	 * so a default-plan form stores no cadence; the server falls back to this value
+	 * instead of trusting the submitted interval.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
+
+	/**
+	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
+
+	/**
 	 * Throttle unauthenticated payment-object creation per IP + form, so one scraped
 	 * submit token cannot drive unbounded Stripe/PayPal object creation on the
 	 * merchant account. Returns true when the caller is over the limit.
@@ -149,23 +166,6 @@ class Payment_Helper {
 		}
 		return $customer_id;
 	}
-
-	/**
-	 * Default subscription interval for a payment block whose plan was left at the
-	 * editor default. Gutenberg omits an attribute equal to its block.json default,
-	 * so a default-plan form stores no cadence; the server falls back to this value
-	 * instead of trusting the submitted interval.
-	 *
-	 * @since 2.13.2
-	 */
-	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
-
-	/**
-	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
-	 *
-	 * @since 2.13.2
-	 */
-	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
 
 	/**
 	 * Resolve a subscription payment block's cadence (interval + billing cycles) from
