@@ -10,8 +10,27 @@ use SRFM\Inc\Payments\Payment_Helper;
 
 class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 
+	/**
+	 * REMOTE_ADDR as it was before the test. SRFM_Unit_Test_Case does not roll back
+	 * globals, and later suites (e.g. the unique-validation limiter, which fails
+	 * closed without an IP) depend on it, so every test must leave it untouched.
+	 *
+	 * @var string|null
+	 */
+	private $original_remote_addr;
+
 	protected function setUp(): void {
 		parent::setUp();
+		$this->original_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
+	}
+
+	protected function tearDown(): void {
+		if ( null === $this->original_remote_addr ) {
+			unset( $_SERVER['REMOTE_ADDR'] );
+		} else {
+			$_SERVER['REMOTE_ADDR'] = $this->original_remote_addr;
+		}
+		parent::tearDown();
 	}
 
 	// --- get_all_currencies_data ---
@@ -1095,6 +1114,35 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 			$this->assertSame( 'fixed', Payment_Helper::get_supported_amount_type( $raw ), 'Unsupported: ' . var_export( $raw, true ) );
 		}
 	}
+
+	public function test_is_payment_rate_limited_throttles_per_ip_and_form() {
+		$_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+		// Default limit is 30/min: the first 30 pass, the 31st is throttled.
+		for ( $i = 0; $i < 30; $i++ ) {
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit' ), "request {$i} should pass" );
+		}
+		$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unit' ), 'the 31st request is throttled' );
+
+		// A different form is an independent bucket.
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 456, 'unit' ) );
+
+		// The filter can disable throttling.
+		add_filter( 'srfm_payment_rate_limit_per_minute', '__return_zero' );
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit' ) );
+		remove_filter( 'srfm_payment_rate_limit_per_minute', '__return_zero' );
+
+		// Counters are transients and the test case does not roll back the DB.
+		foreach ( [ 123, 456 ] as $form_id ) {
+			delete_transient( 'srfm_pay_rl_unit_' . md5( '203.0.113.7_' . $form_id ) );
+		}
+	}
+
+	public function test_is_payment_rate_limited_fails_open_without_ip() {
+		unset( $_SERVER['REMOTE_ADDR'] );
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );
+	}
+
 
 	// --- claim_payment_reference (non-atomic intent claim / duplicate paid entries) ---
 
