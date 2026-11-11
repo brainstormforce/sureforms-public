@@ -194,17 +194,22 @@ class Admin {
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ], 9 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		add_action( 'admin_menu', [ $this, 'settings_page' ] );
-		add_action( 'admin_menu', [ $this, 'add_learn_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
+		// Settings, Learn, SMTP and Upgrade are appended after every item added with a
+		// position (Forms through Partial Entries, including Pro's at priority 30).
+		// WordPress reads a position as an index into the items present at the time,
+		// so an item added earlier would move above a feature item whenever a switched
+		// off feature leaves its slot empty.
+		add_action( 'admin_menu', [ $this, 'settings_page' ], 100 );
+		add_action( 'admin_menu', [ $this, 'add_learn_page' ], 100 );
 		if ( ! Helper::hide_promotions() ) {
-			add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
+			add_action( 'admin_menu', [ $this, 'add_suremail_page' ], 100 );
 		}
 		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_quiz_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_survey_reports_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_partial_entries_page' ] );
-			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
+			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ], 100 );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
 
@@ -1343,6 +1348,10 @@ JS;
 	 * @since 2.7.0
 	 */
 	public function add_quiz_page() {
+		// Upsell for a Pro feature that reads stored entries, so not while Entries is off.
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return;
+		}
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'Quiz Entries', 'sureforms' ),
@@ -1373,6 +1382,10 @@ JS;
 	 * @since 2.8.0
 	 */
 	public function add_survey_reports_page() {
+		// Upsell for a Pro feature that reads stored entries, so not while Entries is off.
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return;
+		}
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'Survey Reports', 'sureforms' ),
@@ -1403,6 +1416,10 @@ JS;
 	 * @since 2.9.0
 	 */
 	public function add_partial_entries_page() {
+		// Upsell for a Pro feature that reads stored entries, so not while Entries is off.
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return;
+		}
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'Partial Entries', 'sureforms' ),
@@ -1498,7 +1515,7 @@ JS;
 	 * Attached to `wp-hooks`, which every SureForms and SureForms Pro bundle
 	 * depends on, so it prints before any of them on any screen they load.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return void
 	 */
 	public function localize_features() {
@@ -4123,7 +4140,9 @@ CSS;
 			/* translators: %s: form title. */
 			$categories['notification']['title']   = __( 'A notification failed on %s, and the submission was not stored.', 'sureforms' );
 			$categories['notification']['generic'] = __( 'A notification failed, and the submission was not stored.', 'sureforms' );
-			$categories['notification']['message'] = __( 'This form is set to never store entries, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn off "Never store entry data after form submission" for this form, so submissions are not lost.', 'sureforms' );
+			$categories['notification']['message'] = Features::is_enabled( 'entries' )
+				? __( 'This form is set to never store entries, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn off "Never store entry data after form submission" for this form, so submissions are not lost.', 'sureforms' )
+				: __( 'The Entries feature is turned off, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn Entries back on in Settings → Features, so submissions are not lost.', 'sureforms' );
 		}
 
 		foreach ( $categories as $category => $copy ) {
@@ -5554,7 +5573,9 @@ CSS;
 			}
 		}
 
-		$message = __( 'These forms are set to never store entries, and no email notification for them could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn off "Never store entry data after form submission" on these forms.', 'sureforms' );
+		$message = Features::is_enabled( 'entries' )
+			? __( 'These forms are set to never store entries, and no email notification for them could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn off "Never store entry data after form submission" on these forms.', 'sureforms' )
+			: __( 'The Entries feature is turned off, and no email notification for these forms could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn Entries back on in Settings → Features.', 'sureforms' );
 		if ( ! empty( $titles ) ) {
 			/* translators: %s: comma-separated form titles. */
 			$message .= ' ' . sprintf( __( 'Forms: %s.', 'sureforms' ), implode( ', ', $titles ) );

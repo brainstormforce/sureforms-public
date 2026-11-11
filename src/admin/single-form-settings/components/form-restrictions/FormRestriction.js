@@ -30,6 +30,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { srfmEditFormMeta } from '@Components/tab-content-wrapper/edit-form-meta';
 import { STORE_NAME as SRFM_STORE_NAME } from '@Store/constants';
 import { notify } from '@Utils/notify';
+import { isFeatureEnabled } from '@Utils/features';
 
 const FormRestriction = ( { setHasValidationErrors } ) => {
 	const { updateMeta, preserveMetaData, rawMeta, editMeta, setPreserveMetaData } =
@@ -341,7 +342,8 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 
 					{ preserveMetaData?.status && (
 						<>
-							{ isNeverStoreEntriesEnabled && (
+							{ ( isNeverStoreEntriesEnabled ||
+								! isFeatureEnabled( 'entries' ) ) && (
 								<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning rounded-lg">
 									<span className="size-5">
 										<Info
@@ -350,10 +352,15 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 										/>
 									</span>
 									<span className="text-sm font-normal">
-										{ __(
-											'The entry cap relies on stored entries to count submissions. While Compliance Settings has "Never store entry data after form submission" enabled, this limit will not be enforced. Disable that option, or remove the entry limit, to use this feature.',
-											'sureforms'
-										) }
+										{ isFeatureEnabled( 'entries' )
+											? __(
+												'The entry cap relies on stored entries to count submissions. While Compliance Settings has "Never store entry data after form submission" enabled, this limit will not be enforced. Disable that option, or remove the entry limit, to use this feature.',
+												'sureforms'
+											)
+											: __(
+												'The entry cap relies on stored entries to count submissions. Entries is turned off in Settings → Features, so this limit is not enforced until it is turned back on.',
+												'sureforms'
+											) }
 									</span>
 								</Container>
 							) }

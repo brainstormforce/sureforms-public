@@ -4379,6 +4379,70 @@ class Test_Admin_Features extends TestCase {
 	}
 
 	/**
+	 * Settings stays below the feature menus whichever of them are off. Items
+	 * added with a position are placed by index, so Settings must be added after
+	 * all of them for a missing Entries or Payments not to move Settings up.
+	 */
+	public function test_settings_stays_below_feature_menus_when_features_are_off() {
+		global $submenu, $menu, $_registered_pages, $_parent_pages;
+
+		$admin_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_menu_order_admin',
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin_id );
+		$saved = [ $submenu, $menu, $_registered_pages, $_parent_pages ];
+		// Registers its admin_menu callbacks; the loader does this only in wp-admin.
+		\SRFM\Admin\Admin::get_instance();
+
+		$order = static function () {
+			global $submenu, $menu;
+			$submenu = [];
+			$menu    = [];
+			do_action( 'admin_menu', '' );
+			return wp_list_pluck( $submenu['sureforms_menu'] ?? [], 2 );
+		};
+
+		try {
+			$cases = [
+				'all on'       => [],
+				'entries off'  => [ 'entries' => false ],
+				'payments off' => [ 'payments' => false ],
+				'both off'     => [
+					'entries'  => false,
+					'payments' => false,
+				],
+			];
+			foreach ( $cases as $case => $switches ) {
+				delete_option( \SRFM\Inc\Features::OPTION );
+				\SRFM\Inc\Features::reset();
+				\SRFM\Inc\Features::save( $switches );
+
+				$slugs    = $order();
+				$settings = array_search( 'sureforms_form_settings', $slugs, true );
+				$this->assertNotFalse( $settings, $case );
+				foreach ( [ 'sureforms_forms', 'add-new-form', SRFM_ENTRIES, SRFM_PAYMENTS, 'sureforms_quiz_entries' ] as $slug ) {
+					$at = array_search( $slug, $slugs, true );
+					if ( false !== $at ) {
+						$this->assertLessThan( $settings, $at, $case . ': ' . $slug . ' sits above Settings' );
+					}
+				}
+				$this->assertSame( $settings + 1, array_search( 'sureforms_learn', $slugs, true ), $case . ': Learn follows Settings' );
+				if ( ! \SRFM\Inc\Helper::has_pro() && isset( $switches['entries'] ) ) {
+					$this->assertNotContains( 'sureforms_quiz_entries', $slugs, $case . ': no upsell for a Pro feature that needs Entries' );
+					$this->assertNotContains( 'sureforms_partial_entries', $slugs, $case );
+				}
+			}
+		} finally {
+			[ $submenu, $menu, $_registered_pages, $_parent_pages ] = $saved;
+			wp_delete_user( $admin_id );
+		}
+	}
+
+	/**
 	 * The feature and block switches are printed before wp-hooks for users who can
 	 * edit, and not at all for anyone else.
 	 */

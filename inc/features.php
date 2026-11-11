@@ -12,7 +12,7 @@
  * boot lines with `Features::is_enabled()`.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.13.2
  */
 
 namespace SRFM\Inc;
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Feature registry.
  *
- * @since x.x.x
+ * @since 2.13.2
  */
 class Features {
 	/**
@@ -66,8 +66,10 @@ class Features {
 	 *   as "in use" before the feature is turned off.
 	 * - usage_meta (string[]): form meta keys checked the same way; a form
 	 *   counts when the meta (array or JSON) has its on/off flag set.
+	 * - admin_pages (string[]): `page` slugs of the admin screens this feature
+	 *   adds. While it is off, opening one goes to Settings → Features.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function definitions() {
@@ -77,8 +79,8 @@ class Features {
 
 		$rows = [
 			'entries'    => [
-				'group'      => 'core',
-				'routes'     => [
+				'group'       => 'core',
+				'routes'      => [
 					'entries/list',
 					'entries/read-status',
 					'entries/trash',
@@ -89,9 +91,10 @@ class Features {
 					'database/repair-entries-table',
 					'entries-chart-data',
 				],
-				'cron_hooks' => [ 'srfm_weekly_scheduled_events' ],
+				'cron_hooks'  => [ 'srfm_weekly_scheduled_events' ],
 				// Entry limits count stored entries, so they stop applying while this is off.
-				'usage_meta' => [ '_srfm_form_restriction' ],
+				'usage_meta'  => [ '_srfm_form_restriction' ],
+				'admin_pages' => [ SRFM_ENTRIES ],
 			],
 			'ai_builder' => [
 				'group'  => 'core',
@@ -103,13 +106,14 @@ class Features {
 			'payments'   => [
 				'group'        => 'core',
 				'usage_blocks' => [ 'srfm/payment' ],
+				'admin_pages'  => [ SRFM_PAYMENTS ],
 			],
 		];
 
 		/**
 		 * Filters the features a site owner can switch off.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.2
 		 * @param array<string,array<string,mixed>> $rows Feature rows keyed by feature key.
 		 */
 		$rows = apply_filters( 'srfm_features', $rows );
@@ -129,6 +133,7 @@ class Features {
 					'cron_hooks'   => [],
 					'usage_blocks' => [],
 					'usage_meta'   => [],
+					'admin_pages'  => [],
 				]
 			);
 		}
@@ -149,7 +154,7 @@ class Features {
 	 * when its own switch is off or when anything it depends on is off.
 	 *
 	 * @param string $key Feature key.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return bool
 	 */
 	public static function is_enabled( $key ) {
@@ -162,7 +167,7 @@ class Features {
 		/**
 		 * Filters whether a feature is on.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.2
 		 * @param bool   $enabled Whether the feature is on.
 		 * @param string $key     Feature key.
 		 */
@@ -178,7 +183,7 @@ class Features {
 	/**
 	 * The stored switches, limited to booleans.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return array<string,bool>
 	 */
 	public static function get_saved() {
@@ -200,7 +205,7 @@ class Features {
 	 * Entries back on reschedules the email summary when that is switched on.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return bool
 	 */
 	public static function save( $values ) {
@@ -229,7 +234,7 @@ class Features {
 		/**
 		 * Fires after the feature switches are saved.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.2
 		 * @param array<string,bool> $before States before saving.
 		 * @param array<string,bool> $after  States after saving.
 		 */
@@ -248,11 +253,14 @@ class Features {
 	 * `srfm-global-settings` route before this runs.
 	 *
 	 * @param array<mixed> $params Request params without `srfm_tab`.
-	 * @since x.x.x
-	 * @return \WP_REST_Response
+	 * @since 2.13.2
+	 * @return \WP_REST_Response|\WP_Error WP_Error (400) when `features` is not a map.
 	 */
 	public static function rest_save( $params ) {
-		$values  = Helper::get_array_value( $params['features'] ?? [] );
+		if ( ! isset( $params['features'] ) || ! is_array( $params['features'] ) ) {
+			return new \WP_Error( 'srfm_invalid_features', __( 'Features must be a map of feature key to on or off.', 'sureforms' ), [ 'status' => 400 ] );
+		}
+		$values  = $params['features'];
 		$confirm = filter_var( $params['confirm'] ?? false, FILTER_VALIDATE_BOOLEAN );
 
 		if ( ! $confirm ) {
@@ -280,7 +288,7 @@ class Features {
 	/**
 	 * Resolved state of every registered feature.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return array<string,bool>
 	 */
 	public static function states() {
@@ -295,7 +303,7 @@ class Features {
 	 * Data for the admin and editor scripts: every row with its saved switch,
 	 * its resolved state, and the features that keep it off.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function for_js() {
@@ -332,7 +340,7 @@ class Features {
 	 * adds through the same filter.
 	 *
 	 * @param array<mixed> $endpoints Endpoints keyed by route.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return array<mixed>
 	 */
 	public static function filter_endpoints( $endpoints ) {
@@ -350,19 +358,27 @@ class Features {
 	/**
 	 * Forms that use a feature, for the warning shown before it is turned off.
 	 *
+	 * Each form also says what it uses (`reason`), from the feature's `usage` label.
+	 *
 	 * @param string $key Feature key.
-	 * @since x.x.x
-	 * @return array<int,array{id:int,title:string,edit_url:string}>
+	 * @since 2.13.2
+	 * @return array<int,array{id:int,title:string,edit_url:string,status:string,reason:string}>
 	 */
 	public static function forms_using( $key ) {
 		$definitions = self::definitions();
 		if ( ! isset( $definitions[ $key ] ) ) {
 			return [];
 		}
-		return self::forms_matching(
+		$labels = self::labels();
+		$reason = Helper::get_string_value( $labels[ $key ]['usage'] ?? '' );
+		$forms  = self::forms_matching(
 			Helper::get_array_value( $definitions[ $key ]['usage_blocks'] ),
 			Helper::get_array_value( $definitions[ $key ]['usage_meta'] )
 		);
+		foreach ( $forms as $i => $form ) {
+			$forms[ $i ]['reason'] = $reason;
+		}
+		return $forms;
 	}
 
 	/**
@@ -371,8 +387,8 @@ class Features {
 	 *
 	 * @param array<mixed> $blocks Block names.
 	 * @param array<mixed> $metas  Form meta keys.
-	 * @since x.x.x
-	 * @return array<int,array{id:int,title:string,edit_url:string}>
+	 * @since 2.13.2
+	 * @return array<int,array{id:int,title:string,edit_url:string,status:string}>
 	 */
 	public static function forms_matching( $blocks, $metas ) {
 		if ( empty( $blocks ) && empty( $metas ) ) {
@@ -398,6 +414,7 @@ class Features {
 					'title'    => get_the_title( $form_id ),
 					// Empty when the current user cannot edit the form.
 					'edit_url' => (string) get_edit_post_link( $form_id, 'raw' ),
+					'status'   => (string) get_post_status( $form_id ),
 				];
 			}
 		}
@@ -410,7 +427,7 @@ class Features {
 	 * @param int          $form_id Form ID.
 	 * @param array<mixed> $blocks  Block names.
 	 * @param array<mixed> $metas   Meta keys.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return bool
 	 */
 	public static function form_uses( $form_id, $blocks, $metas ) {
@@ -438,9 +455,33 @@ class Features {
 	}
 
 	/**
+	 * Send a request for the admin screen of a feature that is off to
+	 * Settings → Features, instead of WordPress's generic permission error.
+	 *
+	 * Hooked on `admin_page_access_denied`, which WordPress fires only for a
+	 * `page` that is not registered for the current user, so it never takes over
+	 * a screen that exists. Settings checks its own capability.
+	 *
+	 * @since 2.13.2
+	 * @return void
+	 */
+	public static function redirect_disabled_page() {
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only picks where to redirect; nothing is changed.
+		if ( '' === $page ) {
+			return;
+		}
+		foreach ( self::definitions() as $key => $row ) {
+			if ( in_array( $page, Helper::get_array_value( $row['admin_pages'] ), true ) && ! self::is_enabled( $key ) ) {
+				wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=features-settings' ) );
+				exit;
+			}
+		}
+	}
+
+	/**
 	 * Forget cached definitions and states.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return void
 	 */
 	public static function reset() {
@@ -454,14 +495,18 @@ class Features {
 	 * Kept apart from definitions() so that gating modules on `plugins_loaded`
 	 * never loads translations early. Only read on admin screens, after `init`.
 	 *
-	 * @since x.x.x
-	 * @return array<string,array{label:string,description:string}>
+	 * `usage` (optional) says what a form uses, for the warning shown before the
+	 * feature is turned off.
+	 *
+	 * @since 2.13.2
+	 * @return array<string,array{label:string,description:string,usage?:string}>
 	 */
 	public static function labels() {
 		$labels = [
 			'entries'    => [
 				'label'       => __( 'Entries', 'sureforms' ),
 				'description' => __( 'Turning this off stops saving new entries, so entry limits stop applying. Old ones are kept.', 'sureforms' ),
+				'usage'       => __( 'has an entry limit', 'sureforms' ),
 			],
 			'ai_builder' => [
 				'label'       => __( 'AI form builder', 'sureforms' ),
@@ -474,13 +519,14 @@ class Features {
 			'payments'   => [
 				'label'       => __( 'Payments', 'sureforms' ),
 				'description' => __( 'Turning this off removes payment fields and pauses paid forms.', 'sureforms' ),
+				'usage'       => __( 'has a payment field', 'sureforms' ),
 			],
 		];
 
 		/**
 		 * Filters the label and description shown for each feature.
 		 *
-		 * @since x.x.x
+		 * @since 2.13.2
 		 * @param array<string,array<string,string>> $labels Keyed by feature key.
 		 */
 		return Helper::get_array_value( apply_filters( 'srfm_feature_labels', $labels ) );
@@ -493,7 +539,7 @@ class Features {
 	 *
 	 * @param string           $content Block content.
 	 * @param array<int, true> $visited Pattern IDs already expanded, keyed by ID.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return string
 	 */
 	private static function with_pattern_content( $content, &$visited ) {
@@ -531,8 +577,8 @@ class Features {
 	 * with the forms that use them.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
-	 * @since x.x.x
-	 * @return array<string,array<int,array{id:int,title:string,edit_url:string}>>
+	 * @since 2.13.2
+	 * @return array<string,array<int,array{id:int,title:string,edit_url:string,status:string,reason:string}>>
 	 */
 	private static function in_use_if_saved( $values ) {
 		$saved  = self::get_saved();
@@ -560,7 +606,7 @@ class Features {
 	 * any item is on. A scalar counts when it is truthy and not "false".
 	 *
 	 * @param mixed $meta Meta value, JSON already decoded.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return bool
 	 */
 	private static function meta_is_on( $meta ) {
@@ -588,7 +634,7 @@ class Features {
 	 *
 	 * @param array<string,bool> $saved  Saved switches.
 	 * @param array<mixed>       $values Submitted map of feature key → bool.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return array<string,bool>
 	 */
 	private static function merge( $saved, $values ) {
@@ -611,7 +657,7 @@ class Features {
 	 * @param string             $key   Feature key.
 	 * @param array<string,bool> $saved Switches to resolve against.
 	 * @param array<string>      $seen  Keys already on the path, to stop a dependency loop.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return bool
 	 */
 	private static function resolve( $key, $saved, $seen ) {
@@ -640,7 +686,7 @@ class Features {
 	 * Clear a scheduled hook from both Action Scheduler and WP-Cron.
 	 *
 	 * @param string $hook Hook name.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return void
 	 */
 	private static function unschedule( $hook ) {

@@ -132,6 +132,12 @@ class Form_Restriction {
 			return false; // Invalid form ID or restriction settings.
 		}
 
+		// The limit counts stored entries; while Entries is off nothing new is stored,
+		// so the limit does not apply (as the Entries switch's description says).
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return false;
+		}
+
 		$max_entries   = $form_restriction['maxEntries'];
 		$entries_count = Entries::get_total_entries_by_status( 'all', $form_id );
 
@@ -301,7 +307,7 @@ class Form_Restriction {
 	 * never accepted without its payment.
 	 *
 	 * @param int $form_id Form ID.
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return bool
 	 */
 	public static function needs_disabled_payments( $form_id ) {
@@ -311,7 +317,7 @@ class Form_Restriction {
 	/**
 	 * Message shown in place of a form that needs Payments while it is off.
 	 *
-	 * @since x.x.x
+	 * @since 2.13.2
 	 * @return string
 	 */
 	public static function payments_off_message() {

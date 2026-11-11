@@ -58,6 +58,32 @@ const switchesOf = ( rows ) =>
 	);
 
 /**
+ * Names of the post statuses a form in the in-use list can have, other than published.
+ */
+const STATUS_LABELS = {
+	draft: __( 'draft', 'sureforms' ),
+	pending: __( 'pending review', 'sureforms' ),
+	future: __( 'scheduled', 'sureforms' ),
+	private: __( 'private', 'sureforms' ),
+};
+
+/**
+ * Why a form is listed before a feature is turned off: what it uses and,
+ * when it is not published, its status.
+ *
+ * @param {Object} form  Row from Features::forms_using().
+ * @param {string} label Name of the feature being turned off.
+ * @return {string} e.g. "Payments: has a payment field, draft".
+ */
+const inUseNote = ( form, label ) =>
+	[
+		form.reason ? `${ label }: ${ form.reason }` : label,
+		STATUS_LABELS[ form.status ],
+	]
+		.filter( Boolean )
+		.join( ', ' );
+
+/**
  * One feature card: icon, name, description and its switch.
  *
  * @param {Object}      props
@@ -180,20 +206,31 @@ const FeaturesPage = () => {
 			.map( ( parent ) => features[ parent ]?.label )
 			.filter( Boolean )
 			.join( ', ' );
+		const dependents = Object.keys( features )
+			.filter( ( other ) => features[ other ].depends_on?.includes( key ) )
+			.map( ( other ) => features[ other ].label )
+			.join( ', ' );
+		const notes = [
+			row.description,
+			! available &&
+				sprintf(
+					/* translators: %s: names of the features this one needs. */
+					__( 'Needs %s.', 'sureforms' ),
+					needs
+				),
+			dependents &&
+				sprintf(
+					/* translators: %s: names of the features that need this one. */
+					__( 'Turning this off also turns off %s.', 'sureforms' ),
+					dependents
+				),
+		].filter( Boolean );
 		return (
 			<FeatureCell
 				key={ key }
 				featureKey={ key }
 				label={ row.label }
-				description={
-					available
-						? row.description
-						: sprintf(
-							/* translators: %s: names of the features this one needs. */
-							__( 'Needs %s.', 'sureforms' ),
-							needs
-						)
-				}
+				description={ notes.join( ' ' ) }
 				control={
 					<Switch
 						size="sm"
@@ -242,7 +279,7 @@ const FeaturesPage = () => {
 										form.title ||
 										__( '(no title)', 'sureforms' )
 									) }{ ' ' }
-									({ features[ key ]?.label || key })
+									({ inUseNote( form, features[ key ]?.label || key ) })
 								</li>
 							) )
 						) }
@@ -261,7 +298,11 @@ const FeaturesPage = () => {
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={ () => setInUse( null ) }
+							// Back to the saved switches, so nothing is left to save by mistake.
+							onClick={ () => {
+								setInUse( null );
+								setSwitches( switchesOf( features ) );
+							} }
 						>
 							{ __( 'Cancel', 'sureforms' ) }
 						</Button>

@@ -106,7 +106,7 @@ const FormSettingsPopup = ( {
 			},
 			{
 				id: 'pdf-generation-preview',
-				feature: 'pdf',
+				feature: [ 'pdf', 'entries' ],
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File size={ 18 } />,
 			},

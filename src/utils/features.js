@@ -15,9 +15,16 @@ export const isFeatureEnabled = ( key ) =>
 /**
  * Drop the items whose `feature` is switched off. Items without a `feature`
  * key are kept, so this only hides what a feature owns, its upsells included.
+ * `feature` may list several keys, and the item is kept only while all are on:
+ * a Pro upsell names its own key, which is not registered without Pro, plus the
+ * free feature it needs (e.g. `[ 'pdf', 'entries' ]`).
  *
  * @param {Array<Object>} items Tabs, nav items or options.
  * @return {Array<Object>} The items that belong to features that are on.
  */
 export const withEnabledFeatures = ( items ) =>
-	items.filter( ( item ) => ! item.feature || isFeatureEnabled( item.feature ) );
+	items.filter(
+		( item ) =>
+			! item.feature ||
+			[].concat( item.feature ).every( ( key ) => isFeatureEnabled( key ) )
+	);

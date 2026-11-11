@@ -492,7 +492,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'pdf-generation-preview',
-				feature: 'pdf',
+				feature: [ 'pdf', 'entries' ],
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File />,
 				component: (
@@ -679,7 +679,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'quiz-preview',
-				feature: 'quiz',
+				feature: [ 'quiz', 'entries' ],
 				label: __( 'Quizzes', 'sureforms' ),
 				icon: <ListTodo size={ 18 } />,
 				component: (
@@ -721,6 +721,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'show-entries-preview',
+				feature: 'entries',
 				label: __( 'Show Entries', 'sureforms' ),
 				icon: <Table size={ 18 } />,
 				component: (

@@ -476,6 +476,189 @@ class Test_Features extends TestCase {
 	}
 
 	/**
+	 * Entry limits count stored entries, so they stop applying while Entries is off,
+	 * as the Entries row's description says.
+	 */
+	public function test_entry_limit_does_not_apply_while_entries_is_off() {
+		$form_id     = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+			]
+		);
+		$restriction = [
+			'status'     => true,
+			'maxEntries' => 1,
+		];
+		// Stands in for entries stored before the switch was turned off.
+		$stored = static function () {
+			return 5;
+		};
+		add_filter( 'srfm_form_restriction_entries_count', $stored );
+
+		$on = Form_Restriction::has_entries_limit_reached( $form_id, $restriction );
+		Features::save( [ 'entries' => false ] );
+		$off = Form_Restriction::has_entries_limit_reached( $form_id, $restriction );
+
+		remove_filter( 'srfm_form_restriction_entries_count', $stored );
+		wp_delete_post( $form_id, true );
+
+		$this->assertTrue( $on, 'Entries on: the limit is reached' );
+		$this->assertFalse( $off, 'Entries off: the limit no longer applies' );
+	}
+
+	/**
+	 * The frontend admin-bar Entries link is not added while Entries is off,
+	 * because the page it links to is not registered.
+	 */
+	public function test_admin_bar_entries_node_is_not_added_while_entries_is_off() {
+		require_once ABSPATH . 'wp-includes/class-wp-admin-bar.php';
+		$admin = wp_insert_user(
+			[
+				'user_login' => 'features_bar_' . wp_generate_password( 6, false ),
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin );
+		add_filter( 'show_admin_bar', '__return_true' );
+		$form_id  = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_title'  => 'Bar Form',
+				'post_status' => 'publish',
+			]
+		);
+		$registry = new ReflectionProperty( \SRFM\Inc\Generate_Form_Markup::class, 'rendered_form_ids' );
+		$registry->setAccessible( true );
+		$registry->setValue( null, [ $form_id => true ] );
+
+		$on = new WP_Admin_Bar();
+		\SRFM\Inc\Generate_Form_Markup::get_instance()->add_entries_admin_bar_node( $on );
+		Features::save( [ 'entries' => false ] );
+		$off = new WP_Admin_Bar();
+		\SRFM\Inc\Generate_Form_Markup::get_instance()->add_entries_admin_bar_node( $off );
+
+		$registry->setValue( null, [] );
+		remove_filter( 'show_admin_bar', '__return_true' );
+		wp_delete_post( $form_id, true );
+		wp_delete_user( $admin );
+
+		$this->assertNotNull( $on->get_node( 'srfm-entries' ), 'Entries on: the node is added' );
+		$this->assertNull( $off->get_node( 'srfm-entries' ) );
+	}
+
+	/**
+	 * A bookmarked page of a feature that is off is sent to Settings → Features
+	 * instead of WordPress's generic permission error. Pages of features that are
+	 * on, and pages no feature owns, are left to WordPress.
+	 */
+	public function test_redirect_disabled_page() {
+		$location = null;
+		$catch    = static function ( $url ) {
+			throw new \RuntimeException( $url );
+		};
+		add_filter( 'wp_redirect', $catch );
+
+		$run = static function ( $page ) use ( &$location ) {
+			$location = null;
+			$_GET     = [ 'page' => $page ];
+			try {
+				Features::redirect_disabled_page();
+			} catch ( \RuntimeException $e ) {
+				$location = $e->getMessage();
+			}
+			return $location;
+		};
+
+		try {
+			$this->assertNull( $run( SRFM_ENTRIES ), 'Entries on: WordPress handles it' );
+
+			Features::save(
+				[
+					'entries'  => false,
+					'payments' => false,
+				]
+			);
+			foreach ( [ SRFM_ENTRIES, SRFM_PAYMENTS ] as $page ) {
+				$url = (string) $run( $page );
+				$this->assertStringContainsString( 'page=sureforms_form_settings', $url, $page );
+				$this->assertStringContainsString( 'tab=features-settings', $url, $page );
+			}
+			$this->assertNull( $run( 'some_other_page' ), 'a page no feature owns is left alone' );
+			$this->assertNull( $run( '' ), 'no page is left alone' );
+		} finally {
+			remove_filter( 'wp_redirect', $catch );
+			$_GET = [];
+		}
+	}
+
+	/**
+	 * The redirect runs where WordPress denies access to an unregistered page.
+	 */
+	public function test_redirect_disabled_page_is_hooked() {
+		$this->assertNotFalse( has_action( 'admin_page_access_denied', [ Features::class, 'redirect_disabled_page' ] ) );
+	}
+
+	/**
+	 * A save whose `features` is not a map is rejected, not reported as saved.
+	 */
+	public function test_rest_save_rejects_features_that_are_not_a_map() {
+		foreach ( [ 'abc', 1, true, null ] as $bad ) {
+			$params = null === $bad ? [] : [ 'features' => $bad ];
+			$result = Features::rest_save( $params );
+			$this->assertInstanceOf( \WP_Error::class, $result, wp_json_encode( $bad ) );
+			$this->assertSame( 400, $result->get_error_data()['status'] );
+		}
+		$this->assertFalse( get_option( Features::OPTION ), 'nothing is stored' );
+	}
+
+	/**
+	 * Each in-use form carries its status and why it is listed, so the warning
+	 * can mark drafts and say what the form uses.
+	 */
+	public function test_forms_matching_includes_status_and_reason() {
+		$form_id = $this->make_payment_form();
+		wp_update_post(
+			[
+				'ID'          => $form_id,
+				'post_status' => 'draft',
+			]
+		);
+
+		$row = Features::forms_using( 'payments' )[0];
+		wp_delete_post( $form_id, true );
+
+		$this->assertSame( 'draft', $row['status'] );
+		$this->assertSame( Features::labels()['payments']['usage'], $row['reason'] );
+	}
+
+	/**
+	 * Templates that take payments are left out of the library while Payments is
+	 * off, and creating or swapping one is refused, since the form could not take
+	 * submissions.
+	 */
+	public function test_payment_templates_are_unavailable_while_payments_is_off() {
+		$ids = static function () {
+			return wp_list_pluck( \SRFM\Inc\Form_Templates::get_templates_for_js(), 'id' );
+		};
+		$template = \SRFM\Inc\Form_Templates::get_template( 'donation-form' );
+		$this->assertNotNull( $template );
+		$this->assertTrue( \SRFM\Inc\Form_Templates::needs_payments( $template ) );
+		$this->assertFalse( \SRFM\Inc\Form_Templates::needs_payments( \SRFM\Inc\Form_Templates::get_template( 'contact-us' ) ) );
+
+		$this->assertContains( 'donation-form', $ids() );
+
+		Features::save( [ 'payments' => false ] );
+
+		$this->assertNotContains( 'donation-form', $ids() );
+		$this->assertNotEmpty( $ids(), 'templates without payments stay' );
+		$created = \SRFM\Inc\Form_Templates::create_form_from_template( 'donation-form' );
+		$this->assertInstanceOf( \WP_Error::class, $created );
+		$this->assertSame( 'srfm_template_needs_payments', $created->get_error_code() );
+	}
+
+	/**
 	 * Entry limits count stored entries, so a form with one is listed before
 	 * Entries is turned off.
 	 */

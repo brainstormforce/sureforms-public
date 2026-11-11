@@ -621,10 +621,14 @@ function onHCaptchaError() {
 			return;
 		}
 
+		// Null when the page shows a restriction message instead of the form.
 		const srfmForm = document.querySelector( 'form.srfm-form' );
 
 		setInterval( () => {
-			if ( 'none' === window.getComputedStyle( srfmForm ).display ) {
+			if (
+				srfmForm &&
+				'none' === window.getComputedStyle( srfmForm ).display
+			) {
 				// Hide the SureForms branding if Form is hidden.
 				srfmBranding.style.display = 'none';
 				return;
