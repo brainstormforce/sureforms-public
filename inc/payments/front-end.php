@@ -331,8 +331,11 @@ class Front_End {
 		// data attribute the server itself rendered has been altered before submit.
 		$stored_block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 		if ( is_array( $stored_block_config ) && isset( $stored_block_config[ $block_id ] ) && is_array( $stored_block_config[ $block_id ] ) ) {
-			$stored_interval = $stored_block_config[ $block_id ]['subscription_interval'] ?? '';
-			if ( ! empty( $stored_interval ) && $stored_interval !== $subscription_interval ) {
+			// Resolve the server-side interval, defaulting to the block.json plan when the
+			// admin left it unchanged (a default-plan form stores no interval). Without the
+			// default the comparison below was skipped, so a tampered interval was accepted.
+			$stored_interval = Payment_Helper::resolve_stored_subscription_cadence( $stored_block_config[ $block_id ] )['interval'];
+			if ( $stored_interval !== $subscription_interval ) {
 				wp_send_json_error( __( 'Billing interval does not match the form configuration.', 'sureforms' ) );
 			}
 		}
@@ -648,6 +651,19 @@ class Front_End {
 			];
 		}
 
+		// Bind the submitted subscription to the one this payment session created. The
+		// setup-intent transient stores the server-created subscription_id; a submitted
+		// subscriptionId that does not match it is a substituted subscription and is
+		// rejected. When the session recorded no subscription_id (legacy/edge) the check
+		// is skipped, so existing flows are unaffected.
+		$session_metadata        = get_transient( 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $setup_intent_id ) );
+		$session_subscription_id = is_array( $session_metadata ) && ! empty( $session_metadata['subscription_id'] ) && is_string( $session_metadata['subscription_id'] ) ? $session_metadata['subscription_id'] : '';
+		if ( '' !== $session_subscription_id && $session_subscription_id !== $subscription_id ) {
+			return [
+				'error' => __( 'Subscription does not match the payment session.', 'sureforms' ),
+			];
+		}
+
 		if ( empty( $customer_id ) ) {
 			return [
 				'error' => __( 'Customer ID not found for the payment.', 'sureforms' ),
@@ -701,13 +717,13 @@ class Front_End {
 						if ( $form_id_for_config > 0 && ! empty( $block_id ) ) {
 							$stored_block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id_for_config );
 							if ( is_array( $stored_block_config ) && isset( $stored_block_config[ $block_id ] ) && is_array( $stored_block_config[ $block_id ] ) ) {
-								$stored_payment_config = $stored_block_config[ $block_id ];
-								if ( isset( $stored_payment_config['subscription_interval'] ) ) {
-									$subscription_value['subscriptionInterval'] = $stored_payment_config['subscription_interval'];
-								}
-								if ( isset( $stored_payment_config['subscription_billing_cycles'] ) ) {
-									$subscription_value['subscriptionBillingCycles'] = $stored_payment_config['subscription_billing_cycles'];
-								}
+								// Always take interval + billing cycles from stored config (or the
+								// block.json default for a default-plan form), never from the
+								// submitted values, so cancel_at cannot be redirected to a
+								// different cadence.
+								$cadence                                    = Payment_Helper::resolve_stored_subscription_cadence( $stored_block_config[ $block_id ] );
+								$subscription_value['subscriptionInterval'] = $cadence['interval'];
+								$subscription_value['subscriptionBillingCycles'] = $cadence['billing_cycles'];
 							}
 						}
 

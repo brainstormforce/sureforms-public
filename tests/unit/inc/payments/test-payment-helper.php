@@ -1105,6 +1105,35 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( '' ) );
 	}
 
+
+	// --- resolve_stored_subscription_cadence (default-plan cadence tampering) ---
+
+	public function test_resolve_stored_subscription_cadence_defaults_when_absent() {
+		// Default-plan block: Gutenberg stores no cadence, so the server uses the
+		// block.json defaults (month / ongoing), never the submitted values.
+		$this->assertSame(
+			[ 'interval' => 'month', 'billing_cycles' => 'ongoing' ],
+			Payment_Helper::resolve_stored_subscription_cadence( [] )
+		);
+		$this->assertSame(
+			[ 'interval' => 'month', 'billing_cycles' => 'ongoing' ],
+			Payment_Helper::resolve_stored_subscription_cadence( [ 'subscription_interval' => '', 'subscription_billing_cycles' => '' ] )
+		);
+	}
+
+	public function test_resolve_stored_subscription_cadence_preserves_explicit_plan() {
+		// An explicitly configured plan is returned unchanged (backward compatible).
+		$this->assertSame(
+			[ 'interval' => 'year', 'billing_cycles' => 3 ],
+			Payment_Helper::resolve_stored_subscription_cadence( [ 'subscription_interval' => 'year', 'subscription_billing_cycles' => 3 ] )
+		);
+		// Partial config fills only the missing half.
+		$this->assertSame(
+			[ 'interval' => 'year', 'billing_cycles' => 'ongoing' ],
+			Payment_Helper::resolve_stored_subscription_cadence( [ 'subscription_interval' => 'year' ] )
+		);
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
