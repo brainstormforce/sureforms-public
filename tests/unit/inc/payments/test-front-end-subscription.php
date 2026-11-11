@@ -31,8 +31,23 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 	 */
 	private $rows_before = 0;
 
+	/**
+	 * The pre_http_request stub added by stub_stripe(), removed in tear_down().
+	 *
+	 * @var callable|null
+	 */
+	private $http_stub;
+
+	/**
+	 * payment_settings before set_up() replaced them.
+	 *
+	 * @var mixed
+	 */
+	private $settings_backup;
+
 	public function set_up() {
 		parent::set_up();
+		$this->settings_backup = Helper::get_srfm_option( 'payment_settings' );
 
 		// Make Stripe appear connected in test mode with a dummy secret.
 		Helper::update_srfm_option(
@@ -74,20 +89,38 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * SRFM_Unit_Test_Case has no rollback, so undo everything set_up() and the stub
+	 * changed; otherwise later classes (e.g. Test_Stripe_Helper) see Stripe as
+	 * connected and every outbound request blocked.
+	 */
+	public function tear_down() {
+		if ( $this->http_stub ) {
+			remove_filter( 'pre_http_request', $this->http_stub, 10 );
+			$this->http_stub = null;
+		}
+		Helper::update_srfm_option( 'payment_settings', $this->settings_backup );
+		delete_transient( 'srfm_pi_' . sanitize_key( $this->block ) . '_' . sanitize_key( 'seti_x' ) );
+		foreach ( Payments::get_all_payment_ids_for_form( $this->form_id ) as $id ) {
+			Payments::delete( $id );
+		}
+		wp_delete_post( $this->form_id, true );
+		parent::tear_down();
+	}
+
+	/**
 	 * Stub every Stripe HTTP call with the given subscription and confirmed
 	 * first-invoice PaymentIntent statuses.
 	 *
 	 * @param string|string[] $subscription_status Status returned by subscription reads. A list is
 	 *                                             handed out one per GET, the last value repeating.
 	 * @param string          $intent_status       Status of the confirmed first-invoice PaymentIntent.
+	 * @param string          $payment_method      Payment method on the SetupIntent ('' for none).
 	 */
-	private function stub_stripe( $subscription_status, $intent_status ) {
+	private function stub_stripe( $subscription_status, $intent_status, $payment_method = 'pm_x' ) {
 		$this->subscription_gets = 0;
 		$statuses                = (array) $subscription_status;
 		$test                    = $this;
-		add_filter(
-			'pre_http_request',
-			static function ( $pre, $args, $url ) use ( $statuses, $intent_status, $test ) {
+		$this->http_stub         = static function ( $pre, $args, $url ) use ( $statuses, $intent_status, $payment_method, $test ) {
 				$json = static function ( $data ) {
 					return [
 						'response' => [ 'code' => 200 ],
@@ -95,7 +128,7 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 					];
 				};
 				if ( false !== strpos( $url, '/setup_intents/' ) ) {
-					return $json( [ 'id' => 'seti_x', 'payment_method' => 'pm_x', 'customer' => 'cus_x', 'status' => 'succeeded' ] );
+					return $json( [ 'id' => 'seti_x', 'payment_method' => $payment_method, 'customer' => 'cus_x', 'status' => 'succeeded' ] );
 				}
 				if ( false !== strpos( $url, '/subscriptions/' ) ) {
 					$status = $statuses[ count( $statuses ) - 1 ];
@@ -112,14 +145,12 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 					return $json( [ 'id' => 'pi_x', 'status' => $intent_status, 'amount' => 1000, 'currency' => 'usd' ] );
 				}
 				return new WP_Error( 'blocked', 'blocked outbound ' . $url );
-			},
-			10,
-			3
-		);
+		};
+		add_filter( 'pre_http_request', $this->http_stub, 10, 3 );
 	}
 
-	private function run_submit( $subscription_status, $intent_status = 'succeeded' ) {
-		$this->stub_stripe( $subscription_status, $intent_status );
+	private function run_submit( $subscription_status, $intent_status = 'succeeded', $payment_method = 'pm_x' ) {
+		$this->stub_stripe( $subscription_status, $intent_status, $payment_method );
 		// The payments table is not rolled back between tests, so record what is already there.
 		$this->rows_before = count( Payments::get_all_payment_ids_for_form( $this->form_id ) );
 		$subscription_value = [
@@ -160,9 +191,43 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 		$this->assert_rejected_unpaid( $this->run_submit( 'trialing' ), 'a trialing subscription must not mark the block verified' );
 	}
 
-	public function test_subscription_still_incomplete_after_reread_is_rejected() {
-		$this->assert_rejected_unpaid( $this->run_submit( 'incomplete' ), 'a subscription that stays incomplete must not be accepted' );
+	/**
+	 * The first invoice's PaymentIntent succeeded, so the card was charged and Stripe
+	 * activates the subscription; a read in the same moment can still say
+	 * 'incomplete'. Rejecting here would leave a charged customer with an error, no
+	 * row for the renewal webhooks to attach to, and a second subscription on retry.
+	 */
+	public function test_paid_subscription_still_incomplete_after_reread_is_accepted() {
+		$result = $this->run_submit( 'incomplete' );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'payment_id', $result, 'a charged customer must get a stored subscription' );
 		$this->assertSame( 2, $this->subscription_gets, 'an incomplete subscription is read exactly once more' );
+
+		$row = Payments::get( $result['payment_id'] );
+		$this->assertSame( 'active', $row['status'] ?? null );
+		// No webhook moves a first-invoice row out of 'incomplete', so the paid state is recorded.
+		$this->assertSame( 'active', $row['subscription_status'] ?? null );
+	}
+
+	public function test_processing_first_payment_is_rejected() {
+		$this->assert_rejected_unpaid( $this->run_submit( 'incomplete', 'processing' ), 'a first payment that has not succeeded yet must not be accepted' );
+	}
+
+	public function test_setup_intent_without_payment_method_is_rejected() {
+		$result = $this->run_submit( 'active', 'succeeded', '' );
+		$this->assertIsArray( $result );
+		$this->assertSame( 'Subscription not found for the payment.', $result['error'] ?? null );
+		$this->assertArrayNotHasKey( 'payment_id', $result );
+		$this->assertSame( $this->rows_before, count( Payments::get_all_payment_ids_for_form( $this->form_id ) ) );
+	}
+
+	public function test_intent_transient_is_consumed_after_the_row_is_saved() {
+		$result = $this->run_submit( 'active' );
+		$this->assertArrayHasKey( 'payment_id', $result );
+		$this->assertFalse(
+			get_transient( 'srfm_pi_' . sanitize_key( $this->block ) . '_' . sanitize_key( 'seti_x' ) ),
+			'the setup-intent record is single-use once a row has been stored'
+		);
 	}
 
 	public function test_subscription_activated_on_reread_is_accepted() {

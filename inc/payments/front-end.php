@@ -666,7 +666,8 @@ class Front_End {
 			}
 
 			// Update subscription with payment method from setup intent if available.
-			$paid_invoice = [];
+			$paid_invoice            = [];
+			$first_payment_succeeded = false;
 			if ( ! empty( $setup_intent_id ) ) {
 				try {
 					$setup_intent_response = Stripe_Helper::stripe_api_request(
@@ -797,6 +798,7 @@ class Front_End {
 								'error' => __( 'Subscription payment was not completed.', 'sureforms' ),
 							];
 						}
+						$first_payment_succeeded = true;
 
 						// Get the subscription.
 						$subscription_response = Stripe_Helper::stripe_api_request(
@@ -815,8 +817,8 @@ class Front_End {
 						$subscription = $subscription_response['data'];
 
 						// The PaymentIntent has succeeded, so Stripe activates the subscription; a read
-						// taken in the same moment can still report 'incomplete'. Read it once more so a
-						// charged customer is not rejected. Any non-active result is still rejected below.
+						// taken in the same moment can still report 'incomplete'. Read it once more to
+						// record the status Stripe settles on.
 						if ( is_array( $subscription ) && isset( $subscription['status'] ) && 'incomplete' === $subscription['status'] ) {
 							$subscription_response = Stripe_Helper::stripe_api_request(
 								'subscriptions',
@@ -842,18 +844,25 @@ class Front_End {
 				];
 			}
 
-			// The block is verified only for an active subscription. Forms have no trial
-			// option, so any other status (trialing included) means the first payment was not collected.
-			if ( ! is_array( $subscription ) || ! isset( $subscription['status'] ) || 'active' !== $subscription['status'] ) {
+			// The block is verified only for an active subscription, or for one still
+			// 'incomplete' whose first invoice this request has just paid: the card is
+			// charged and Stripe activates it. Rejecting that would leave a charged customer
+			// with no stored row for renewals to attach to. Forms have no trial option, so
+			// any other status (trialing included) means the first payment was not collected.
+			$reported_status = is_array( $subscription ) && isset( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
+			$paid_incomplete = $first_payment_succeeded && 'incomplete' === $reported_status;
+			if ( 'active' !== $reported_status && ! $paid_incomplete ) {
 				return [
 					'error' => __( 'Subscription payment was not completed.', 'sureforms' ),
 				];
 			}
 
-			$amount              = isset( $paid_invoice['amount'] ) && ! empty( $paid_invoice['amount'] ) ? $paid_invoice['amount'] : 0;
-			$currency            = isset( $paid_invoice['currency'] ) && ! empty( $paid_invoice['currency'] ) ? $paid_invoice['currency'] : 'usd';
-			$form_id             = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? $form_data['form-id'] : 0;
-			$subscription_status = isset( $subscription['status'] ) && ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
+			$amount   = isset( $paid_invoice['amount'] ) && ! empty( $paid_invoice['amount'] ) ? $paid_invoice['amount'] : 0;
+			$currency = isset( $paid_invoice['currency'] ) && ! empty( $paid_invoice['currency'] ) ? $paid_invoice['currency'] : 'usd';
+			$form_id  = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? $form_data['form-id'] : 0;
+			// No webhook moves a first-invoice row out of 'incomplete' (invoice.payment_succeeded
+			// handles only renewal cycles), so a paid subscription is recorded as active.
+			$subscription_status = 'active';
 
 			// Defense-in-depth: re-validate the amount Stripe actually invoiced against the form's
 			// server-side configuration. The recurring price is the invoiced amount, so an
@@ -865,8 +874,6 @@ class Front_End {
 					'error' => $charge_validation['message'],
 				];
 			}
-
-			$invoice_status = isset( $paid_invoice['status'] ) && ! empty( $paid_invoice['status'] ) && is_string( $paid_invoice['status'] ) ? $paid_invoice['status'] : '';
 
 			// Extract customer data.
 			$customer_data = $this->extract_customer_data( $subscription_value );
@@ -921,12 +928,11 @@ class Front_End {
 				/* translators: Message for guest user in payment logs */
 				: __( 'Guest User', 'sureforms' );
 
-			// Record the first-invoice status in the subscription log.
-			$paid_invoice_log = '';
-			if ( 'paid' !== $invoice_status ) {
-				/* translators: %s: Invoice status */
-				$paid_invoice_log = sprintf( __( 'Invoice Status: %s', 'sureforms' ), $invoice_status );
-			}
+			// Note when Stripe had not yet reported the paid subscription as active.
+			$paid_invoice_log = $paid_incomplete
+				/* translators: %s: Subscription status reported by Stripe */
+				? sprintf( __( 'First payment succeeded; Stripe reported the subscription as %s at verification.', 'sureforms' ), $reported_status )
+				: '';
 
 			// Add simple log entry.
 			$entry_data['log'] = [
@@ -978,6 +984,10 @@ class Front_End {
 					'block_id'   => $block_id,
 					'form_id'    => $form_id,
 				];
+
+				// The setup-intent record is single-use once a row is stored, as on the
+				// one-time path.
+				Payment_Helper::delete_payment_intent_metadata( $block_id, $setup_intent_id );
 
 				return [
 					'payment_id' => $payment_entry_id,
