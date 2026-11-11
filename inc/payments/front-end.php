@@ -79,6 +79,12 @@ class Front_End {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
+		// Throttle unauthenticated intent creation per IP + form so one scraped submit
+		// token cannot drive unbounded Stripe object creation on the merchant account.
+		if ( Payment_Helper::is_payment_rate_limited( $form_id, 'stripe-intent' ) ) {
+			wp_send_json_error( __( 'Too many payment attempts. Please wait a moment and try again.', 'sureforms' ) );
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$amount         = intval( $_POST['amount'] ?? 0 );
 		$currency       = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
@@ -266,6 +272,13 @@ class Front_End {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
+		// Throttle unauthenticated subscription-intent creation per IP + form so one
+		// scraped submit token cannot drive unbounded Stripe customer/subscription
+		// creation on the merchant account.
+		if ( Payment_Helper::is_payment_rate_limited( $form_id, 'stripe-subscription' ) ) {
+			wp_send_json_error( __( 'Too many payment attempts. Please wait a moment and try again.', 'sureforms' ) );
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 
 		// Validate required fields like simple-stripe-subscriptions.
@@ -331,8 +344,11 @@ class Front_End {
 		// data attribute the server itself rendered has been altered before submit.
 		$stored_block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 		if ( is_array( $stored_block_config ) && isset( $stored_block_config[ $block_id ] ) && is_array( $stored_block_config[ $block_id ] ) ) {
-			$stored_interval = $stored_block_config[ $block_id ]['subscription_interval'] ?? '';
-			if ( ! empty( $stored_interval ) && $stored_interval !== $subscription_interval ) {
+			// Resolve the server-side interval, defaulting to the block.json plan when the
+			// admin left it unchanged (a default-plan form stores no interval). Without the
+			// default the comparison below was skipped, so a tampered interval was accepted.
+			$stored_interval = Payment_Helper::resolve_stored_subscription_cadence( $stored_block_config[ $block_id ] )['interval'];
+			if ( $stored_interval !== $subscription_interval ) {
 				wp_send_json_error( __( 'Billing interval does not match the form configuration.', 'sureforms' ) );
 			}
 		}
@@ -635,7 +651,7 @@ class Front_End {
 			];
 		}
 
-		$customer_id     = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
+		$customer_id     = Payment_Helper::sanitize_stripe_customer_id( $subscription_value['customerId'] ?? '' );
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 
 		// Verify payment intent with comprehensive validation including form data.
@@ -645,6 +661,19 @@ class Front_End {
 		if ( false === $verification_result['valid'] ) {
 			return [
 				'error' => $verification_result['message'],
+			];
+		}
+
+		// Bind the submitted subscription to the one this payment session created. The
+		// setup-intent transient stores the server-created subscription_id; a submitted
+		// subscriptionId that does not match it is a substituted subscription and is
+		// rejected. When the session recorded no subscription_id (legacy/edge) the check
+		// is skipped, so existing flows are unaffected.
+		$session_metadata        = get_transient( 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $setup_intent_id ) );
+		$session_subscription_id = is_array( $session_metadata ) && ! empty( $session_metadata['subscription_id'] ) && is_string( $session_metadata['subscription_id'] ) ? $session_metadata['subscription_id'] : '';
+		if ( '' !== $session_subscription_id && $session_subscription_id !== $subscription_id ) {
+			return [
+				'error' => __( 'Subscription does not match the payment session.', 'sureforms' ),
 			];
 		}
 
@@ -701,13 +730,13 @@ class Front_End {
 						if ( $form_id_for_config > 0 && ! empty( $block_id ) ) {
 							$stored_block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id_for_config );
 							if ( is_array( $stored_block_config ) && isset( $stored_block_config[ $block_id ] ) && is_array( $stored_block_config[ $block_id ] ) ) {
-								$stored_payment_config = $stored_block_config[ $block_id ];
-								if ( isset( $stored_payment_config['subscription_interval'] ) ) {
-									$subscription_value['subscriptionInterval'] = $stored_payment_config['subscription_interval'];
-								}
-								if ( isset( $stored_payment_config['subscription_billing_cycles'] ) ) {
-									$subscription_value['subscriptionBillingCycles'] = $stored_payment_config['subscription_billing_cycles'];
-								}
+								// Always take interval + billing cycles from stored config (or the
+								// block.json default for a default-plan form), never from the
+								// submitted values, so cancel_at cannot be redirected to a
+								// different cadence.
+								$cadence                                    = Payment_Helper::resolve_stored_subscription_cadence( $stored_block_config[ $block_id ] );
+								$subscription_value['subscriptionInterval'] = $cadence['interval'];
+								$subscription_value['subscriptionBillingCycles'] = $cadence['billing_cycles'];
 							}
 						}
 
@@ -930,6 +959,14 @@ class Front_End {
 				],
 			];
 
+			// Atomically claim this subscription so concurrent or duplicate submits of
+			// the same activated subscription cannot each create a paid entry.
+			if ( ! Payment_Helper::claim_payment_reference( $subscription_id ) ) {
+				return [
+					'error' => __( 'This payment has already been processed.', 'sureforms' ),
+				];
+			}
+
 			// Save to database.
 			$payment_entry_id = Payments::add( $entry_data );
 
@@ -956,6 +993,9 @@ class Front_End {
 					'payment_id' => $payment_entry_id,
 				];
 			}
+
+			// Insert failed: release the claim so a legitimate retry is not blocked.
+			Payment_Helper::release_payment_reference( $subscription_id );
 		} catch ( \Exception $e ) {
 			return [
 				'error' => empty( $e->getMessage() ) ? __( 'Failed to verify subscription.', 'sureforms' ) : $e->getMessage(),
@@ -1360,6 +1400,15 @@ class Front_End {
 				],
 			];
 
+			// Atomically claim this PaymentIntent so concurrent or duplicate submits of
+			// the same completed payment cannot each create a paid entry.
+			if ( ! Payment_Helper::claim_payment_reference( $confirm_payment_id ) ) {
+				Payment_Helper::delete_payment_intent_metadata( $block_id, $payment_id );
+				return [
+					'error' => __( 'This payment has already been processed.', 'sureforms' ),
+				];
+			}
+
 			$get_payment_entry_id = Payments::add( $entry_data );
 
 			if ( $get_payment_entry_id ) {
@@ -1382,6 +1431,9 @@ class Front_End {
 					'payment_id' => $get_payment_entry_id,
 				];
 			}
+
+			// Insert failed: release the claim so a legitimate retry is not blocked.
+			Payment_Helper::release_payment_reference( $confirm_payment_id );
 		} catch ( \Exception $e ) {
 			return [
 				'error' => $e->getMessage(),
@@ -1716,7 +1768,7 @@ class Front_End {
 		return [
 			'name'        => ! empty( $input_value['name'] ) && is_string( $input_value['name'] ) ? sanitize_text_field( $input_value['name'] ) : '',
 			'email'       => $email,
-			'customer_id' => ! empty( $input_value['customerId'] ) && is_string( $input_value['customerId'] ) ? sanitize_text_field( $input_value['customerId'] ) : '',
+			'customer_id' => Payment_Helper::sanitize_stripe_customer_id( $input_value['customerId'] ?? '' ),
 		];
 	}
 }
