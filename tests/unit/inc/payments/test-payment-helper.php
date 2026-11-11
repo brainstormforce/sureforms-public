@@ -1111,6 +1111,43 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		Payment_Helper::release_payment_reference( 'pi_unit_1' );
 	}
 
+	/**
+	 * The losing side of a concurrent claim: another request inserted the claim row
+	 * after this request's existence check said it was free. The claim must still be
+	 * refused, which only the unique key can decide — not a cache or a prior read.
+	 */
+	public function test_claim_payment_reference_loses_when_row_appears_after_the_existence_check() {
+		global $wpdb;
+		$key = 'srfm_pay_claim_' . md5( 'pi_unit_race' );
+
+		// This request's view: the option is known not to exist.
+		$notoptions          = wp_cache_get( 'notoptions', 'options' );
+		$notoptions          = is_array( $notoptions ) ? $notoptions : [];
+		$notoptions[ $key ] = true;
+		wp_cache_set( 'notoptions', $notoptions, 'options' );
+
+		// The concurrent request's claim lands first, with a different timestamp.
+		$wpdb->insert( $wpdb->options, [ 'option_name' => $key, 'option_value' => '1', 'autoload' => 'no' ] );
+
+		$this->assertFalse( Payment_Helper::claim_payment_reference( 'pi_unit_race' ), 'a reference already claimed in the database must not be claimed again' );
+
+		Payment_Helper::release_payment_reference( 'pi_unit_race' );
+	}
+
+	public function test_release_payment_reference() {
+		Payment_Helper::claim_payment_reference( 'pi_unit_release' );
+		$this->assertFalse( Payment_Helper::claim_payment_reference( 'pi_unit_release' ), 'claimed before release' );
+
+		Payment_Helper::release_payment_reference( 'pi_unit_release' );
+		$this->assertTrue( Payment_Helper::claim_payment_reference( 'pi_unit_release' ), 'free again after release' );
+
+		// Releasing an empty or unknown reference is a no-op, not an error.
+		Payment_Helper::release_payment_reference( '' );
+		Payment_Helper::release_payment_reference( 'pi_never_claimed' );
+
+		Payment_Helper::release_payment_reference( 'pi_unit_release' );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

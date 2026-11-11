@@ -43,19 +43,35 @@ class Payment_Helper {
 	 * Atomically claim a provider payment reference (transaction or subscription id)
 	 * so that concurrent or duplicate submissions of the same completed payment cannot
 	 * each create a paid entry. The first caller wins the claim; later callers get
-	 * false. Backed by the unique wp_options.option_name index, so the claim is atomic
-	 * without a schema change. An empty reference is never blocked.
+	 * false. An empty reference is never blocked.
+	 *
+	 * The claim is a single INSERT IGNORE on the unique wp_options.option_name key, and
+	 * only the caller whose insert affected one row wins. add_option() is not used: it
+	 * decides existence from a cached read and then upserts (ON DUPLICATE KEY UPDATE),
+	 * so a second concurrent caller can also get true.
 	 *
 	 * @param string $reference Provider transaction_id or subscription_id.
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 * @return bool True if this caller won the claim, false if it was already claimed.
 	 */
 	public static function claim_payment_reference( $reference ) {
+		global $wpdb;
+
 		$reference = is_string( $reference ) ? $reference : '';
 		if ( '' === $reference ) {
 			return true;
 		}
-		return add_option( 'srfm_pay_claim_' . md5( $reference ), time(), '', 'no' );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- The unique key is the lock; a cached read cannot decide it.
+		$inserted = $wpdb->query(
+			$wpdb->prepare(
+				"INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
+				'srfm_pay_claim_' . md5( $reference ),
+				(string) time()
+			)
+		);
+
+		return 1 === $inserted;
 	}
 
 	/**
@@ -63,7 +79,7 @@ class Payment_Helper {
 	 * retry is not blocked when the paid row could not be created.
 	 *
 	 * @param string $reference Provider transaction_id or subscription_id.
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 * @return void
 	 */
 	public static function release_payment_reference( $reference ) {
