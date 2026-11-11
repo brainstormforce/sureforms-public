@@ -1,6 +1,11 @@
-function initializeURL() {
-	const urlFiledContainers =
-		document.getElementsByClassName( 'srfm-url-block' );
+// URL inputs that already have their listener.
+// A WeakSet rather than a marker attribute: Elementor Pro renders each opened
+// popup from an outerHTML copy, which would carry the attribute onto nodes
+// that have no listeners.
+const srfmBoundUrlInputs = new WeakSet();
+
+function initializeURL( root = document ) {
+	const urlFiledContainers = root.getElementsByClassName( 'srfm-url-block' );
 	if ( urlFiledContainers ) {
 		for ( const urlFiledContainer of urlFiledContainers ) {
 			const urlInput =
@@ -8,7 +13,8 @@ function initializeURL() {
 			const validUrlMessage = urlFiledContainer.querySelector(
 				'.srfm-error-message'
 			);
-			if ( urlInput ) {
+			if ( urlInput && ! srfmBoundUrlInputs.has( urlInput ) ) {
+				srfmBoundUrlInputs.add( urlInput );
 				urlInput.addEventListener( 'change', () => {
 					const pattern = new RegExp(
 						'^(https?:\\/\\/)?' + // protocol
@@ -42,4 +48,12 @@ function initializeURL() {
 		}
 	}
 }
-document.addEventListener( 'DOMContentLoaded', initializeURL );
+document.addEventListener( 'DOMContentLoaded', () => initializeURL() );
+
+// Bind forms rendered after page load, such as the copy of the form an Elementor
+// Pro popup builds each time it opens.
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	if ( e.detail?.form ) {
+		initializeURL( e.detail.form );
+	}
+} );
