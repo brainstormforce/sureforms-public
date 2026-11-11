@@ -51,7 +51,7 @@ class Payment_Helper {
 	 *
 	 * @param int    $form_id Form id.
 	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 * @return bool True when the request should be rejected.
 	 */
 	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
@@ -61,13 +61,13 @@ class Payment_Helper {
 			return false;
 		}
 
-		$limit = (int) apply_filters( 'srfm_payment_rate_limit_per_minute', 30, (int) $form_id, $context );
+		$limit = Helper::get_integer_value( apply_filters( 'srfm_payment_rate_limit_per_minute', 30, (int) $form_id, $context ) );
 		if ( $limit <= 0 ) {
 			return false;
 		}
 
 		$transient_key = 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_' . md5( $ip . '_' . (int) $form_id );
-		$attempts      = (int) get_transient( $transient_key );
+		$attempts      = Helper::get_integer_value( get_transient( $transient_key ) );
 		if ( $attempts >= $limit ) {
 			return true;
 		}
