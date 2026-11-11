@@ -801,6 +801,42 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertFalse( $below['valid'] );
 	}
 
+	/**
+	 * A calculation-enabled hidden amount source whose amount the server can't recompute is
+	 * rejected, as for a number source. The minimum-amount floor alone is not enough, because
+	 * the formula, not the visitor, sets the price.
+	 */
+	public function test_validate_amount_against_config_calc_hidden_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 50,
+					'variable_amount_field'            => 'total',
+					'variable_amount_field_block_name' => 'srfm/hidden',
+				],
+				'hid456' => [
+					'block_id'           => 'hid456',
+					'block_name'         => 'srfm/hidden',
+					'slug'               => 'total',
+					'enableCalculation'  => true,
+					'calculationFormula' => '{form:qty} * 100',
+				],
+			]
+		);
+
+		// No recompute handler returns an amount, so the charge must not pass on the floor alone.
+		$form_data = [ 'srfm-hidden-hid456-lbl-VG90YWw-total' => '60' ];
+		$result    = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 60.0 );
+
+		$this->assertFalse( $result['valid'] );
+	}
+
 	// --- get_registered_payment_methods / is_payment_field_active / get_required_payment_block_ids ---
 
 	/**

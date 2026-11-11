@@ -1585,20 +1585,16 @@ class Payment_Helper {
 							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), floatval( $expected_amount ), $payment_amount ),
 						];
 					}
+				} elseif ( ! empty( $variable_amount_block_config['enableCalculation'] ) ) {
+					// Calculation-driven source (number or hidden): a null server amount means
+					// the formula could not be recomputed server-side. The formula sets the
+					// price, so neither the submitted value nor the minimum-amount floor can
+					// stand in for it. Reject.
+					return [
+						'valid'   => false,
+						'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+					];
 				} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
-					// Calculation-driven number: a null server amount means the formula
-					// could NOT be recomputed server-side (a referenced field was
-					// non-numeric, or the formula used something the parser can't
-					// evaluate). This is NOT "name your price" — we must fail safe and
-					// reject, never fall back to the client-submitted amount, which
-					// would reopen the unauthenticated underpayment bypass.
-					if ( ! empty( $variable_amount_block_config['enableCalculation'] ) ) {
-						return [
-							'valid'   => false,
-							'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
-						];
-					}
-
 					// Plain user-entered number ("name your price"): the amount is the
 					// customer's own choice, so confirm the charge matches what they entered.
 					// The minimum-amount floor below guards the lower bound.
