@@ -660,14 +660,13 @@ class Smart_Tags {
 			return '';
 		}
 
-		// Bind the resolved row to the form being rendered. The row id comes from
-		// submission data, which is server-verified on the normal submit path but not
-		// on parallel consumers that render tags from raw drafts (e.g. Save & Resume).
-		// When the current form is known, only a payment row belonging to it may be
-		// read, so a client-chosen id cannot disclose another form's payment.
-		$context_form_id = is_array( $form_data ) && ! empty( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
-		$entry_form_id   = ! empty( $payment_entry['form_id'] ) ? absint( $payment_entry['form_id'] ) : 0;
-		if ( $context_form_id > 0 && $context_form_id !== $entry_form_id ) {
+		// A payment row is only resolved for the form being rendered, identified by the
+		// caller's 'form-id' context. The row id comes from submission data, which not
+		// every consumer has verified, so a row is never read without that binding:
+		// a missing or non-numeric context resolves nothing.
+		$context_form_id = is_array( $form_data ) && isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+		$entry_form_id   = isset( $payment_entry['form_id'] ) && is_numeric( $payment_entry['form_id'] ) ? absint( $payment_entry['form_id'] ) : 0;
+		if ( 0 === $context_form_id || $context_form_id !== $entry_form_id ) {
 			return '';
 		}
 
