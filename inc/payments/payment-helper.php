@@ -40,6 +40,29 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Reject a client-supplied Stripe customer id that uses the reserved internal
+	 * ownership-key format (wp_user_{id} / guest_{...}). Payment history attributes
+	 * rows to a user by customer_id, so a submitter who sets customer_id to
+	 * 'wp_user_{victim}' could make a Stripe payment appear in that user's history.
+	 * A genuine Stripe customer id is 'cus_...', so this never affects a real
+	 * customer; it only blocks a reserved value from being stored on a Stripe row.
+	 *
+	 * @param mixed $customer_id Client-supplied customer id.
+	 * @since 2.13.2
+	 * @return string The customer id, or '' if it uses a reserved internal format.
+	 */
+	public static function sanitize_stripe_customer_id( $customer_id ) {
+		$customer_id = is_string( $customer_id ) ? sanitize_text_field( $customer_id ) : '';
+		if ( '' === $customer_id ) {
+			return '';
+		}
+		if ( 1 === preg_match( '/^(wp_user_|guest_)/', $customer_id ) ) {
+			return '';
+		}
+		return $customer_id;
+	}
+
+	/**
 	 * Default subscription interval for a payment block whose plan was left at the
 	 * editor default. Gutenberg omits an attribute equal to its block.json default,
 	 * so a default-plan form stores no cadence; the server falls back to this value
