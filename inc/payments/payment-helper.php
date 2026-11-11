@@ -48,7 +48,7 @@ class Payment_Helper {
 	 * customer; it only blocks a reserved value from being stored on a Stripe row.
 	 *
 	 * @param mixed $customer_id Client-supplied customer id.
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 * @return string The customer id, or '' if it uses a reserved internal format.
 	 */
 	public static function sanitize_stripe_customer_id( $customer_id ) {
