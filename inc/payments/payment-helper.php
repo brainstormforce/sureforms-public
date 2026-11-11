@@ -77,6 +77,130 @@ class Payment_Helper {
 	}
 
 	/**
+	 * Atomically claim a provider payment reference (transaction or subscription id)
+	 * so that concurrent or duplicate submissions of the same completed payment cannot
+	 * each create a paid entry. The first caller wins the claim; later callers get
+	 * false. An empty reference is never blocked.
+	 *
+	 * The claim is a single INSERT IGNORE on the unique wp_options.option_name key, and
+	 * only the caller whose insert affected one row wins. add_option() is not used: it
+	 * decides existence from a cached read and then upserts (ON DUPLICATE KEY UPDATE),
+	 * so a second concurrent caller can also get true.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.13.2
+	 * @return bool True if this caller won the claim, false if it was already claimed.
+	 */
+	public static function claim_payment_reference( $reference ) {
+		global $wpdb;
+
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return true;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- The unique key is the lock; a cached read cannot decide it.
+		$inserted = $wpdb->query(
+			$wpdb->prepare(
+				"INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
+				'srfm_pay_claim_' . md5( $reference ),
+				(string) time()
+			)
+		);
+
+		return 1 === $inserted;
+	}
+
+	/**
+	 * Release a payment reference claimed by claim_payment_reference(), so a legitimate
+	 * retry is not blocked when the paid row could not be created.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.13.2
+	 * @return void
+	 */
+	public static function release_payment_reference( $reference ) {
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return;
+		}
+		delete_option( 'srfm_pay_claim_' . md5( $reference ) );
+	}
+
+	/**
+	 * Reject a client-supplied Stripe customer id that uses the reserved internal
+	 * ownership-key format (wp_user_{id} / guest_{...}). Payment history attributes
+	 * rows to a user by customer_id, so a submitter who sets customer_id to
+	 * 'wp_user_{victim}' could make a Stripe payment appear in that user's history.
+	 * A genuine Stripe customer id is 'cus_...', so this never affects a real
+	 * customer; it only blocks a reserved value from being stored on a Stripe row.
+	 *
+	 * @param mixed $customer_id Client-supplied customer id.
+	 * @since 2.13.2
+	 * @return string The customer id, or '' if it uses a reserved internal format.
+	 */
+	public static function sanitize_stripe_customer_id( $customer_id ) {
+		$customer_id = is_string( $customer_id ) ? sanitize_text_field( $customer_id ) : '';
+		if ( '' === $customer_id ) {
+			return '';
+		}
+		if ( 1 === preg_match( '/^(wp_user_|guest_)/', $customer_id ) ) {
+			return '';
+		}
+		return $customer_id;
+	}
+
+	/**
+	 * Default subscription interval for a payment block whose plan was left at the
+	 * editor default. Gutenberg omits an attribute equal to its block.json default,
+	 * so a default-plan form stores no cadence; the server falls back to this value
+	 * instead of trusting the submitted interval.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
+
+	/**
+	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
+
+	/**
+	 * Resolve a subscription payment block's cadence (interval + billing cycles) from
+	 * its stored config, falling back to the block.json defaults when the admin left
+	 * the plan unchanged. The submitted/client cadence is never used, so a tampered
+	 * interval or billing-cycles value cannot redirect the gateway to a different
+	 * billing cadence. An explicitly stored cadence is returned unchanged.
+	 *
+	 * @param array<string, mixed> $block_config One block's stored config from _srfm_block_config.
+	 * @since 2.13.2
+	 * @return array{interval: string, billing_cycles: int|string}
+	 */
+	public static function resolve_stored_subscription_cadence( $block_config ) {
+		$block_config = is_array( $block_config ) ? $block_config : [];
+
+		$interval = isset( $block_config['subscription_interval'] ) && is_string( $block_config['subscription_interval'] ) && '' !== $block_config['subscription_interval']
+			? $block_config['subscription_interval']
+			: self::DEFAULT_SUBSCRIPTION_INTERVAL;
+
+		$raw_cycles = $block_config['subscription_billing_cycles'] ?? '';
+		if ( is_int( $raw_cycles ) ) {
+			$billing_cycles = $raw_cycles;
+		} elseif ( is_string( $raw_cycles ) && '' !== $raw_cycles ) {
+			$billing_cycles = $raw_cycles;
+		} else {
+			$billing_cycles = self::DEFAULT_SUBSCRIPTION_BILLING_CYCLES;
+		}
+
+		return [
+			'interval'       => $interval,
+			'billing_cycles' => $billing_cycles,
+		];
+	}
+
+	/**
 	 * A payment block's amount type, or 'fixed' when it is not one the
 	 * server-side validators implement.
 	 *
