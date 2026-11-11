@@ -40,6 +40,57 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Atomically claim a provider payment reference (transaction or subscription id)
+	 * so that concurrent or duplicate submissions of the same completed payment cannot
+	 * each create a paid entry. The first caller wins the claim; later callers get
+	 * false. An empty reference is never blocked.
+	 *
+	 * The claim is a single INSERT IGNORE on the unique wp_options.option_name key, and
+	 * only the caller whose insert affected one row wins. add_option() is not used: it
+	 * decides existence from a cached read and then upserts (ON DUPLICATE KEY UPDATE),
+	 * so a second concurrent caller can also get true.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.13.2
+	 * @return bool True if this caller won the claim, false if it was already claimed.
+	 */
+	public static function claim_payment_reference( $reference ) {
+		global $wpdb;
+
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return true;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- The unique key is the lock; a cached read cannot decide it.
+		$inserted = $wpdb->query(
+			$wpdb->prepare(
+				"INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
+				'srfm_pay_claim_' . md5( $reference ),
+				(string) time()
+			)
+		);
+
+		return 1 === $inserted;
+	}
+
+	/**
+	 * Release a payment reference claimed by claim_payment_reference(), so a legitimate
+	 * retry is not blocked when the paid row could not be created.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.13.2
+	 * @return void
+	 */
+	public static function release_payment_reference( $reference ) {
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return;
+		}
+		delete_option( 'srfm_pay_claim_' . md5( $reference ) );
+	}
+
+	/**
 	 * Reject a client-supplied Stripe customer id that uses the reserved internal
 	 * ownership-key format (wp_user_{id} / guest_{...}). Payment history attributes
 	 * rows to a user by customer_id, so a submitter who sets customer_id to
