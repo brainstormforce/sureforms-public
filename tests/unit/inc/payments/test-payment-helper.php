@@ -820,6 +820,52 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertFalse( $below['valid'] );
 	}
 
+	/**
+	 * A calculation-enabled hidden amount source whose amount the server can't recompute is
+	 * rejected, as for a number source. The minimum-amount floor alone is not enough, because
+	 * the formula, not the visitor, sets the price. Calculation off, or on with no formula,
+	 * keeps the floor check.
+	 */
+	public function test_validate_amount_against_config_calc_hidden_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		$config = static function ( array $hidden ) {
+			return [
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 50,
+					'variable_amount_field'            => 'total',
+					'variable_amount_field_block_name' => 'srfm/hidden',
+				],
+				'hid456' => array_merge(
+					[
+						'block_id'     => 'hid456',
+						'blockName'    => 'srfm/hidden',
+						'slug'         => 'total',
+						'defaultValue' => '{get_input:total}',
+					],
+					$hidden
+				),
+			];
+		};
+
+		$form_data = [ 'srfm-hidden-hid456-lbl-VG90YWw-total' => '60' ];
+
+		// Calculation on: no recompute handler returns an amount, so it must not pass on the floor.
+		update_post_meta( $form_id, '_srfm_block_config', $config( [ 'enableCalculation' => true, 'calculationFormula' => '{form:qty} * 100' ] ) );
+		$result = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 60.0 );
+		$this->assertFalse( $result['valid'] );
+		$this->assertSame( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', $result['message'] );
+
+		// Calculation off, or on with an empty formula: still checked against the floor.
+		foreach ( [ [ 'enableCalculation' => false ], [ 'enableCalculation' => true, 'calculationFormula' => '' ] ] as $hidden ) {
+			update_post_meta( $form_id, '_srfm_block_config', $config( $hidden ) );
+			$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 60.0 )['valid'] );
+			$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 )['valid'] );
+		}
+	}
+
 	// --- get_registered_payment_methods / is_payment_field_active / get_required_payment_block_ids ---
 
 	/**

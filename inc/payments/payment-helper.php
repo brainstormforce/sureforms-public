@@ -1746,20 +1746,20 @@ class Payment_Helper {
 							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), floatval( $expected_amount ), $payment_amount ),
 						];
 					}
+				} elseif (
+					! empty( $variable_amount_block_config['enableCalculation'] )
+					&& ( 'srfm/number' === $dynamic_amount_field_block_name || ( isset( $variable_amount_block_config['calculationFormula'] ) && is_string( $variable_amount_block_config['calculationFormula'] ) && '' !== $variable_amount_block_config['calculationFormula'] ) )
+				) {
+					// Calculation-driven source: a null server amount means the formula could not
+					// be recomputed server-side. The formula sets the price, so neither the
+					// submitted value nor the minimum-amount floor can stand in for it. Reject.
+					// A hidden source with calculation on but no formula has no formula to
+					// recompute, so it is treated like any other hidden source below.
+					return [
+						'valid'   => false,
+						'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+					];
 				} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
-					// Calculation-driven number: a null server amount means the formula
-					// could NOT be recomputed server-side (a referenced field was
-					// non-numeric, or the formula used something the parser can't
-					// evaluate). This is NOT "name your price" — we must fail safe and
-					// reject, never fall back to the client-submitted amount, which
-					// would reopen the unauthenticated underpayment bypass.
-					if ( ! empty( $variable_amount_block_config['enableCalculation'] ) ) {
-						return [
-							'valid'   => false,
-							'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
-						];
-					}
-
 					// Plain user-entered number ("name your price"): the amount is the
 					// customer's own choice, so confirm the charge matches what they entered.
 					// The minimum-amount floor below guards the lower bound.
@@ -1866,8 +1866,9 @@ class Payment_Helper {
 	 * The expected amount is ALWAYS derived from server-side configuration — the field's
 	 * configured default value, or (for calculation-enabled fields) a value recomputed by
 	 * SureForms Pro from the submitted inputs. It is NEVER taken from the value submitted with
-	 * the request. Returns null when no authoritative amount can be determined server-side, in
-	 * which case the caller falls back to the configured minimum-amount floor.
+	 * the request. Returns null when no authoritative amount can be determined server-side. The
+	 * caller then rejects a calculation source, and checks any other source against the
+	 * configured minimum-amount floor.
 	 *
 	 * @param array<mixed> $source_config The amount-source field block config (block_name, slug, enableCalculation, defaultValue, calculationFormula, ...).
 	 * @param array<mixed> $block_config  All block configurations for the form.
@@ -1909,8 +1910,9 @@ class Payment_Helper {
 		// Static hidden field: a *literal numeric* configured default value is the server-side
 		// source of truth and is authoritative. A non-numeric default (e.g. a smart tag such as
 		// {get_input:amount} stored raw, resolved to a runtime value only at render time) is NOT
-		// treated as authoritative here — it returns null below so the caller validates against the
-		// minimum-amount floor instead, preserving the documented dynamic-prefill behavior.
+		// treated as authoritative here — it returns null below so the caller validates this
+		// non-calculation source against the minimum-amount floor, preserving the documented
+		// dynamic-prefill behavior.
 		$block_name = $source_config['block_name'] ?? ( $source_config['blockName'] ?? '' );
 		if ( 'srfm/hidden' === $block_name && empty( $source_config['enableCalculation'] ) && isset( $source_config['defaultValue'] ) && is_numeric( $source_config['defaultValue'] ) ) {
 			return floatval( $source_config['defaultValue'] );
