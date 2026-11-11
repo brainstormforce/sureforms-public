@@ -45,14 +45,14 @@ class Payment_Helper {
 	 * so a default-plan form stores no cadence; the server falls back to this value
 	 * instead of trusting the submitted interval.
 	 *
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 */
 	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
 
 	/**
 	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
 	 *
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 */
 	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
 
@@ -64,7 +64,7 @@ class Payment_Helper {
 	 * billing cadence. An explicitly stored cadence is returned unchanged.
 	 *
 	 * @param array<string, mixed> $block_config One block's stored config from _srfm_block_config.
-	 * @since 2.13.1
+	 * @since 2.13.2
 	 * @return array{interval: string, billing_cycles: int|string}
 	 */
 	public static function resolve_stored_subscription_cadence( $block_config ) {
