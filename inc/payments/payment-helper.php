@@ -40,6 +40,56 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Default subscription interval for a payment block whose plan was left at the
+	 * editor default. Gutenberg omits an attribute equal to its block.json default,
+	 * so a default-plan form stores no cadence; the server falls back to this value
+	 * instead of trusting the submitted interval.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
+
+	/**
+	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
+
+	/**
+	 * Resolve a subscription payment block's cadence (interval + billing cycles) from
+	 * its stored config, falling back to the block.json defaults when the admin left
+	 * the plan unchanged. The submitted/client cadence is never used, so a tampered
+	 * interval or billing-cycles value cannot redirect the gateway to a different
+	 * billing cadence. An explicitly stored cadence is returned unchanged.
+	 *
+	 * @param array<string, mixed> $block_config One block's stored config from _srfm_block_config.
+	 * @since 2.13.2
+	 * @return array{interval: string, billing_cycles: int|string}
+	 */
+	public static function resolve_stored_subscription_cadence( $block_config ) {
+		$block_config = is_array( $block_config ) ? $block_config : [];
+
+		$interval = isset( $block_config['subscription_interval'] ) && is_string( $block_config['subscription_interval'] ) && '' !== $block_config['subscription_interval']
+			? $block_config['subscription_interval']
+			: self::DEFAULT_SUBSCRIPTION_INTERVAL;
+
+		$raw_cycles = $block_config['subscription_billing_cycles'] ?? '';
+		if ( is_int( $raw_cycles ) ) {
+			$billing_cycles = $raw_cycles;
+		} elseif ( is_string( $raw_cycles ) && '' !== $raw_cycles ) {
+			$billing_cycles = $raw_cycles;
+		} else {
+			$billing_cycles = self::DEFAULT_SUBSCRIPTION_BILLING_CYCLES;
+		}
+
+		return [
+			'interval'       => $interval,
+			'billing_cycles' => $billing_cycles,
+		];
+	}
+
+	/**
 	 * A payment block's amount type, or 'fixed' when it is not one the
 	 * server-side validators implement.
 	 *
