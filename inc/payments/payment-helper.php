@@ -40,6 +40,23 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Default subscription interval for a payment block whose plan was left at the
+	 * editor default. Gutenberg omits an attribute equal to its block.json default,
+	 * so a default-plan form stores no cadence; the server falls back to this value
+	 * instead of trusting the submitted interval.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
+
+	/**
+	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
+	 *
+	 * @since 2.13.2
+	 */
+	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
+
+	/**
 	 * Throttle unauthenticated payment-object creation per IP + form, so one scraped
 	 * submit token cannot drive unbounded Stripe/PayPal object creation on the
 	 * merchant account. Returns true when the caller is over the limit.
@@ -149,23 +166,6 @@ class Payment_Helper {
 		}
 		return $customer_id;
 	}
-
-	/**
-	 * Default subscription interval for a payment block whose plan was left at the
-	 * editor default. Gutenberg omits an attribute equal to its block.json default,
-	 * so a default-plan form stores no cadence; the server falls back to this value
-	 * instead of trusting the submitted interval.
-	 *
-	 * @since 2.13.2
-	 */
-	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
-
-	/**
-	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
-	 *
-	 * @since 2.13.2
-	 */
-	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
 
 	/**
 	 * Resolve a subscription payment block's cadence (interval + billing cycles) from
@@ -1230,7 +1230,20 @@ class Payment_Helper {
 		}
 
 		// 2. Fall back to a user matching the customer email.
-		$customer_email = ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
+		//
+		// The customer email comes from the submitted payment data and is not a
+		// verified identity claim, so matching a guest payment to the account that
+		// owns that email attributes the payment to a user who may not have made it.
+		// This match defaults to true to preserve existing behaviour; a site whose
+		// payment-lifecycle hook consumers (membership, LMS, etc.) grant or revoke
+		// access by the context user_id should return false here so guest payments
+		// resolve to 0, as the hook contract documents.
+		//
+		// @since 2.13.2
+		// @param bool                 $match_by_email Whether to resolve a guest payment to the account owning customer_email.
+		// @param array<string, mixed> $payment        The payment record.
+		$match_by_email = (bool) apply_filters( 'srfm_resolve_guest_payment_user_by_email', true, $payment );
+		$customer_email = $match_by_email && ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
 		if ( ! empty( $customer_email ) ) {
 			$user = get_user_by( 'email', $customer_email );
 			if ( $user instanceof \WP_User ) {

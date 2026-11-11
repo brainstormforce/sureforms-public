@@ -1161,6 +1161,23 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	// --- guest payment email -> user resolution (unverified email binding) ---
+
+	public function test_resolve_payment_user_email_match_can_be_disabled() {
+		$user_id = self::factory()->user->create( [ 'user_email' => 'guest9@example.test' ] );
+		$payment = [ 'entry_id' => 0, 'customer_email' => 'guest9@example.test' ];
+
+		// Default behaviour is preserved: a guest payment resolves to the account
+		// that owns the submitted email (backward compatible).
+		$this->assertSame( $user_id, Payment_Helper::resolve_payment_user( $payment ) );
+
+		// A site that opts out gets the documented "0 for guests" instead of an
+		// unverified attribution.
+		add_filter( 'srfm_resolve_guest_payment_user_by_email', '__return_false' );
+		$this->assertSame( 0, Payment_Helper::resolve_payment_user( $payment ) );
+		remove_filter( 'srfm_resolve_guest_payment_user_by_email', '__return_false' );
+	}
+
 	public function test_is_payment_rate_limited_throttles_per_ip_and_form() {
 		$_SERVER['REMOTE_ADDR'] = '203.0.113.7';
 
@@ -1188,7 +1205,6 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		unset( $_SERVER['REMOTE_ADDR'] );
 		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );
 	}
-
 
 	// --- claim_payment_reference (non-atomic intent claim / duplicate paid entries) ---
 
@@ -1242,7 +1258,6 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		Payment_Helper::release_payment_reference( 'pi_unit_release' );
 	}
 
-
 	public function test_sanitize_stripe_customer_id_rejects_reserved_patterns() {
 		// A genuine Stripe customer id is preserved (backward compatible).
 		$this->assertSame( 'cus_T4Apjla33GlYAk', Payment_Helper::sanitize_stripe_customer_id( 'cus_T4Apjla33GlYAk' ) );
@@ -1251,7 +1266,6 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'guest_abc123' ) );
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( '' ) );
 	}
-
 
 	// --- resolve_stored_subscription_cadence (default-plan cadence tampering) ---
 
