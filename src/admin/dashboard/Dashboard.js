@@ -10,6 +10,7 @@ import UpgradeToPro from './UpgradeToPro';
 import FormsOverview from './FormsOverview';
 import AdminNotice from '../components/AdminNotice';
 import { cn } from '@Utils/Helpers';
+import { isFeatureEnabled } from '@Utils/features';
 
 export default () => {
 	const nav = <Header />;
@@ -24,7 +25,8 @@ export default () => {
 	const leftSidebar = (
 		<>
 			<GetStarted />
-			<FormsOverview />
+			{ /* The chart reads stored entries, through a route that is gone while Entries is off. */ }
+			{ isFeatureEnabled( 'entries' ) && <FormsOverview /> }
 			{ ! isProActive && isFirstFormCreated && <ExtendTab /> }
 		</>
 	);

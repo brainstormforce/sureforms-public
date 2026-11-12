@@ -4,7 +4,7 @@ Tags: forms, ai forms, contact form, form builder, payment form
 Requires at least: 6.4
 Tested up to: 7.1.4
 Requires PHP: 7.4
-Stable tag: 2.13.1
+Stable tag: 2.14.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -426,6 +426,14 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= 2.14.0 - 12th November 2026 =
+* New: Added Settings → Features, where you can turn Entries, AI form builder, OttoKit automations and Payments on or off.
+* New: Added the `srfm_resolve_guest_payment_user_by_email` developer filter to stop linking a guest payment to a user account by email address.
+* Improvement: Stripe checkout now limits how many payment attempts a single visitor can make on a form each minute.
+* Fix: CSV exports of entries now include values for every field, even when a field's key was saved in a different format.
+* Fix: Fields in forms shown inside Elementor Pro popups now work when the popup opens.
+* Fix: The Stripe card field now loads when a form uses a dynamic amount the visitor has not picked yet.
+* Fix: This update addressed a security bug. Props to Truebird from Patchstack for reporting it responsibly to our team.
 = 2.13.1 - 4th November 2026 =
 * New: Added a reCAPTCHA v3 score threshold in Spam Protection settings to block low-scoring submissions.
 * New: Multiple Choice options can now show a short description under each option.
@@ -438,17 +446,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
 * Fix: This update addressed security bugs. Props to Luke Schneider and Filip Kowalski from Patchstack for reporting them responsibly to our team.
-= 2.12.9 - 13th October 2026 =
-* New: Added the `srfm_submission_accepted` developer action, fired as soon as a submission is accepted.
-* New: Forms that do not store entries now warn you when a failed notification loses a submission.
-* New: MCP Adapter can now be installed and activated in one click.
-* Improvement: Failed notifications are no longer silently retried through PHP's mail(); the reason now shows in Entry Logs and Form Checks. Use the `srfm_allow_php_mail_fallback` filter to restore it.
-* Improvement: Smart tags such as {get_input:name} now resolve only inside SureForms form content. A tag written in ordinary page or post content is shown as written.
-* Fix: Deleting an option in a duplicated Multiple Choice block no longer removes it from the original.
-* Fix: Form fields no longer fail accessibility scans for a missing error message reference.
-* Fix: The submit button now stays disabled while a form redirects, preventing duplicate submissions.
-* Fix: Unticked Checkbox fields now appear in entries and notification emails.
-* Fix: This update addressed a security bug. Props to dzaku from Patchstack for reporting it responsibly to our team.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 == Upgrade Notice ==

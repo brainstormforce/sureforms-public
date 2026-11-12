@@ -69,13 +69,21 @@ function SRFMFormatNumber( number, formatType ) {
 	return formattedNumber;
 }
 
-function initializeNumberField() {
-	const numberElement = document.querySelectorAll( '.srfm-number-block' );
+// Number inputs that already have their listeners.
+// A WeakSet rather than a marker attribute: Elementor Pro renders each opened
+// popup from an outerHTML copy, which would carry the attribute onto nodes
+// that have no listeners.
+const srfmBoundNumberInputs = new WeakSet();
+
+function initializeNumberField( root = document ) {
+	const numberElement = root.querySelectorAll( '.srfm-number-block' );
 
 	if ( numberElement ) {
 		numberElement.forEach( ( element ) => {
 			const numberInput = element.querySelector( 'input' );
-			if ( numberInput ) {
+			if ( numberInput && ! srfmBoundNumberInputs.has( numberInput ) ) {
+				srfmBoundNumberInputs.add( numberInput );
+
 				// Things we want to reflect on real time: "input".
 				numberInput.addEventListener( 'input', ( e ) => {
 					// Convert all to empty strings except: Numbers, Dots, Commas, and a single leading Minus.
@@ -155,7 +163,15 @@ function initializeNumberField() {
 		} );
 	}
 }
-document.addEventListener( 'DOMContentLoaded', initializeNumberField );
+document.addEventListener( 'DOMContentLoaded', () => initializeNumberField() );
+
+// Bind forms rendered after page load, such as the copy of the form an Elementor
+// Pro popup builds each time it opens.
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	if ( e.detail?.form ) {
+		initializeNumberField( e.detail.form );
+	}
+} );
 
 /**
  * Listen for the custom event 'srfm_init_number_field' that is dispatched when number fields need to be initialized.

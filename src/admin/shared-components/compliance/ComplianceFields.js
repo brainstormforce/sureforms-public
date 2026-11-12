@@ -2,6 +2,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { Alert, Input, Switch, Label, Container, Text } from '@bsf/force-ui';
 import { AlertTriangle } from 'lucide-react';
+import { isFeatureEnabled } from '@Utils/features';
 
 // States in which a mailer is known to be carrying wp_mail(). Anything else
 // means a failed notification is likely, and on a form that stores no entries
@@ -94,10 +95,15 @@ const ComplianceFields = ( { context, values, onChange } ) => {
 					'Never store entry data after form submission',
 					'sureforms'
 				),
-				description: __(
-					'When enabled this form will never store Entries.',
-					'sureforms'
-				),
+				description: isFeatureEnabled( 'entries' )
+					? __(
+						'When enabled this form will never store Entries.',
+						'sureforms'
+					)
+					: __(
+						'Entries is turned off in Settings → Features, so no form stores entries right now. This applies again once Entries is turned back on.',
+						'sureforms'
+					),
 			},
 			condition: values?.gdpr,
 		},

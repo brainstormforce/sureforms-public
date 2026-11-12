@@ -27,6 +27,7 @@ use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Update_Form;
 use SRFM\Inc\Abilities\Settings\Get_Global_Settings;
 use SRFM\Inc\Abilities\Settings\Update_Global_Settings;
+use SRFM\Inc\Features;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -200,6 +201,11 @@ class Abilities_Registrar {
 
 			// Skip disabled abilities so they don't appear in MCP listings.
 			if ( ! $ability->is_enabled() ) {
+				continue;
+			}
+
+			// Entry abilities belong to a feature that can be switched off site-wide.
+			if ( ( $ability instanceof List_Entries || $ability instanceof Get_Entry || $ability instanceof Bulk_Get_Entries || $ability instanceof Update_Entry_Status || $ability instanceof Delete_Entry ) && ! Features::is_enabled( 'entries' ) ) {
 				continue;
 			}
 

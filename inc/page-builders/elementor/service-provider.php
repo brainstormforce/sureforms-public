@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Page_Builders\Elementor;
 
+use SRFM\Inc\Features;
 use SRFM\Inc\Traits\Get_Instance;
 
 /**
@@ -89,7 +90,10 @@ class Service_Provider {
 			return;
 		}
 		$widgets_manager->register( new Form_Widget() );
-		$widgets_manager->register( new Payment_History_Widget() );
+		// Payment history belongs to Payments; it is not offered while that is off.
+		if ( Features::is_enabled( 'payments' ) ) {
+			$widgets_manager->register( new Payment_History_Widget() );
+		}
 	}
 
 }
