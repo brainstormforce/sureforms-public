@@ -47,6 +47,73 @@ class Test_Field_Mapping extends TestCase {
 	}
 
 	/**
+	 * Builds Multiple Choice markup from the given fieldOptions.
+	 *
+	 * @param array $field_options fieldOptions for one multi-choice field.
+	 * @return string
+	 */
+	private function multi_choice_markup( array $field_options ) {
+		$request = new WP_REST_Request();
+		$request->set_param(
+			'form_data',
+			[
+				'form' => [
+					'formFields' => [
+						[
+							'label'        => 'Ticket',
+							'fieldType'    => 'multi-choice',
+							'required'     => false,
+							'fieldOptions' => $field_options,
+						],
+					],
+				],
+			]
+		);
+
+		return Field_Mapping::generate_gutenberg_fields_from_questions( $request );
+	}
+
+	/**
+	 * A description sent by the AI builder or the Abilities API turns the
+	 * descriptions on, or it is stored but never rendered.
+	 */
+	public function test_generate_gutenberg_fields_from_questions_enables_option_descriptions() {
+		$result = $this->multi_choice_markup(
+			[
+				[
+					'optionTitle' => 'Early Bird',
+					'description' => '$149 until 1 March<script>x</script>',
+				],
+				[ 'optionTitle' => 'Standard' ],
+			]
+		);
+
+		$this->assertStringContainsString( '"showDescriptions":true', $result );
+		$this->assertStringContainsString( '"description":"$149 until 1 March"', $result );
+		// Every option keeps its own title.
+		$this->assertStringContainsString( '"optionTitle":"Standard"', $result );
+		$this->assertSame( 1, substr_count( $result, '"optionTitle":"Early Bird"' ) );
+	}
+
+	/**
+	 * Blank or whitespace-only descriptions leave the toggle at its default.
+	 */
+	public function test_generate_gutenberg_fields_from_questions_ignores_blank_option_descriptions() {
+		$result = $this->multi_choice_markup(
+			[
+				[
+					'optionTitle' => 'Early Bird',
+					'description' => '   ',
+				],
+				[ 'optionTitle' => 'Standard' ],
+			]
+		);
+
+		$this->assertStringContainsString( 'wp:srfm/multi-choice', $result );
+		$this->assertStringNotContainsString( 'showDescriptions', $result );
+	}
+
+	/**
 	 * Test generate_gutenberg_fields includes helpText when provided.
 	 */
 	public function test_generate_gutenberg_fields_with_help_text() {
@@ -216,5 +283,30 @@ class Test_Field_Mapping extends TestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'status', $data );
 		$this->assertSame( 400, $data['status'] );
+	}
+
+	/**
+	 * Business fields follow the site's plan tier, which Pro 2.13.1 reports
+	 * through SRFM_PRO_PRODUCT rather than a per-tier loader class.
+	 */
+	public function test_has_business_fields_follows_the_site_tier() {
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$this->markTestSkipped( 'Pro is loaded in this run.' );
+		}
+
+		$method = new ReflectionMethod( Field_Mapping::class, 'has_business_fields' );
+		$method->setAccessible( true );
+
+		$this->assertFalse( $method->invoke( null ), 'Without Pro there are no Business fields.' );
+
+		$business = static fn() => 'business';
+		add_filter( 'srfm_pro_tier', $business );
+		$this->assertTrue( $method->invoke( null ), 'A Business plan emits Business fields.' );
+		remove_filter( 'srfm_pro_tier', $business );
+
+		$pro = static fn() => 'pro';
+		add_filter( 'srfm_pro_tier', $pro );
+		$this->assertFalse( $method->invoke( null ), 'The Pro plan does not include Business fields.' );
+		remove_filter( 'srfm_pro_tier', $pro );
 	}
 }

@@ -174,7 +174,7 @@ const Edit = ( props ) => {
 							'sureforms'
 						) }
 						tooltipContent={ __(
-							'Upgrade to the SureForms Pro Plan to use the Text field as a color picker.',
+							'Upgrade to SureForms Business to use the Text field as a color picker.',
 							'sureforms'
 						) }
 						tooltipPosition={ 'bottom' }

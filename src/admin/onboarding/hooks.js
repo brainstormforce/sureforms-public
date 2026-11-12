@@ -32,8 +32,8 @@ export const useOnboardingNavigation = () => {
 			// The add-ons step is an upsell, so only free installs see it.
 			// `is_pro_active` is Helper::has_pro() (i.e. SRFM_PRO_VER defined)
 			// and is the only trustworthy signal here: `pro_plugin_name` falls
-			// back to the literal 'SureForms Pro' when Pro is absent
-			// (admin/admin.php:1813), so testing it would hide the upsell from
+			// back to the literal 'SureForms Business' when Pro is absent
+			// (admin/admin.php:1817), so testing it would hide the upsell from
 			// every free user.
 			if (
 				route.url === '/onboarding/premium-features' &&

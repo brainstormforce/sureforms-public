@@ -311,15 +311,17 @@ class String_Translator {
 	}
 
 	/**
-	 * Package-scoped block-option-label string name.
+	 * Package-scoped block-option string name.
 	 *
 	 * @param string $block_id     Stable block identifier.
 	 * @param int    $option_index Option index.
+	 * @param string $field        Option key: `label` (dropdown), `optionTitle` or `description` (multi-choice).
 	 * @since 2.11.0
+	 * @since 2.13.1 Added the $field parameter.
 	 * @return string
 	 */
-	public static function block_option_name( string $block_id, int $option_index ): string {
-		return 'block_' . $block_id . '_option_' . $option_index . '_label';
+	public static function block_option_name( string $block_id, int $option_index, string $field = 'label' ): string {
+		return 'block_' . $block_id . '_option_' . $option_index . '_' . $field;
 	}
 
 	/**
@@ -521,6 +523,25 @@ class String_Translator {
 	}
 
 	/**
+	 * Translate one text key of an option, such as a multi-choice `optionTitle` or `description`.
+	 *
+	 * @param int    $form_id      Form post ID.
+	 * @param string $block_id     Stable block identifier from the block's `block_id` attribute.
+	 * @param int    $option_index Zero-based index of the option within the block's options array.
+	 * @param string $field        Option key being translated.
+	 * @param string $value        Original value.
+	 * @since 2.13.1
+	 * @return string Translated value, or the original when no provider/translation is available.
+	 */
+	public function translate_block_option_field( int $form_id, string $block_id, int $option_index, string $field, string $value ): string {
+		if ( '' === $value || '' === $block_id || '' === $field ) {
+			return $value;
+		}
+
+		return $this->dispatch_package( $form_id, self::block_option_name( $block_id, $option_index, $field ), $value );
+	}
+
+	/**
 	 * Pre-translate a form's raw block markup and also return the parsed top-level
 	 * blocks so the render path can derive its block count without re-parsing the
 	 * rendered HTML.
@@ -643,15 +664,31 @@ class String_Translator {
 			// Translate option labels for dropdown / multi-choice.
 			if ( '' !== $block_id && in_array( $block_name, $option_blocks, true ) && isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
 				foreach ( $attrs['options'] as $option_index => $option ) {
-					if ( ! is_array( $option ) || ! isset( $option['label'] ) || ! is_string( $option['label'] ) ) {
+					if ( ! is_array( $option ) ) {
 						continue;
 					}
-					$attrs['options'][ $option_index ]['label'] = $this->translate_block_option_label(
-						$form_id,
-						$block_id,
-						(int) $option_index,
-						$option['label']
-					);
+					if ( isset( $option['label'] ) && is_string( $option['label'] ) ) {
+						$attrs['options'][ $option_index ]['label'] = $this->translate_block_option_label(
+							$form_id,
+							$block_id,
+							(int) $option_index,
+							$option['label']
+						);
+					}
+					// A multi-choice optionTitle is the submitted value and the
+					// conditional-logic key, so it stays as entered; the translation
+					// goes in translatedTitle, which only the visible label reads.
+					// This pass is its only source, so any stored value is dropped.
+					unset( $attrs['options'][ $option_index ]['translatedTitle'] );
+					if ( 'srfm/multi-choice' === $block_name && isset( $option['optionTitle'] ) && is_string( $option['optionTitle'] ) ) {
+						$translated_title = $this->translate_block_option_field( $form_id, $block_id, (int) $option_index, 'optionTitle', $option['optionTitle'] );
+						if ( $translated_title !== $option['optionTitle'] ) {
+							$attrs['options'][ $option_index ]['translatedTitle'] = $translated_title;
+						}
+					}
+					if ( 'srfm/multi-choice' === $block_name && ! empty( $attrs['showDescriptions'] ) && isset( $option['description'] ) && is_string( $option['description'] ) ) {
+						$attrs['options'][ $option_index ]['description'] = $this->translate_block_option_field( $form_id, $block_id, (int) $option_index, 'description', $option['description'] );
+					}
 				}
 			}
 

@@ -202,6 +202,57 @@ const PageBreakSettings = () => {
 					}
 				/>
 			) }
+			<ToggleControl
+				label={
+					<LabelWithTooltip
+						label={ __( 'Review Step Before Submit', 'sureforms' ) }
+						help={ __(
+							'Adds a last page that lists every answer, with an Edit link back to each one, so people can check before they submit.',
+							'sureforms'
+						) }
+					/>
+				}
+				checked={ !! pageBreakSettings?.review_step }
+				onChange={ ( value ) =>
+					updatePageBreakSettings( 'review_step', value )
+				}
+			/>
+			{ pageBreakSettings?.review_step && (
+				<SRFMTextControl
+					data={ {
+						value: pageBreakSettings?.review_step_label,
+						label: 'review_step_label',
+					} }
+					label={ __( 'Review Step Label', 'sureforms' ) }
+					// Shown when empty, which is also what the page falls back to.
+					placeholder={ __( 'Review', 'sureforms' ) }
+					value={ pageBreakSettings?.review_step_label }
+					onChange={ ( value ) =>
+						updatePageBreakSettings( 'review_step_label', value )
+					}
+					isFormSpecific={ true }
+				/>
+			) }
+			{ pageBreakSettings?.review_step && (
+				<SRFMTextControl
+					variant="textarea"
+					data={ {
+						value: pageBreakSettings?.review_step_notice,
+						label: 'review_step_notice',
+					} }
+					label={ __( 'Review Step Message', 'sureforms' ) }
+					// Shown when empty, which is also what the page falls back to.
+					placeholder={ __(
+						'Please take a moment to review your answers before submitting.',
+						'sureforms'
+					) }
+					value={ pageBreakSettings?.review_step_notice }
+					onChange={ ( value ) =>
+						updatePageBreakSettings( 'review_step_notice', value )
+					}
+					isFormSpecific={ true }
+				/>
+			) }
 		</>
 	);
 };

@@ -91,9 +91,11 @@ class Update_Global_Settings extends Abstract_Ability {
 			'srfm_v2_invisible_secret_key',
 			'srfm_v3_site_key',
 			'srfm_v3_secret_key',
+			'srfm_v3_score_threshold',
 			'srfm_cf_appearance_mode',
 			'srfm_cf_turnstile_site_key',
 			'srfm_cf_turnstile_secret_key',
+			'srfm_cf_turnstile_on_interaction',
 			'srfm_hcaptcha_site_key',
 			'srfm_hcaptcha_secret_key',
 			'srfm_honeypot',
@@ -348,8 +350,14 @@ class Update_Global_Settings extends Abstract_Ability {
 			}
 		}
 
-		if ( isset( $settings['srfm_honeypot'] ) ) {
-			$settings['srfm_honeypot'] = rest_sanitize_boolean( Helper::get_string_value( $settings['srfm_honeypot'] ) );
+		foreach ( [ 'srfm_honeypot', 'srfm_cf_turnstile_on_interaction' ] as $bool_key ) {
+			if ( isset( $settings[ $bool_key ] ) ) {
+				$settings[ $bool_key ] = rest_sanitize_boolean( Helper::get_string_value( $settings[ $bool_key ] ) );
+			}
+		}
+
+		if ( isset( $settings['srfm_v3_score_threshold'] ) ) {
+			$settings['srfm_v3_score_threshold'] = Global_Settings::sanitize_recaptcha_v3_threshold( $settings['srfm_v3_score_threshold'] );
 		}
 
 		return $settings;
@@ -396,6 +404,7 @@ class Update_Global_Settings extends Abstract_Ability {
 			}
 		}
 
-		return Global_Settings::srfm_save_security_settings( $settings );
+		// srfm_save_security_settings() rebuilds the whole option, so keys the caller did not send keep their stored values.
+		return Global_Settings::srfm_save_security_settings( wp_parse_args( $settings, $existing ) );
 	}
 }

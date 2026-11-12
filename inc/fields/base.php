@@ -10,6 +10,7 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -298,6 +299,14 @@ class Base {
 	protected $aria_described_by;
 
 	/**
+	 * Whether per-option descriptions should be rendered for this field.
+	 *
+	 * @var bool
+	 * @since 2.13.1
+	 */
+	protected $show_descriptions = false;
+
+	/**
 	 * Stores the minimum number of selections required.
 	 *
 	 * @var string
@@ -541,5 +550,68 @@ class Base {
 		// Only reference elements that exist in the rendered markup. The error message id
 		// is linked by toggleErrorState() in frontend.js on controls marked data-srfm-error-target.
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . esc_attr( $this->block_id ) : '';
+	}
+
+	/**
+	 * Read one option's description.
+	 *
+	 * Returns an empty string unless the block has descriptions switched on and
+	 * this option carries a scalar, non-empty one, so an option that predates the
+	 * setting and an option left blank both render exactly as they did before.
+	 *
+	 * @param mixed $option Single entry from the block's options array.
+	 * @since 2.13.1
+	 * @return string
+	 */
+	protected function get_option_description( $option ) {
+		if ( empty( $this->show_descriptions ) || ! is_array( $option ) ) {
+			return '';
+		}
+
+		return trim( Helper::get_string_value( $option['description'] ?? '' ) );
+	}
+
+	/**
+	 * Visible text for a multi-choice option.
+	 *
+	 * Uses translatedTitle only while a multilingual provider is active, where the
+	 * translation render pass is its only source; the entered optionTitle
+	 * otherwise. data-option-text keeps the optionTitle, so the submitted value
+	 * and conditional logic stay in the source language.
+	 *
+	 * @param mixed $option Option array from the block attributes.
+	 * @since 2.13.1
+	 * @return string
+	 */
+	protected function get_option_display_title( $option ) {
+		if ( ! is_array( $option ) ) {
+			return '';
+		}
+		if ( isset( $option['translatedTitle'] ) && is_string( $option['translatedTitle'] ) && '' !== $option['translatedTitle'] && Multilingual_Manager::get_instance()->provider()->is_active() ) {
+			return $option['translatedTitle'];
+		}
+
+		return isset( $option['optionTitle'] ) && is_scalar( $option['optionTitle'] ) ? (string) $option['optionTitle'] : '';
+	}
+
+	/**
+	 * Build the aria-describedby attribute for a single option's control.
+	 *
+	 * The first option also carries the field-level ids (help text, and the error
+	 * message once frontend.js links it), matching what the field rendered before
+	 * descriptions existed. Every option additionally points at its own
+	 * description when it has one, so the second line is announced together with
+	 * that option instead of being read as loose text.
+	 *
+	 * @param int    $index          Zero-based option index.
+	 * @param string $description_id Element id of this option's description, empty when it has none.
+	 * @since 2.13.1
+	 * @return string Attribute markup including a trailing space, or an empty string.
+	 */
+	protected function get_option_described_by( $index, $description_id ) {
+		$ids = 0 === $index && ! empty( $this->aria_described_by ) ? trim( $this->aria_described_by ) : '';
+		$ids = trim( $ids . ' ' . $description_id );
+
+		return '' === $ids ? '' : 'aria-describedby="' . esc_attr( $ids ) . '" ';
 	}
 }

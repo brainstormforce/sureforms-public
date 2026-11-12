@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: forms, ai forms, contact form, form builder, payment form
 Requires at least: 6.4
-Tested up to: 7.1.3
+Tested up to: 7.1.4
 Requires PHP: 7.4
-Stable tag: 2.13.0
+Stable tag: 2.13.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -426,6 +426,14 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= 2.13.1 - 4th November 2026 =
+* New: Added a reCAPTCHA v3 score threshold in Spam Protection settings to block low-scoring submissions.
+* New: Multiple Choice options can now show a short description under each option.
+* New: Turnstile can now run its challenge on the visitor's first interaction with the form instead of on page load.
+* Fix: After-submission actions no longer run twice for the same entry when requests overlap.
+* Fix: Apple Pay and Google Pay now show the form's real amount instead of 120.00, and stay hidden when turned off in your Stripe dashboard.
+* Fix: Custom smart tags now resolve in the To, Reply-To, Cc, Bcc and From fields of email notifications.
+* Fix: This update addressed a security bug. Props to fccsec.dev from Patchstack for reporting it responsibly to our team.
 = 2.13.0 - 26th October 2026 =
 * New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
 * Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
@@ -441,10 +449,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Fix: The submit button now stays disabled while a form redirects, preventing duplicate submissions.
 * Fix: Unticked Checkbox fields now appear in entries and notification emails.
 * Fix: This update addressed a security bug. Props to dzaku from Patchstack for reporting it responsibly to our team.
-= 2.12.8 - 25th September 2026 =
-* Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
-* Fix: Entry Logs now record the email notification sent when a form is submitted.
-* Fix: Resolved an editor crash that prevented forms containing a Register block from opening.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 == Upgrade Notice ==

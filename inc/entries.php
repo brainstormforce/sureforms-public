@@ -345,6 +345,8 @@ class Entries {
 			];
 		}
 
+		self::delete_stale_export_files();
+
 		$csv_files = [];
 		$zip       = null;
 		$temp_zip  = '';
@@ -358,10 +360,10 @@ class Entries {
 				];
 			}
 
-			$temp_zip = $temp_dir . 'srfm-entries-export-' . time() . '.zip';
-			$zip      = new \ZipArchive();
+			$temp_zip = self::get_export_temp_filepath( 'srfm-entries-export', 'zip' );
+			$zip      = self::open_export_zip( $temp_zip );
 
-			if ( ! $zip->open( $temp_zip, \ZipArchive::CREATE ) ) {
+			if ( ! $zip ) {
 				return [
 					'success' => false,
 					'error'   => __( 'Unable to create ZIP file.', 'sureforms' ),
@@ -382,14 +384,9 @@ class Entries {
 			$sanitized_form_title = sanitize_title( get_the_title( $form_id ) );
 			$sanitized_form_title = ! empty( $sanitized_form_title ) ? $sanitized_form_title : "srfm-entries-{$form_id}";
 
-			$csv_filename = 'srfm-entries-' . $sanitized_form_title . '.csv';
-			$csv_filepath = $temp_dir . $csv_filename;
+			$csv_filepath = self::get_export_temp_filepath( 'srfm-entries-' . $sanitized_form_title, 'csv' );
 
-			if ( file_exists( $csv_filepath ) ) {
-				wp_delete_file( $csv_filepath );
-			}
-
-			$stream = fopen( $csv_filepath, 'wb' ); // phpcs:ignore -- Using fopen to decrease the memory use.
+			$stream = fopen( $csv_filepath, 'xb' ); // phpcs:ignore -- Using fopen to decrease the memory use.
 
 			if ( ! is_resource( $stream ) ) {
 				continue;
@@ -406,7 +403,8 @@ class Entries {
 
 			// Add to ZIP if multiple forms.
 			if ( ! $is_single_form && $zip && filesize( $csv_filepath ) > 0 ) {
-				$zip->addFile( $csv_filepath, $csv_filename );
+				// The form ID keeps members distinct when two titles sanitize identically.
+				$zip->addFile( $csv_filepath, 'srfm-entries-' . $sanitized_form_title . '-' . $form_id . '.csv' );
 			}
 		}
 
@@ -414,7 +412,7 @@ class Entries {
 		if ( $is_single_form && ! empty( $csv_filepath ) && file_exists( $csv_filepath ) ) {
 			return [
 				'success'  => true,
-				'filename' => basename( $csv_filepath ),
+				'filename' => self::get_export_download_filename( basename( $csv_filepath ) ),
 				'filepath' => $csv_filepath,
 				'type'     => 'csv',
 			];
@@ -422,13 +420,20 @@ class Entries {
 
 		// Multiple forms - return ZIP.
 		if ( ! $is_single_form && $zip ) {
-			$zip->close();
+			$closed = $zip->close();
 
 			// Clean up CSV files.
 			foreach ( $csv_files as $csv_file ) {
 				if ( file_exists( $csv_file ) ) {
 					wp_delete_file( $csv_file );
 				}
+			}
+
+			if ( ! $closed || ! file_exists( $temp_zip ) ) {
+				return [
+					'success' => false,
+					'error'   => __( 'Unable to create ZIP file.', 'sureforms' ),
+				];
 			}
 
 			return [
@@ -443,6 +448,75 @@ class Entries {
 			'success' => false,
 			'error'   => __( 'Unable to generate export file.', 'sureforms' ),
 		];
+	}
+
+	/**
+	 * Build a temp-directory path for an export file that no other export resolves to.
+	 *
+	 * The name carries a random 32-hex-character token, so each export (and each
+	 * form inside one) owns its file until its own download removes it. The name
+	 * is passed through sanitize_file_name() here because the download handler
+	 * applies the same function before looking the file up.
+	 *
+	 * @param string $name      Name prefix, e.g. 'srfm-entries-contact'.
+	 * @param string $extension File extension without the dot.
+	 *
+	 * @since 2.13.1
+	 * @return string Absolute, normalized file path.
+	 */
+	public static function get_export_temp_filepath( $name, $extension ) {
+		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );
+
+		return $temp_dir . sanitize_file_name( $name . '-' . bin2hex( random_bytes( 16 ) ) . '.' . $extension );
+	}
+
+	/**
+	 * Delete export files from get_export_temp_filepath() that are older than a day.
+	 *
+	 * A download removes its own file; this removes files whose download never
+	 * happened. It runs at the start of each export and on the daily
+	 * `srfm_daily_scheduled_action`. Only names carrying the export token are matched.
+	 *
+	 * @since 2.13.1
+	 * @return void
+	 */
+	public static function delete_stale_export_files() {
+		$files = glob( wp_normalize_path( trailingslashit( get_temp_dir() ) ) . 'srfm-*' );
+
+		foreach ( is_array( $files ) ? $files : [] as $file ) {
+			if ( preg_match( '/-[a-f0-9]{32}\.(csv|zip)$/', $file ) && filemtime( $file ) < time() - DAY_IN_SECONDS ) {
+				wp_delete_file( $file );
+			}
+		}
+	}
+
+	/**
+	 * Name the browser saves an export file as: the temp name without its token.
+	 *
+	 * @param string $basename Temp file basename from get_export_temp_filepath().
+	 *
+	 * @since 2.13.1
+	 * @return string Download filename.
+	 */
+	public static function get_export_download_filename( $basename ) {
+		return (string) preg_replace( '/-[a-f0-9]{32}(\.[a-z0-9]+)$/', '$1', $basename );
+	}
+
+	/**
+	 * Create a new ZIP archive at $filepath.
+	 *
+	 * ZipArchive::open() returns an integer error code on failure, so only a
+	 * strict `true` counts as opened. EXCL refuses to reuse an existing file.
+	 *
+	 * @param string $filepath Archive path.
+	 *
+	 * @since 2.13.1
+	 * @return \ZipArchive|null Open archive, or null when it could not be created.
+	 */
+	public static function open_export_zip( $filepath ) {
+		$zip = new \ZipArchive();
+
+		return true === $zip->open( $filepath, \ZipArchive::CREATE | \ZipArchive::EXCL ) ? $zip : null;
 	}
 
 	/**
@@ -855,9 +929,35 @@ class Entries {
 			$row[]     = isset( $entry['status'] ) ? Helper::get_string_value( $entry['status'] ) : '';
 			$form_data = isset( $entry['form_data'] ) ? Helper::get_array_value( $entry['form_data'] ) : [];
 
-			foreach ( $block_key_map as $srfm_key ) {
-				$field_value = $form_data[ $srfm_key ] ?? '';
-				$row[]       = self::escape_csv_formula( self::normalize_field_values( $field_value, $srfm_key ) );
+			// A field edited over time (its label, slug or block type changed) is
+			// stored under a different key per variant, but its block ID stays the
+			// same. Index this entry's values by block ID so a column resolves the
+			// value whatever variant it was saved under, instead of reading one
+			// frozen key and exporting blank for every other variant — see #1574731.
+			$value_by_block = [];
+			$excluded       = Helper::get_excluded_fields();
+			foreach ( $form_data as $entry_key => $entry_value ) {
+				if ( in_array( $entry_key, $excluded, true ) ) {
+					continue;
+				}
+				$block_id = Helper::get_block_id_from_key( Helper::get_string_value( $entry_key ) );
+				if ( '' === $block_id || isset( $value_by_block[ $block_id ] ) ) {
+					continue;
+				}
+				$value_by_block[ $block_id ] = [
+					'key'   => $entry_key,
+					'value' => $entry_value,
+				];
+			}
+
+			// $block_key_map is keyed by block ID; its value is a representative key
+			// used only to type empty cells when this entry has no answer for it.
+			foreach ( $block_key_map as $block_id => $column_key ) {
+				$resolved = $value_by_block[ $block_id ] ?? [
+					'key'   => $column_key,
+					'value' => '',
+				];
+				$row[]    = self::escape_csv_formula( self::normalize_field_values( $resolved['value'], Helper::get_string_value( $resolved['key'] ) ) );
 			}
 
 			fputcsv( $stream, $row ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputcsv

@@ -1636,13 +1636,32 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( [], Form_Templates::get_setup( [] ) );
 
 		// A step SureForms Pro provides is left out without it.
-		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
+		if ( ! class_exists( '\SRFM_Pro\Inc\Payments\PayPal\Helper' ) && ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
 			$this->assertSame( [], Form_Templates::get_setup( [ 'setup' => [ 'paypal' ] ] ) );
 		}
 
 		update_option( 'srfm_google_maps_settings', [ 'srfm_google_maps_api_key' => 'AIza-test' ] );
 		$this->assertTrue( Form_Templates::get_setup( [ 'setup' => [ 'google_maps' ] ] )[0]['done'] );
 		delete_option( 'srfm_google_maps_settings' );
+	}
+
+	/**
+	 * The PayPal step is found under the class name Pro 2.13.1 uses, after
+	 * inc/business/ was flattened into inc/.
+	 */
+	public function test_get_setup_finds_paypal_under_its_2_13_1_name() {
+		if ( class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
+			$this->markTestSkipped( 'A Pro build with the old class name is loaded.' );
+		}
+		if ( ! class_exists( '\SRFM_Pro\Inc\Payments\PayPal\Helper' ) ) {
+			// Stand-in for Pro 2.13.1's helper; is_paypal_connected() is all the step reads.
+			eval( 'namespace SRFM_Pro\\Inc\\Payments\\PayPal; class Helper { public static function is_paypal_connected() { return true; } }' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- Declares a test double for a Pro class.
+		}
+
+		$setup = Form_Templates::get_setup( [ 'setup' => [ 'paypal' ] ] );
+
+		$this->assertSame( [ 'paypal' ], array_column( $setup, 'id' ) );
+		$this->assertSame( (bool) \SRFM_Pro\Inc\Payments\PayPal\Helper::is_paypal_connected(), $setup[0]['done'] );
 	}
 
 	public function test_get_result_tags_from_quiz_calculations_payments_and_polls() {

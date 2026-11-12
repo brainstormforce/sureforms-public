@@ -10,8 +10,27 @@ use SRFM\Inc\Payments\Payment_Helper;
 
 class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 
+	/**
+	 * REMOTE_ADDR as it was before the test. SRFM_Unit_Test_Case does not roll back
+	 * globals, and later suites (e.g. the unique-validation limiter, which fails
+	 * closed without an IP) depend on it, so every test must leave it untouched.
+	 *
+	 * @var string|null
+	 */
+	private $original_remote_addr;
+
 	protected function setUp(): void {
 		parent::setUp();
+		$this->original_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
+	}
+
+	protected function tearDown(): void {
+		if ( null === $this->original_remote_addr ) {
+			unset( $_SERVER['REMOTE_ADDR'] );
+		} else {
+			$_SERVER['REMOTE_ADDR'] = $this->original_remote_addr;
+		}
+		parent::tearDown();
 	}
 
 	// --- get_all_currencies_data ---
@@ -801,6 +820,52 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertFalse( $below['valid'] );
 	}
 
+	/**
+	 * A calculation-enabled hidden amount source whose amount the server can't recompute is
+	 * rejected, as for a number source. The minimum-amount floor alone is not enough, because
+	 * the formula, not the visitor, sets the price. Calculation off, or on with no formula,
+	 * keeps the floor check.
+	 */
+	public function test_validate_amount_against_config_calc_hidden_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		$config = static function ( array $hidden ) {
+			return [
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 50,
+					'variable_amount_field'            => 'total',
+					'variable_amount_field_block_name' => 'srfm/hidden',
+				],
+				'hid456' => array_merge(
+					[
+						'block_id'     => 'hid456',
+						'blockName'    => 'srfm/hidden',
+						'slug'         => 'total',
+						'defaultValue' => '{get_input:total}',
+					],
+					$hidden
+				),
+			];
+		};
+
+		$form_data = [ 'srfm-hidden-hid456-lbl-VG90YWw-total' => '60' ];
+
+		// Calculation on: no recompute handler returns an amount, so it must not pass on the floor.
+		update_post_meta( $form_id, '_srfm_block_config', $config( [ 'enableCalculation' => true, 'calculationFormula' => '{form:qty} * 100' ] ) );
+		$result = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 60.0 );
+		$this->assertFalse( $result['valid'] );
+		$this->assertSame( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', $result['message'] );
+
+		// Calculation off, or on with an empty formula: still checked against the floor.
+		foreach ( [ [ 'enableCalculation' => false ], [ 'enableCalculation' => true, 'calculationFormula' => '' ] ] as $hidden ) {
+			update_post_meta( $form_id, '_srfm_block_config', $config( $hidden ) );
+			$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 60.0 )['valid'] );
+			$this->assertFalse( Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 )['valid'] );
+		}
+	}
+
 	// --- get_registered_payment_methods / is_payment_field_active / get_required_payment_block_ids ---
 
 	/**
@@ -1001,6 +1066,233 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$strings = Payment_Helper::get_payment_strings();
 		$this->assertArrayHasKey( 'payment_required', $strings );
 		$this->assertNotEmpty( $strings['payment_required'] );
+	}
+
+	// --- amount_type fail-open (Patchstack 38174) ---
+
+	/**
+	 * Store a payment block config with a given amount_type directly, bypassing the
+	 * editor/AI writer path, to exercise the validators' defense-in-depth against a
+	 * config that was persisted before the store-time allowlist existed.
+	 */
+	private function set_block_config_amount_type( $form_id, $amount_type ) {
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay01' => [
+					'payment_type'   => 'one-time',
+					'amount_type'    => $amount_type,
+					'fixed_amount'   => 100,
+					'minimum_amount' => 50,
+				],
+			]
+		);
+	}
+
+	/**
+	 * Intent-creation gate must reject an amount_type that is neither fixed nor variable.
+	 */
+	public function test_validate_payment_amount_rejects_unknown_amount_type() {
+		$form_id  = self::factory()->post->create( [ 'post_type' => 'sureforms_form' ] );
+		$currency = Payment_Helper::get_currency();
+
+		// Controls: the supported types behave as before.
+		$this->set_block_config_amount_type( $form_id, 'fixed' );
+		$this->assertTrue( Payment_Helper::validate_payment_amount( 100, $currency, $form_id, 'pay01', 'one-time' )['valid'], 'fixed at the configured amount passes' );
+		$this->assertFalse( Payment_Helper::validate_payment_amount( 0.50, $currency, $form_id, 'pay01', 'one-time' )['valid'], 'fixed below the configured amount is rejected' );
+		$this->set_block_config_amount_type( $form_id, 'variable' );
+		$this->assertFalse( Payment_Helper::validate_payment_amount( 0.50, $currency, $form_id, 'pay01', 'one-time' )['valid'], 'variable below the minimum is rejected' );
+
+		// Fix: any unrecognised amount_type fails closed instead of accepting any amount.
+		foreach ( [ 'user-choice', 'foo', '' ] as $amount_type ) {
+			$this->set_block_config_amount_type( $form_id, $amount_type );
+			$this->assertFalse(
+				Payment_Helper::validate_payment_amount( 0.50, $currency, $form_id, 'pay01', 'one-time' )['valid'],
+				"amount_type '{$amount_type}' must fail closed at intent creation"
+			);
+		}
+	}
+
+	/**
+	 * Post-charge re-check (validate_amount_against_config -> validate_payment_intent_amount)
+	 * must reject an unknown amount_type with the same fail-closed logic.
+	 */
+	public function test_validate_amount_against_config_rejects_unknown_amount_type() {
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form' ] );
+
+		$this->set_block_config_amount_type( $form_id, 'fixed' );
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay01', $form_id, [], 100.0, 'one-time' )['valid'], 'fixed at the configured amount passes the post-charge check' );
+
+		foreach ( [ 'user-choice', 'foo', '' ] as $amount_type ) {
+			$this->set_block_config_amount_type( $form_id, $amount_type );
+			$this->assertFalse(
+				Payment_Helper::validate_amount_against_config( 'pay01', $form_id, [], 0.50, 'one-time' )['valid'],
+				"amount_type '{$amount_type}' must fail closed at the post-charge check"
+			);
+		}
+	}
+
+	/**
+	 * Store-time allowlist: a block saved with an unrecognised amountType is normalised
+	 * to 'fixed', so the AI builder / content importers cannot persist a type the
+	 * validators do not handle.
+	 */
+	public function test_add_block_config_normalizes_unknown_amount_type_to_fixed() {
+		$content = '<!-- wp:srfm/payment {"block_id":"pay03","slug":"srfm-payment","paymentType":"one-time","amountType":"user-choice","fixedAmount":100} /-->';
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => $content ] );
+		\SRFM\Inc\Field_Validation::add_block_config( parse_blocks( $content ), $form_id );
+
+		$config = get_post_meta( $form_id, '_srfm_block_config', true );
+		$this->assertIsArray( $config );
+		$this->assertArrayHasKey( 'pay03', $config );
+		$this->assertSame( 'fixed', $config['pay03']['amount_type'], "an unrecognised amountType is normalised to 'fixed' at store time" );
+	}
+
+	/**
+	 * Only the amount types the validators implement pass through; anything
+	 * else, including non-strings, is read as 'fixed'.
+	 */
+	public function test_get_supported_amount_type() {
+		$this->assertSame( 'fixed', Payment_Helper::get_supported_amount_type( 'fixed' ) );
+		$this->assertSame( 'variable', Payment_Helper::get_supported_amount_type( 'variable' ) );
+		foreach ( [ 'user-choice', 'Variable', ' variable', '', null, 1, [ 'variable' ] ] as $raw ) {
+			$this->assertSame( 'fixed', Payment_Helper::get_supported_amount_type( $raw ), 'Unsupported: ' . var_export( $raw, true ) );
+		}
+	}
+
+	// --- guest payment email -> user resolution (unverified email binding) ---
+
+	public function test_resolve_payment_user_email_match_can_be_disabled() {
+		$user_id = self::factory()->user->create( [ 'user_email' => 'guest9@example.test' ] );
+		$payment = [ 'entry_id' => 0, 'customer_email' => 'guest9@example.test' ];
+
+		// Default behaviour is preserved: a guest payment resolves to the account
+		// that owns the submitted email (backward compatible).
+		$this->assertSame( $user_id, Payment_Helper::resolve_payment_user( $payment ) );
+
+		// A site that opts out gets the documented "0 for guests" instead of an
+		// unverified attribution.
+		add_filter( 'srfm_resolve_guest_payment_user_by_email', '__return_false' );
+		$this->assertSame( 0, Payment_Helper::resolve_payment_user( $payment ) );
+		remove_filter( 'srfm_resolve_guest_payment_user_by_email', '__return_false' );
+	}
+
+	public function test_is_payment_rate_limited_throttles_per_ip_and_form() {
+		$_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+		// Default limit is 30/min: the first 30 pass, the 31st is throttled.
+		for ( $i = 0; $i < 30; $i++ ) {
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit' ), "request {$i} should pass" );
+		}
+		$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unit' ), 'the 31st request is throttled' );
+
+		// A different form is an independent bucket.
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 456, 'unit' ) );
+
+		// The filter can disable throttling.
+		add_filter( 'srfm_payment_rate_limit_per_minute', '__return_zero' );
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit' ) );
+		remove_filter( 'srfm_payment_rate_limit_per_minute', '__return_zero' );
+
+		// Counters are transients and the test case does not roll back the DB.
+		foreach ( [ 123, 456 ] as $form_id ) {
+			delete_transient( 'srfm_pay_rl_unit_' . md5( '203.0.113.7_' . $form_id ) );
+		}
+	}
+
+	public function test_is_payment_rate_limited_fails_open_without_ip() {
+		unset( $_SERVER['REMOTE_ADDR'] );
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );
+	}
+
+	// --- claim_payment_reference (non-atomic intent claim / duplicate paid entries) ---
+
+	public function test_claim_payment_reference_is_single_use() {
+		$this->assertTrue( Payment_Helper::claim_payment_reference( 'pi_unit_1' ), 'the first caller wins the claim' );
+		$this->assertFalse( Payment_Helper::claim_payment_reference( 'pi_unit_1' ), 'a second claim for the same reference is blocked' );
+
+		// An empty reference is never blocked.
+		$this->assertTrue( Payment_Helper::claim_payment_reference( '' ) );
+
+		// Release frees the reference for a legitimate retry.
+		Payment_Helper::release_payment_reference( 'pi_unit_1' );
+		$this->assertTrue( Payment_Helper::claim_payment_reference( 'pi_unit_1' ), 'the claim succeeds again after release' );
+		Payment_Helper::release_payment_reference( 'pi_unit_1' );
+	}
+
+	/**
+	 * The losing side of a concurrent claim: another request inserted the claim row
+	 * after this request's existence check said it was free. The claim must still be
+	 * refused, which only the unique key can decide — not a cache or a prior read.
+	 */
+	public function test_claim_payment_reference_loses_when_row_appears_after_the_existence_check() {
+		global $wpdb;
+		$key = 'srfm_pay_claim_' . md5( 'pi_unit_race' );
+
+		// This request's view: the option is known not to exist.
+		$notoptions          = wp_cache_get( 'notoptions', 'options' );
+		$notoptions          = is_array( $notoptions ) ? $notoptions : [];
+		$notoptions[ $key ] = true;
+		wp_cache_set( 'notoptions', $notoptions, 'options' );
+
+		// The concurrent request's claim lands first, with a different timestamp.
+		$wpdb->insert( $wpdb->options, [ 'option_name' => $key, 'option_value' => '1', 'autoload' => 'no' ] );
+
+		$this->assertFalse( Payment_Helper::claim_payment_reference( 'pi_unit_race' ), 'a reference already claimed in the database must not be claimed again' );
+
+		Payment_Helper::release_payment_reference( 'pi_unit_race' );
+	}
+
+	public function test_release_payment_reference() {
+		Payment_Helper::claim_payment_reference( 'pi_unit_release' );
+		$this->assertFalse( Payment_Helper::claim_payment_reference( 'pi_unit_release' ), 'claimed before release' );
+
+		Payment_Helper::release_payment_reference( 'pi_unit_release' );
+		$this->assertTrue( Payment_Helper::claim_payment_reference( 'pi_unit_release' ), 'free again after release' );
+
+		// Releasing an empty or unknown reference is a no-op, not an error.
+		Payment_Helper::release_payment_reference( '' );
+		Payment_Helper::release_payment_reference( 'pi_never_claimed' );
+
+		Payment_Helper::release_payment_reference( 'pi_unit_release' );
+	}
+
+	public function test_sanitize_stripe_customer_id_rejects_reserved_patterns() {
+		// A genuine Stripe customer id is preserved (backward compatible).
+		$this->assertSame( 'cus_T4Apjla33GlYAk', Payment_Helper::sanitize_stripe_customer_id( 'cus_T4Apjla33GlYAk' ) );
+		// Reserved internal ownership keys cannot be stored on a Stripe row.
+		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'wp_user_14' ) );
+		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'guest_abc123' ) );
+		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( '' ) );
+	}
+
+	// --- resolve_stored_subscription_cadence (default-plan cadence tampering) ---
+
+	public function test_resolve_stored_subscription_cadence_defaults_when_absent() {
+		// Default-plan block: Gutenberg stores no cadence, so the server uses the
+		// block.json defaults (month / ongoing), never the submitted values.
+		$this->assertSame(
+			[ 'interval' => 'month', 'billing_cycles' => 'ongoing' ],
+			Payment_Helper::resolve_stored_subscription_cadence( [] )
+		);
+		$this->assertSame(
+			[ 'interval' => 'month', 'billing_cycles' => 'ongoing' ],
+			Payment_Helper::resolve_stored_subscription_cadence( [ 'subscription_interval' => '', 'subscription_billing_cycles' => '' ] )
+		);
+	}
+
+	public function test_resolve_stored_subscription_cadence_preserves_explicit_plan() {
+		// An explicitly configured plan is returned unchanged (backward compatible).
+		$this->assertSame(
+			[ 'interval' => 'year', 'billing_cycles' => 3 ],
+			Payment_Helper::resolve_stored_subscription_cadence( [ 'subscription_interval' => 'year', 'subscription_billing_cycles' => 3 ] )
+		);
+		// Partial config fills only the missing half.
+		$this->assertSame(
+			[ 'interval' => 'year', 'billing_cycles' => 'ongoing' ],
+			Payment_Helper::resolve_stored_subscription_cadence( [ 'subscription_interval' => 'year' ] )
+		);
 	}
 
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
