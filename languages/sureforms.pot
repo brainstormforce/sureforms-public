@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-12T10:49:39+00:00\n"
+"POT-Creation-Date: 2026-11-12T11:14:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -91,13 +91,11 @@ msgstr ""
 
 #. translators: %s: form title.
 #: admin/admin.php:750
-#, php-format
 msgid "Finish setting up %s"
 msgstr ""
 
 #. translators: %s: form title.
 #: admin/admin.php:758
-#, php-format
 msgid "View %s (opens in a new tab)"
 msgstr ""
 
@@ -223,7 +221,7 @@ msgstr ""
 #: admin/admin.php:1588
 #: admin/admin.php:1589
 #: admin/admin.php:3555
-#: inc/features.php:507
+#: inc/features.php:516
 #: inc/generate-form-markup.php:236
 #: inc/generate-form-markup.php:249
 #: inc/global-settings/email-summary.php:225
@@ -242,7 +240,7 @@ msgstr ""
 
 #: admin/admin.php:1599
 #: admin/admin.php:1600
-#: inc/features.php:520
+#: inc/features.php:529
 #: inc/form-templates.php:2859
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -262,7 +260,6 @@ msgstr ""
 
 #. Translators: Post Title.
 #: admin/admin.php:1833
-#, php-format
 msgid "Edit %1$s"
 msgstr ""
 
@@ -302,7 +299,6 @@ msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Business plugin name, %3$s: SureForms Business version.
 #: admin/admin.php:2433
-#, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr ""
 
@@ -347,13 +343,11 @@ msgstr ""
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Business plugin name.
 #: admin/admin.php:2724
-#, php-format
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Business plugin name, %3$s: SureForms Business version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
 #: admin/admin.php:2742
-#, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr ""
 
@@ -404,7 +398,6 @@ msgstr ""
 
 #. translators: 1: current position, 2: total notices.
 #: admin/admin.php:2929
-#, php-format
 msgid "%1$d of %2$d"
 msgstr ""
 
@@ -438,7 +431,6 @@ msgstr ""
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
 #: admin/admin.php:3124
-#, php-format
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr ""
 
@@ -507,7 +499,6 @@ msgstr ""
 
 #. translators: %s: form title.
 #: admin/admin.php:4098
-#, php-format
 msgid "We noticed a form submission failure on %s."
 msgstr ""
 
@@ -521,7 +512,6 @@ msgstr ""
 
 #. translators: %s: form title.
 #: admin/admin.php:4105
-#, php-format
 msgid "We noticed a notification failure on %s."
 msgstr ""
 
@@ -535,7 +525,6 @@ msgstr ""
 
 #. translators: %s: form title.
 #: admin/admin.php:4122
-#, php-format
 msgid "We noticed an integration failure on %s."
 msgstr ""
 
@@ -553,7 +542,6 @@ msgstr ""
 
 #. translators: %s: form title.
 #: admin/admin.php:4141
-#, php-format
 msgid "A notification failed on %s, and the submission was not stored."
 msgstr ""
 
@@ -582,7 +570,6 @@ msgstr ""
 
 #. translators: %s: caching plugin name.
 #: admin/admin.php:4219
-#, php-format
 msgid "%s may interfere with your forms."
 msgstr ""
 
@@ -619,13 +606,11 @@ msgstr ""
 
 #. translators: %s: number of emails in the SureContact plan.
 #: admin/admin.php:4434
-#, php-format
 msgid "All %s emails for this month are used, so form notifications are not being sent until next month. Upgrade in SureMail to keep sending."
 msgstr ""
 
 #. translators: %s: number of emails in the SureContact plan.
 #: admin/admin.php:4439
-#, php-format
 msgid "All %s emails are used, so form notifications are not being sent. Upgrade in SureMail to keep sending."
 msgstr ""
 
@@ -639,13 +624,11 @@ msgstr ""
 
 #. translators: 1: emails used, 2: emails in the plan.
 #: admin/admin.php:4449
-#, php-format
 msgid "%1$s of %2$s emails used this month. When they run out, form notifications stop being sent until next month, unless you upgrade."
 msgstr ""
 
 #. translators: 1: emails used, 2: emails in the plan.
 #: admin/admin.php:4455
-#, php-format
 msgid "%1$s of %2$s emails used. When they run out, form notifications stop being sent until you upgrade."
 msgstr ""
 
@@ -667,7 +650,6 @@ msgstr ""
 
 #. translators: %s: form name.
 #: admin/admin.php:4821
-#, php-format
 msgid "Finish setting up “%s”"
 msgstr ""
 
@@ -729,13 +711,11 @@ msgstr ""
 
 #. translators: %s: comma-separated form titles.
 #: admin/admin.php:5581
-#, php-format
 msgid "Forms: %s."
 msgstr ""
 
 #. translators: %s: number of lost submissions.
 #: admin/admin.php:5590
-#, php-format
 msgid "%s form submission was lost"
 msgid_plural "%s form submissions were lost"
 msgstr[0] ""
@@ -809,7 +789,6 @@ msgstr ""
 #: inc/abilities/entries/bulk-get-entries.php:155
 #: inc/abilities/entries/delete-entry.php:123
 #: inc/abilities/entries/update-entry-status.php:130
-#, php-format
 msgid "Maximum %d entry IDs allowed per request."
 msgstr ""
 
@@ -842,7 +821,6 @@ msgstr ""
 #: inc/abilities/entries/entry-parser.php:72
 #: inc/compatibility/multilingual/string-translator.php:225
 #: inc/rest-api.php:900
-#, php-format
 msgid "SureForms Form #%d"
 msgstr ""
 
@@ -1335,7 +1313,6 @@ msgstr ""
 
 #. Translators: %s: Form ID.
 #: inc/admin-ajax.php:283
-#, php-format
 msgid "SureForms id: %s"
 msgstr ""
 
@@ -1746,7 +1723,6 @@ msgstr ""
 
 #. translators: %d is the confirmation number.
 #: inc/compatibility/multilingual/string-collector.php:265
-#, php-format
 msgid "Confirmation #%d"
 msgstr ""
 
@@ -1783,7 +1759,6 @@ msgstr ""
 
 #. translators: %d is the notification number.
 #: inc/compatibility/multilingual/string-collector.php:295
-#, php-format
 msgid "Notification #%d"
 msgstr ""
 
@@ -1801,7 +1776,6 @@ msgstr ""
 
 #. translators: %d is the option number.
 #: inc/compatibility/multilingual/string-collector.php:491
-#, php-format
 msgid "Option %d"
 msgstr ""
 
@@ -1997,7 +1971,6 @@ msgstr ""
 
 #. translators: %s: name of the site's mail plugin.
 #: inc/email-delivery/mailer.php:378
-#, php-format
 msgid "%s did not accept this email. Its logs show the reason."
 msgstr ""
 
@@ -2066,7 +2039,6 @@ msgstr ""
 
 #. translators: %s: name of the site's mail plugin.
 #: inc/email-delivery/status.php:657
-#, php-format
 msgid "%s did not accept a recent form notification. Its logs show the reason."
 msgstr ""
 
@@ -2096,7 +2068,6 @@ msgstr ""
 
 #. translators: %s: name of the site's mail plugin.
 #: inc/email-delivery/status.php:695
-#, php-format
 msgid "Emails are sent through %s"
 msgstr ""
 
@@ -2115,7 +2086,6 @@ msgstr ""
 
 #. translators: %s: SureMail connection name, e.g. SureContact.
 #: inc/email-delivery/status.php:705
-#, php-format
 msgid "Form notifications are handed off to SureMail (%s)."
 msgstr ""
 
@@ -2141,13 +2111,11 @@ msgstr ""
 
 #. translators: %d is the entry ID.
 #: inc/entries.php:203
-#, php-format
 msgid "Failed to update entry #%d."
 msgstr ""
 
 #. translators: %d is the entry ID.
 #: inc/entries.php:251
-#, php-format
 msgid "Failed to delete entry #%d."
 msgstr ""
 
@@ -2214,44 +2182,44 @@ msgstr ""
 msgid "Unable to import form."
 msgstr ""
 
-#: inc/features.php:261
+#: inc/features.php:264
 msgid "Features must be a map of feature key to on or off."
 msgstr ""
 
-#: inc/features.php:282
+#: inc/features.php:285
 #: inc/global-settings/global-settings.php:141
 msgid "Settings Saved Successfully."
 msgstr ""
 
-#: inc/features.php:508
+#: inc/features.php:517
 msgid "Turning this off stops saving new entries, so entry limits stop applying. Old ones are kept."
 msgstr ""
 
-#: inc/features.php:509
+#: inc/features.php:518
 msgid "has an entry limit"
 msgstr ""
 
-#: inc/features.php:512
+#: inc/features.php:521
 msgid "AI form builder"
 msgstr ""
 
-#: inc/features.php:513
+#: inc/features.php:522
 msgid "Turning this off hides Create with AI on the New Form screen and the AI dashboard widget."
 msgstr ""
 
-#: inc/features.php:516
+#: inc/features.php:525
 msgid "OttoKit automations"
 msgstr ""
 
-#: inc/features.php:517
+#: inc/features.php:526
 msgid "Turning this off hides the Automations tab and OttoKit page."
 msgstr ""
 
-#: inc/features.php:521
+#: inc/features.php:530
 msgid "Turning this off removes payment fields and pauses paid forms."
 msgstr ""
 
-#: inc/features.php:522
+#: inc/features.php:531
 msgid "has a payment field"
 msgstr ""
 
@@ -2263,7 +2231,6 @@ msgstr ""
 
 #. translators: %s: maximum number of characters.
 #: inc/field-rules.php:306
-#, php-format
 msgid "Please enter no more than %s characters."
 msgstr ""
 
@@ -2283,21 +2250,18 @@ msgstr ""
 #. translators: %s represents the minimum number of characters required
 #: inc/field-validation.php:554
 #: inc/translatable.php:94
-#, php-format
 msgid "Please enter at least %s characters."
 msgstr ""
 
 #. translators: %s: maximum characters allowed before the @ symbol.
 #: inc/field-validation.php:576
 #: inc/translatable.php:97
-#, php-format
 msgid "The part before @ may not exceed %s characters."
 msgstr ""
 
 #. translators: %s: maximum characters allowed after the @ symbol.
 #: inc/field-validation.php:582
 #: inc/translatable.php:100
-#, php-format
 msgid "The part after @ may not exceed %s characters."
 msgstr ""
 
@@ -2313,7 +2277,6 @@ msgstr ""
 
 #. Translators: %s is label of block.
 #: inc/fields/email-markup.php:93
-#, php-format
 msgid "Confirm %s"
 msgstr ""
 
@@ -2362,43 +2325,36 @@ msgstr ""
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:652
-#, php-format
 msgid "%1$s per %2$s (until cancelled)"
 msgstr ""
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
 #: inc/fields/payment-markup.php:661
-#, php-format
 msgid "%1$s per %2$s (%3$s payments)"
 msgstr ""
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:671
-#, php-format
 msgid "%1$s per %2$s"
 msgstr ""
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:694
-#, php-format
 msgid "{amount} per %s (until cancelled)"
 msgstr ""
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
 #: inc/fields/payment-markup.php:697
-#, php-format
 msgid "{amount} per %1$s (%2$s payments)"
 msgstr ""
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:700
-#, php-format
 msgid "{amount} per %s"
 msgstr ""
 
 #. translators: %s: Minimum amount with currency
 #: inc/fields/payment-markup.php:720
-#, php-format
 msgid "Minimum amount: %s"
 msgstr ""
 
@@ -2529,13 +2485,11 @@ msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
 #: inc/form-submit.php:1226
-#, php-format
 msgid "Email notification recipient: %s"
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
 #: inc/form-submit.php:1240
-#, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
@@ -2586,7 +2540,6 @@ msgstr ""
 
 #. translators: %s is the captcha title.
 #: inc/form-submit.php:1588
-#, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr ""
 
@@ -2702,13 +2655,11 @@ msgstr ""
 
 #. translators: 1: points scored, 2: most points.
 #: inc/form-templates.php:2720
-#, php-format
 msgid "%1$s of %2$s points"
 msgstr ""
 
 #. translators: 1: right answers, 2: questions.
 #: inc/form-templates.php:2722
-#, php-format
 msgid "%1$d of %2$d answers correct"
 msgstr ""
 
@@ -3511,7 +3462,6 @@ msgstr ""
 #: inc/form-templates/catalog/agreements.php:41
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, php-format,js-format
 msgid "%1$s: %2$s"
 msgstr ""
 
@@ -4206,7 +4156,6 @@ msgstr ""
 #. translators: %1$s: option name, %2$s: its price, e.g. "VIP ($60)".
 #: inc/form-templates/catalog/calculators.php:74
 #: inc/form-templates/catalog/payments.php:88
-#, php-format
 msgid "%1$s (%2$s)"
 msgstr ""
 
@@ -4257,19 +4206,16 @@ msgstr ""
 
 #. translators: %s: base shipping price.
 #: inc/form-templates/catalog/calculators.php:146
-#, php-format
 msgid "Domestic (%s base)"
 msgstr ""
 
 #. translators: %s: base shipping price.
 #: inc/form-templates/catalog/calculators.php:148
-#, php-format
 msgid "Nearby countries (%s base)"
 msgstr ""
 
 #. translators: %s: base shipping price.
 #: inc/form-templates/catalog/calculators.php:150
-#, php-format
 msgid "International (%s base)"
 msgstr ""
 
@@ -4279,7 +4225,6 @@ msgstr ""
 
 #. translators: %1$s: express delivery time, %2$s: its surcharge.
 #: inc/form-templates/catalog/calculators.php:170
-#, php-format
 msgid "%1$s (+%2$s)"
 msgstr ""
 
@@ -4383,31 +4328,26 @@ msgstr ""
 
 #. translators: %s: the estimated price.
 #: inc/form-templates/catalog/calculators.php:326
-#, php-format
 msgid "Your estimate is %s. We will review your project and send a detailed quote to {form:email} within one business day."
 msgstr ""
 
 #. translators: %s: the estimated price.
 #: inc/form-templates/catalog/calculators.php:332
-#, php-format
 msgid "Quote estimate %s: {form:service} for {form:name}"
 msgstr ""
 
 #. translators: %s: the estimated price.
 #: inc/form-templates/catalog/calculators.php:337
-#, php-format
 msgid "{form:name} priced {form:service} and got an estimate of %s. Reply to this email to send them a detailed quote."
 msgstr ""
 
 #. translators: %s: the estimated price.
 #: inc/form-templates/catalog/calculators.php:343
-#, php-format
 msgid "Your estimate: %s"
 msgstr ""
 
 #. translators: %s: the estimated price.
 #: inc/form-templates/catalog/calculators.php:350
-#, php-format
 msgid "Thanks for using our quote calculator. Your estimate for {form:service} is %s."
 msgstr ""
 
@@ -4471,19 +4411,16 @@ msgstr ""
 
 #. translators: %1$s: monthly repayment, %2$s: total interest, %3$s: total to repay.
 #: inc/form-templates/catalog/calculators.php:416
-#, php-format
 msgid "Your estimated monthly repayment is %1$s over {form:term-years} years, with %2$s interest in total (%3$s to repay). We have sent the details to {form:email}."
 msgstr ""
 
 #. translators: %s: loan amount.
 #: inc/form-templates/catalog/calculators.php:424
-#, php-format
 msgid "Loan estimate: %s over {form:term-years} years"
 msgstr ""
 
 #. translators: %1$s: loan amount, %2$s: monthly repayment.
 #: inc/form-templates/catalog/calculators.php:429
-#, php-format
 msgid "{form:email} estimated a loan of %1$s at {form:interest-rate}%% over {form:term-years} years: %2$s a month. Reply to this email to follow up."
 msgstr ""
 
@@ -4497,13 +4434,11 @@ msgstr ""
 
 #. translators: %s: loan amount.
 #: inc/form-templates/catalog/calculators.php:439
-#, php-format
 msgid "Here is your estimate for a loan of %s at {form:interest-rate}%% a year over {form:term-years} years."
 msgstr ""
 
 #. translators: %1$s: monthly repayment, %2$s: total interest, %3$s: total to repay.
 #: inc/form-templates/catalog/calculators.php:444
-#, php-format
 msgid "Monthly repayment: %1$s. Total interest: %2$s. Total to repay: %3$s."
 msgstr ""
 
@@ -4699,13 +4634,11 @@ msgstr ""
 
 #. translators: %s: number of hours.
 #: inc/form-templates/catalog/calculators.php:604
-#, php-format
 msgid "%s hrs"
 msgstr ""
 
 #. translators: %s: number of full-time staff, worked out as the visitor types.
 #: inc/form-templates/catalog/calculators.php:612
-#, php-format
 msgid "That is about %s full-time staff worth of time, freed up without hiring."
 msgstr ""
 
@@ -4765,25 +4698,21 @@ msgstr ""
 
 #. translators: %s: yearly savings.
 #: inc/form-templates/catalog/calculators.php:667
-#, php-format
 msgid "New ROI lead: {form:name}, %s a year (walkthrough: {form:walkthrough})"
 msgstr ""
 
 #. translators: %s: yearly savings.
 #: inc/form-templates/catalog/calculators.php:672
-#, php-format
 msgid "{form:name} worked out savings of %s and {form:hours-saved-year} hours a year for a team of {form:team-size} ({form:hours-saved} hours a week each). Walkthrough: {form:walkthrough}. Reply to this email to follow up."
 msgstr ""
 
 #. translators: %s: yearly savings.
 #: inc/form-templates/catalog/calculators.php:678
-#, php-format
 msgid "Your savings estimate: %s a year"
 msgstr ""
 
 #. translators: %s: yearly savings.
 #: inc/form-templates/catalog/calculators.php:685
-#, php-format
 msgid "Thanks for running the numbers. With {form:team-size} people each saving {form:hours-saved} hours a week, you could save about {form:hours-saved-year} hours and %s a year."
 msgstr ""
 
@@ -4835,14 +4764,12 @@ msgstr ""
 
 #. translators: %s: size surcharge.
 #: inc/form-templates/catalog/calculators.php:751
-#, php-format
 msgctxt "parcel size"
 msgid "Medium (+%s)"
 msgstr ""
 
 #. translators: %s: size surcharge.
 #: inc/form-templates/catalog/calculators.php:753
-#, php-format
 msgctxt "parcel size"
 msgid "Large (+%s)"
 msgstr ""
@@ -4881,7 +4808,6 @@ msgstr ""
 
 #. translators: %s: price per kilogram.
 #: inc/form-templates/catalog/calculators.php:777
-#, php-format
 msgid "Base price, plus %s per kg, size and speed."
 msgstr ""
 
@@ -4915,31 +4841,26 @@ msgstr ""
 
 #. translators: %s: estimated shipping cost.
 #: inc/form-templates/catalog/calculators.php:799
-#, php-format
 msgid "Your estimated shipping is %s. Delivery: {form:speed-domestic}{form:speed-neighbouring}{form:speed-international}. We will email {form:email} to confirm the pickup on {form:pickup-date} and the final price."
 msgstr ""
 
 #. translators: %s: estimated shipping cost.
 #: inc/form-templates/catalog/calculators.php:805
-#, php-format
 msgid "Pickup request from {form:name}: %s, {form:weight-kg} kg on {form:pickup-date}"
 msgstr ""
 
 #. translators: %s: estimated shipping cost.
 #: inc/form-templates/catalog/calculators.php:810
-#, php-format
 msgid "{form:name} wants to ship a {form:weight-kg} kg parcel ({form:size}) from {form:from-postcode} to {form:to-postcode}, collected on {form:pickup-date}. Destination: {form:zone}. Speed: {form:speed-domestic}{form:speed-neighbouring}{form:speed-international}. Their estimate: %s. Call them on {form:phone} or reply to this email to confirm."
 msgstr ""
 
 #. translators: %s: estimated shipping cost.
 #: inc/form-templates/catalog/calculators.php:816
-#, php-format
 msgid "Your shipping estimate: %s"
 msgstr ""
 
 #. translators: %s: estimated shipping cost.
 #: inc/form-templates/catalog/calculators.php:823
-#, php-format
 msgid "Thanks for your request. Shipping a {form:weight-kg} kg parcel comes to about %s. Delivery: {form:speed-domestic}{form:speed-neighbouring}{form:speed-international}."
 msgstr ""
 
@@ -5952,7 +5873,6 @@ msgstr ""
 
 #. translators: %s: monthly price, e.g. "$19".
 #: inc/form-templates/catalog/payments.php:90
-#, php-format
 msgid "%s a month"
 msgstr ""
 
@@ -6066,7 +5986,6 @@ msgstr ""
 
 #. translators: %s: deposit amount.
 #: inc/form-templates/catalog/payments.php:228
-#, php-format
 msgid "A %s deposit holds your booking and comes off the final price. If we can't offer your date, we'll refund it in full."
 msgstr ""
 
@@ -6343,20 +6262,17 @@ msgstr ""
 
 #. translators: %s: an amount, e.g. "$1,000".
 #: inc/form-templates/catalog/quizzes.php:39
-#, php-format
 msgid "Under %s"
 msgstr ""
 
 #. translators: %1$s: lower amount, %2$s: upper amount.
 #: inc/form-templates/catalog/quizzes.php:41
 #: inc/form-templates/catalog/quizzes.php:43
-#, php-format
 msgid "%1$s–%2$s"
 msgstr ""
 
 #. translators: %s: an amount, e.g. "$20,000".
 #: inc/form-templates/catalog/quizzes.php:45
-#, php-format
 msgid "More than %s"
 msgstr ""
 
@@ -6562,7 +6478,6 @@ msgstr ""
 
 #. translators: %d: pass mark, a percentage.
 #: inc/form-templates/catalog/quizzes.php:203
-#, php-format
 msgid "You scored {quiz_score} ({quiz_percentage}). You need %d%% to pass, so have another go. We have emailed the right answers to {form:email}."
 msgstr ""
 
@@ -7886,7 +7801,6 @@ msgstr ""
 
 #. translators: %d: form ID.
 #: inc/generate-form-markup.php:264
-#, php-format
 msgid "Form #%d"
 msgstr ""
 
@@ -7947,7 +7861,6 @@ msgstr ""
 
 #. translators: 1: site URL, 2: site name
 #: inc/global-settings/email-summary.php:208
-#, php-format
 msgid "Here's your SureForms report for the last 7 days of %s."
 msgstr ""
 
@@ -7961,7 +7874,6 @@ msgstr ""
 
 #. translators: %s: opening and closing anchor tag for SureForms settings link
 #: inc/global-settings/email-summary.php:295
-#, php-format
 msgid "Manage Email Summaries from your %1$sSureForms settings%2$s"
 msgstr ""
 
@@ -8027,7 +7939,6 @@ msgstr ""
 
 #. Translators: %1$s: From Date, %2$s: To Date.
 #: inc/global-settings/email-summary.php:546
-#, php-format
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr ""
 
@@ -8044,7 +7955,6 @@ msgstr ""
 #: inc/global-settings/global-settings.php:622
 #: inc/post-types.php:1043
 #: assets/build/settings.js:172
-#, php-format,js-format
 msgid "New Form Submission - %s"
 msgstr ""
 
@@ -8097,7 +8007,6 @@ msgstr ""
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
 #: inc/helper.php:1240
-#, php-format
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr ""
 
@@ -8347,7 +8256,6 @@ msgstr ""
 
 #. translators: %s: form title from the source CF7 form.
 #: inc/migrator/importers/cf7-importer.php:160
-#, php-format
 msgid "New submission: %s"
 msgstr ""
 
@@ -8976,7 +8884,6 @@ msgstr ""
 
 #. translators: %d: Form ID
 #: inc/payments/admin/admin-handler.php:336
-#, php-format
 msgid "Form - #%d"
 msgstr ""
 
@@ -9038,7 +8945,6 @@ msgstr ""
 
 #. translators: %d: number of payments deleted
 #: inc/payments/admin/admin-handler.php:577
-#, php-format
 msgid "%d payment deleted successfully."
 msgid_plural "%d payments deleted successfully."
 msgstr[0] ""
@@ -9046,7 +8952,6 @@ msgstr[1] ""
 
 #. translators: 1: number deleted, 2: number failed
 #: inc/payments/admin/admin-handler.php:594
-#, php-format
 msgid "%1$d payment(s) deleted successfully. %2$d failed."
 msgstr ""
 
@@ -9070,7 +8975,6 @@ msgstr ""
 
 #. translators: %s: payment gateway name
 #: inc/payments/admin/admin-handler.php:703
-#, php-format
 msgid "Refund processing is not supported for %s gateway."
 msgstr ""
 
@@ -9167,13 +9071,11 @@ msgstr ""
 
 #. translators: %s: formatted payment amount
 #: inc/payments/front-end.php:212
-#, php-format
 msgid "The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢."
 msgstr ""
 
 #. translators: %s: Field name
 #: inc/payments/front-end.php:289
-#, php-format
 msgid "Missing required field: %s"
 msgstr ""
 
@@ -9225,7 +9127,6 @@ msgstr ""
 
 #. translators: %s: Error message
 #: inc/payments/front-end.php:484
-#, php-format
 msgid "Unexpected error: %s"
 msgstr ""
 
@@ -9284,13 +9185,11 @@ msgstr ""
 #. translators: %d: User ID
 #: inc/payments/front-end.php:956
 #: inc/payments/front-end.php:1417
-#, php-format
 msgid "User ID: %d"
 msgstr ""
 
 #. translators: %s: Subscription status reported by Stripe
 #: inc/payments/front-end.php:963
-#, php-format
 msgid "First payment succeeded; Stripe reported the subscription as %s at verification."
 msgstr ""
 
@@ -9306,7 +9205,6 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:487
 #: inc/payments/stripe/stripe-webhook.php:572
 #: inc/payments/stripe/stripe-webhook.php:1170
-#, php-format
 msgid "Subscription ID: %s"
 msgstr ""
 
@@ -9326,20 +9224,17 @@ msgstr ""
 #: inc/payments/stripe/stripe-webhook.php:732
 #: inc/payments/stripe/stripe-webhook.php:914
 #: inc/payments/stripe/stripe-webhook.php:1164
-#, php-format
 msgid "Payment Gateway: %s"
 msgstr ""
 
 #. translators: %s: Payment Intent ID
 #: inc/payments/front-end.php:978
-#, php-format
 msgid "Payment Intent ID: %s"
 msgstr ""
 
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:980
 #: inc/payments/stripe/stripe-webhook.php:1084
-#, php-format
 msgid "Charge ID: %s"
 msgstr ""
 
@@ -9348,14 +9243,12 @@ msgstr ""
 #: inc/payments/front-end.php:982
 #: inc/payments/stripe/admin-stripe-handler.php:195
 #: inc/payments/stripe/admin-stripe-handler.php:497
-#, php-format
 msgid "Subscription Status: %s"
 msgstr ""
 
 #. translators: %s: Customer ID
 #: inc/payments/front-end.php:984
 #: inc/payments/stripe/stripe-webhook.php:1174
-#, php-format
 msgid "Customer ID: %s"
 msgstr ""
 
@@ -9365,7 +9258,6 @@ msgstr ""
 #: inc/payments/front-end.php:1430
 #: inc/payments/stripe/stripe-webhook.php:1089
 #: inc/payments/stripe/stripe-webhook.php:1166
-#, php-format
 msgid "Amount: %1$s %2$s"
 msgstr ""
 
@@ -9373,7 +9265,6 @@ msgstr ""
 #. translators: %s: payment mode
 #: inc/payments/front-end.php:989
 #: inc/payments/front-end.php:1435
-#, php-format
 msgid "Mode: %s"
 msgstr ""
 
@@ -9405,7 +9296,6 @@ msgstr ""
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:1426
 #: inc/payments/stripe/stripe-webhook.php:1162
-#, php-format
 msgid "Transaction ID: %s"
 msgstr ""
 
@@ -9414,7 +9304,6 @@ msgstr ""
 #: inc/payments/front-end.php:1432
 #: inc/payments/stripe/stripe-webhook.php:576
 #: inc/payments/stripe/stripe-webhook.php:1168
-#, php-format
 msgid "Status: %s"
 msgstr ""
 
@@ -9822,7 +9711,6 @@ msgstr ""
 
 #. translators: 1: expected currency, 2: received currency
 #: inc/payments/payment-helper.php:807
-#, php-format
 msgid "Currency mismatch: expected %1$s, received %2$s."
 msgstr ""
 
@@ -9837,13 +9725,11 @@ msgstr ""
 
 #. translators: 1: expected amount with currency
 #: inc/payments/payment-helper.php:853
-#, php-format
 msgid "Payment amount must be exactly %1$s."
 msgstr ""
 
 #. translators: 1: minimum amount with currency
 #: inc/payments/payment-helper.php:864
-#, php-format
 msgid "Payment amount must be at least %1$s."
 msgstr ""
 
@@ -9894,14 +9780,12 @@ msgstr ""
 #: inc/payments/payment-helper.php:1733
 #: inc/payments/payment-helper.php:1759
 #: inc/payments/payment-helper.php:1794
-#, php-format
 msgid "Payment amount mismatch. Expected %1$s, received %2$s."
 msgstr ""
 
 #. translators: %1$s: minimum amount, %2$s: payment amount
 #: inc/payments/payment-helper.php:1674
 #: inc/payments/payment-helper.php:1834
-#, php-format
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr ""
 
@@ -9941,7 +9825,6 @@ msgstr ""
 
 #. translators: %s: subscription name
 #: inc/payments/payment-history-shortcode.php:363
-#, php-format
 msgid "Your \"%s\" will be cancelled immediately. You will lose access right away."
 msgstr ""
 
@@ -10122,7 +10005,6 @@ msgstr ""
 
 #. translators: %d: number of active subscriptions
 #: inc/payments/payment-history-shortcode.php:474
-#, php-format
 msgid "%d active"
 msgid_plural "%d active"
 msgstr[0] ""
@@ -10130,7 +10012,6 @@ msgstr[1] ""
 
 #. translators: %d: number of cancelled subscriptions
 #: inc/payments/payment-history-shortcode.php:478
-#, php-format
 msgid "%d cancelled"
 msgid_plural "%d cancelled"
 msgstr[0] ""
@@ -10142,19 +10023,16 @@ msgstr ""
 
 #. translators: %s: next payment date
 #: inc/payments/payment-history-shortcode.php:520
-#, php-format
 msgid "Next: %s"
 msgstr ""
 
 #. translators: %s: cancellation date
 #: inc/payments/payment-history-shortcode.php:523
-#, php-format
 msgid "Cancelled %s"
 msgstr ""
 
 #. translators: %d: total number of transactions
 #: inc/payments/payment-history-shortcode.php:568
-#, php-format
 msgid "%d transaction"
 msgid_plural "%d transactions"
 msgstr[0] ""
@@ -10162,7 +10040,6 @@ msgstr[1] ""
 
 #. translators: 1: start number, 2: end number, 3: total number
 #: inc/payments/payment-history-shortcode.php:584
-#, php-format
 msgid "Showing %1$d–%2$d of %3$d transactions"
 msgstr ""
 
@@ -10251,7 +10128,6 @@ msgstr ""
 #. translators: %s: Canceled by method (e.g., Webhook).
 #: inc/payments/stripe/admin-stripe-handler.php:200
 #: inc/payments/stripe/stripe-webhook.php:930
-#, php-format
 msgid "Canceled by: %s"
 msgstr ""
 
@@ -10290,7 +10166,6 @@ msgstr ""
 
 #. translators: %s: user display name
 #: inc/payments/stripe/admin-stripe-handler.php:502
-#, php-format
 msgid "Paused by: %s"
 msgstr ""
 
@@ -10328,7 +10203,6 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:1186
 #: inc/payments/stripe/stripe-webhook.php:730
 #: inc/payments/stripe/stripe-webhook.php:912
-#, php-format
 msgid "Refund ID: %s"
 msgstr ""
 
@@ -10338,7 +10212,6 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:672
 #: inc/payments/stripe/admin-stripe-handler.php:1196
 #: inc/payments/stripe/stripe-webhook.php:734
-#, php-format
 msgid "Refund Amount: %1$s %2$s"
 msgstr ""
 
@@ -10348,7 +10221,6 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:678
 #: inc/payments/stripe/admin-stripe-handler.php:1202
 #: inc/payments/stripe/stripe-webhook.php:737
-#, php-format
 msgid "Total Refunded: %1$s %2$s of %3$s %4$s"
 msgstr ""
 
@@ -10358,7 +10230,6 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:686
 #: inc/payments/stripe/admin-stripe-handler.php:1210
 #: inc/payments/stripe/stripe-webhook.php:744
-#, php-format
 msgid "Refund Status: %s"
 msgstr ""
 
@@ -10370,7 +10241,6 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:1215
 #: inc/payments/stripe/stripe-webhook.php:746
 #: inc/payments/stripe/stripe-webhook.php:928
-#, php-format
 msgid "Payment Status: %s"
 msgstr ""
 
@@ -10380,14 +10250,12 @@ msgstr ""
 #: inc/payments/stripe/admin-stripe-handler.php:696
 #: inc/payments/stripe/admin-stripe-handler.php:1220
 #: inc/payments/stripe/stripe-webhook.php:748
-#, php-format
 msgid "Refunded by: %s"
 msgstr ""
 
 #. translators: %s: refund notes
 #: inc/payments/stripe/admin-stripe-handler.php:705
 #: inc/payments/stripe/admin-stripe-handler.php:1229
-#, php-format
 msgid "Refund Notes: %s"
 msgstr ""
 
@@ -10395,14 +10263,12 @@ msgstr ""
 #. translators: %s: Refund type (e.g., Full, Partial).
 #: inc/payments/stripe/admin-stripe-handler.php:714
 #: inc/payments/stripe/stripe-webhook.php:726
-#, php-format
 msgid "%s Payment Refund"
 msgstr ""
 
 #. translators: %1$s: Payment settings link
 #: inc/payments/stripe/admin-stripe-handler.php:778
 #: assets/build/payments.js:2
-#, php-format,js-format
 msgid "Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook."
 msgstr ""
 
@@ -10437,7 +10303,6 @@ msgstr ""
 
 #. translators: 1: Maximum refundable amount (numeric), 2: Currency code (e.g. USD)
 #: inc/payments/stripe/admin-stripe-handler.php:958
-#, php-format
 msgid "Refund amount exceeds available amount. Maximum refundable: %1$s %2$s"
 msgstr ""
 
@@ -10455,7 +10320,6 @@ msgstr ""
 
 #. translators: %s: refund type (Full/Partial)
 #: inc/payments/stripe/admin-stripe-handler.php:1237
-#, php-format
 msgid "%s Subscription Payment Refund"
 msgstr ""
 
@@ -10503,7 +10367,6 @@ msgstr ""
 
 #. translators: %s: technical error message returned from Stripe.
 #: inc/payments/stripe/admin-stripe-handler.php:1289
-#, php-format
 msgid "Subscription refund failed: %s"
 msgstr ""
 
@@ -10540,7 +10403,6 @@ msgstr ""
 #. translators: %s: payment mode (test/live)
 #: inc/payments/stripe/payments-settings.php:374
 #: inc/payments/stripe/stripe-helper.php:199
-#, php-format
 msgid "Stripe %s secret key is missing."
 msgstr ""
 
@@ -10565,19 +10427,16 @@ msgstr ""
 
 #. translators: %s: payment mode (test/live)
 #: inc/payments/stripe/payments-settings.php:441
-#, php-format
 msgid "Webhook created successfully for %s mode."
 msgstr ""
 
 #. translators: %1$d: number of webhooks created
 #: inc/payments/stripe/payments-settings.php:584
-#, php-format
 msgid "Webhooks created successfully for %1$d mode(s)."
 msgstr ""
 
 #. translators: %1$d: number of webhooks created, %2$s: error message
 #: inc/payments/stripe/payments-settings.php:590
-#, php-format
 msgid "Webhooks created for %1$d mode(s). Some modes may have failed: %2$s"
 msgstr ""
 
@@ -10603,7 +10462,6 @@ msgstr ""
 #. translators: %d: number of modes
 #: inc/payments/stripe/payments-settings.php:707
 #: inc/payments/stripe/payments-settings.php:865
-#, php-format
 msgid "Webhooks deleted successfully for %d mode(s)."
 msgstr ""
 
@@ -10625,7 +10483,6 @@ msgstr ""
 
 #. translators: %s: mode name (test/live)
 #: inc/payments/stripe/payments-settings.php:859
-#, php-format
 msgid "Webhook deleted successfully for %s mode."
 msgstr ""
 
@@ -10651,7 +10508,6 @@ msgstr ""
 
 #. translators: %s: network error message
 #: inc/payments/stripe/stripe-helper.php:242
-#, php-format
 msgid "Network error: %s"
 msgstr ""
 
@@ -10673,7 +10529,6 @@ msgstr ""
 
 #. translators: %s: Canceled date
 #: inc/payments/stripe/stripe-webhook.php:578
-#, php-format
 msgid "Canceled at: %s"
 msgstr ""
 
@@ -10681,13 +10536,11 @@ msgstr ""
 #. translators: %s: Failure reason.
 #: inc/payments/stripe/stripe-webhook.php:584
 #: inc/payments/stripe/stripe-webhook.php:926
-#, php-format
 msgid "Cancellation Reason: %s"
 msgstr ""
 
 #. translators: %s: Cancellation feedback
 #: inc/payments/stripe/stripe-webhook.php:592
-#, php-format
 msgid "Feedback: %s"
 msgstr ""
 
@@ -10705,13 +10558,11 @@ msgstr ""
 
 #. translators: 1: Canceled amount, 2: Currency.
 #: inc/payments/stripe/stripe-webhook.php:916
-#, php-format
 msgid "Canceled Refund Amount: %1$s %2$s"
 msgstr ""
 
 #. translators: 1: Remaining refunded amount, 2: Currency, 3: Original amount, 4: Currency
 #: inc/payments/stripe/stripe-webhook.php:919
-#, php-format
 msgid "Remaining Refunded: %1$s %2$s of %3$s %4$s"
 msgstr ""
 
@@ -10722,7 +10573,6 @@ msgstr ""
 #. translators: %s: Invoice ID
 #: inc/payments/stripe/stripe-webhook.php:1086
 #: inc/payments/stripe/stripe-webhook.php:1172
-#, php-format
 msgid "Invoice ID: %s"
 msgstr ""
 
@@ -10745,13 +10595,11 @@ msgstr ""
 
 #. translators: %s: Customer Email
 #: inc/payments/stripe/stripe-webhook.php:1176
-#, php-format
 msgid "Customer Email: %s"
 msgstr ""
 
 #. translators: %s: Customer Name
 #: inc/payments/stripe/stripe-webhook.php:1178
-#, php-format
 msgid "Customer Name: %s"
 msgstr ""
 
@@ -10910,7 +10758,6 @@ msgstr ""
 
 #. translators: %s: action name
 #: inc/rest-api.php:1198
-#, php-format
 msgid "Failed to %s this form. Please try again."
 msgstr ""
 
@@ -11031,27 +10878,23 @@ msgstr ""
 
 #. translators: %s represents the minimum acceptable value
 #: inc/translatable.php:103
-#, php-format
 msgid "Minimum value is %s."
 msgstr ""
 
 #. translators: %s represents the maximum acceptable value
 #: inc/translatable.php:106
-#, php-format
 msgid "Maximum value is %s."
 msgstr ""
 
 #. translators: %s represents the minimum number of options to select
 #: inc/translatable.php:109
 #: inc/translatable.php:115
-#, php-format
 msgid "Select at least %s options."
 msgstr ""
 
 #. translators: %s represents the maximum number of options that can be selected
 #: inc/translatable.php:112
 #: inc/translatable.php:118
-#, php-format
 msgid "You can select up to %s options."
 msgstr ""
 
@@ -18367,7 +18210,6 @@ msgstr ""
 
 #. translators: Here %s is the plugin's name.
 #: templates/single-form.php:189
-#, php-format
 msgid "Crafted with ♡ %s"
 msgstr ""
 
@@ -18399,37 +18241,31 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
-#, js-format
 msgid "%s - Order ID"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
-#, js-format
 msgid "%s - Amount"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
-#, js-format
 msgid "%s - Customer Email"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
-#, js-format
 msgid "%s - Customer Name"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
-#, js-format
 msgid "%s - Status"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
-#, js-format
 msgid "%s - Description"
 msgstr ""
 
@@ -18507,7 +18343,6 @@ msgstr ""
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:7
 #: modules/gutenberg/build/blocks.js:8
-#, js-format
 msgid "%s units"
 msgstr ""
 
@@ -19087,12 +18922,10 @@ msgid "Bulk Edit"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#, js-format
 msgid "Edit description for %s"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#, js-format
 msgid "Description for %s"
 msgstr ""
 
@@ -19255,12 +19088,10 @@ msgid "Show Interactive Map"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#, js-format
 msgid "%1$s fields are required. Please configure these fields in the block settings."
 msgstr ""
 
 #: assets/build/blocks.js:172
-#, js-format
 msgid "%1$s field is required. Please configure this field in the block settings."
 msgstr ""
 
@@ -19546,7 +19377,6 @@ msgid "Click here to insert a form"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#, js-format
 msgid "%s Width"
 msgstr ""
 
@@ -19906,7 +19736,6 @@ msgid "Compare free and premium"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%s of the free version shown"
 msgstr ""
 
@@ -20026,7 +19855,6 @@ msgid "A gift box with emails rising out of it"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d Mail Free"
 msgid_plural "%d Mails Free"
 msgstr[0] ""
@@ -20113,22 +19941,18 @@ msgid "Other SMTP Provider"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "I agree to install SureMail and create a free SureContact account for %s."
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "I agree to create a free SureContact account for %s."
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s and your name, replacing the From it used before. To create the account, SureContact receives your name and email, this site's name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s, replacing the From address it used before. To create the account, SureContact receives your email, this site's name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>"
 msgstr ""
 
@@ -20141,14 +19965,12 @@ msgid "SureContact connected"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d free email added"
 msgid_plural "%d free emails added"
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "Check %s for a verification email to unlock your free emails."
 msgstr ""
 
@@ -20213,7 +20035,6 @@ msgid "In the SureMail tab, click \"Already have a SureContact account? Connect 
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%s already has a SureContact account. Sign in once to connect it to this site."
 msgstr ""
 
@@ -20336,12 +20157,10 @@ msgid "Small additions that make a big difference"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "Compare %s: free versus premium"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "Use code <code>%1$s</code> for 10%% off any SureForms Business plan."
 msgstr ""
 
@@ -20406,14 +20225,12 @@ msgid "Finish"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d form ready"
 msgid_plural "%d forms ready"
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d already imported"
 msgid_plural "%d already imported"
 msgstr[0] ""
@@ -20428,7 +20245,6 @@ msgid "All forms already imported"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "Import %d form"
 msgid_plural "Import %d forms"
 msgstr[0] ""
@@ -20451,28 +20267,24 @@ msgid "Forms imported"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%1$d form from %2$s is now in SureForms, ready to publish, style, and connect."
 msgid_plural "%1$d forms from %2$s are now in SureForms, ready to publish, style, and connect."
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d form imported"
 msgid_plural "%d forms imported"
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d form could not be imported"
 msgid_plural "%d forms could not be imported"
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%d field type was unsupported. You can rebuild it manually inside SureForms."
 msgid_plural "%d field types were unsupported. You can rebuild them manually inside SureForms."
 msgstr[0] ""
@@ -20528,7 +20340,6 @@ msgid "Illustration comparing a form with and without a cache exclusion"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "%s might be blocking your forms"
 msgstr ""
 
@@ -20577,7 +20388,6 @@ msgid "Final Touches That Make a Difference:"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-#, js-format
 msgid "You get %d free email notification, sent to your inbox with a form submission."
 msgid_plural "You get %d free email notifications, sent to your inbox with every form submission."
 msgstr[0] ""
@@ -20754,7 +20564,6 @@ msgstr ""
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "Please type \"%s\" in the input box"
 msgstr ""
 
@@ -20763,7 +20572,6 @@ msgstr ""
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "To confirm, type \"%s\" in the box below:"
 msgstr ""
 
@@ -20772,17 +20580,14 @@ msgstr ""
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "Type \"%s\""
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "Entry #%1$s marked as %2$s."
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%1$s entry marked as %2$s."
 msgid_plural "%1$s entries marked as %2$s."
 msgstr[0] ""
@@ -20812,12 +20617,10 @@ msgid "Entry"
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "Entry #%s deleted permanently."
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%s entry deleted permanently."
 msgid_plural "%s entries deleted permanently."
 msgstr[0] ""
@@ -20828,24 +20631,20 @@ msgid "An error occurred. Please try again."
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "Entry #%s moved to trash."
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "Entry #%s restored successfully."
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%1$s entry moved to trash."
 msgid_plural "%1$s entries moved to trash."
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%1$s entry restored successfully."
 msgid_plural "%1$s entries restored successfully."
 msgstr[0] ""
@@ -20872,14 +20671,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "Are you sure you want to permanently delete %s entry? This action cannot be undone."
 msgid_plural "Are you sure you want to permanently delete %s entries? This action cannot be undone."
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%s entry will be moved to trash and can be restored later."
 msgid_plural "%s entries will be moved to trash and can be restored later."
 msgstr[0] ""
@@ -20896,7 +20693,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%s entry will be restored from trash."
 msgid_plural "%s entries will be restored from trash."
 msgstr[0] ""
@@ -20923,7 +20719,6 @@ msgid "With SureForms Business, you can easily edit your entries to suit your ne
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
@@ -21034,14 +20829,12 @@ msgid "Resend Email Notification"
 msgstr ""
 
 #: assets/build/entries.js:172
-#, js-format
 msgid "Entry #%s"
 msgstr ""
 
 #. translators: abbreviation for units
 #: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/draggable-block.js:83
-#, js-format
 msgid "%s Removed from Quick Action Bar."
 msgstr ""
 
@@ -21053,7 +20846,6 @@ msgstr ""
 #. translators: abbreviation for units
 #: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:42
-#, js-format
 msgid "%s Added to Quick Action Bar."
 msgstr ""
 
@@ -21213,13 +21005,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "New forms will not store entries by default, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s."
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "This form will not store entries, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s."
 msgstr ""
 
@@ -21408,13 +21198,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "The current 'From Email' address may not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr ""
 
@@ -21425,19 +21213,16 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#, js-format
 msgid " Alternately, try using a From Address that matches your website domain (admin@%s)."
 msgstr ""
 
@@ -22121,19 +21906,16 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Preview the %s template"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Update SureForms Premium to use the %s template (opens in a new tab)"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "See plans for the %s template (Premium, opens in a new tab)"
 msgstr ""
 
@@ -22239,7 +22021,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Custom %s color"
 msgstr ""
 
@@ -22310,13 +22091,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Insert %s"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Insert %s (optional – may be blank)"
 msgstr ""
 
@@ -22332,13 +22111,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Insert result: %s"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Uses %s, which is optional, so this part of the subject may be blank."
 msgstr ""
 
@@ -22349,7 +22126,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "+ %d more answer"
 msgid_plural "+ %d more answers"
 msgstr[0] ""
@@ -22367,7 +22143,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "<b>%1$s</b> to %2$s"
 msgstr ""
 
@@ -22478,7 +22253,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Preview of the %s form"
 msgstr ""
 
@@ -22524,13 +22298,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%1$d / %2$d"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Template %1$d of %2$d"
 msgstr ""
 
@@ -22606,7 +22378,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "<strong>%d</strong> available"
 msgid_plural "<strong>%d</strong> available"
 msgstr[0] ""
@@ -22789,7 +22560,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Search %d template, try quote or booking"
 msgid_plural "Search %d templates, try quote or booking"
 msgstr[0] ""
@@ -22820,7 +22590,6 @@ msgid "Templates could not be loaded."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#, js-format
 msgid "Form replaced with the %s template."
 msgstr ""
 
@@ -22850,12 +22619,10 @@ msgid "This form has integrations, webhooks, user registration or post creation 
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#, js-format
 msgid "Create a new form from the %s template, with the design you chose, instead. This form stays as it is."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#, js-format
 msgid "Replace this form's fields and design with the %s template as you previewed it? You can undo this straight after."
 msgstr ""
 
@@ -23153,14 +22920,12 @@ msgid "Build engaging conversational, calculation, and multi-step forms."
 msgstr ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form to import"
 msgid_plural "%d forms to import"
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "Bring your forms from %s into SureForms"
 msgstr ""
 
@@ -23178,28 +22943,24 @@ msgid "An error occurred while fetching forms."
 msgstr ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form moved to trash."
 msgid_plural "%d forms moved to trash."
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form restored."
 msgid_plural "%d forms restored."
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form permanently deleted."
 msgid_plural "%d forms permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form switched to draft."
 msgid_plural "%d forms switched to draft."
 msgstr[0] ""
@@ -23210,7 +22971,6 @@ msgid "An error occurred while performing the action."
 msgstr ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "Form \"%s\" duplicated successfully."
 msgstr ""
 
@@ -23219,7 +22979,6 @@ msgid "An error occurred while duplicating the form."
 msgstr ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form imported successfully."
 msgid_plural "%d forms imported successfully."
 msgstr[0] ""
@@ -23236,7 +22995,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form will be moved to trash and can be restored later."
 msgid_plural "%d forms will be moved to trash and can be restored later."
 msgstr[0] ""
@@ -23249,7 +23007,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "Are you sure you want to permanently delete %d form? This action cannot be undone."
 msgid_plural "Are you sure you want to permanently delete %d forms? This action cannot be undone."
 msgstr[0] ""
@@ -23262,7 +23019,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form will be restored from trash."
 msgid_plural "%d forms will be restored from trash."
 msgstr[0] ""
@@ -23275,7 +23031,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "%d form will be switched to draft and will no longer be publicly accessible."
 msgid_plural "%d forms will be switched to draft and will no longer be publicly accessible."
 msgstr[0] ""
@@ -23302,7 +23057,6 @@ msgid "Duplicate form?"
 msgstr ""
 
 #: assets/build/forms.js:172
-#, js-format
 msgid "This will create a copy of \"%s\" with all its settings."
 msgstr ""
 
@@ -23321,7 +23075,6 @@ msgid "SureForms could not authenticate this request. Please reload the editor a
 msgstr ""
 
 #: assets/build/htmlFormDetector.js:2
-#, js-format
 msgid "%s — Converted form"
 msgstr ""
 
@@ -23374,7 +23127,6 @@ msgid "1 minute"
 msgstr ""
 
 #: assets/build/learn.js:172
-#, js-format
 msgid "%d minutes"
 msgstr ""
 
@@ -23432,7 +23184,6 @@ msgid "Learn how"
 msgstr ""
 
 #: assets/build/learn.js:172
-#, js-format
 msgid "%1$d of %2$d steps completed"
 msgstr ""
 
@@ -23586,7 +23337,6 @@ msgid "Delete Payments"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Are you sure you want to delete %d payments? This action cannot be undone and will permanently remove all associated data including notes, logs, and transaction information."
 msgstr ""
 
@@ -23623,7 +23373,6 @@ msgid "Submit Note"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Submitted by %1$s - %2$s"
 msgstr ""
 
@@ -23660,7 +23409,6 @@ msgid "Delete log"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "%1$s %2$s"
 msgstr ""
 
@@ -23685,17 +23433,14 @@ msgid "Please enter a valid refund amount."
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Amount cannot exceed %s."
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "This will issue a complete refund of %s. The entire payment will be refunded."
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "This will issue a partial refund of %1$s. Remaining balance of %2$s will still be valid."
 msgstr ""
 
@@ -23704,7 +23449,6 @@ msgid "Refund payment"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Process refund for payment #%s. The refunded amount will be sent to the customer's original payment method."
 msgstr ""
 
@@ -23713,12 +23457,10 @@ msgid "Refund amount"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Max: %s"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Maximum refundable amount: %s"
 msgstr ""
 
@@ -23739,7 +23481,6 @@ msgid "Refund failed. Please try again."
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Already refunded: %s"
 msgstr ""
 
@@ -23809,7 +23550,6 @@ msgid "Failed to pause subscription. Please try again."
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Are you sure you want to cancel subscription #%s? This action cannot be undone and the customer will lose access to their subscription benefits."
 msgstr ""
 
@@ -23826,7 +23566,6 @@ msgid "Pause Subscription"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Are you sure you want to pause subscription #%s? The customer will not be charged until you resume the subscription."
 msgstr ""
 
@@ -23867,12 +23606,10 @@ msgid "No paid EMI found to refund."
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Subscription #%s"
 msgstr ""
 
 #: assets/build/payments.js:172
-#, js-format
 msgid "Payment #%s"
 msgstr ""
 
@@ -24169,7 +23906,6 @@ msgid "Number Minimum Value"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
 msgstr ""
 
@@ -24178,7 +23914,6 @@ msgid "Number Maximum Value"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
 msgstr ""
 
@@ -24187,7 +23922,6 @@ msgid "Dropdown Minimum Selections"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”"
 msgstr ""
 
@@ -24196,7 +23930,6 @@ msgid "Dropdown Maximum Selections"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”"
 msgstr ""
 
@@ -24205,7 +23938,6 @@ msgid "Multiple Choice Minimum Selections"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%s represents the minimum choices needed. For example: “Minimum 1 selection is required.”"
 msgstr ""
 
@@ -24214,7 +23946,6 @@ msgid "Multiple Choice Maximum Selections"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”"
 msgstr ""
 
@@ -24287,7 +24018,6 @@ msgid "Get Keys"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "Enter your %s here"
 msgstr ""
 
@@ -24380,7 +24110,6 @@ msgid "2.9% transaction and payment gateway fees apply."
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "Please visit %1$s, delete an unused webhook, then click below to retry."
 msgstr ""
 
@@ -24713,12 +24442,10 @@ msgid "Could not save the features."
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "Needs %s."
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "Turning this off also turns off %s."
 msgstr ""
 
@@ -24739,7 +24466,6 @@ msgid "Plugin"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%d form"
 msgid_plural "%d forms"
 msgstr[0] ""
@@ -24786,7 +24512,6 @@ msgid "No forms found in this plugin."
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%1$d of %2$d form selected"
 msgid_plural "%1$d of %2$d forms selected"
 msgstr[0] ""
@@ -24829,12 +24554,10 @@ msgid "Confirm & import"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "Form #%s"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%d field will import"
 msgid_plural "%d fields will import"
 msgstr[0] ""
@@ -24861,7 +24584,6 @@ msgid "Nothing was imported"
 msgstr ""
 
 #: assets/build/settings.js:172
-#, js-format
 msgid "%d form was imported into SureForms."
 msgid_plural "%d forms were imported into SureForms."
 msgstr[0] ""
@@ -25064,7 +24786,6 @@ msgid "Failed sends retry automatically, and you can swap to your own SMTP provi
 msgstr ""
 
 #: assets/build/suremail.js:172
-#, js-format
 msgid "Start with %d free email"
 msgid_plural "Start with %d free emails"
 msgstr[0] ""
@@ -25087,7 +24808,6 @@ msgid "Top up only if you need more"
 msgstr ""
 
 #: assets/build/suremail.js:172
-#, js-format
 msgid "%d free email"
 msgid_plural "%d free emails"
 msgstr[0] ""
@@ -25114,7 +24834,6 @@ msgid "Install SureMail and Set Up SureContact"
 msgstr ""
 
 #: assets/build/suremail.js:172
-#, js-format
 msgid "Every form submission reaches the inbox. Starting with %d free email."
 msgid_plural "Every form submission reaches the inbox. Starting with %d free emails."
 msgstr[0] ""
@@ -25125,7 +24844,6 @@ msgid "Every form submission reaches the inbox."
 msgstr ""
 
 #: assets/build/suremail.js:172
-#, js-format
 msgid "SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup, and the first %d email is on us."
 msgid_plural "SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup, and the first %d emails are on us."
 msgstr[0] ""
@@ -25144,7 +24862,6 @@ msgid "Watch how it works"
 msgstr ""
 
 #: assets/build/suremail.js:172
-#, js-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
@@ -25367,17 +25084,14 @@ msgid "Perfect for feedback, polls, and research"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%d AI Generations Left. SureForms Premium allows:"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%d AI Generations Left, Connect to SureForms AI to Get 10 More"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%d AI Generations Left. Upgrade to SureForms Premium"
 msgstr ""
 
@@ -25490,12 +25204,10 @@ msgid "Example unselected. Your edits were kept."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%s example replaced your prompt. Press Undo to get your text back."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%s example added to the prompt. Edit it or press Generate."
 msgstr ""
 
@@ -25516,7 +25228,6 @@ msgid "Describe the form you want to create"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%1$d/%2$d"
 msgstr ""
 
@@ -25649,7 +25360,6 @@ msgid "You've reached your daily limit for AI form generations."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "Please try again after %s."
 msgstr ""
 
@@ -25658,7 +25368,6 @@ msgid "You have reached the maximum number of form generations in your Free Plan
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-#, js-format
 msgid "%s AI Generations Left."
 msgstr ""
 
@@ -26164,7 +25873,6 @@ msgstr ""
 
 #. translators: %s: file name
 #: modules/gutenberg/build/blocks.js:9
-#, js-format
 msgid "This image has an empty alt attribute; its file name is %s"
 msgstr ""
 
