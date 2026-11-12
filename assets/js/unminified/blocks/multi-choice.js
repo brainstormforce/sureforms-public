@@ -1,10 +1,19 @@
-function initializeMultichoice() {
-	const multiChoices = document.querySelectorAll(
-		'.srfm-multi-choice-block'
-	);
+// Multi-choice blocks that already have their listeners.
+// A WeakSet rather than a marker attribute: Elementor Pro renders each opened
+// popup from an outerHTML copy, which would carry the attribute onto nodes
+// that have no listeners.
+const srfmBoundMultiChoices = new WeakSet();
+
+function initializeMultichoice( root = document ) {
+	const multiChoices = root.querySelectorAll( '.srfm-multi-choice-block' );
 
 	if ( multiChoices ) {
 		multiChoices.forEach( ( single ) => {
+			if ( srfmBoundMultiChoices.has( single ) ) {
+				return;
+			}
+			srfmBoundMultiChoices.add( single );
+
 			// Initialize savedValues array to track checked options in checkbox mode
 			// Must be declared before initializeHiddenInput() to capture preselected values
 			let savedValues = [];
@@ -178,4 +187,12 @@ function initializeMultichoice() {
 	}
 }
 
-document.addEventListener( 'DOMContentLoaded', initializeMultichoice );
+document.addEventListener( 'DOMContentLoaded', () => initializeMultichoice() );
+
+// Bind forms rendered after page load, such as the copy of the form an Elementor
+// Pro popup builds each time it opens.
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	if ( e.detail?.form ) {
+		initializeMultichoice( e.detail.form );
+	}
+} );

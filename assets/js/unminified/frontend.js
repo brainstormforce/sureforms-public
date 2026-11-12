@@ -813,6 +813,7 @@ function onHCaptchaError() {
 			return;
 		}
 
+		// Null when the page shows a restriction message instead of the form.
 		const srfmForm = document.querySelector( 'form.srfm-form' );
 
 		const setBrandingStyle = ( property, value ) => {

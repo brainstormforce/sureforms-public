@@ -44,6 +44,36 @@ describe( 'getAddNewFormScreen', () => {
 			'ai'
 		);
 	} );
+
+	describe( 'with the AI form builder switched off', () => {
+		beforeEach( () => {
+			window.srfmIsFeatureEnabled = ( key ) => 'ai_builder' !== key;
+		} );
+		afterEach( () => {
+			delete window.srfmIsFeatureEnabled;
+		} );
+
+		it( 'never opens the AI screen, whatever the link asks for', () => {
+			[
+				'?page=add-new-form&view=ai',
+				'?page=add-new-form&form_type=payment',
+				'?page=add-new-form&srfm_ai_dashboard_prompt=Contact',
+				'?page=add-new-form&access_key=abc',
+			].forEach( ( query ) =>
+				expect( getAddNewFormScreen( params( query ) ) ).toBe( 'start' )
+			);
+			expect(
+				getAddNewFormScreen( params( '?page=add-new-form&view=templates' ) )
+			).toBe( 'templates' );
+		} );
+
+		it( 'opens the templates when the start screen is filtered off too', () => {
+			srfm_admin.form_start.enabled = false;
+			expect( getAddNewFormScreen( params( '?page=add-new-form' ) ) ).toBe(
+				'templates'
+			);
+		} );
+	} );
 } );
 
 describe( 'scopeStartChoiceToVisit', () => {

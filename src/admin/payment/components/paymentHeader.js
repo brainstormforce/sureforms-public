@@ -1,6 +1,7 @@
 import { Button, Text } from '@bsf/force-ui';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
+import { isFeatureEnabled } from '@Utils/features';
 import { formatOrderId } from './utils';
 
 const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
@@ -28,16 +29,19 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 					) }
 				</Text>
 			</div>
-			<Button
-				variant="primary"
-				size="md"
-				icon={ <ArrowUpRight className="!size-4" /> }
-				iconPosition="right"
-				onClick={ handleViewEntry }
-				disabled={ ! entry_id }
-			>
-				{ __( 'View Form Data', 'sureforms' ) }
-			</Button>
+			{ /* The entries page is not registered while Entries is off. */ }
+			{ isFeatureEnabled( 'entries' ) && (
+				<Button
+					variant="primary"
+					size="md"
+					icon={ <ArrowUpRight className="!size-4" /> }
+					iconPosition="right"
+					onClick={ handleViewEntry }
+					disabled={ ! entry_id }
+				>
+					{ __( 'View Form Data', 'sureforms' ) }
+				</Button>
+			) }
 		</div>
 	);
 };
