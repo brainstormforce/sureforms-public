@@ -34,4 +34,20 @@ abstract class SRFM_Unit_Test_Case extends \Yoast\PHPUnitPolyfills\TestCases\Tes
 
 		return $factory;
 	}
+
+	/**
+	 * Drop payment-reference claims (Payment_Helper::claim_payment_reference()) after
+	 * every test.
+	 *
+	 * Claims are rows in wp_options and nothing rolls them back, so a stub id such as
+	 * 'sub_x' claimed by one test would make the next test's submit look like a
+	 * duplicate. An @after hook runs even when a subclass overrides tearDown().
+	 *
+	 * @after
+	 * @return void
+	 */
+	public function srfm_release_payment_claims() {
+		global $wpdb;
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like( 'srfm_pay_claim_' ) . '%' ) );
+	}
 }

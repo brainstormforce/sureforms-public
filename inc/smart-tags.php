@@ -355,7 +355,7 @@ class Smart_Tags {
 				}
 
 				if ( 0 === strpos( $tag, '{form-payment:' ) ) {
-					return self::parse_payment_smart_tag( $tag, $submission_data );
+					return self::parse_payment_smart_tag( $tag, $submission_data, $form_data );
 				}
 				break;
 		}
@@ -584,10 +584,11 @@ class Smart_Tags {
 	 *
 	 * @param string            $value tag.
 	 * @param array<mixed>|null $submission_data data from submission.
+	 * @param array<mixed>|null $form_data smart-tag context (expects 'form-id' of the form being rendered).
 	 * @since  2.0.0
 	 * @return string
 	 */
-	public static function parse_payment_smart_tag( $value, $submission_data = null ) {
+	public static function parse_payment_smart_tag( $value, $submission_data = null, $form_data = null ) {
 		if ( ! $submission_data ) {
 			return '';
 		}
@@ -656,6 +657,16 @@ class Smart_Tags {
 		$payment_entry = Payments::get( $payment_entry_id );
 
 		if ( ! $payment_entry || ! is_array( $payment_entry ) ) {
+			return '';
+		}
+
+		// A payment row is only resolved for the form being rendered, identified by the
+		// caller's 'form-id' context. The row id comes from submission data, which not
+		// every consumer has verified, so a row is never read without that binding:
+		// a missing or non-numeric context resolves nothing.
+		$context_form_id = is_array( $form_data ) && isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+		$entry_form_id   = isset( $payment_entry['form_id'] ) && is_numeric( $payment_entry['form_id'] ) ? absint( $payment_entry['form_id'] ) : 0;
+		if ( 0 === $context_form_id || $context_form_id !== $entry_form_id ) {
 			return '';
 		}
 

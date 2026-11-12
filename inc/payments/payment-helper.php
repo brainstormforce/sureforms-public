@@ -40,6 +40,167 @@ class Payment_Helper {
 	public const SUPPORTED_AMOUNT_TYPES = [ 'fixed', 'variable' ];
 
 	/**
+	 * Default subscription interval for a payment block whose plan was left at the
+	 * editor default. Gutenberg omits an attribute equal to its block.json default,
+	 * so a default-plan form stores no cadence; the server falls back to this value
+	 * instead of trusting the submitted interval.
+	 *
+	 * @since 2.14.0
+	 */
+	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
+
+	/**
+	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
+	 *
+	 * @since 2.14.0
+	 */
+	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
+
+	/**
+	 * Throttle unauthenticated payment-object creation per IP + form, so one scraped
+	 * submit token cannot drive unbounded Stripe/PayPal object creation on the
+	 * merchant account. Returns true when the caller is over the limit.
+	 *
+	 * The limit (default 30 per minute) is filterable via
+	 * `srfm_payment_rate_limit_per_minute`; a value <= 0 disables throttling. It fails
+	 * open when the client IP cannot be determined, so a proxy that hides the IP never
+	 * blocks a real checkout.
+	 *
+	 * @param int    $form_id Form id.
+	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
+	 * @since 2.14.0
+	 * @return bool True when the request should be rejected.
+	 */
+	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- validated as an IP below.
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( '' === $ip || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return false;
+		}
+
+		$limit = Helper::get_integer_value( apply_filters( 'srfm_payment_rate_limit_per_minute', 30, (int) $form_id, $context ) );
+		if ( $limit <= 0 ) {
+			return false;
+		}
+
+		$transient_key = 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_' . md5( $ip . '_' . (int) $form_id );
+		$attempts      = Helper::get_integer_value( get_transient( $transient_key ) );
+		if ( $attempts >= $limit ) {
+			return true;
+		}
+
+		set_transient( $transient_key, $attempts + 1, MINUTE_IN_SECONDS );
+		return false;
+	}
+
+	/**
+	 * Atomically claim a provider payment reference (transaction or subscription id)
+	 * so that concurrent or duplicate submissions of the same completed payment cannot
+	 * each create a paid entry. The first caller wins the claim; later callers get
+	 * false. An empty reference is never blocked.
+	 *
+	 * The claim is a single INSERT IGNORE on the unique wp_options.option_name key, and
+	 * only the caller whose insert affected one row wins. add_option() is not used: it
+	 * decides existence from a cached read and then upserts (ON DUPLICATE KEY UPDATE),
+	 * so a second concurrent caller can also get true.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.14.0
+	 * @return bool True if this caller won the claim, false if it was already claimed.
+	 */
+	public static function claim_payment_reference( $reference ) {
+		global $wpdb;
+
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return true;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- The unique key is the lock; a cached read cannot decide it.
+		$inserted = $wpdb->query(
+			$wpdb->prepare(
+				"INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
+				'srfm_pay_claim_' . md5( $reference ),
+				(string) time()
+			)
+		);
+
+		return 1 === $inserted;
+	}
+
+	/**
+	 * Release a payment reference claimed by claim_payment_reference(), so a legitimate
+	 * retry is not blocked when the paid row could not be created.
+	 *
+	 * @param string $reference Provider transaction_id or subscription_id.
+	 * @since 2.14.0
+	 * @return void
+	 */
+	public static function release_payment_reference( $reference ) {
+		$reference = is_string( $reference ) ? $reference : '';
+		if ( '' === $reference ) {
+			return;
+		}
+		delete_option( 'srfm_pay_claim_' . md5( $reference ) );
+	}
+
+	/**
+	 * Reject a client-supplied Stripe customer id that uses the reserved internal
+	 * ownership-key format (wp_user_{id} / guest_{...}). Payment history attributes
+	 * rows to a user by customer_id, so a submitter who sets customer_id to
+	 * 'wp_user_{victim}' could make a Stripe payment appear in that user's history.
+	 * A genuine Stripe customer id is 'cus_...', so this never affects a real
+	 * customer; it only blocks a reserved value from being stored on a Stripe row.
+	 *
+	 * @param mixed $customer_id Client-supplied customer id.
+	 * @since 2.14.0
+	 * @return string The customer id, or '' if it uses a reserved internal format.
+	 */
+	public static function sanitize_stripe_customer_id( $customer_id ) {
+		$customer_id = is_string( $customer_id ) ? sanitize_text_field( $customer_id ) : '';
+		if ( '' === $customer_id ) {
+			return '';
+		}
+		if ( 1 === preg_match( '/^(wp_user_|guest_)/', $customer_id ) ) {
+			return '';
+		}
+		return $customer_id;
+	}
+
+	/**
+	 * Resolve a subscription payment block's cadence (interval + billing cycles) from
+	 * its stored config, falling back to the block.json defaults when the admin left
+	 * the plan unchanged. The submitted/client cadence is never used, so a tampered
+	 * interval or billing-cycles value cannot redirect the gateway to a different
+	 * billing cadence. An explicitly stored cadence is returned unchanged.
+	 *
+	 * @param array<string, mixed> $block_config One block's stored config from _srfm_block_config.
+	 * @since 2.14.0
+	 * @return array{interval: string, billing_cycles: int|string}
+	 */
+	public static function resolve_stored_subscription_cadence( $block_config ) {
+		$block_config = is_array( $block_config ) ? $block_config : [];
+
+		$interval = isset( $block_config['subscription_interval'] ) && is_string( $block_config['subscription_interval'] ) && '' !== $block_config['subscription_interval']
+			? $block_config['subscription_interval']
+			: self::DEFAULT_SUBSCRIPTION_INTERVAL;
+
+		$raw_cycles = $block_config['subscription_billing_cycles'] ?? '';
+		if ( is_int( $raw_cycles ) ) {
+			$billing_cycles = $raw_cycles;
+		} elseif ( is_string( $raw_cycles ) && '' !== $raw_cycles ) {
+			$billing_cycles = $raw_cycles;
+		} else {
+			$billing_cycles = self::DEFAULT_SUBSCRIPTION_BILLING_CYCLES;
+		}
+
+		return [
+			'interval'       => $interval,
+			'billing_cycles' => $billing_cycles,
+		];
+	}
+
+	/**
 	 * A payment block's amount type, or 'fixed' when it is not one the
 	 * server-side validators implement.
 	 *
@@ -1069,7 +1230,20 @@ class Payment_Helper {
 		}
 
 		// 2. Fall back to a user matching the customer email.
-		$customer_email = ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
+		//
+		// The customer email comes from the submitted payment data and is not a
+		// verified identity claim, so matching a guest payment to the account that
+		// owns that email attributes the payment to a user who may not have made it.
+		// This match defaults to true to preserve existing behaviour; a site whose
+		// payment-lifecycle hook consumers (membership, LMS, etc.) grant or revoke
+		// access by the context user_id should return false here so guest payments
+		// resolve to 0, as the hook contract documents.
+		//
+		// @since 2.14.0
+		// @param bool                 $match_by_email Whether to resolve a guest payment to the account owning customer_email.
+		// @param array<string, mixed> $payment        The payment record.
+		$match_by_email = (bool) apply_filters( 'srfm_resolve_guest_payment_user_by_email', true, $payment );
+		$customer_email = $match_by_email && ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
 		if ( ! empty( $customer_email ) ) {
 			$user = get_user_by( 'email', $customer_email );
 			if ( $user instanceof \WP_User ) {
@@ -1585,20 +1759,20 @@ class Payment_Helper {
 							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), floatval( $expected_amount ), $payment_amount ),
 						];
 					}
+				} elseif (
+					! empty( $variable_amount_block_config['enableCalculation'] )
+					&& ( 'srfm/number' === $dynamic_amount_field_block_name || ( isset( $variable_amount_block_config['calculationFormula'] ) && is_string( $variable_amount_block_config['calculationFormula'] ) && '' !== $variable_amount_block_config['calculationFormula'] ) )
+				) {
+					// Calculation-driven source: a null server amount means the formula could not
+					// be recomputed server-side. The formula sets the price, so neither the
+					// submitted value nor the minimum-amount floor can stand in for it. Reject.
+					// A hidden source with calculation on but no formula has no formula to
+					// recompute, so it is treated like any other hidden source below.
+					return [
+						'valid'   => false,
+						'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+					];
 				} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
-					// Calculation-driven number: a null server amount means the formula
-					// could NOT be recomputed server-side (a referenced field was
-					// non-numeric, or the formula used something the parser can't
-					// evaluate). This is NOT "name your price" — we must fail safe and
-					// reject, never fall back to the client-submitted amount, which
-					// would reopen the unauthenticated underpayment bypass.
-					if ( ! empty( $variable_amount_block_config['enableCalculation'] ) ) {
-						return [
-							'valid'   => false,
-							'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
-						];
-					}
-
 					// Plain user-entered number ("name your price"): the amount is the
 					// customer's own choice, so confirm the charge matches what they entered.
 					// The minimum-amount floor below guards the lower bound.
@@ -1705,8 +1879,9 @@ class Payment_Helper {
 	 * The expected amount is ALWAYS derived from server-side configuration — the field's
 	 * configured default value, or (for calculation-enabled fields) a value recomputed by
 	 * SureForms Pro from the submitted inputs. It is NEVER taken from the value submitted with
-	 * the request. Returns null when no authoritative amount can be determined server-side, in
-	 * which case the caller falls back to the configured minimum-amount floor.
+	 * the request. Returns null when no authoritative amount can be determined server-side. The
+	 * caller then rejects a calculation source, and checks any other source against the
+	 * configured minimum-amount floor.
 	 *
 	 * @param array<mixed> $source_config The amount-source field block config (block_name, slug, enableCalculation, defaultValue, calculationFormula, ...).
 	 * @param array<mixed> $block_config  All block configurations for the form.
@@ -1748,8 +1923,9 @@ class Payment_Helper {
 		// Static hidden field: a *literal numeric* configured default value is the server-side
 		// source of truth and is authoritative. A non-numeric default (e.g. a smart tag such as
 		// {get_input:amount} stored raw, resolved to a runtime value only at render time) is NOT
-		// treated as authoritative here — it returns null below so the caller validates against the
-		// minimum-amount floor instead, preserving the documented dynamic-prefill behavior.
+		// treated as authoritative here — it returns null below so the caller validates this
+		// non-calculation source against the minimum-amount floor, preserving the documented
+		// dynamic-prefill behavior.
 		$block_name = $source_config['block_name'] ?? ( $source_config['blockName'] ?? '' );
 		if ( 'srfm/hidden' === $block_name && empty( $source_config['enableCalculation'] ) && isset( $source_config['defaultValue'] ) && is_numeric( $source_config['defaultValue'] ) ) {
 			return floatval( $source_config['defaultValue'] );

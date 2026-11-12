@@ -10,6 +10,7 @@ namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Events_Scheduler;
+use SRFM\Inc\Features;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
@@ -126,6 +127,8 @@ class Global_Settings {
 			case 'email-notification-settings':
 				self::srfm_save_email_notification_settings( $setting_options );
 				break;
+			case 'features-settings':
+				return Features::rest_save( $setting_options );
 			default:
 				return new WP_Error( 'srfm_invalid_tab', __( 'Invalid settings tab.', 'sureforms' ), [ 'status' => 400 ] );
 		}
@@ -272,7 +275,9 @@ class Global_Settings {
 
 		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
 
-		if ( $srfm_email_summary ) {
+		// The summary reads the entries table and its handler only boots with Entries on;
+		// Features::save() schedules it when Entries is turned back on.
+		if ( $srfm_email_summary && Features::is_enabled( 'entries' ) ) {
 			Email_Summary::schedule_weekly_entries_email();
 		}
 
@@ -679,6 +684,7 @@ class Global_Settings {
 			'srfm_compliance_settings_options',
 			'srfm_form_confirmation_settings_options',
 			'srfm_email_notification_settings_options',
+			Features::OPTION,
 		];
 		$options_to_get  = array_values( array_intersect( array_map( 'sanitize_text_field', $options_to_get ), $allowed_options ) );
 

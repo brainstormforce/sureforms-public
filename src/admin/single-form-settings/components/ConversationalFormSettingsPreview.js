@@ -2,8 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
+import { isFeatureEnabled } from '@Utils/features';
 
 const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
+	// Neither the setting nor its upsell while the site has the feature switched off.
+	if ( ! isFeatureEnabled( 'conversational' ) ) {
+		return null;
+	}
 	const showCoversationalFormSettings = false;
 	const conversationalFormSettings = applyFilters(
 		'srfm.instant_form_settings.conversational_forms',
