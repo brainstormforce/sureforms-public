@@ -377,39 +377,50 @@ function initializePhoneField() {
 			selectedCountry.style.paddingRight = '0';
 		}
 
-		const updatePhoneNumber = () => {
+		/**
+		 * Write the number into the hidden input that validation and submission read.
+		 *
+		 * Invalid numbers are copied as typed, so the unique check can be overridden
+		 * and the invalid/required messages still show. Valid numbers use the
+		 * normalized value (phonewords like '+1 800 FLOWERS' become digits).
+		 *
+		 * @return {boolean} True when a number is entered but is not valid.
+		 */
+		const syncHiddenInput = () => {
 			const phoneNumberValue = phoneNumber?.value
 				? phoneNumber?.value.trim()
 				: '';
-			const parentBlock = phoneNumber.closest( '.srfm-block' );
-
-			/**
-			 * Get the normalized phone number (converts phonewords like '+1 800 FLOWERS' to digits).
-			 * Then validate using intlTelInput.utils.isValidNumber() which properly handles
-			 * the normalized value. This approach supports phonewords when allowPhonewords is enabled.
-			 */
 			const normalizedNumber = iti.getNumber();
 			const isValid =
 				normalizedNumber &&
 				window.intlTelInput?.utils?.isValidNumber( normalizedNumber );
+			const isInvalid = !! phoneNumberValue && ! isValid;
 
-			if ( phoneNumberValue && ! isValid ) {
+			iti.hiddenInput.value = isInvalid
+				? iti.telInput.value
+				: normalizedNumber || '';
+
+			return isInvalid;
+		};
+
+		const updatePhoneNumber = () => {
+			const parentBlock = phoneNumber.closest( '.srfm-block' );
+
+			if ( syncHiddenInput() ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, true );
 				errorMessage.textContent =
 					window?.srfm_submit?.messages?.srfm_valid_phone_number;
-				/**
-				 * Set the phone number input value to the hidden input even if the phone number is not valid,
-				 * so that the unique validation can be overridden and invalid/required validation messages will be visible.
-				 */
-				iti.hiddenInput.value = iti.telInput.value;
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, false );
-				// Use normalized number (ensures phonewords are converted to digits)
-				iti.hiddenInput.value = normalizedNumber || '';
 			}
 		};
+
+		// intl-tel-input creates the hidden input empty and only fills it on the
+		// form's native submit, which runs after SureForms validation. Fill it now
+		// so a number already in the field survives re-initialisation.
+		syncHiddenInput();
 		/**
 		 * Set the data-unique parameter to the hidden input field based on the data-unique
 		 * parameter of the phone input field.
