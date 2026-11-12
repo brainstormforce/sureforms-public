@@ -5,6 +5,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { Button, Input, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '../components/ContentSection';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
+import { isFeatureEnabled } from '@Utils/features';
 
 const days = [
 	{ label: __( 'Monday', 'sureforms' ), value: 'Monday' },
@@ -513,16 +514,19 @@ const GeneralPage = ( {
 
 	return (
 		<div className="space-y-6">
-			<ContentSection
-				loading={ loading }
-				title={ __( 'Email Summaries', 'sureforms' ) }
-				content={
-					<EmailSummariesContent
-						emailTabOptions={ emailTabOptions }
-						updateGlobalSettings={ updateGlobalSettings }
-					/>
-				}
-			/>
+			{ /* The summary reports on stored entries, so it goes with Entries. */ }
+			{ isFeatureEnabled( 'entries' ) && (
+				<ContentSection
+					loading={ loading }
+					title={ __( 'Email Summaries', 'sureforms' ) }
+					content={
+						<EmailSummariesContent
+							emailTabOptions={ emailTabOptions }
+							updateGlobalSettings={ updateGlobalSettings }
+						/>
+					}
+				/>
+			) }
 			<ContentSection
 				loading={ loading }
 				title={ __( 'IP Logging', 'sureforms' ) }

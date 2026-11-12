@@ -12,8 +12,10 @@ import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
 import * as inlineButton from '@Blocks/inline-button';
 import * as payment from '@Blocks/payment';
+import PaymentsOff from '@Blocks/payment/payments-off';
 import * as paymentHistory from '@Blocks/payment-history';
 import { registerBlocks } from '@Blocks/register-block';
+import { isFeatureEnabled } from '@Utils/features';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import SlugControl from '@Components/slug-control';
@@ -32,6 +34,19 @@ import {
 // Register store.
 import '../store/store.js';
 
+// While Payments is off the payment block stays registered, so forms that have
+// one keep its settings on save, but it shows a notice instead of the field and
+// can't be inserted.
+const paymentBlock = isFeatureEnabled( 'payments' )
+	? payment
+	: {
+		metadata: {
+			...payment.metadata,
+			supports: { ...payment.metadata.supports, inserter: false },
+		},
+		settings: { ...payment.settings, edit: PaymentsOff },
+	};
+
 const registerBlock = [
 	text,
 	email,
@@ -46,7 +61,7 @@ const registerBlock = [
 	select,
 	address,
 	inlineButton,
-	payment,
+	paymentBlock,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
@@ -58,7 +73,10 @@ if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 		changeCoreParagraphCategory
 	);
 } else {
-	registerBlocks( [ sfForm, paymentHistory ] );
+	registerBlocks( [
+		sfForm,
+		...( isFeatureEnabled( 'payments' ) ? [ paymentHistory ] : [] ),
+	] );
 
 	// Open block inserter and show tooltip on Form block when redirected from Learn section.
 	if (
@@ -339,3 +357,4 @@ addFilter(
 		];
 	}
 );
+

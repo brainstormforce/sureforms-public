@@ -206,4 +206,29 @@ class Test_Lost_Submissions extends TestCase {
 		$this->assertSame( 0, Lost_Submissions::get()['count'] );
 		wp_delete_post( $form_id, true );
 	}
+	/**
+	 * With Entries off, nothing is stored because of the site-wide switch, so the
+	 * notices point at that switch rather than the per-form compliance setting.
+	 */
+	public function test_notices_name_the_entries_switch_while_entries_is_off() {
+		\SRFM\Inc\Features::save( [ 'entries' => false ] );
+		$form_id = $this->make_form();
+
+		$this->send_never_stored( $form_id, '__return_false' );
+
+		wp_set_current_user( $this->admin_id );
+		Admin::reset_action_items_cache();
+		$items = array_column( Admin::get_instance()->get_action_items(), null, 'id' );
+
+		delete_option( \SRFM\Inc\Features::OPTION );
+		\SRFM\Inc\Features::reset();
+		wp_delete_post( $form_id, true );
+
+		$this->assertArrayHasKey( 'lost_submissions', $items );
+		$this->assertArrayHasKey( 'notification_error', $items );
+		foreach ( [ 'lost_submissions', 'notification_error' ] as $id ) {
+			$this->assertStringNotContainsString( 'Never store entry data', $items[ $id ]['message'], $id );
+			$this->assertStringContainsString( 'Entries feature is turned off', $items[ $id ]['message'], $id );
+		}
+	}
 }
