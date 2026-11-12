@@ -427,7 +427,8 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 ## Changelog ##
 ### 2.14.0 - 12th November 2026 ###
-* New: Turn individual features and blocks on or off from Settings → Features.
+* New: Added Settings → Features, where you can turn Entries, AI form builder, OttoKit automations and Payments on or off. A feature that is turned off no longer loads, and its blocks are hidden from the editor.
+* New: Added the `srfm_resolve_guest_payment_user_by_email` developer filter to stop linking a guest payment to a user account by email address.
 * Fix: CSV exports of entries now include values for every field, even when a field's key was saved in a different format.
 * Fix: Fields in forms shown inside Elementor Pro popups now work when the popup opens.
 * Fix: The Stripe card field now loads when a form uses a dynamic amount the visitor has not picked yet.
