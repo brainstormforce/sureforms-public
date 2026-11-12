@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-12T06:45:41+00:00\n"
+"POT-Creation-Date: 2026-11-12T10:54:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -221,7 +221,7 @@ msgstr ""
 #: admin/admin.php:1588
 #: admin/admin.php:1589
 #: admin/admin.php:3555
-#: inc/features.php:507
+#: inc/features.php:516
 #: inc/generate-form-markup.php:236
 #: inc/generate-form-markup.php:249
 #: inc/global-settings/email-summary.php:225
@@ -240,7 +240,7 @@ msgstr ""
 
 #: admin/admin.php:1599
 #: admin/admin.php:1600
-#: inc/features.php:520
+#: inc/features.php:529
 #: inc/form-templates.php:2859
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -2182,44 +2182,44 @@ msgstr ""
 msgid "Unable to import form."
 msgstr ""
 
-#: inc/features.php:261
+#: inc/features.php:264
 msgid "Features must be a map of feature key to on or off."
 msgstr ""
 
-#: inc/features.php:282
+#: inc/features.php:285
 #: inc/global-settings/global-settings.php:141
 msgid "Settings Saved Successfully."
 msgstr ""
 
-#: inc/features.php:508
+#: inc/features.php:517
 msgid "Turning this off stops saving new entries, so entry limits stop applying. Old ones are kept."
 msgstr ""
 
-#: inc/features.php:509
+#: inc/features.php:518
 msgid "has an entry limit"
 msgstr ""
 
-#: inc/features.php:512
+#: inc/features.php:521
 msgid "AI form builder"
 msgstr ""
 
-#: inc/features.php:513
+#: inc/features.php:522
 msgid "Turning this off hides Create with AI on the New Form screen and the AI dashboard widget."
 msgstr ""
 
-#: inc/features.php:516
+#: inc/features.php:525
 msgid "OttoKit automations"
 msgstr ""
 
-#: inc/features.php:517
+#: inc/features.php:526
 msgid "Turning this off hides the Automations tab and OttoKit page."
 msgstr ""
 
-#: inc/features.php:521
+#: inc/features.php:530
 msgid "Turning this off removes payment fields and pauses paid forms."
 msgstr ""
 
-#: inc/features.php:522
+#: inc/features.php:531
 msgid "has a payment field"
 msgstr ""
 
@@ -6049,6 +6049,7 @@ msgstr ""
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #: assets/build/templatePicker.js:172
 msgid "Premium"
 msgstr ""
@@ -19364,6 +19365,14 @@ msgid "Changing the slug may break form submissions, conditional logic, integrat
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Payments is turned off, so this field is not shown and the form does not accept submissions. Its settings are kept."
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Turn on Payments in Settings → Features"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Click here to insert a form"
 msgstr ""
 
@@ -19554,6 +19563,7 @@ msgstr ""
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
+#: assets/build/settings.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Core"
 msgstr ""
@@ -20980,6 +20990,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
+msgid "Entries is turned off in Settings → Features, so no form stores entries right now. This applies again once Entries is turned back on."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Automatically delete entries"
 msgstr ""
 
@@ -21490,6 +21505,10 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "The entry cap relies on stored entries to count submissions. While Compliance Settings has \"Never store entry data after form submission\" enabled, this limit will not be enforced. Disable that option, or remove the entry limit, to use this feature."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "The entry cap relies on stored entries to count submissions. Entries is turned off in Settings → Features, so this limit is not enforced until it is turned back on."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -23683,6 +23702,18 @@ msgid "View documentation"
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "Manage Features"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Turn off what you don't use. Anything off stops loading on your site, and turning it back on restores its data exactly where you left it."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Learn more"
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "Payment Methods"
 msgstr ""
 
@@ -24383,11 +24414,47 @@ msgid "Creates a dedicated SureForms MCP endpoint that AI clients like Claude ca
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Learn more"
+msgid "MCP Adapter Required"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "MCP Adapter Required"
+msgid "draft"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "pending review"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "scheduled"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "private"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Settings saved."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Could not save the features."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Needs %s."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Turning this off also turns off %s."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "These forms use something you are turning off:"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Turn off anyway"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -24568,10 +24635,6 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Please enter a valid recipient email."
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Settings saved."
 msgstr ""
 
 #: assets/build/settings.js:172

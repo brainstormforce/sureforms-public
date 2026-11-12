@@ -916,6 +916,57 @@ class Test_Features extends TestCase {
 	}
 
 	/**
+	 * A row's usage_attrs lists forms with a block that has the attribute set,
+	 * at any depth, and asks for confirmation before the row is turned off.
+	 */
+	public function test_usage_attrs_lists_forms_before_turning_off() {
+		$add = static function ( $rows ) {
+			$rows['calc'] = [ 'usage_attrs' => [ 'enableCalculation' ] ];
+			return $rows;
+		};
+		add_filter( 'srfm_features', $add );
+		Features::reset();
+
+		$on    = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/inline-button {"block_id":"r1"} --><!-- wp:srfm/number {"block_id":"n1","enableCalculation":true} /--><!-- /wp:srfm/inline-button -->',
+			]
+		);
+		$off   = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/number {"block_id":"n2","enableCalculation":false} /-->',
+			]
+		);
+		$plain = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/number {"block_id":"n3"} /-->',
+			]
+		);
+
+		$this->assertTrue( Features::form_uses( $on, [], [], [ 'enableCalculation' ] ), 'a nested block with the attribute on counts' );
+		$this->assertFalse( Features::form_uses( $off, [], [], [ 'enableCalculation' ] ), 'the attribute set to false does not count' );
+		$this->assertFalse( Features::form_uses( $plain, [], [], [ 'enableCalculation' ] ), 'a block without the attribute does not count' );
+
+		$response = Features::rest_save( [ 'features' => [ 'calc' => false ] ] );
+		$data     = $response->get_data();
+		remove_filter( 'srfm_features', $add );
+
+		$this->assertTrue( $data['needs_confirmation'] );
+		$this->assertSame( [ $on ], wp_list_pluck( $data['in_use']['calc'], 'id' ) );
+		$this->assertTrue( Features::is_enabled( 'calc' ), 'nothing is saved until confirmed' );
+
+		wp_delete_post( $on, true );
+		wp_delete_post( $off, true );
+		wp_delete_post( $plain, true );
+	}
+
+	/**
 	 * reset() drops the cached rows, so a filter added later is picked up.
 	 */
 	public function test_reset() {

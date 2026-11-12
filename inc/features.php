@@ -66,6 +66,8 @@ class Features {
 	 *   as "in use" before the feature is turned off.
 	 * - usage_meta (string[]): form meta keys checked the same way; a form
 	 *   counts when the meta (array or JSON) has its on/off flag set.
+	 * - usage_attrs (string[]): block attribute names checked the same way; a
+	 *   form counts when any of its blocks has one of them set to a truthy value.
 	 * - admin_pages (string[]): `page` slugs of the admin screens this feature
 	 *   adds. While it is off, opening one goes to Settings → Features.
 	 *
@@ -133,6 +135,7 @@ class Features {
 					'cron_hooks'   => [],
 					'usage_blocks' => [],
 					'usage_meta'   => [],
+					'usage_attrs'  => [],
 					'admin_pages'  => [],
 				]
 			);
@@ -373,7 +376,8 @@ class Features {
 		$reason = Helper::get_string_value( $labels[ $key ]['usage'] ?? '' );
 		$forms  = self::forms_matching(
 			Helper::get_array_value( $definitions[ $key ]['usage_blocks'] ),
-			Helper::get_array_value( $definitions[ $key ]['usage_meta'] )
+			Helper::get_array_value( $definitions[ $key ]['usage_meta'] ),
+			Helper::get_array_value( $definitions[ $key ]['usage_attrs'] )
 		);
 		foreach ( $forms as $i => $form ) {
 			$forms[ $i ]['reason'] = $reason;
@@ -382,16 +386,17 @@ class Features {
 	}
 
 	/**
-	 * Forms (any status but trash and auto-draft) that contain any of the blocks
-	 * or have any of the metas switched on.
+	 * Forms (any status but trash and auto-draft) that contain any of the blocks,
+	 * have any of the metas switched on, or have a block with any of the attributes set.
 	 *
 	 * @param array<mixed> $blocks Block names.
 	 * @param array<mixed> $metas  Form meta keys.
+	 * @param array<mixed> $attrs  Block attribute names.
 	 * @since 2.14.0
 	 * @return array<int,array{id:int,title:string,edit_url:string,status:string}>
 	 */
-	public static function forms_matching( $blocks, $metas ) {
-		if ( empty( $blocks ) && empty( $metas ) ) {
+	public static function forms_matching( $blocks, $metas, $attrs = [] ) {
+		if ( empty( $blocks ) && empty( $metas ) && empty( $attrs ) ) {
 			return [];
 		}
 
@@ -408,7 +413,7 @@ class Features {
 		$using = [];
 		foreach ( $form_ids as $form_id ) {
 			$form_id = Helper::get_integer_value( $form_id );
-			if ( self::form_uses( $form_id, $blocks, $metas ) ) {
+			if ( self::form_uses( $form_id, $blocks, $metas, $attrs ) ) {
 				$using[] = [
 					'id'       => $form_id,
 					'title'    => get_the_title( $form_id ),
@@ -422,16 +427,17 @@ class Features {
 	}
 
 	/**
-	 * Whether a form uses any of the given blocks or meta flags.
+	 * Whether a form uses any of the given blocks, meta flags or block attributes.
 	 *
 	 * @param int          $form_id Form ID.
 	 * @param array<mixed> $blocks  Block names.
 	 * @param array<mixed> $metas   Meta keys.
+	 * @param array<mixed> $attrs   Block attribute names.
 	 * @since 2.14.0
 	 * @return bool
 	 */
-	public static function form_uses( $form_id, $blocks, $metas ) {
-		if ( ! empty( $blocks ) ) {
+	public static function form_uses( $form_id, $blocks, $metas, $attrs = [] ) {
+		if ( ! empty( $blocks ) || ! empty( $attrs ) ) {
 			$content = Helper::get_string_value( get_post_field( 'post_content', $form_id ) );
 			// A block that renders from a synced pattern is part of the form.
 			$visited = [];
@@ -440,6 +446,9 @@ class Features {
 				if ( is_string( $block ) && has_block( $block, $content ) ) {
 					return true;
 				}
+			}
+			if ( ! empty( $attrs ) && self::has_block_attr( parse_blocks( $content ), $attrs ) ) {
+				return true;
 			}
 		}
 		foreach ( $metas as $meta_key ) {
@@ -570,6 +579,33 @@ class Features {
 			}
 		}
 		return $content;
+	}
+
+	/**
+	 * Whether any block, at any depth, has one of the attributes set to a truthy value.
+	 *
+	 * @param array<mixed> $blocks Parsed blocks.
+	 * @param array<mixed> $attrs  Block attribute names.
+	 * @since 2.14.0
+	 * @return bool
+	 */
+	private static function has_block_attr( $blocks, $attrs ) {
+		$stack = $blocks;
+		while ( ! empty( $stack ) ) {
+			$block = array_pop( $stack );
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			foreach ( $attrs as $attr ) {
+				if ( is_string( $attr ) && ! empty( $block['attrs'][ $attr ] ) ) {
+					return true;
+				}
+			}
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				array_push( $stack, ...$block['innerBlocks'] );
+			}
+		}
+		return false;
 	}
 
 	/**
