@@ -1515,7 +1515,7 @@ JS;
 	 * Attached to `wp-hooks`, which every SureForms and SureForms Pro bundle
 	 * depends on, so it prints before any of them on any screen they load.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return void
 	 */
 	public function localize_features() {

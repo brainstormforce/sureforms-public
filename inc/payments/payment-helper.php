@@ -45,14 +45,14 @@ class Payment_Helper {
 	 * so a default-plan form stores no cadence; the server falls back to this value
 	 * instead of trusting the submitted interval.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 */
 	public const DEFAULT_SUBSCRIPTION_INTERVAL = 'month';
 
 	/**
 	 * Default subscription billing cycles ('ongoing' = no end) for a default-plan block.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 */
 	public const DEFAULT_SUBSCRIPTION_BILLING_CYCLES = 'ongoing';
 
@@ -68,7 +68,7 @@ class Payment_Helper {
 	 *
 	 * @param int    $form_id Form id.
 	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool True when the request should be rejected.
 	 */
 	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
@@ -105,7 +105,7 @@ class Payment_Helper {
 	 * so a second concurrent caller can also get true.
 	 *
 	 * @param string $reference Provider transaction_id or subscription_id.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool True if this caller won the claim, false if it was already claimed.
 	 */
 	public static function claim_payment_reference( $reference ) {
@@ -133,7 +133,7 @@ class Payment_Helper {
 	 * retry is not blocked when the paid row could not be created.
 	 *
 	 * @param string $reference Provider transaction_id or subscription_id.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return void
 	 */
 	public static function release_payment_reference( $reference ) {
@@ -153,7 +153,7 @@ class Payment_Helper {
 	 * customer; it only blocks a reserved value from being stored on a Stripe row.
 	 *
 	 * @param mixed $customer_id Client-supplied customer id.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return string The customer id, or '' if it uses a reserved internal format.
 	 */
 	public static function sanitize_stripe_customer_id( $customer_id ) {
@@ -175,7 +175,7 @@ class Payment_Helper {
 	 * billing cadence. An explicitly stored cadence is returned unchanged.
 	 *
 	 * @param array<string, mixed> $block_config One block's stored config from _srfm_block_config.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array{interval: string, billing_cycles: int|string}
 	 */
 	public static function resolve_stored_subscription_cadence( $block_config ) {
@@ -1239,7 +1239,7 @@ class Payment_Helper {
 		// access by the context user_id should return false here so guest payments
 		// resolve to 0, as the hook contract documents.
 		//
-		// @since 2.13.2
+		// @since 2.14.0
 		// @param bool                 $match_by_email Whether to resolve a guest payment to the account owning customer_email.
 		// @param array<string, mixed> $payment        The payment record.
 		$match_by_email = (bool) apply_filters( 'srfm_resolve_guest_payment_user_by_email', true, $payment );
