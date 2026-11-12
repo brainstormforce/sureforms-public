@@ -12,7 +12,7 @@
  * boot lines with `Features::is_enabled()`.
  *
  * @package sureforms
- * @since 2.13.2
+ * @since 2.14.0
  */
 
 namespace SRFM\Inc;
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Feature registry.
  *
- * @since 2.13.2
+ * @since 2.14.0
  */
 class Features {
 	/**
@@ -69,7 +69,7 @@ class Features {
 	 * - admin_pages (string[]): `page` slugs of the admin screens this feature
 	 *   adds. While it is off, opening one goes to Settings → Features.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function definitions() {
@@ -113,7 +113,7 @@ class Features {
 		/**
 		 * Filters the features a site owner can switch off.
 		 *
-		 * @since 2.13.2
+		 * @since 2.14.0
 		 * @param array<string,array<string,mixed>> $rows Feature rows keyed by feature key.
 		 */
 		$rows = apply_filters( 'srfm_features', $rows );
@@ -154,7 +154,7 @@ class Features {
 	 * when its own switch is off or when anything it depends on is off.
 	 *
 	 * @param string $key Feature key.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool
 	 */
 	public static function is_enabled( $key ) {
@@ -167,7 +167,7 @@ class Features {
 		/**
 		 * Filters whether a feature is on.
 		 *
-		 * @since 2.13.2
+		 * @since 2.14.0
 		 * @param bool   $enabled Whether the feature is on.
 		 * @param string $key     Feature key.
 		 */
@@ -183,7 +183,7 @@ class Features {
 	/**
 	 * The stored switches, limited to booleans.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,bool>
 	 */
 	public static function get_saved() {
@@ -205,7 +205,7 @@ class Features {
 	 * Entries back on reschedules the email summary when that is switched on.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool
 	 */
 	public static function save( $values ) {
@@ -234,7 +234,7 @@ class Features {
 		/**
 		 * Fires after the feature switches are saved.
 		 *
-		 * @since 2.13.2
+		 * @since 2.14.0
 		 * @param array<string,bool> $before States before saving.
 		 * @param array<string,bool> $after  States after saving.
 		 */
@@ -253,7 +253,7 @@ class Features {
 	 * `srfm-global-settings` route before this runs.
 	 *
 	 * @param array<mixed> $params Request params without `srfm_tab`.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return \WP_REST_Response|\WP_Error WP_Error (400) when `features` is not a map.
 	 */
 	public static function rest_save( $params ) {
@@ -288,7 +288,7 @@ class Features {
 	/**
 	 * Resolved state of every registered feature.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,bool>
 	 */
 	public static function states() {
@@ -303,7 +303,7 @@ class Features {
 	 * Data for the admin and editor scripts: every row with its saved switch,
 	 * its resolved state, and the features that keep it off.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function for_js() {
@@ -340,7 +340,7 @@ class Features {
 	 * adds through the same filter.
 	 *
 	 * @param array<mixed> $endpoints Endpoints keyed by route.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<mixed>
 	 */
 	public static function filter_endpoints( $endpoints ) {
@@ -361,7 +361,7 @@ class Features {
 	 * Each form also says what it uses (`reason`), from the feature's `usage` label.
 	 *
 	 * @param string $key Feature key.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<int,array{id:int,title:string,edit_url:string,status:string,reason:string}>
 	 */
 	public static function forms_using( $key ) {
@@ -387,7 +387,7 @@ class Features {
 	 *
 	 * @param array<mixed> $blocks Block names.
 	 * @param array<mixed> $metas  Form meta keys.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<int,array{id:int,title:string,edit_url:string,status:string}>
 	 */
 	public static function forms_matching( $blocks, $metas ) {
@@ -427,7 +427,7 @@ class Features {
 	 * @param int          $form_id Form ID.
 	 * @param array<mixed> $blocks  Block names.
 	 * @param array<mixed> $metas   Meta keys.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool
 	 */
 	public static function form_uses( $form_id, $blocks, $metas ) {
@@ -462,7 +462,7 @@ class Features {
 	 * `page` that is not registered for the current user, so it never takes over
 	 * a screen that exists. Settings checks its own capability.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return void
 	 */
 	public static function redirect_disabled_page() {
@@ -481,7 +481,7 @@ class Features {
 	/**
 	 * Forget cached definitions and states.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return void
 	 */
 	public static function reset() {
@@ -498,7 +498,7 @@ class Features {
 	 * `usage` (optional) says what a form uses, for the warning shown before the
 	 * feature is turned off.
 	 *
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,array{label:string,description:string,usage?:string}>
 	 */
 	public static function labels() {
@@ -526,7 +526,7 @@ class Features {
 		/**
 		 * Filters the label and description shown for each feature.
 		 *
-		 * @since 2.13.2
+		 * @since 2.14.0
 		 * @param array<string,array<string,string>> $labels Keyed by feature key.
 		 */
 		return Helper::get_array_value( apply_filters( 'srfm_feature_labels', $labels ) );
@@ -539,7 +539,7 @@ class Features {
 	 *
 	 * @param string           $content Block content.
 	 * @param array<int, true> $visited Pattern IDs already expanded, keyed by ID.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return string
 	 */
 	private static function with_pattern_content( $content, &$visited ) {
@@ -577,7 +577,7 @@ class Features {
 	 * with the forms that use them.
 	 *
 	 * @param array<mixed> $values Submitted map of feature key → bool.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,array<int,array{id:int,title:string,edit_url:string,status:string,reason:string}>>
 	 */
 	private static function in_use_if_saved( $values ) {
@@ -606,7 +606,7 @@ class Features {
 	 * any item is on. A scalar counts when it is truthy and not "false".
 	 *
 	 * @param mixed $meta Meta value, JSON already decoded.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool
 	 */
 	private static function meta_is_on( $meta ) {
@@ -634,7 +634,7 @@ class Features {
 	 *
 	 * @param array<string,bool> $saved  Saved switches.
 	 * @param array<mixed>       $values Submitted map of feature key → bool.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return array<string,bool>
 	 */
 	private static function merge( $saved, $values ) {
@@ -657,7 +657,7 @@ class Features {
 	 * @param string             $key   Feature key.
 	 * @param array<string,bool> $saved Switches to resolve against.
 	 * @param array<string>      $seen  Keys already on the path, to stop a dependency loop.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool
 	 */
 	private static function resolve( $key, $saved, $seen ) {
@@ -686,7 +686,7 @@ class Features {
 	 * Clear a scheduled hook from both Action Scheduler and WP-Cron.
 	 *
 	 * @param string $hook Hook name.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return void
 	 */
 	private static function unschedule( $hook ) {

@@ -643,7 +643,7 @@ class Form_Templates {
 	 * version, or asks for a payment gateway to be set up.
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @since 2.13.2
+	 * @since 2.14.0
 	 * @return bool
 	 */
 	public static function needs_payments( $template ) {
