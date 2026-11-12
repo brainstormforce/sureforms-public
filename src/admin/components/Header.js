@@ -9,6 +9,7 @@ import UpgradeNotice from './UpgradeNotice';
 import LogoFull from '@Admin/dashboard/templates/LogoFull';
 import Breadcrumb from './Breadcrumb';
 import Tooltip from './Tooltip';
+import { withEnabledFeatures } from '@Utils/features';
 
 const {
 	site_url: siteURL = '',
@@ -17,7 +18,7 @@ const {
 	additional_header_nav_items: additionalNavItems = [],
 } = srfm_admin;
 
-const NAV_ITEMS = [
+const NAV_ITEMS = withEnabledFeatures( [
 	{
 		slug: 'sureforms_menu',
 		text: __( 'Dashboard', 'sureforms' ),
@@ -32,11 +33,13 @@ const NAV_ITEMS = [
 		slug: 'sureforms_entries',
 		text: __( 'Entries', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_entries`,
+		feature: 'entries',
 	},
 	{
 		slug: 'sureforms_payments',
 		text: __( 'Payments', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
+		feature: 'payments',
 	},
 	...additionalNavItems,
 	{
@@ -49,7 +52,7 @@ const NAV_ITEMS = [
 		text: __( 'Learn', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_learn`,
 	},
-];
+] );
 
 const HeaderTooltipItem = ( { title, icon, onClick, children } ) => (
 	<Topbar.Item className="p-1 gap-2">

@@ -111,6 +111,44 @@ describe( 'initializePaymentElements', () => {
 		} );
 		expect( StripePayment.paymentElements[ '7-b2' ].amount ).toBe( 6000 );
 	} );
+
+	// Stripe answers elements/sessions with 400 amount_too_small below its
+	// minimum charge (about USD 0.50 after conversion), and the card field
+	// never renders. A placeholder of 1 minor unit hid one-time variable and
+	// calculated amounts in 2.13.1.
+	it.each( [ '', '0' ] )(
+		'mounts an unpicked amount (%p) with a placeholder Stripe accepts',
+		( currentAmount ) => {
+			document.body.innerHTML = `
+				<form data-srfm-instance="7">
+					<div class="srfm-block srfm-payment-block" data-block-id="b3">
+						<input class="srfm-payment-input" data-stripe-key="pk_test" data-amount-type="variable" data-current-amount="${ currentAmount }" data-currency="cad" />
+						<div class="srfm-stripe-payment-element"></div>
+					</div>
+				</form>`;
+
+			let elementsConfig;
+			global.Stripe = jest.fn( () => ( {
+				elements: ( config ) => {
+					elementsConfig = config;
+					return {
+						create: () => ( { mount: jest.fn(), on: jest.fn() } ),
+					};
+				},
+			} ) );
+			delete StripePayment.paymentElements[ '7-b3' ];
+			delete StripePayment.stripeInstances[ '7-b3' ];
+
+			StripePayment.prototype.initializePaymentElements.call(
+				{ setupPaymentElementEvents: jest.fn() },
+				'7-b3',
+				document.querySelector( '.srfm-payment-input' ),
+				'one-time'
+			);
+
+			expect( elementsConfig.amount ).toBe( 12000 );
+		}
+	);
 } );
 
 describe( 'srfmConfirmPayment', () => {

@@ -4319,3 +4319,167 @@ class Test_Thankyou_Prompt_Notice extends TestCase {
 
 
 }
+
+/**
+ * Admin pieces that follow Settings → Features.
+ */
+class Test_Admin_Features extends TestCase {
+
+	protected function setUp(): void {
+		parent::setUp();
+		delete_option( \SRFM\Inc\Features::OPTION );
+		\SRFM\Inc\Features::reset();
+	}
+
+	protected function tearDown(): void {
+		delete_option( \SRFM\Inc\Features::OPTION );
+		\SRFM\Inc\Features::reset();
+		wp_set_current_user( 0 );
+		parent::tearDown();
+	}
+
+	/**
+	 * The Entries and Payments menus are not added while their features are off.
+	 */
+	public function test_add_new_form_follows_features() {
+		global $submenu;
+
+		$admin_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_features_admin',
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin_id );
+		$slugs = static function () {
+			global $submenu;
+			$submenu = [];
+			\SRFM\Admin\Admin::get_instance()->add_new_form();
+			return wp_list_pluck( $submenu['sureforms_menu'] ?? [], 2 );
+		};
+
+		$on = $slugs();
+		$this->assertContains( SRFM_ENTRIES, $on );
+		$this->assertContains( SRFM_PAYMENTS, $on );
+
+		\SRFM\Inc\Features::save(
+			[
+				'entries'  => false,
+				'payments' => false,
+			]
+		);
+		$off = $slugs();
+		$this->assertNotContains( SRFM_ENTRIES, $off );
+		$this->assertNotContains( SRFM_PAYMENTS, $off );
+		$this->assertContains( 'sureforms_forms', $off, 'the Forms menu stays' );
+
+		$submenu = [];
+		wp_delete_user( $admin_id );
+	}
+
+	/**
+	 * Settings stays below the feature menus whichever of them are off. Items
+	 * added with a position are placed by index, so Settings must be added after
+	 * all of them for a missing Entries or Payments not to move Settings up.
+	 */
+	public function test_settings_stays_below_feature_menus_when_features_are_off() {
+		global $submenu, $menu, $_registered_pages, $_parent_pages;
+
+		$admin_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_menu_order_admin',
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $admin_id );
+		$saved = [ $submenu, $menu, $_registered_pages, $_parent_pages ];
+		// Registers its admin_menu callbacks; the loader does this only in wp-admin.
+		\SRFM\Admin\Admin::get_instance();
+
+		$order = static function () {
+			global $submenu, $menu;
+			$submenu = [];
+			$menu    = [];
+			do_action( 'admin_menu', '' );
+			return wp_list_pluck( $submenu['sureforms_menu'] ?? [], 2 );
+		};
+
+		try {
+			$cases = [
+				'all on'       => [],
+				'entries off'  => [ 'entries' => false ],
+				'payments off' => [ 'payments' => false ],
+				'both off'     => [
+					'entries'  => false,
+					'payments' => false,
+				],
+			];
+			foreach ( $cases as $case => $switches ) {
+				delete_option( \SRFM\Inc\Features::OPTION );
+				\SRFM\Inc\Features::reset();
+				\SRFM\Inc\Features::save( $switches );
+
+				$slugs    = $order();
+				$settings = array_search( 'sureforms_form_settings', $slugs, true );
+				$this->assertNotFalse( $settings, $case );
+				foreach ( [ 'sureforms_forms', 'add-new-form', SRFM_ENTRIES, SRFM_PAYMENTS, 'sureforms_quiz_entries' ] as $slug ) {
+					$at = array_search( $slug, $slugs, true );
+					if ( false !== $at ) {
+						$this->assertLessThan( $settings, $at, $case . ': ' . $slug . ' sits above Settings' );
+					}
+				}
+				$this->assertSame( $settings + 1, array_search( 'sureforms_learn', $slugs, true ), $case . ': Learn follows Settings' );
+				if ( ! \SRFM\Inc\Helper::has_pro() && isset( $switches['entries'] ) ) {
+					$this->assertNotContains( 'sureforms_quiz_entries', $slugs, $case . ': no upsell for a Pro feature that needs Entries' );
+					$this->assertNotContains( 'sureforms_partial_entries', $slugs, $case );
+				}
+			}
+		} finally {
+			[ $submenu, $menu, $_registered_pages, $_parent_pages ] = $saved;
+			wp_delete_user( $admin_id );
+		}
+	}
+
+	/**
+	 * The feature and block switches are printed before wp-hooks for users who can
+	 * edit, and not at all for anyone else.
+	 */
+	public function test_localize_features() {
+		$scripts  = wp_scripts();
+		$original = $scripts->get_data( 'wp-hooks', 'before' );
+		$users    = [];
+
+		try {
+			foreach ( [ 'subscriber', 'editor' ] as $role ) {
+				$users[ $role ] = wp_insert_user(
+					[
+						'user_login' => 'srfm_localize_' . $role,
+						'user_pass'  => wp_generate_password(),
+						'role'       => $role,
+					]
+				);
+			}
+
+			$scripts->add_data( 'wp-hooks', 'before', [] );
+			wp_set_current_user( $users['subscriber'] );
+			Admin::get_instance()->localize_features();
+			$this->assertSame( [], $scripts->get_data( 'wp-hooks', 'before' ), 'nothing is printed for a user who cannot edit' );
+
+			wp_set_current_user( $users['editor'] );
+			Admin::get_instance()->localize_features();
+			$printed = implode( '', (array) $scripts->get_data( 'wp-hooks', 'before' ) );
+			$this->assertStringContainsString( 'window.srfmFeatures = ', $printed );
+			$this->assertStringNotContainsString( 'window.srfmBlocks', $printed );
+			$this->assertStringContainsString( 'window.srfmIsFeatureEnabled = function', $printed );
+		} finally {
+			$scripts->add_data( 'wp-hooks', 'before', $original );
+			if ( function_exists( 'wp_delete_user' ) ) {
+				foreach ( $users as $id ) {
+					wp_delete_user( $id );
+				}
+			}
+		}
+	}
+}

@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { isFeatureEnabled } from '@Utils/features';
 import EditorPremiumBadge from '../../admin/components/EditorPremiumBadge';
 import { chevronDown, chevronUp } from '@wordpress/icons';
 import { SelectControl, Button, ToggleControl } from '@wordpress/components';
@@ -75,6 +76,10 @@ const ConditionalLogicPreview = () => {
 };
 
 const ConditionalLogic = ( { attributes, setAttributes } ) => {
+	// Neither the panel nor its upsell while the site has the feature switched off.
+	if ( ! isFeatureEnabled( 'conditional_logic' ) ) {
+		return null;
+	}
 	const conditionalSettings = applyFilters(
 		'srfm.conditional_logic.tab_advance',
 		attributes,

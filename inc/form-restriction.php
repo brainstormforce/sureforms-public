@@ -64,6 +64,12 @@ class Form_Restriction {
 			return false; // Invalid form ID.
 		}
 
+		// Payments is off but the form charges: accepting it would take the
+		// submission without the payment. Not skipped in live mode for the same reason.
+		if ( self::needs_disabled_payments( $form_id ) ) {
+			return true;
+		}
+
 		// Check for instant fom preview mode.
 		$srfm_live_mode_data = Helper::get_instant_form_live_data();
 
@@ -124,6 +130,12 @@ class Form_Restriction {
 
 		if ( ! isset( $form_restriction['maxEntries'] ) || ! is_int( $form_restriction['maxEntries'] ) ) {
 			return false; // Invalid form ID or restriction settings.
+		}
+
+		// The limit counts stored entries; while Entries is off nothing new is stored,
+		// so the limit does not apply (as the Entries switch's description says).
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return false;
 		}
 
 		$max_entries   = $form_restriction['maxEntries'];
@@ -263,6 +275,10 @@ class Form_Restriction {
 
 		$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
+		if ( self::needs_disabled_payments( Helper::get_integer_value( $form_id ) ) ) {
+			$form_restriction_message = self::payments_off_message();
+		}
+
 		ob_start();
 		?>
 			<div class="srfm-form-container srfm-form-restriction-wrapper">
@@ -284,4 +300,27 @@ class Form_Restriction {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Whether the form has a payment block while Payments is switched off.
+	 *
+	 * Such a form is treated as restricted on render and on submit, so it is
+	 * never accepted without its payment.
+	 *
+	 * @param int $form_id Form ID.
+	 * @since 2.14.0
+	 * @return bool
+	 */
+	public static function needs_disabled_payments( $form_id ) {
+		return ! Features::is_enabled( 'payments' ) && Features::form_uses( $form_id, [ 'srfm/payment' ], [] );
+	}
+
+	/**
+	 * Message shown in place of a form that needs Payments while it is off.
+	 *
+	 * @since 2.14.0
+	 * @return string
+	 */
+	public static function payments_off_message() {
+		return __( 'This form is not accepting submissions right now.', 'sureforms' );
+	}
 }

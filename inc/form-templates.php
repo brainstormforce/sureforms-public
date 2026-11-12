@@ -440,9 +440,14 @@ class Form_Templates {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_templates_for_js() {
-		$list = [];
-		$tier = Helper::get_pro_tier();
+		$list     = [];
+		$tier     = Helper::get_pro_tier();
+		$payments = Features::is_enabled( 'payments' );
 		foreach ( self::get_templates() as $template ) {
+			// A form built from it could not take submissions (Form_Restriction).
+			if ( ! $payments && self::needs_payments( $template ) ) {
+				continue;
+			}
 			$resolved = self::resolve_fields( $template, $tier );
 			$fields   = array_values(
 				array_filter(
@@ -631,6 +636,27 @@ class Form_Templates {
 	 */
 	public static function is_template_available( $template ) {
 		return '' === self::lock_reason( $template );
+	}
+
+	/**
+	 * Whether a template takes payments: it has a payment field in any plan's
+	 * version, or asks for a payment gateway to be set up.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since 2.14.0
+	 * @return bool
+	 */
+	public static function needs_payments( $template ) {
+		$setup = array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $template['setup'] ?? [] ) );
+		if ( array_intersect( [ 'stripe', 'paypal' ], $setup ) ) {
+			return true;
+		}
+		foreach ( self::resolve_fields( $template, 'business' ) as $field ) {
+			if ( 'payment' === ( $field['fieldType'] ?? '' ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -2566,6 +2592,14 @@ class Form_Templates {
 	 * @return WP_Error|null Null when the template can be used.
 	 */
 	private static function locked_error( $template ) {
+		if ( ! Features::is_enabled( 'payments' ) && self::needs_payments( $template ) ) {
+			return new WP_Error(
+				'srfm_template_needs_payments',
+				__( 'This template takes payments. Turn on Payments in Settings → Features to use it.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
 		$reason = self::lock_reason( $template );
 		if ( '' === $reason ) {
 			return null;

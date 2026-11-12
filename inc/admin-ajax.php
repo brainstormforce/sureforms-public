@@ -36,7 +36,10 @@ class Admin_Ajax {
 	public function __construct() {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
-		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
+		// Feeds the OttoKit integration, so it goes with the OttoKit automations switch.
+		if ( Features::is_enabled( 'ottokit' ) ) {
+			add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
+		}
 		add_action( 'wp_ajax_srfm_download_export', [ $this, 'download_export_file' ] );
 		add_action( 'wp_ajax_srfm_download_logs', [ $this, 'download_client_log' ] );
 		add_action( 'wp_ajax_srfm_clear_logs', [ $this, 'clear_client_log' ] );

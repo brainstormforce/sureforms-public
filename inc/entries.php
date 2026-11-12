@@ -929,9 +929,35 @@ class Entries {
 			$row[]     = isset( $entry['status'] ) ? Helper::get_string_value( $entry['status'] ) : '';
 			$form_data = isset( $entry['form_data'] ) ? Helper::get_array_value( $entry['form_data'] ) : [];
 
-			foreach ( $block_key_map as $srfm_key ) {
-				$field_value = $form_data[ $srfm_key ] ?? '';
-				$row[]       = self::escape_csv_formula( self::normalize_field_values( $field_value, $srfm_key ) );
+			// A field edited over time (its label, slug or block type changed) is
+			// stored under a different key per variant, but its block ID stays the
+			// same. Index this entry's values by block ID so a column resolves the
+			// value whatever variant it was saved under, instead of reading one
+			// frozen key and exporting blank for every other variant — see #1574731.
+			$value_by_block = [];
+			$excluded       = Helper::get_excluded_fields();
+			foreach ( $form_data as $entry_key => $entry_value ) {
+				if ( in_array( $entry_key, $excluded, true ) ) {
+					continue;
+				}
+				$block_id = Helper::get_block_id_from_key( Helper::get_string_value( $entry_key ) );
+				if ( '' === $block_id || isset( $value_by_block[ $block_id ] ) ) {
+					continue;
+				}
+				$value_by_block[ $block_id ] = [
+					'key'   => $entry_key,
+					'value' => $entry_value,
+				];
+			}
+
+			// $block_key_map is keyed by block ID; its value is a representative key
+			// used only to type empty cells when this entry has no answer for it.
+			foreach ( $block_key_map as $block_id => $column_key ) {
+				$resolved = $value_by_block[ $block_id ] ?? [
+					'key'   => $column_key,
+					'value' => '',
+				];
+				$row[]    = self::escape_csv_formula( self::normalize_field_values( $resolved['value'], Helper::get_string_value( $resolved['key'] ) ) );
 			}
 
 			fputcsv( $stream, $row ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputcsv

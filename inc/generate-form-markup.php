@@ -181,6 +181,11 @@ class Generate_Form_Markup {
 			return;
 		}
 
+		// The Entries page this links to is not registered while Entries is off.
+		if ( ! Features::is_enabled( 'entries' ) ) {
+			return;
+		}
+
 		$form_ids = array_map( 'absint', array_keys( self::$rendered_form_ids ) );
 
 		// Fallback for a form's own singular page if nothing was recorded.

@@ -1,4 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
+import { isFeatureEnabled } from './features';
 
 /**
  * The ways to start a new form on the Add New Form start screen.
@@ -33,12 +34,17 @@ const AI_PARAMS = [ 'access_key', 'srfm_ai_dashboard_prompt', 'form_type' ];
  *
  * @since 2.13.0
  * @param {URLSearchParams} params Query args.
- * @return {string} `templates`, `ai` or `start`.
+ * @return {string} `templates`, `ai` or `start`; never `ai` while the AI form builder is off.
  */
 export const getAddNewFormScreen = ( params ) => {
 	const view = params.get( 'view' );
 	if ( 'templates' === view ) {
 		return 'templates';
+	}
+	// With the AI form builder off, no link opens it: the start screen offers
+	// templates and a blank form instead, or the templates when it is filtered off.
+	if ( ! isFeatureEnabled( 'ai_builder' ) ) {
+		return isStartScreenEnabled() ? 'start' : 'templates';
 	}
 	if (
 		'ai' === view ||

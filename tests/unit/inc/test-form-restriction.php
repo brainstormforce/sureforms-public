@@ -412,3 +412,52 @@ class Test_Form_Restriction extends TestCase {
 	}
 
 }
+
+/**
+ * Payment forms while the Payments feature is off.
+ */
+class Test_Form_Restriction_Payments_Off extends TestCase {
+
+	protected function tearDown(): void {
+		delete_option( \SRFM\Inc\Features::OPTION );
+		\SRFM\Inc\Features::reset();
+		parent::tearDown();
+	}
+
+	/**
+	 * Only a form with a payment block is held back, and only while Payments is off.
+	 */
+	public function test_needs_disabled_payments() {
+		$paid  = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/payment {"block_id":"p1"} /-->',
+			]
+		);
+		$plain = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"i1"} /-->',
+			]
+		);
+
+		$this->assertFalse( Form_Restriction::needs_disabled_payments( $paid ), 'Payments on' );
+
+		\SRFM\Inc\Features::save( [ 'payments' => false ] );
+		$this->assertTrue( Form_Restriction::needs_disabled_payments( $paid ) );
+		$this->assertFalse( Form_Restriction::needs_disabled_payments( $plain ) );
+		$this->assertFalse( Form_Restriction::needs_disabled_payments( 0 ), 'no form, nothing to hold back' );
+
+		wp_delete_post( $paid, true );
+		wp_delete_post( $plain, true );
+	}
+
+	/**
+	 * The notice is the same generic sentence on every payment form.
+	 */
+	public function test_payments_off_message() {
+		$this->assertSame( 'This form is not accepting submissions right now.', Form_Restriction::payments_off_message() );
+	}
+}

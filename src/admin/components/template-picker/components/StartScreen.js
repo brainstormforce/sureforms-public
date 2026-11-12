@@ -3,6 +3,7 @@ import { createInterpolateElement, useEffect } from '@wordpress/element';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Container, Text } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
+import { isFeatureEnabled } from '@Utils/features';
 import {
 	getScratchUrl,
 	setStartChoice,
@@ -15,8 +16,14 @@ import { AiArt, TemplateArt } from './StartScreenArt.js';
 /**
  * Cards in the order they are shown. Each choice is counted with its card's
  * position, so the share of each path can be read apart from where it sat.
+ * The AI card is left out while the AI form builder is switched off.
+ *
+ * @return {string[]} Card keys.
  */
-const CARD_ORDER = [ 'ai', 'template' ];
+const getCardOrder = () =>
+	[ 'ai', 'template' ].filter(
+		( choice ) => 'ai' !== choice || isFeatureEnabled( 'ai_builder' )
+	);
 
 // History entries whose view is already counted: Back to the start screen
 // shows the same entry again, not a new visit.
@@ -113,6 +120,8 @@ const StartScreen = () => {
 		navigate( { search: `?${ params.toString() }` } );
 	};
 
+	const cardOrder = getCardOrder();
+
 	return (
 		<div className="h-screen overflow-y-auto bg-background-secondary">
 			<Header />
@@ -139,8 +148,15 @@ const StartScreen = () => {
 					</Text>
 				</Container>
 
-				<div className="grid grid-cols-1 gap-5 max-w-[480px] mx-auto pb-7 min-[981px]:grid-cols-2 min-[981px]:gap-[26px] min-[981px]:max-w-[720px]">
-					{ CARD_ORDER.map( ( choice, index ) => {
+				<div
+					className={ cn(
+						'grid grid-cols-1 gap-5 max-w-[480px] mx-auto pb-7',
+						// One card stays at its single-column width, centred.
+						cardOrder.length > 1 &&
+							'min-[981px]:grid-cols-2 min-[981px]:gap-[26px] min-[981px]:max-w-[720px]'
+					) }
+				>
+					{ cardOrder.map( ( choice, index ) => {
 						const card = CARDS[ choice ];
 						const Art = card.art;
 						const open = () => openPath( choice, index + 1 );

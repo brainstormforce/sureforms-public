@@ -421,6 +421,10 @@ class Form_Submit {
 
 			$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
+			if ( Form_Restriction::needs_disabled_payments( $form_id ) ) {
+				$form_restriction_message = Form_Restriction::payments_off_message();
+			}
+
 			wp_send_json_error(
 				[
 					'message' => $form_restriction_message,
@@ -716,7 +720,8 @@ class Form_Submit {
 
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
-		if ( $gdpr && $do_not_store_entries ) {
+		// The site-wide Entries switch wins over the form's own setting.
+		if ( ( $gdpr && $do_not_store_entries ) || ! Features::is_enabled( 'entries' ) ) {
 			/** This action is documented below, where the stored-entry path fires it. */
 			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), $form_data );
 
@@ -746,7 +751,7 @@ class Form_Submit {
 			$form_data['form_id'] = $id ? intval( $id ) : '';
 			do_action( 'srfm_after_submission_process', $form_data );
 
-			return [
+			$response = [
 				'success'      => true,
 				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'         => [
@@ -756,6 +761,8 @@ class Form_Submit {
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
+			/** This filter is documented below, where the stored-entry path applies it. */
+			return apply_filters( 'srfm_form_submission_response', $response, $form_data, $submission_data );
 		}
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );

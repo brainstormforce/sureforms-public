@@ -14,8 +14,10 @@ import {
 	ShieldCheck,
 	TriangleAlert,
 	Globe,
+	ToggleRight,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
+import { isFeatureEnabled, withEnabledFeatures } from '@Utils/features';
 import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
@@ -98,6 +100,7 @@ const defaultNavigation = [
 	{
 		name: __( 'OttoKit', 'sureforms' ),
 		slug: 'ottokit-settings',
+		feature: 'ottokit',
 		icon: (
 			<img
 				src={ ottoKitIcon }
@@ -110,6 +113,7 @@ const defaultNavigation = [
 	{
 		name: __( 'Integrations', 'sureforms' ),
 		slug: 'integration-settings',
+		feature: 'native_integrations',
 		icon: <Cpu />,
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
 	},
@@ -145,8 +149,30 @@ const defaultNavigation = [
 		),
 	},
 	{
+		name: __( 'Manage Features', 'sureforms' ),
+		slug: 'features-settings',
+		icon: <ToggleRight />,
+		helpText: (
+			<>
+				{ __(
+					"Turn off what you don't use. Anything off stops loading on your site, and turning it back on restores its data exactly where you left it.",
+					'sureforms'
+				) }{ ' ' }
+				<a
+					href="https://sureforms.com/docs/manage-features/"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-field-helper underline"
+				>
+					{ __( 'Learn more', 'sureforms' ) }
+				</a>
+			</>
+		),
+	},
+	{
 		name: __( 'Payments', 'sureforms' ),
 		slug: 'payments-settings',
+		feature: 'payments',
 		icon: <CreditCard />,
 		submenu: [
 			{
@@ -176,8 +202,26 @@ const defaultNavigation = [
 	// endregion: form-migration.
 ];
 
+// A tab with a `feature` key is hidden while that feature is off; Pro tabs can set it too.
 export const getNavigation = () =>
-	applyFilters( 'srfm.settings.navigation', defaultNavigation );
+	withEnabledFeatures(
+		applyFilters( 'srfm.settings.navigation', defaultNavigation )
+	);
+
+/**
+ * Whether a tab slug belongs to a tab hidden because its feature is off, so a
+ * deep link (or a gateway's return URL) to it never mounts the hidden page.
+ *
+ * @param {string} slug Tab slug from the `tab` query arg.
+ * @return {boolean} True when the tab exists but its feature is off.
+ */
+export const isHiddenSettingsTab = ( slug ) =>
+	applyFilters( 'srfm.settings.navigation', defaultNavigation ).some(
+		( item ) =>
+			item.slug === slug &&
+			!! item.feature &&
+			! isFeatureEnabled( item.feature )
+	);
 
 const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 	const activatedTab = useQuery();

@@ -9,15 +9,20 @@ import { Button, ButtonGroup, Input, Select, Text } from '@bsf/force-ui';
 import { ChevronDown, Plus, Search, Sparkles, X } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 import { getScratchUrl } from '@Utils/form-start';
+import { isFeatureEnabled } from '@Utils/features';
 
 /**
- * Whether AI form generation can run now. Out of generations, or an error
- * from the AI service, means the AI shortcuts are left out.
+ * Whether AI form generation can run now. The AI form builder switched off
+ * (Settings → Features), out of generations, or an error from the AI service
+ * means the AI shortcuts are left out.
  *
  * @since 2.13.0
  * @return {boolean} AI can generate a form.
  */
 export const canGenerateWithAi = () => {
+	if ( ! isFeatureEnabled( 'ai_builder' ) ) {
+		return false;
+	}
 	const usage = window.srfm_admin?.srfm_ai_usage_details;
 	return ! ( 0 === usage?.remaining || Boolean( usage?.code ) );
 };

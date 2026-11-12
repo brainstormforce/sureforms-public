@@ -11,7 +11,6 @@ namespace SRFM\Inc\Payments;
 use SRFM\Inc\Payments\Admin\Admin_Handler;
 use SRFM\Inc\Payments\Stripe\Admin_Stripe_Handler;
 use SRFM\Inc\Payments\Stripe\Payments_Settings;
-use SRFM\Inc\Payments\Stripe\Stripe_Webhook;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,7 +40,6 @@ class Payments {
 		Payments_Settings::get_instance();
 
 		Front_End::get_instance();
-		Stripe_Webhook::get_instance();
 		Payment_History_Shortcode::get_instance();
 
 		add_filter( 'srfm_ai_form_generator_body', [ $this, 'add_payment_version_to_ai_body' ], 10, 2 );

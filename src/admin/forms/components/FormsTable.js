@@ -5,6 +5,7 @@ import { Button, Container, Badge, Text, Tooltip } from '@bsf/force-ui';
 import Table from '@Admin/common/listing/components/Table';
 import { exportForms } from '../utils';
 import { formatDateTime } from '@Utils/Helpers';
+import { isFeatureEnabled } from '@Utils/features';
 
 /**
  * FormsTable Component
@@ -167,21 +168,27 @@ const FormsTable = ( {
 			label: __( 'Entries', 'sureforms' ),
 			key: 'entries_count',
 			headerClassName: 'w-[8%]',
-			render: ( form ) => (
-				<Button
-					variant="link"
-					size="sm"
-					onClick={ () =>
-						window.open(
-							`admin.php?page=sureforms_entries#/?form=${ form.id }`,
-							'_self'
-						)
-					}
-					className="text-text-primary hover:text-text-primary-hover p-0 h-auto font-medium"
-				>
-					{ String( form.entries_count ?? 0 ) }
-				</Button>
-			),
+			render: ( form ) =>
+				// The entries page is not registered while Entries is off.
+				isFeatureEnabled( 'entries' ) ? (
+					<Button
+						variant="link"
+						size="sm"
+						onClick={ () =>
+							window.open(
+								`admin.php?page=sureforms_entries#/?form=${ form.id }`,
+								'_self'
+							)
+						}
+						className="text-text-primary hover:text-text-primary-hover p-0 h-auto font-medium"
+					>
+						{ String( form.entries_count ?? 0 ) }
+					</Button>
+				) : (
+					<span className="text-sm font-medium text-text-primary">
+						{ String( form.entries_count ?? 0 ) }
+					</span>
+				),
 		},
 		// Views and Conversion Rate only appear once the feature has been switched
 		// on. The flag travels with the rows so the columns and the data they show

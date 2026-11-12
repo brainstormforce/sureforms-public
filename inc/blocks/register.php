@@ -7,6 +7,7 @@
 
 namespace SRFM\Inc\Blocks;
 
+use SRFM\Inc\Features;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -60,6 +61,11 @@ class Register {
 	public static function register_block( $blocks_dir, $namespace, $base ) {
 		if ( ! empty( $blocks_dir ) ) {
 			foreach ( $blocks_dir as $filename ) {
+				// The payment blocks belong to the Payments feature; while it is off they are not registered.
+				if ( in_array( basename( dirname( $filename ) ), [ 'payment', 'payment-history' ], true ) && ! Features::is_enabled( 'payments' ) ) {
+					continue;
+				}
+
 				// Include the file.
 				require_once $filename;
 

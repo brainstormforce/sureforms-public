@@ -253,8 +253,12 @@ class StripePayment {
 		// Build elements configuration based on payment type. The amount is what
 		// Apple Pay / Google Pay show in their sheet, so it is the form's real
 		// amount, kept current by syncElementsAmount(). A variable amount nobody
-		// has picked yet has no value, and Stripe needs one to mount: the
-		// smallest unit stands in until the donor picks.
+		// has picked yet has no value, and Stripe needs one to mount. The
+		// stand-in must clear Stripe's minimum charge, or elements/sessions
+		// fails with amount_too_small and the card field never renders. It is
+		// replaced before the wallet sheet opens, so nobody is shown it.
+		// ponytail: one fixed stand-in; very weak currencies (e.g. IDR) can
+		// still fall under the minimum, use a per-currency table if they do.
 		const currency = paymentInput.dataset.currency || 'usd';
 		const initialAmount = StripePayment.getPaymentAmount( paymentInput );
 		const elementsConfig = {
@@ -262,7 +266,7 @@ class StripePayment {
 			currency,
 			amount:
 				false === initialAmount
-					? 1
+					? 12000
 					: StripePayment.toMinorUnits( initialAmount, currency ),
 			appearance: {
 				theme: 'stripe',

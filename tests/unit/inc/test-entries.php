@@ -518,6 +518,61 @@ class Test_Entries extends TestCase {
 	}
 
 	/**
+	 * Export must keep a field's value in its column even after the field's label
+	 * or slug changed, because that rewrites the storage key while the block ID
+	 * stays the same. Old entries are stored under the earlier key variant, so a
+	 * column read with a single frozen key dropped them to blank — see #1574731.
+	 *
+	 * One block ID stored under two label variants must still produce one column
+	 * with both entries' values, not a column that only carries the last variant.
+	 */
+	public function test_write_csv_rows_keeps_values_across_label_variants() {
+		$label = static function ( $text ) {
+			return rtrim( base64_encode( $text ), '=' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- Matches the plugin's own field-key label encoding.
+		};
+
+		// Same block ID (77b939be), two label variants of the "llamada" checkbox.
+		$key_old = 'srfm-checkbox-77b939be-lbl-' . $label( 'Old label' ) . '-llamada';
+		$key_new = 'srfm-checkbox-77b939be-lbl-' . $label( 'New label' ) . '-llamada';
+
+		$results = [
+			[
+				'ID'         => 31,
+				'created_at' => '2026-05-14 10:00:00',
+				'status'     => 'read',
+				'form_data'  => [ $key_old => 'Yes' ],
+			],
+			[
+				'ID'         => 695,
+				'created_at' => '2026-09-29 10:00:00',
+				'status'     => 'read',
+				'form_data'  => [ $key_new => 'Ticked' ],
+			],
+		];
+
+		$block_data = $this->call_private_method_static( Entries::class, 'build_block_key_map_and_labels', [ $results ] );
+
+		$stream = fopen( 'php://temp', 'r+' );
+		$this->call_private_method_static( Entries::class, 'write_csv_rows', [ $stream, $results, $block_data['map'] ] );
+		rewind( $stream );
+		$csv = stream_get_contents( $stream );
+		fclose( $stream );
+
+		$rows = array_map( 'str_getcsv', array_filter( explode( "\n", trim( $csv ) ) ) );
+
+		// Both variants collapse to a single value column (Entry ID, Date, Status, value).
+		$this->assertCount( 4, $rows[0], 'The two label variants of one block must share one column.' );
+
+		$values = [];
+		foreach ( $rows as $row ) {
+			$values[ $row[0] ] = $row[3];
+		}
+
+		$this->assertSame( 'Yes', $values['31'], 'A value stored under the earlier label variant must still export.' );
+		$this->assertSame( 'Ticked', $values['695'], 'A value stored under the later label variant must still export.' );
+	}
+
+	/**
 	 * Create a published form with one entry whose single field holds $value.
 	 *
 	 * @param string $title Form title.
