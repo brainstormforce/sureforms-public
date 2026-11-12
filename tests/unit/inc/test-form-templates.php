@@ -3221,4 +3221,38 @@ class Test_Form_Templates extends TestCase {
 			wp_set_current_user( 0 );
 		}
 	}
+
+	/**
+	 * needs_payments() is true for a template that sets up a payment gateway or has
+	 * a payment field in any plan's version, including one only the Pro version adds.
+	 */
+	public function test_needs_payments() {
+		$this->assertTrue( Form_Templates::needs_payments( [ 'setup' => [ 'stripe' ] ] ), 'Stripe setup' );
+		$this->assertTrue( Form_Templates::needs_payments( [ 'setup' => [ 'paypal' ] ] ), 'PayPal setup' );
+		$this->assertTrue(
+			Form_Templates::needs_payments( [ 'fields' => [ [ 'fieldType' => 'payment' ] ] ] ),
+			'Payment field'
+		);
+		$this->assertTrue(
+			Form_Templates::needs_payments(
+				[
+					'fields' => [
+						[
+							'fieldType' => 'input',
+							'pro_tier'  => 'business',
+							'pro'       => [ 'fieldType' => 'payment' ],
+						],
+					],
+				]
+			),
+			'Payment field only in the Pro version'
+		);
+
+		$this->assertFalse( Form_Templates::needs_payments( [ 'setup' => [ 'webhook' ] ] ), 'Non-gateway setup' );
+		$this->assertFalse(
+			Form_Templates::needs_payments( [ 'fields' => [ [ 'fieldType' => 'email' ] ] ] ),
+			'No payment field'
+		);
+		$this->assertFalse( Form_Templates::needs_payments( [] ), 'Empty template' );
+	}
 }
