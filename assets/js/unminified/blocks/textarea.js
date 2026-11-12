@@ -1,12 +1,20 @@
 /* global srfm_quill_i18n */
-function initializeTextarea() {
+// Textareas that already have their listeners and editor.
+// A WeakSet rather than a marker attribute: Elementor Pro renders each opened
+// popup from an outerHTML copy, which would carry the attribute onto nodes
+// that have no listeners.
+const srfmBoundTextareas = new WeakSet();
+
+function initializeTextarea( root = document ) {
 	const textAreaContainer = Array.from(
-		document.getElementsByClassName( 'srfm-textarea-block' )
+		root.getElementsByClassName( 'srfm-textarea-block' )
 	);
 	if ( textAreaContainer ) {
 		for ( const areaInput of textAreaContainer ) {
 			const areaField = areaInput.querySelector( 'textarea' );
-			if ( areaField ) {
+			if ( areaField && ! srfmBoundTextareas.has( areaField ) ) {
+				srfmBoundTextareas.add( areaField );
+
 				areaField.addEventListener( 'input', function () {
 					const textAreaValue = areaField.value;
 					const maxLength = areaField.getAttribute( 'maxLength' );
@@ -131,6 +139,16 @@ function addQuillEditor( areaField ) {
 		'#002966',
 		'#3d1466',
 	];
+
+	// A copy of an initialised field, such as the one an Elementor Pro popup
+	// renders, keeps Quill's toolbar and editor markup but not the instance behind
+	// them. Clear it so Quill builds one working editor in its place.
+	const quillTarget = document.getElementById( quillId );
+	quillTarget?.parentElement
+		?.querySelectorAll( '.ql-toolbar' )
+		.forEach( ( toolbar ) => toolbar.remove() );
+	quillTarget?.removeAttribute( 'class' );
+	quillTarget?.replaceChildren();
 
 	// Initialize Quill editor with a toolbar configuration
 	const quillEditor = new Quill( `#${ quillId }`, {
@@ -284,4 +302,12 @@ function localizeQuillToolbar( areaField ) {
 	}
 }
 
-document.addEventListener( 'DOMContentLoaded', initializeTextarea );
+document.addEventListener( 'DOMContentLoaded', () => initializeTextarea() );
+
+// Bind forms rendered after page load, such as the copy of the form an Elementor
+// Pro popup builds each time it opens.
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	if ( e.detail?.form ) {
+		initializeTextarea( e.detail.form );
+	}
+} );
