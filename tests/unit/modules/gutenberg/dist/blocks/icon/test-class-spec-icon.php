@@ -57,7 +57,7 @@ class Test_Spec_Icon extends TestCase {
 	 *
 	 * @param string $desc iconAccessabilityDesc.
 	 */
-	public function test_render_html_keeps_description_inside_aria_label( $desc ) {
+	public function test_render_html_keeps_description_inside_aria_label( $desc ): void {
 		$svg = $this->render_svg( 'svg', $desc );
 
 		$this->assertSame( $desc, $svg->get_attribute( 'aria-label' ) );
@@ -71,7 +71,7 @@ class Test_Spec_Icon extends TestCase {
 	/**
 	 * The icon keeps its viewBox and path after output filtering.
 	 */
-	public function test_render_html_keeps_icon_geometry() {
+	public function test_render_html_keeps_icon_geometry(): void {
 		$svg = $this->render_svg( 'svg', 'Done' );
 
 		$this->assertNotEmpty( $svg->get_attribute( 'viewbox' ) );
@@ -82,7 +82,7 @@ class Test_Spec_Icon extends TestCase {
 	/**
 	 * Each accessibility mode sets the matching role and aria attributes.
 	 */
-	public function test_render_html_sets_attributes_per_mode() {
+	public function test_render_html_sets_attributes_per_mode(): void {
 		$svg = $this->render_svg( 'image', 'A tick' );
 		$this->assertSame( 'img', $svg->get_attribute( 'role' ) );
 		$this->assertSame( 'false', $svg->get_attribute( 'aria-hidden' ) );
@@ -100,10 +100,47 @@ class Test_Spec_Icon extends TestCase {
 	/**
 	 * Quotes in the description stay encoded inside aria-label.
 	 */
-	public function test_render_html_escapes_quotes_in_description() {
+	public function test_render_html_escapes_quotes_in_description(): void {
 		$svg = $this->render_svg( 'image', '" onload="alert(1)' );
 
 		$this->assertSame( '" onload="alert(1)', $svg->get_attribute( 'aria-label' ) );
 		$this->assertNull( $svg->get_attribute( 'onload' ) );
+	}
+
+	/**
+	 * The printed SVG is filtered, so markup outside the allowlist never reaches the page.
+	 */
+	public function test_render_html_strips_markup_outside_the_svg_allowlist(): void {
+		$filtered = false;
+		$inject   = static function ( $content ) use ( &$filtered ) {
+			if ( is_string( $content ) && false !== strpos( $content, '<svg' ) ) {
+				$filtered = true;
+				$content  = str_replace( '<svg', '<svg onclick="x" class="x"', $content );
+				$content  = str_replace( '</svg>', '<script>x</script></svg>', $content );
+			}
+			return $content;
+		};
+
+		add_filter( 'pre_kses', $inject );
+		try {
+			$html = Spec_Icon::get_instance()->render_html(
+				[
+					'block_id'              => 'icon-test',
+					'icon'                  => 'circle-check',
+					'iconAccessabilityMode' => 'svg',
+					'iconAccessabilityDesc' => 'Done',
+				]
+			);
+		} finally {
+			remove_filter( 'pre_kses', $inject );
+		}
+
+		$this->assertTrue( $filtered, 'The icon markup must pass through wp_kses().' );
+		$this->assertStringNotContainsString( '<script', $html );
+
+		$svg = new WP_HTML_Tag_Processor( $html );
+		$this->assertTrue( $svg->next_tag( 'svg' ) );
+		$this->assertNull( $svg->get_attribute( 'onclick' ) );
+		$this->assertNull( $svg->get_attribute( 'class' ) );
 	}
 }

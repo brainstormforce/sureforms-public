@@ -24,7 +24,7 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 		 * @since 2.14.1
 		 * @var array<string, array<string, bool>>
 		 */
-		const ALLOWED_SVG_HTML = [
+		private const ALLOWED_SVG_HTML = [
 			'svg'  => [
 				'xmlns'       => true,
 				'viewbox'     => true,
