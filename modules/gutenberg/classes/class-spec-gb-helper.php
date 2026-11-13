@@ -1166,6 +1166,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			$path                = isset( $icon_brand_or_solid['path'] ) ? $icon_brand_or_solid['path'] : '';
 			$view                = isset( $icon_brand_or_solid['width'] ) && isset( $icon_brand_or_solid['height'] ) ? '0 0 ' . $icon_brand_or_solid['width'] . ' ' . $icon_brand_or_solid['height'] : null;
 
+			// The icon block prints this markup through Spec_Icon::ALLOWED_SVG_HTML; tags or attributes added here must be added there too.
 			if ( $path && $view ) {
 				if ( $return ) {
 					ob_start();

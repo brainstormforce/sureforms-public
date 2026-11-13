@@ -42,11 +42,14 @@ class Test_Spec_Icon extends TestCase {
 	 */
 	public function backreference_token_provider() {
 		return [
-			'braced dollar'  => [ '${1} onload=alert(1) x' ],
-			'bare dollar'    => [ '$1 onload=alert(1) x' ],
-			'whole match'    => [ '$0 onload=alert(1) x' ],
-			'backslash'      => [ '\\1 onload=alert(1) x' ],
-			'backslash zero' => [ '\\0 onload=alert(1) x' ],
+			'braced dollar'        => [ 'svg', '${1} onload=alert(1) x' ],
+			'bare dollar'          => [ 'svg', '$1 onload=alert(1) x' ],
+			'whole match'          => [ 'svg', '$0 onload=alert(1) x' ],
+			'backslash'            => [ 'svg', '\\1 onload=alert(1) x' ],
+			'backslash zero'       => [ 'svg', '\\0 onload=alert(1) x' ],
+			'image braced dollar'  => [ 'image', '${1} onload=alert(1) x' ],
+			'image whole match'    => [ 'image', '$0 onload=alert(1) x' ],
+			'image backslash zero' => [ 'image', '\\0 onload=alert(1) x' ],
 		];
 	}
 
@@ -55,16 +58,31 @@ class Test_Spec_Icon extends TestCase {
 	 *
 	 * @dataProvider backreference_token_provider
 	 *
+	 * @param string $mode iconAccessabilityMode.
 	 * @param string $desc iconAccessabilityDesc.
 	 */
-	public function test_render_html_keeps_description_inside_aria_label( $desc ): void {
-		$svg = $this->render_svg( 'svg', $desc );
+	public function test_render_html_keeps_description_inside_aria_label( $mode, $desc ): void {
+		$svg = $this->render_svg( $mode, $desc );
 
 		$this->assertSame( $desc, $svg->get_attribute( 'aria-label' ) );
 		$this->assertNull( $svg->get_attribute( 'onload' ) );
 		// kses may rewrite the attribute order, so compare the set of names.
 		$this->assertEqualsCanonicalizing(
 			[ 'xmlns', 'viewbox', 'role', 'aria-hidden', 'aria-label' ],
+			$svg->get_attribute_names_with_prefix( '' )
+		);
+	}
+
+	/**
+	 * Presentation mode prints no aria-label, so the description never reaches the tag.
+	 */
+	public function test_render_html_presentation_mode_ignores_description(): void {
+		$svg = $this->render_svg( 'presentation', '${1} onload=alert(1) x' );
+
+		$this->assertNull( $svg->get_attribute( 'aria-label' ) );
+		$this->assertNull( $svg->get_attribute( 'onload' ) );
+		$this->assertEqualsCanonicalizing(
+			[ 'xmlns', 'viewbox', 'aria-hidden' ],
 			$svg->get_attribute_names_with_prefix( '' )
 		);
 	}
