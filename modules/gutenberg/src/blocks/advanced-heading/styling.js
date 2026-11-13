@@ -3,7 +3,7 @@
  */
 
 import generateBorderCSS from '@Controls/generateBorderCSS';
-import generateCSS from '@Controls/generateCSS';
+import generateCSS, { cssBlockId } from '@Controls/generateCSS';
 import generateCSSUnit from '@Controls/generateCSSUnit';
 import { getFallbackNumber } from '@Controls/getAttributeFallback';
 import { applyFilters } from '@wordpress/hooks';
@@ -669,7 +669,7 @@ function styling(
 		'.editor-styles-wrapper ' +
 		( gbsSelector
 			? gbsSelector + ' '
-			: `#block-${ clientId } .uagb-block-${ block_id }` );
+			: `#block-${ clientId } .uagb-block-${ cssBlockId( block_id ) }` );
 
 	selectors = applyFilters(
 		`spectra.${ blockName }.styling`,

@@ -836,9 +836,11 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 
 						if ( ! empty( $val ) && is_array( $val ) ) {
 							foreach ( $val as $key => $css_value ) {
-								$css .= $key . ': ' . $css_value . ';';
+								if ( self::is_safe_css_value( $css_value ) ) {
+									$css .= $key . ': ' . $css_value . ';';
+								}
 							}
-						} elseif ( ! empty( $val ) || 0 === $val ) {
+						} elseif ( ( ! empty( $val ) || 0 === $val ) && self::is_safe_css_value( $val ) ) {
 							if ( 'font-family' === $j ) {
 								$css .= $j . ': "' . $val . '";';
 							} else {
@@ -856,6 +858,20 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			}
 
 			return $styling_css;
+		}
+
+		/**
+		 * Whether a value can be emitted as a single CSS declaration value.
+		 *
+		 * A value must stay inside its own declaration: it may not end the
+		 * declaration or rule, open a block, start a comment, use a CSS escape,
+		 * or close the surrounding <style> element. Unsafe values are dropped.
+		 *
+		 * @param mixed $value Declaration value.
+		 * @return bool
+		 */
+		private static function is_safe_css_value( $value ) {
+			return is_scalar( $value ) && ! preg_match( '#[{};<\\\\]|/\*#', (string) $value );
 		}
 
 		/**
@@ -900,8 +916,9 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			if ( ! empty( $name ) && isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 
 				$blockattr = $block['attrs'];
-				if ( isset( $blockattr['block_id'] ) ) {
-					$block_id = $blockattr['block_id'];
+				// block_id is concatenated into CSS selectors, so it is kept to identifier characters.
+				if ( isset( $blockattr['block_id'] ) && is_scalar( $blockattr['block_id'] ) ) {
+					$block_id = (string) preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $blockattr['block_id'] );
 				}
 
 				self::$current_block_list[] = $name;
