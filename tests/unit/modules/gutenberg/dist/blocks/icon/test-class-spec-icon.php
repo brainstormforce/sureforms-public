@@ -62,7 +62,8 @@ class Test_Spec_Icon extends TestCase {
 
 		$this->assertSame( $desc, $svg->get_attribute( 'aria-label' ) );
 		$this->assertNull( $svg->get_attribute( 'onload' ) );
-		$this->assertSame(
+		// kses may rewrite the attribute order, so compare the set of names.
+		$this->assertEqualsCanonicalizing(
 			[ 'xmlns', 'viewbox', 'role', 'aria-hidden', 'aria-label' ],
 			$svg->get_attribute_names_with_prefix( '' )
 		);
