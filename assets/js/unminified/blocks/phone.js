@@ -1,6 +1,13 @@
 // A valid ISO 3166-1 alpha-2 code, lowercase.
 const isIso2 = ( c ) => typeof c === 'string' && /^[a-z]{2}$/.test( c );
 
+// Phone inputs whose country applyAutoCountry() is setting right now. Their
+// `countrychange` event is not a visitor's choice.
+const autoCountryInputs = new WeakSet();
+
+// Event listeners SureForms adds to each phone input, keyed by the input.
+const phoneListeners = new WeakMap();
+
 /**
  * Validates and returns a country code based on filter settings.
  * If the country is not valid for current filters, returns the first valid country.
@@ -160,6 +167,11 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 	let lastAutoApplied = iti.getSelectedCountryData()?.iso2 || null;
 
 	const setCountry = ( country, { isRefine = false } = {} ) => {
+		// The geo fetch can resolve after a re-init replaced this instance.
+		// Only the live instance may change the shared input.
+		if ( window.intlTelInput?.getInstance?.( phoneNumber ) !== iti ) {
+			return;
+		}
 		if ( ! country || typeof country !== 'string' ) {
 			return;
 		}
@@ -188,7 +200,12 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 			filters.excludeCountries
 		);
 		if ( validated ) {
-			iti.setCountry( validated );
+			autoCountryInputs.add( phoneNumber );
+			try {
+				iti.setCountry( validated );
+			} finally {
+				autoCountryInputs.delete( phoneNumber );
+			}
 			lastAutoApplied = validated;
 		}
 	};
@@ -284,7 +301,7 @@ function initializePhoneField() {
 			}
 		}
 
-		// A country the visitor picked survives re-initialisation (stored by
+		// The visitor's country survives re-initialisation (stored by
 		// cleanupPhoneFields()). The tel input holds only national digits, so
 		// the country can't be recovered from the value.
 		const keptCountry = phoneNumber.dataset.srfmSelectedCountry;
@@ -428,11 +445,18 @@ function initializePhoneField() {
 		// intl-tel-input creates the hidden input empty and only fills it on the
 		// form's native submit, which runs after SureForms validation. Fill it now
 		// so a number already in the field (typed, or a default value) is what
-		// validation reads. An invalid number is flagged here, because
-		// fieldValidation() relies on the srfm-phone-error class to reject it.
-		// A valid one never clears an error, so init leaves error state alone.
+		// validation reads.
+		//
+		// An invalid number gets srfm-phone-error, because fieldValidation()
+		// relies on that class to reject it. The message text is set but not
+		// shown: validation shows it on blur or submit, so a form doesn't load
+		// with an error. Init never removes an error.
 		if ( syncHiddenInput() ) {
-			setPhoneError( true );
+			phoneNumber
+				.closest( '.srfm-block' )
+				.classList.add( 'srfm-phone-error' );
+			errorMessage.textContent =
+				window?.srfm_submit?.messages?.srfm_valid_phone_number;
 		}
 		/**
 		 * Set the data-unique parameter to the hidden input field based on the data-unique
@@ -459,6 +483,17 @@ function initializePhoneField() {
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber, {
 				signal,
 			} );
+			// Remember that the visitor chose a country, so a re-init keeps it.
+			// Countries set by auto-country don't count.
+			phoneNumber.addEventListener(
+				'countrychange',
+				() => {
+					if ( ! autoCountryInputs.has( phoneNumber ) ) {
+						phoneNumber.dataset.srfmCountryChosen = 'true';
+					}
+				},
+				{ signal }
+			);
 			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
 			phoneNumber.addEventListener(
 				'open:countrydropdown',
@@ -520,15 +555,17 @@ function itiContainerClass( element ) {
 	} );
 }
 
-// Event listeners SureForms adds to each phone input, keyed by the input.
-const phoneListeners = new WeakMap();
-
 /**
  * Tear down phone fields so initializePhoneField() can run on them again.
  *
- * Keeps the selected country on the input (data-srfm-selected-country) so the
+ * Keeps the visitor's country on the input (data-srfm-selected-country) so the
  * next init restores it, and destroys the intl-tel-input instance so its
  * listeners (including the form submit one) don't stack up.
+ *
+ * The country is kept only when the visitor picked it or has typed a number
+ * against it. An untouched empty field keeps nothing, so the next init runs
+ * auto-country again, and a repeater template (cloned for new rows) never
+ * carries a country.
  *
  * @param {Document|HTMLElement} container Element whose phone fields to clean up.
  */
@@ -545,8 +582,13 @@ function cleanupPhoneFields( container = document ) {
 			// really belongs to this input before trusting or destroying it.
 			if ( iti && iti.telInput === phoneNumber ) {
 				const iso2 = iti.getSelectedCountryData()?.iso2;
-				if ( iso2 ) {
+				const visitorCountry =
+					phoneNumber.dataset.srfmCountryChosen === 'true' ||
+					phoneNumber.value.trim() !== '';
+				if ( iso2 && visitorCountry ) {
 					phoneNumber.dataset.srfmSelectedCountry = iso2;
+				} else {
+					delete phoneNumber.dataset.srfmSelectedCountry;
 				}
 				iti.destroy();
 			}
