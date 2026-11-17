@@ -746,7 +746,7 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 
 			$block_id = '';
 			if ( isset( $attributes['block_id'] ) ) {
-				$block_id = $attributes['block_id'];
+				$block_id = Spec_Gb_Helper::sanitize_block_id( $attributes['block_id'] );
 			}
 
 			$image = '<img

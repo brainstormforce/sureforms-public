@@ -771,9 +771,9 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			$vertical_unit   = isset( $shadow_properties['vertical_unit'] ) ? $shadow_properties['vertical_unit'] : 'px';
 			$blur_unit       = isset( $shadow_properties['blur_unit'] ) ? $shadow_properties['blur_unit'] : 'px';
 			$spread_unit     = isset( $shadow_properties['spread_unit'] ) ? $shadow_properties['spread_unit'] : 'px';
-			$color           = isset( $shadow_properties['color'] ) ? $shadow_properties['color'] : '';
+			$color           = isset( $shadow_properties['color'] ) && is_scalar( $shadow_properties['color'] ) ? $shadow_properties['color'] : '';
 			$position        = isset( $shadow_properties['position'] ) ? $shadow_properties['position'] : 'outset';
-			$alt_color       = isset( $shadow_properties['alt_color'] ) ? $shadow_properties['alt_color'] : '';
+			$alt_color       = isset( $shadow_properties['alt_color'] ) && is_scalar( $shadow_properties['alt_color'] ) ? $shadow_properties['alt_color'] : '';
 
 			// Although optional, color is required for Sarafi on PC. Return early if color isn't set.
 			if ( ! $color && ! $alt_color ) {
@@ -834,13 +834,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 							continue;
 						}
 
-						if ( ! empty( $val ) && is_array( $val ) ) {
-							foreach ( $val as $key => $css_value ) {
-								if ( self::is_safe_css_value( $css_value ) ) {
-									$css .= $key . ': ' . $css_value . ';';
-								}
-							}
-						} elseif ( ( ! empty( $val ) || 0 === $val ) && self::is_safe_css_value( $val ) ) {
+						if ( ( ! empty( $val ) || 0 === $val ) && self::is_safe_css_value( $val ) ) {
 							if ( 'font-family' === $j ) {
 								$css .= $j . ': "' . $val . '";';
 							} else {
@@ -867,11 +861,29 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 * declaration or rule, open a block, start a comment, use a CSS escape,
 		 * or close the surrounding <style> element. Unsafe values are dropped.
 		 *
+		 * Non-scalar values are dropped, so an attribute saved as an object
+		 * cannot add its own property names.
+		 *
 		 * @param mixed $value Declaration value.
+		 * @since x.x.x
 		 * @return bool
 		 */
 		private static function is_safe_css_value( $value ) {
 			return is_scalar( $value ) && ! preg_match( '#[{};<\\\\]|/\*#', (string) $value );
+		}
+
+		/**
+		 * Reduce a block_id to the identifier characters used in its CSS selector and HTML class.
+		 *
+		 * The CSS builders and each block's render_html() call this, so the
+		 * printed class and the selector always match.
+		 *
+		 * @param mixed $block_id Saved block_id attribute.
+		 * @since x.x.x
+		 * @return string Empty for a non-scalar value.
+		 */
+		public static function sanitize_block_id( $block_id ) {
+			return is_scalar( $block_id ) ? (string) preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $block_id ) : '';
 		}
 
 		/**
@@ -916,9 +928,8 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			if ( ! empty( $name ) && isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 
 				$blockattr = $block['attrs'];
-				// block_id is concatenated into CSS selectors, so it is kept to identifier characters.
-				if ( isset( $blockattr['block_id'] ) && is_scalar( $blockattr['block_id'] ) ) {
-					$block_id = (string) preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $blockattr['block_id'] );
+				if ( isset( $blockattr['block_id'] ) ) {
+					$block_id = self::sanitize_block_id( $blockattr['block_id'] );
 				}
 
 				self::$current_block_list[] = $name;

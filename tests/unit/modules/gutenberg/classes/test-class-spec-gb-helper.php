@@ -35,6 +35,16 @@ class Test_Class_Spec_Gb_Helper extends TestCase {
 	}
 
 	/**
+	 * Reset the static state get_block_css_and_js() accumulates.
+	 */
+	protected function tear_down(): void {
+		Spec_Gb_Helper::$current_block_list = [];
+		Spec_Gb_Helper::$srfm_flag          = false;
+		Spec_Gb_Helper::$gfonts             = [];
+		parent::tear_down();
+	}
+
+	/**
 	 * Build the block's CSS for every device.
 	 *
 	 * @param string              $name  Block name.
@@ -60,11 +70,11 @@ class Test_Class_Spec_Gb_Helper extends TestCase {
 	 */
 	public function hostile_value_provider() {
 		$values = [
-			'brace breakout'  => 'red} body{display:none} x{color:red',
-			'semicolon'       => 'red;display:none',
-			'style close tag' => 'red</style><b>',
-			'escaped brace'   => 'red\\7d body\\7b display:none',
-			'comment'         => 'red/*',
+			'brace breakout'  => 'srfmprobe} body{display:none} x{color:blue',
+			'semicolon'       => 'srfmprobe;display:none',
+			'style close tag' => 'srfmprobe</style><b>',
+			'escaped brace'   => 'srfmprobe\\7d body\\7b display:none',
+			'comment'         => 'srfmprobe/*',
 		];
 		$cases  = [];
 		foreach ( self::COLOUR_ATTR as $block => $attr ) {
@@ -99,7 +109,43 @@ class Test_Class_Spec_Gb_Helper extends TestCase {
 		$this->assertStringNotContainsString( '</style', $css );
 		$this->assertStringNotContainsString( '\\', $css );
 		$this->assertStringNotContainsString( '/*', $css );
-		$this->assertStringNotContainsString( 'red', $css, 'The declaration carrying the value is dropped, not trimmed.' );
+		$this->assertStringNotContainsString( 'srfmprobe', $css, 'The declaration carrying the value is dropped, not trimmed.' );
+		$this->assert_every_rule_scoped_to( 'abc123', $css );
+	}
+
+	/**
+	 * Each block with its colour attribute.
+	 *
+	 * @return array<string, array<int, string>>
+	 */
+	public function colour_attr_provider() {
+		$cases = [];
+		foreach ( self::COLOUR_ATTR as $block => $attr ) {
+			$cases[ $block ] = [ $block, $attr ];
+		}
+		return $cases;
+	}
+
+	/**
+	 * An object where a colour string is expected emits neither its keys nor its values.
+	 *
+	 * @dataProvider colour_attr_provider
+	 *
+	 * @param string $block Block name.
+	 * @param string $attr  Colour attribute.
+	 */
+	public function test_generate_css_drops_non_scalar_value( $block, $attr ): void {
+		$css = $this->css_for(
+			$block,
+			[
+				'block_id'              => 'abc123',
+				$attr                   => [ 'x{}body{display:none}srfmprobe' => 'srfmprobe' ],
+				'imageBoxShadowHOffset' => 5,
+			]
+		);
+
+		$this->assertStringNotContainsString( 'display:none', $css );
+		$this->assertStringNotContainsString( 'srfmprobe', $css );
 		$this->assert_every_rule_scoped_to( 'abc123', $css );
 	}
 
@@ -204,6 +250,31 @@ class Test_Class_Spec_Gb_Helper extends TestCase {
 		);
 
 		$this->assert_every_rule_scoped_to( '', $css );
+	}
+
+	/**
+	 * Each block's render_html() prints the same sanitised block id the CSS selectors use.
+	 *
+	 * @dataProvider hostile_block_id_provider
+	 *
+	 * @param string $block       Block name.
+	 * @param string $block_id    Submitted block_id.
+	 * @param string $expected_id block_id after sanitising.
+	 */
+	public function test_render_html_class_matches_css_block_id( $block, $block_id, $expected_id ): void {
+		$html = render_block(
+			[
+				'blockName'    => $block,
+				'attrs'        => [ 'block_id' => $block_id ],
+				'innerBlocks'  => [],
+				'innerHTML'    => '',
+				'innerContent' => [],
+			]
+		);
+
+		$processor = new WP_HTML_Tag_Processor( $html );
+		$this->assertTrue( $processor->next_tag(), "$block rendered no markup." );
+		$this->assertTrue( $processor->has_class( 'uagb-block-' . $expected_id ), "$block wrapper class: " . $processor->get_attribute( 'class' ) );
 	}
 
 	/**

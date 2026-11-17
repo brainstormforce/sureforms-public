@@ -655,7 +655,7 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 			$form_id         = '';
 			$heading_wrapper = '';
 			if ( isset( $attributes['block_id'] ) ) {
-				$block_id = $attributes['block_id'];
+				$block_id = Spec_Gb_Helper::sanitize_block_id( $attributes['block_id'] );
 			}
 			if ( isset( $attributes['formId'] ) ) {
 				$form_id = $attributes['formId'];
