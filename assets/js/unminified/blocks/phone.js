@@ -284,8 +284,11 @@ function initializePhoneField() {
 			}
 		}
 
-		// Determine initial country based on filter settings
-		let initialCountry = defaultCountry || 'us';
+		// A country the visitor picked survives re-initialisation (stored by
+		// cleanupPhoneFields()). The tel input holds only national digits, so
+		// the country can't be recovered from the value.
+		const keptCountry = phoneNumber.dataset.srfmSelectedCountry;
+		let initialCountry = keptCountry || defaultCountry || 'us';
 
 		// Validate the initial country against filters
 		initialCountry = validateCountryWithFilters(
@@ -343,7 +346,10 @@ function initializePhoneField() {
 		// visitor's. When auto-country is enabled, fetch the current visitor's
 		// country from the same-origin REST endpoint (not part of the cached page
 		// HTML) and apply it — correct per visitor.
-		if ( phoneNumber.getAttribute( 'data-auto-country' ) === 'true' ) {
+		if (
+			! keptCountry &&
+			phoneNumber.getAttribute( 'data-auto-country' ) === 'true'
+		) {
 			applyAutoCountry( iti, phoneNumber, {
 				enableCountryFilter,
 				countryFilterType,
@@ -403,10 +409,10 @@ function initializePhoneField() {
 			return isInvalid;
 		};
 
-		const updatePhoneNumber = () => {
+		const setPhoneError = ( isInvalid ) => {
 			const parentBlock = phoneNumber.closest( '.srfm-block' );
 
-			if ( syncHiddenInput() ) {
+			if ( isInvalid ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, true );
 				errorMessage.textContent =
@@ -417,10 +423,17 @@ function initializePhoneField() {
 			}
 		};
 
+		const updatePhoneNumber = () => setPhoneError( syncHiddenInput() );
+
 		// intl-tel-input creates the hidden input empty and only fills it on the
 		// form's native submit, which runs after SureForms validation. Fill it now
-		// so a number already in the field survives re-initialisation.
-		syncHiddenInput();
+		// so a number already in the field (typed, or a default value) is what
+		// validation reads. An invalid number is flagged here, because
+		// fieldValidation() relies on the srfm-phone-error class to reject it.
+		// A valid one never clears an error, so init leaves error state alone.
+		if ( syncHiddenInput() ) {
+			setPhoneError( true );
+		}
 		/**
 		 * Set the data-unique parameter to the hidden input field based on the data-unique
 		 * parameter of the phone input field.
@@ -432,32 +445,45 @@ function initializePhoneField() {
 		}
 
 		if ( phoneNumber ) {
+			// Aborted by cleanupPhoneFields(), so re-inits don't stack handlers.
+			const listenerController = new AbortController();
+			phoneListeners.set( phoneNumber, listenerController );
+			const { signal } = listenerController;
+
 			/**
 			 * Changed onChange event to input event to handle paste event.
 			 */
-			phoneNumber.addEventListener( 'input', updatePhoneNumber );
-			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
-			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
-			phoneNumber.addEventListener( 'open:countrydropdown', () => {
-				const selectedCountryData = iti.getSelectedCountryData();
-				if ( selectedCountryData ) {
-					countriesData.forEach( ( country ) => {
-						if ( country.classList.contains( 'iti__active' ) ) {
-							country.classList.remove( 'iti__active' );
-						}
-					} );
-					const activeCountry = iti?.countryList.querySelector(
-						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
-					);
-					if ( activeCountry ) {
-						activeCountry.classList.add( 'iti__active' );
-						activeCountry.scrollIntoView( {
-							block: 'nearest',
-							behavior: 'instant',
-						} );
-					}
-				}
+			phoneNumber.addEventListener( 'input', updatePhoneNumber, {
+				signal,
 			} );
+			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber, {
+				signal,
+			} );
+			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
+			phoneNumber.addEventListener(
+				'open:countrydropdown',
+				() => {
+					const selectedCountryData = iti.getSelectedCountryData();
+					if ( selectedCountryData ) {
+						countriesData.forEach( ( country ) => {
+							if ( country.classList.contains( 'iti__active' ) ) {
+								country.classList.remove( 'iti__active' );
+							}
+						} );
+						const activeCountry = iti?.countryList.querySelector(
+							`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
+						);
+						if ( activeCountry ) {
+							activeCountry.classList.add( 'iti__active' );
+							activeCountry.scrollIntoView( {
+								block: 'nearest',
+								behavior: 'instant',
+							} );
+						}
+					}
+				},
+				{ signal }
+			);
 		}
 
 		itiContainerClass( element );
@@ -494,12 +520,38 @@ function itiContainerClass( element ) {
 	} );
 }
 
-// Cleanup function for phone fields
+// Event listeners SureForms adds to each phone input, keyed by the input.
+const phoneListeners = new WeakMap();
+
+/**
+ * Tear down phone fields so initializePhoneField() can run on them again.
+ *
+ * Keeps the selected country on the input (data-srfm-selected-country) so the
+ * next init restores it, and destroys the intl-tel-input instance so its
+ * listeners (including the form submit one) don't stack up.
+ *
+ * @param {Document|HTMLElement} container Element whose phone fields to clean up.
+ */
 function cleanupPhoneFields( container = document ) {
 	const phoneNumbers = container.querySelectorAll( '.srfm-input-phone' );
 
 	phoneNumbers.forEach( ( phoneNumber ) => {
 		try {
+			phoneListeners.get( phoneNumber )?.abort();
+			phoneListeners.delete( phoneNumber );
+
+			const iti = window.intlTelInput?.getInstance?.( phoneNumber );
+			// getInstance() reads a data attribute, so make sure the instance
+			// really belongs to this input before trusting or destroying it.
+			if ( iti && iti.telInput === phoneNumber ) {
+				const iso2 = iti.getSelectedCountryData()?.iso2;
+				if ( iso2 ) {
+					phoneNumber.dataset.srfmSelectedCountry = iso2;
+				}
+				iti.destroy();
+			}
+
+			// Fallback for an input whose instance is gone: unwrap it by hand.
 			const itiContainer = phoneNumber.closest( '.iti' );
 			if ( itiContainer && itiContainer.parentNode ) {
 				itiContainer.parentNode.insertBefore(
