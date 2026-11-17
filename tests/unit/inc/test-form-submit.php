@@ -8,6 +8,9 @@
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Client_Logger;
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
+use SRFM\Inc\Compatibility\Multilingual\Providers\Provider;
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Database\Tables\Entries as EntriesTable;
 use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
@@ -30,6 +33,13 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 */
 	private $last_captcha_response;
 
+	/**
+	 * Callback injecting the multilingual stub, kept so tearDown() can remove it.
+	 *
+	 * @var callable|null
+	 */
+	private $language_stub_filter;
+
 	protected function setUp(): void {
 		$this->form_submit = new Form_Submit();
 	}
@@ -40,6 +50,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 */
 	protected function tearDown(): void {
 		remove_all_filters( 'pre_http_request' );
+		$this->drop_language_stub();
 		delete_option( 'srfm_security_settings_options' );
 		parent::tearDown();
 	}
@@ -2939,5 +2950,327 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$this->assertSame( [], $result['addresses'] );
 		$this->assertFalse( $result['only_visitor'] );
+	}
+
+	/**
+	 * Install a multilingual provider that follows switch_language() and tags
+	 * every translated string with the language and string name it was read in,
+	 * plus WPML-shaped language and permalink filters.
+	 *
+	 * @return Provider&object The stub, so a test can read its current language.
+	 */
+	private function use_language_stub() {
+		$stub = new class() implements Provider {
+			/**
+			 * Language strings are currently read in.
+			 *
+			 * @var string
+			 */
+			public $language = 'en';
+
+			/**
+			 * Languages to return to, most recent last.
+			 *
+			 * @var array<int,string>
+			 */
+			private $stack = [];
+
+			public function is_active(): bool {
+				return true;
+			}
+
+			public function current_language(): string {
+				return $this->language;
+			}
+
+			public function default_language(): string {
+				return 'en';
+			}
+
+			public function register_string( string $name, string $value, string $domain = 'sureforms' ): void {
+				unset( $name, $value, $domain );
+			}
+
+			public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string {
+				unset( $value, $domain, $language );
+				return '[' . $this->language . '] ' . $name;
+			}
+
+			public function switch_language( string $language ): void {
+				$this->stack[]  = $this->language;
+				$this->language = $language;
+			}
+
+			public function restore_language(): void {
+				if ( $this->stack ) {
+					$this->language = array_pop( $this->stack );
+				}
+			}
+
+			public function render_language_switcher(): string {
+				return '';
+			}
+
+			public function supports_packages(): bool {
+				return true;
+			}
+
+			public function start_package( array $package ): void {
+				unset( $package );
+			}
+
+			public function finish_package( array $package ): void {
+				unset( $package );
+			}
+
+			public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+				unset( $package, $name, $value, $title, $type );
+			}
+
+			public function translate_package_string( array $package, string $name, string $value ): string {
+				unset( $package, $value );
+				return '[' . $this->language . '] ' . $name;
+			}
+
+			public function delete_package( array $package ): void {
+				unset( $package );
+			}
+		};
+
+		$this->language_stub_filter = static function () use ( $stub ) {
+			return $stub;
+		};
+		add_filter( 'srfm_multilingual_provider', $this->language_stub_filter );
+		add_filter( 'wpml_active_languages', [ $this, 'stub_active_languages' ] );
+		add_filter( 'wpml_permalink', [ $this, 'stub_permalink' ], 10, 3 );
+		$this->reset_multilingual_singletons();
+
+		return $stub;
+	}
+
+	/**
+	 * Undo use_language_stub().
+	 */
+	private function drop_language_stub() {
+		if ( null === $this->language_stub_filter ) {
+			return;
+		}
+		remove_filter( 'srfm_multilingual_provider', $this->language_stub_filter );
+		remove_filter( 'wpml_active_languages', [ $this, 'stub_active_languages' ] );
+		remove_filter( 'wpml_permalink', [ $this, 'stub_permalink' ], 10 );
+		$this->language_stub_filter = null;
+		$this->reset_multilingual_singletons();
+	}
+
+	/**
+	 * Languages the stub site has.
+	 *
+	 * @return array<string,array<string,string>>
+	 */
+	public function stub_active_languages() {
+		return [
+			'en' => [ 'code' => 'en' ],
+			'es' => [ 'code' => 'es' ],
+		];
+	}
+
+	/**
+	 * WPML-shaped permalink filter: resolves to "<url><lang>/" only when asked to
+	 * resolve the object behind the URL, as WPML does for its third argument.
+	 *
+	 * @param string      $url      URL.
+	 * @param string|null $lang     Language.
+	 * @param bool        $absolute Whether to resolve the translated object.
+	 * @return string
+	 */
+	public function stub_permalink( $url, $lang = null, $absolute = false ) {
+		return $absolute ? $url . $lang . '/' : $url;
+	}
+
+	/**
+	 * Drop the cached provider so the next lookup re-resolves it.
+	 */
+	private function reset_multilingual_singletons() {
+		foreach ( [ Multilingual_Manager::class, String_Translator::class ] as $class ) {
+			$prop = ( new \ReflectionClass( $class ) )->getProperty( 'instance' );
+			$prop->setAccessible( true );
+			$prop->setValue( null, null );
+		}
+	}
+
+	/**
+	 * Notification subject, body and "From" name are sent in the language the
+	 * strings are read in, each looked up by its own notification's index.
+	 *
+	 * The strings are registered per notification index, so a disabled first
+	 * notification must not shift the second one onto the first one's strings.
+	 */
+	public function test_send_email_sends_translated_notification_strings() {
+		$stub           = $this->use_language_stub();
+		$stub->language = 'es';
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Translated Notification',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_email_notification',
+			[
+				[
+					'id'         => 1,
+					'status'     => false,
+					'email_to'   => 'owner@example.com',
+					'subject'    => 'Disabled',
+					'email_body' => 'Disabled',
+				],
+				[
+					'id'         => 2,
+					'status'     => true,
+					'email_to'   => 'owner@example.com',
+					'subject'    => 'New entry',
+					'email_body' => 'An entry arrived.',
+					'from_name'  => 'My Site',
+				],
+			]
+		);
+
+		$mail    = [];
+		$capture = static function ( $short_circuit, $atts ) use ( &$mail ) {
+			unset( $short_circuit );
+			$mail[] = $atts;
+			return true;
+		};
+		add_filter( 'pre_wp_mail', $capture, 99, 2 );
+
+		Form_Submit::send_email( $form_id, [] );
+
+		remove_filter( 'pre_wp_mail', $capture, 99 );
+		wp_delete_post( $form_id, true );
+
+		$this->assertCount( 1, $mail );
+		$this->assertSame( '[es] notification_1_subject', $mail[0]['subject'] );
+		$this->assertStringContainsString( '[es] notification_1_body', $mail[0]['message'] );
+		$this->assertStringContainsString( 'From: [es] notification_1_from_name <', implode( "\n", (array) $mail[0]['headers'] ) );
+	}
+
+	/**
+	 * Create a form with one enabled notification and a "Different page" confirmation.
+	 *
+	 * @param bool $store Whether the form stores entries.
+	 * @return int Form ID.
+	 */
+	private function create_multilingual_form( $store ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Multilingual Form',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_email_notification',
+			[
+				[
+					'id'         => 1,
+					'status'     => true,
+					'email_to'   => 'owner@example.com',
+					'subject'    => 'New entry',
+					'email_body' => 'An entry arrived.',
+				],
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_form_confirmation',
+			[
+				[
+					'confirmation_type' => 'different page',
+					'page_url'          => 'https://example.com/thank-you/',
+					'custom_url'        => '',
+				],
+			]
+		);
+		if ( ! $store ) {
+			update_post_meta(
+				$form_id,
+				'_srfm_compliance',
+				[
+					[
+						'gdpr'                 => true,
+						'do_not_store_entries' => true,
+					],
+				]
+			);
+		}
+
+		return $form_id;
+	}
+
+	/**
+	 * Submit a form in Spanish and return the response and the mail sent.
+	 *
+	 * @param int $form_id Form ID.
+	 * @return array{0:array<mixed>,1:array<int,array<mixed>>}
+	 */
+	private function submit_in_spanish( $form_id ) {
+		$mail    = [];
+		$capture = static function ( $short_circuit, $atts ) use ( &$mail ) {
+			unset( $short_circuit );
+			$mail[] = $atts;
+			return true;
+		};
+		add_filter( 'pre_wp_mail', $capture, 99, 2 );
+
+		$response = $this->form_submit->handle_form_entry(
+			[
+				'form-id'            => (string) $form_id,
+				'srfm-form-language' => 'es',
+			]
+		);
+
+		remove_filter( 'pre_wp_mail', $capture, 99 );
+
+		return [ $response, $mail ];
+	}
+
+	/**
+	 * A stored submission redirects to the "Different page" in the visitor's language.
+	 */
+	public function test_handle_form_entry_redirects_to_the_page_in_the_visitor_language() {
+		$stub    = $this->use_language_stub();
+		$form_id = $this->create_multilingual_form( true );
+
+		[ $response, $mail ] = $this->submit_in_spanish( $form_id );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( 'https://example.com/thank-you/es/', $response['redirect_url'] );
+		$this->assertSame( '[es] notification_0_subject', $mail[0]['subject'] );
+		$this->assertSame( 'en', $stub->language, 'The request language must be restored after the submission.' );
+
+		EntriesTable::delete( Helper::get_integer_value( $response['data']['submission_id'] ) );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A form that stores no entries sends its notification and redirect in the
+	 * visitor's language too, not only the stored-entry path.
+	 */
+	public function test_handle_form_entry_uses_the_visitor_language_when_not_stored() {
+		$stub    = $this->use_language_stub();
+		$form_id = $this->create_multilingual_form( false );
+
+		[ $response, $mail ] = $this->submit_in_spanish( $form_id );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( 'https://example.com/thank-you/es/', $response['redirect_url'] );
+		$this->assertSame( '[es] notification_0_subject', $mail[0]['subject'] );
+		$this->assertSame( 'en', $stub->language, 'The request language must be restored after the submission.' );
+
+		wp_delete_post( $form_id, true );
 	}
 }
