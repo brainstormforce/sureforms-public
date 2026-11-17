@@ -253,6 +253,49 @@ class Test_Class_Spec_Gb_Helper extends TestCase {
 	}
 
 	/**
+	 * block_id values and what sanitize_block_id() keeps.
+	 *
+	 * @return array<string, array<int, mixed>>
+	 */
+	public function block_id_provider() {
+		return [
+			'saved hex id'   => [ 'a1b2c3d4', 'a1b2c3d4' ],
+			'dash and score' => [ 'a-b_c', 'a-b_c' ],
+			'integer'        => [ 123, '123' ],
+			'selector chars' => [ 'x{} body, y</style>', 'xbodyystyle' ],
+			'array'          => [ [ 'x' ], '' ],
+			'null'           => [ null, '' ],
+		];
+	}
+
+	/**
+	 * Only identifier characters of a scalar block_id are kept.
+	 *
+	 * @dataProvider block_id_provider
+	 *
+	 * @param mixed  $block_id Saved block_id.
+	 * @param string $expected Sanitised id.
+	 */
+	public function test_sanitize_block_id( $block_id, $expected ): void {
+		$this->assertSame( $expected, Spec_Gb_Helper::sanitize_block_id( $block_id ) );
+	}
+
+	/**
+	 * A non-scalar shadow colour is treated as unset.
+	 */
+	public function test_generate_shadow_css_ignores_non_scalar_color(): void {
+		$shadow = [
+			'horizontal' => 5,
+			'color'      => [ 'x' => 'srfmprobe' ],
+		];
+
+		$this->assertSame( '', Spec_Gb_Helper::generate_shadow_css( $shadow ) );
+
+		$shadow['alt_color'] = '#000';
+		$this->assertSame( '5px 0 0 #000', Spec_Gb_Helper::generate_shadow_css( $shadow ) );
+	}
+
+	/**
 	 * Each block's render_html() prints the same sanitised block id the CSS selectors use.
 	 *
 	 * @dataProvider hostile_block_id_provider
