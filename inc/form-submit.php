@@ -45,12 +45,12 @@ class Form_Submit {
 	protected $namespace = 'sureforms/v1';
 
 	/**
-	 * Addresses.
+	 * Compact addresses for the current submission, address block slug => value.
 	 *
-	 * @var string
+	 * @var array<string,string>
 	 * @since 1.6.1
 	 */
-	private $addresses = '';
+	private $addresses = [];
 
 	/**
 	 * Constructor
@@ -685,13 +685,9 @@ class Form_Submit {
 			$do_not_store_entries = $compliance[0]['do_not_store_entries'] ?? '';
 		}
 
-		// Check if the form data contains 'srfm_addresses' and is not empty.
-		if ( ! empty( $form_data['srfm_addresses'] ) ) {
-			// Assign the addresses to the class property for further processing.
-			$this->addresses = $form_data['srfm_addresses'];
-			// Remove the address data from the form data to avoid redundancy.
-			unset( $form_data['srfm_addresses'] );
-		}
+		// Reset on every submission so one form's map never reaches the next on this instance.
+		$this->addresses = self::get_compact_addresses( $form_data['srfm_addresses'] ?? '', $id );
+		unset( $form_data['srfm_addresses'] );
 
 		// A browser posts nothing for an unticked checkbox, so those keys never arrive
 		// and the field is missing from the entry and from notification emails while
@@ -1037,17 +1033,10 @@ class Form_Submit {
 			}
 		}
 
-		// If the address is not empty, add it to the submission data.
-		// We are providing this for third-party integrations like Ottokit.
-		// They can use compact addresses such as permanent address, temporary address, etc.
-		// The address will be structured as field 1, field 2, and so on.
-		if ( ! empty( $this->addresses ) ) {
-			// Address will be JSON stringified, so decode it.
-			$address = json_decode( wp_unslash( $this->addresses ), true );
-			if ( ! empty( $address ) && is_array( $address ) ) {
-				$modified_message = array_merge( $modified_message, $address );
-			}
-		}
+		// Compact addresses for third-party integrations like OttoKit (permanent address,
+		// temporary address, etc.), already limited to the form's address blocks by
+		// get_compact_addresses(). Added with `+` so a validated field always keeps its value.
+		$modified_message += $this->addresses;
 
 		return apply_filters( 'srfm_update_prepared_submission_data', $modified_message );
 	}
@@ -1723,6 +1712,38 @@ class Form_Submit {
 		// defaults $entry_language to current_language(), so this keeps mis-tagging
 		// to the server's own determination instead of the (cacheable) client value.
 		return $language === $provider->current_language();
+	}
+
+	/**
+	 * The compact address map the browser sends, limited to the form's address blocks.
+	 *
+	 * Keys are kept only when they are the slug of an `srfm/address` block in the stored
+	 * form, and values only when scalar. Anything else in the map is dropped.
+	 *
+	 * @param mixed      $raw     The submitted `srfm_addresses` value, a slashed JSON object.
+	 * @param int|string $form_id The form being submitted.
+	 * @since x.x.x
+	 * @return array<string,string> Address block slug => compact address.
+	 */
+	private static function get_compact_addresses( $raw, $form_id ) {
+		$allowed = Field_Validation::get_address_block_slugs( $form_id );
+		if ( empty( $allowed ) || ! is_string( $raw ) || '' === $raw ) {
+			return [];
+		}
+
+		$decoded = json_decode( wp_unslash( $raw ), true );
+		if ( ! is_array( $decoded ) ) {
+			return [];
+		}
+
+		$addresses = [];
+		foreach ( $decoded as $slug => $value ) {
+			if ( isset( $allowed[ $slug ] ) && is_scalar( $value ) ) {
+				$addresses[ (string) $slug ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
+			}
+		}
+
+		return $addresses;
 	}
 
 	/**

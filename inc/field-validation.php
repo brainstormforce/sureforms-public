@@ -377,6 +377,23 @@ class Field_Validation {
 	}
 
 	/**
+	 * The slugs of the form's own address blocks, slug => true.
+	 *
+	 * The only keys Form_Submit::prepare_submission_data() takes from the compact
+	 * address map. Read from the stored form, including synced patterns, never from
+	 * the request. Empty when the form has no address block.
+	 *
+	 * @param int|mixed $form_id The form post id.
+	 * @since x.x.x
+	 * @return array<string,true>
+	 */
+	public static function get_address_block_slugs( $form_id ) {
+		$form_id = Helper::get_integer_value( $form_id );
+
+		return $form_id > 0 ? self::get_field_identifiers( $form_id )['address_slugs'] : [];
+	}
+
+	/**
 	 * Remove submitted field keys the form does not define.
 	 *
 	 * SECURITY INVARIANT — every submitted key must be checked against the form's own
@@ -665,7 +682,7 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id, already normalised by the callers.
 	 * @since 2.12.8
-	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>,address_slugs:array<string,true>}
 	 */
 	private static function get_field_identifiers( $form_id ) {
 		static $cache = [];
@@ -682,18 +699,19 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id.
 	 * @since 2.12.7
-	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,pairs:array<string,string>,unsubmittable:array<int,array<string,string>>,address_slugs:array<string,true>}
 	 */
 	private static function walk_field_identifiers( $form_id ) {
 		$ids           = [];
 		$slugs         = [];
 		$pairs         = [];
 		$unsubmittable = [];
+		$address_slugs = [];
 		$post          = get_post( $form_id );
 
 		if ( $post instanceof \WP_Post && ! empty( $post->post_content ) && function_exists( 'parse_blocks' ) ) {
 			$visited = [];
-			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited, 0, $unsubmittable, $pairs );
+			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited, 0, $unsubmittable, $pairs, $address_slugs );
 		}
 
 		return [
@@ -701,6 +719,7 @@ class Field_Validation {
 			'slugs'         => $slugs,
 			'pairs'         => $pairs,
 			'unsubmittable' => $unsubmittable,
+			'address_slugs' => $address_slugs,
 		];
 	}
 
@@ -849,10 +868,12 @@ class Field_Validation {
 	 *                                                       when unticked (by reference).
 	 * @param array<string,string>            $pairs   Accumulator of block id => that field's
 	 *                                                 own slug (by reference).
+	 * @param array<string,true>              $address_slugs Accumulator of address block
+	 *                                                       slug => true (by reference).
 	 * @since 2.12.3
 	 * @return void
 	 */
-	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0, &$unsubmittable = [], &$pairs = [] ) {
+	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0, &$unsubmittable = [], &$pairs = [], &$address_slugs = [] ) {
 		if ( ! is_array( $blocks ) || $depth > 50 ) {
 			return;
 		}
@@ -892,6 +913,12 @@ class Field_Validation {
 					$pairs[ $attrs['block_id'] ] = '';
 				}
 
+				// The address blocks whose compact value may join the submission, see
+				// get_address_block_slugs().
+				if ( 'srfm/address' === $block_name && ! empty( $attrs['slug'] ) && is_string( $attrs['slug'] ) ) {
+					$address_slugs[ $attrs['slug'] ] = true;
+				}
+
 				// A browser posts nothing for an unticked checkbox, so these fields need
 				// rebuilding from the form itself -- see backfill_unsubmitted_fields().
 				if ( isset( self::UNSUBMITTABLE_BLOCKS[ $block_name ] ) && ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
@@ -915,13 +942,13 @@ class Field_Validation {
 					$visited[ $ref ] = true;
 					$ref_post        = get_post( $ref );
 					if ( $ref_post instanceof \WP_Post && 'wp_block' === $ref_post->post_type && '' !== $ref_post->post_content ) {
-						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs );
+						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs, $address_slugs );
 					}
 				}
 			}
 
 			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs );
+				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1, $unsubmittable, $pairs, $address_slugs );
 			}
 		}
 	}

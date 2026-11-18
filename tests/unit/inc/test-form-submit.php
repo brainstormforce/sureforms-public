@@ -3441,4 +3441,187 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * The compact address map reaches srfm_before_submission only for the form's own
+	 * address blocks, as scalars, and never replaces a validated field.
+	 *
+	 * Runs the no-store branch so the response returns without a stored entry; the
+	 * map is applied in prepare_submission_data(), before the store/no-store split.
+	 */
+	public function test_handle_form_entry_limits_compact_addresses_to_address_blocks() {
+		$form_id = $this->make_compact_address_form(
+			'<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference","label":"Reference"} /-->'
+			. '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} -->'
+			. '<!-- wp:srfm/input {"block_id":"line1111","slug":"address-line-1","label":"Line 1"} /-->'
+			. '<!-- /wp:srfm/address -->'
+			. '<!-- wp:srfm/address {"block_id":"addr2222","slug":"work-address"} /-->'
+		);
+
+		$hook_data = $this->submit_with_compact_addresses(
+			$form_id,
+			[
+				'reference'    => 'overridden',
+				'invented'     => 'extra',
+				'home-address' => '1 Main St, Springfield',
+				'work-address' => [ 'nested' => 'value' ],
+			]
+		);
+
+		$this->assertSame( 'original', $hook_data['reference'] ?? null, 'a validated field keeps its submitted value' );
+		$this->assertArrayNotHasKey( 'invented', $hook_data, 'a key that is not an address block is dropped' );
+		$this->assertSame( '1 Main St, Springfield', $hook_data['home-address'] ?? null, 'a real address block keeps its compact string' );
+		$this->assertArrayNotHasKey( 'work-address', $hook_data, 'a non-scalar address value is dropped' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The stored-entry path hands srfm_form_submit the same limited map: the address
+	 * block's compact value, no invented key, and the validated field untouched.
+	 */
+	public function test_handle_form_entry_limits_compact_addresses_in_stored_entry_submit_data() {
+		$form_id = $this->make_compact_address_form(
+			'<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference","label":"Reference"} /-->'
+			. '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} /-->'
+		);
+		delete_post_meta( $form_id, '_srfm_compliance' );
+
+		$captured = null;
+		$capture  = static function ( $response ) use ( &$captured ) {
+			$captured = $response;
+		};
+		add_action( 'srfm_form_submit', $capture );
+		$response = $this->form_submit->handle_form_entry(
+			[
+				'form-id'                                          => (string) $form_id,
+				$this->make_field_key( 'ref11111', 'Reference', 'reference' ) => 'original',
+				'srfm_addresses'                                   => wp_slash(
+					wp_json_encode(
+						[
+							'reference'    => 'overridden',
+							'invented'     => 'extra',
+							'home-address' => '1 Main St, Springfield',
+						]
+					)
+				),
+			]
+		);
+		remove_action( 'srfm_form_submit', $capture );
+
+		$this->assertNotEmpty( $captured['entry_id'] ?? null, 'Precondition: the entry was stored.' );
+		$this->assertSame(
+			[
+				'reference'    => 'original',
+				'home-address' => '1 Main St, Springfield',
+			],
+			$captured['data']
+		);
+
+		EntriesTable::delete( Helper::get_integer_value( $response['data']['submission_id'] ) );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A form with no address block takes nothing from the compact address map, and the
+	 * map from one submission does not carry into the next on the same instance.
+	 */
+	public function test_handle_form_entry_ignores_compact_addresses_without_address_blocks() {
+		$form_id = $this->make_compact_address_form(
+			'<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference","label":"Reference"} /-->'
+		);
+
+		$hook_data = $this->submit_with_compact_addresses(
+			$form_id,
+			[
+				'reference'    => 'overridden',
+				'home-address' => '1 Main St',
+			]
+		);
+
+		$this->assertSame( [ 'reference' => 'original' ], $hook_data );
+
+		$this->assertSame( [ 'reference' => 'original' ], $this->submit_with_compact_addresses( $form_id, null ), 'nothing carries over from the previous submission' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * get_compact_addresses() fails closed on every malformed input.
+	 */
+	public function test_get_compact_addresses() {
+		$form_id = $this->make_compact_address_form( '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} /-->' );
+		$get     = function ( $raw, $id = null ) use ( $form_id ) {
+			return $this->call_private_method( $this->form_submit, 'get_compact_addresses', [ $raw, $id ?? $form_id ] );
+		};
+
+		$this->assertSame( [ 'home-address' => '1 Main St' ], $get( wp_slash( '{"home-address":"1 Main St"}' ) ) );
+		$this->assertSame( [ 'home-address' => '7' ], $get( '{"home-address":7}' ), 'a numeric value is kept as a string' );
+		$this->assertSame( [], $get( '' ), 'absent' );
+		$this->assertSame( [], $get( [ 'home-address' => 'x' ] ), 'not a string' );
+		$this->assertSame( [], $get( 'not json' ), 'undecodable' );
+		$this->assertSame( [], $get( '"home-address"' ), 'decodes to a scalar' );
+		$this->assertSame( [], $get( '{"home-address":null}' ), 'null value' );
+		$this->assertSame( [], $get( '{"home-address":"x"}', 0 ), 'no form' );
+		$this->assertSame( [], $get( '{"home-address":"x"}', $form_id + 999 ), 'another form' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A published no-store form with the given block markup.
+	 *
+	 * @param string $content Block markup.
+	 * @return int
+	 */
+	private function make_compact_address_form( $content ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Compact Address Form',
+				'post_content' => $content,
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+
+		return $form_id;
+	}
+
+	/**
+	 * Submit `reference=original` plus an optional compact address map, and return
+	 * the data srfm_before_submission received.
+	 *
+	 * @param int                $form_id   Form id.
+	 * @param array<mixed>|null  $addresses Map to send as srfm_addresses, or null to omit it.
+	 * @return array<mixed>|null
+	 */
+	private function submit_with_compact_addresses( $form_id, $addresses ) {
+		$form_data = [
+			'form-id'                                          => (string) $form_id,
+			$this->make_field_key( 'ref11111', 'Reference', 'reference' ) => 'original',
+		];
+		if ( null !== $addresses ) {
+			$form_data['srfm_addresses'] = wp_slash( wp_json_encode( $addresses ) );
+		}
+
+		$captured = null;
+		$capture  = static function ( $data ) use ( &$captured ) {
+			$captured = $data['data'];
+		};
+		add_action( 'srfm_before_submission', $capture );
+		$this->form_submit->handle_form_entry( $form_data );
+		remove_action( 'srfm_before_submission', $capture );
+
+		return $captured;
+	}
 }

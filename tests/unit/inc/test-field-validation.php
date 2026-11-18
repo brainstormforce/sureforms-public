@@ -1443,4 +1443,43 @@ class Test_Field_Validation extends TestCase {
 		$this->assertArrayNotHasKey( 'x', $prepared );
 		$this->assertSame( 'Basic', $prepared['plan'] ?? null );
 	}
+
+	/**
+	 * get_address_block_slugs() lists only srfm/address slugs, including ones inside a
+	 * synced pattern.
+	 */
+	public function test_get_address_block_slugs() {
+		$pattern = wp_insert_post(
+			[
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_title'   => 'Address Pattern',
+				'post_content' => '<!-- wp:srfm/address {"block_id":"addr2222","slug":"work-address"} /-->',
+			]
+		);
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Address Slug Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference"} /-->'
+					. '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} -->'
+					. '<!-- wp:srfm/input {"block_id":"line1111","slug":"address-line-1"} /-->'
+					. '<!-- /wp:srfm/address -->'
+					. '<!-- wp:block {"ref":' . $pattern . '} /-->',
+			]
+		);
+
+		$this->assertSame(
+			[
+				'home-address' => true,
+				'work-address' => true,
+			],
+			Field_Validation::get_address_block_slugs( $form_id )
+		);
+		$this->assertSame( [], Field_Validation::get_address_block_slugs( 0 ), 'invalid form id yields an empty set' );
+
+		wp_delete_post( $form_id, true );
+		wp_delete_post( $pattern, true );
+	}
 }
