@@ -754,6 +754,65 @@ class Test_Database_Base extends TestCase {
 	}
 
 	/**
+	 * An instance built under one site's prefix must name the active site's table
+	 * after the prefix changes, as it does on switch_to_blog(), and the original
+	 * one again after it is restored. Singletons outlive the switch, so the name
+	 * cannot be fixed at construction.
+	 */
+	public function test_get_tablename_follows_prefix_change() {
+		global $wpdb;
+
+		$original = $wpdb->prefix;
+
+		// Build both singletons under the original prefix first.
+		$this->entries_table->get_tablename();
+		$this->base->get_tablename();
+
+		try {
+			// What wpdb::set_blog_id() does to the prefix on switch_to_blog().
+			$wpdb->prefix = $original . '7_';
+
+			$this->assertSame( $original . '7_srfm_entries', Entries::get_instance()->get_tablename() );
+			$this->assertSame( $original . '7_srfm_payments', Payments::get_instance()->get_tablename() );
+		} finally {
+			$wpdb->prefix = $original;
+		}
+
+		$this->assertSame( $original . 'srfm_entries', $this->entries_table->get_tablename() );
+		$this->assertSame( $original . 'srfm_payments', $this->base->get_tablename() );
+	}
+
+	/**
+	 * is_db_upgradable() reports what start_db_upgrade() decided from the stored
+	 * table versions: upgradable on a fresh install (no stored version),
+	 * not when the stored version is current.
+	 */
+	public function test_is_db_upgradable() {
+		$saved_option = get_option( 'srfm_database_table_versions', false );
+		$flag         = new \ReflectionProperty( \SRFM\Inc\Database\Base::class, 'db_upgradable' );
+		$flag->setAccessible( true );
+		$saved_flag = $flag->getValue( $this->base );
+
+		try {
+			delete_option( 'srfm_database_table_versions' );
+			$this->base->start_db_upgrade();
+			$this->assertTrue( $this->base->is_db_upgradable(), 'Fresh install must be upgradable.' );
+
+			update_option( 'srfm_database_table_versions', [ 'payments' => 1 ] );
+			$this->base->start_db_upgrade();
+			$this->assertFalse( $this->base->is_db_upgradable(), 'Current stored version must not be upgradable.' );
+
+			$this->base->stop_db_upgrade();
+			$this->assertSame( [ 'payments' => 1 ], get_option( 'srfm_database_table_versions' ), 'stop_db_upgrade() must not write when not upgradable.' );
+		} finally {
+			$flag->setValue( $this->base, $saved_flag );
+			false === $saved_option
+				? delete_option( 'srfm_database_table_versions' )
+				: update_option( 'srfm_database_table_versions', $saved_option );
+		}
+	}
+
+	/**
 	 * create() must refuse an empty column definition rather than emit a CREATE TABLE
 	 * with no body. Guard-clause coverage for the function that gained the
 	 * srfm_db_upgrade_query_failed failure hook.

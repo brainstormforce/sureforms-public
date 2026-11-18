@@ -2049,11 +2049,7 @@ class Test_Analytics extends TestCase {
 	 * @return void
 	 */
 	private function reset_table_cache() {
-		delete_transient( \SRFM\Inc\Database\Register::ENTRIES_TABLE_CHECK_TRANSIENT );
-
-		$memo = new ReflectionProperty( \SRFM\Inc\Database\Register::class, 'entries_table_present' );
-		$memo->setAccessible( true );
-		$memo->setValue( null, null );
+		\SRFM\Inc\Database\Register::flush_entries_table_cache();
 	}
 
 	/**
@@ -2297,7 +2293,7 @@ class Test_Analytics extends TestCase {
 		$present = new ReflectionProperty( \SRFM\Inc\Database\Register::class, 'entries_table_present' );
 		$present->setAccessible( true );
 		$was = $present->getValue();
-		$present->setValue( null, false );
+		$present->setValue( null, [ get_current_blog_id() => false ] );
 		$missing = Analytics::form_start_outcomes();
 		$present->setValue( null, $was );
 		$this->assertSame( $after['scratch']['published'], $missing['scratch']['published'] );
