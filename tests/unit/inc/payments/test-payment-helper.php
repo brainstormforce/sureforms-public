@@ -389,6 +389,102 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertEquals( 40.00, $result );
 	}
 
+	/**
+	 * Multi-select options priced for the multi-select recompute tests below.
+	 *
+	 * @param string $block_name Block name.
+	 * @return array<string,mixed>
+	 */
+	private function multi_select_price_config( $block_name = 'srfm/dropdown' ) {
+		return [
+			'block_name'       => $block_name,
+			'multi_select'     => true,
+			'single_selection' => false,
+			'options'          => [
+				[ 'label' => 'Basic', 'value' => '10' ],
+				[ 'label' => 'Premium', 'value' => '500' ],
+				[ 'label' => 'Tea &amp; Cake', 'value' => '5' ],
+			],
+		];
+	}
+
+	/**
+	 * A choice that prices to no single configured option is refused with a message
+	 * the visitor can act on, not the site-owner "re-save the form" one. A real
+	 * selection at its price still passes.
+	 */
+	public function test_validate_amount_against_config_invalid_choice_message_is_for_the_visitor() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 0,
+					'variable_amount_field'            => 'plan',
+					'variable_amount_field_block_name' => 'srfm/dropdown',
+				],
+				'drp456' => array_merge( $this->multi_select_price_config(), [ 'block_id' => 'drp456', 'slug' => 'plan' ] ),
+			]
+		);
+		$key = 'srfm-dropdown-drp456-lbl-UGxhbg-plan';
+
+		foreach ( [ 'Basic | Basic', 'Basic | Gold' ] as $value ) {
+			$result = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, [ $key => $value ], 10.0 );
+			$this->assertFalse( $result['valid'], $value );
+			$this->assertSame( 'One or more selected options are not valid. Please check your selection and try again.', $result['message'], $value );
+		}
+
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay123', $form_id, [ $key => 'Basic | Premium' ], 510.0 )['valid'] );
+	}
+
+	public function test_get_amount_by_config_options_multi_select_unmatched_value_is_null() {
+		foreach ( [ 'srfm/dropdown', 'srfm/multi-choice' ] as $block_name ) {
+			$config = $this->multi_select_price_config( $block_name );
+			foreach ( [ 'Basic | Gold', 'Gold | Premium', 'Basic | ', 'Basic |  | Premium' ] as $value ) {
+				$this->assertNull(
+					$this->call_private_method( null, 'get_amount_by_the_config_options', [ $value, $config ] ),
+					"{$block_name}: '{$value}' holds a value that is no configured option"
+				);
+			}
+		}
+	}
+
+	public function test_get_amount_by_config_options_multi_select_prices_entity_encoded_label() {
+		$config = $this->multi_select_price_config();
+
+		// Field_Rules::check_choices() accepts these as the real options, so the
+		// recompute must price them as those options.
+		$this->assertEquals( 510.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Pr&#101;mium', $config ] ) );
+		$this->assertEquals( 510.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | &#x50;remium', $config ] ) );
+		// A label kses stored encoded matches its decoded submission, and vice versa.
+		$this->assertEquals( 15.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Tea & Cake', $config ] ) );
+		$this->assertEquals( 15.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Tea &amp; Cake', $config ] ) );
+	}
+
+	public function test_get_amount_by_config_options_multi_select_repeated_value_is_null() {
+		$config = $this->multi_select_price_config();
+
+		$this->assertNull( $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Basic', $config ] ) );
+		$this->assertNull( $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Premium | Pr&#101;mium', $config ] ) );
+	}
+
+	public function test_get_amount_by_config_options_multi_select_ambiguous_label_is_null() {
+		$config              = $this->multi_select_price_config();
+		$config['options'][] = [ 'label' => 'Pr&#101;mium', 'value' => '1' ];
+
+		// Two options canonicalise to one label at different prices: the selection
+		// does not say which was picked.
+		$this->assertNull( $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Premium', $config ] ) );
+
+		// The same label repeated at the same price is not ambiguous.
+		$config              = $this->multi_select_price_config();
+		$config['options'][] = [ 'label' => 'Premium', 'value' => '500' ];
+		$this->assertEquals( 510.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Premium', $config ] ) );
+	}
+
 	public function test_get_amount_by_config_options_no_match() {
 		$block_config = [
 			'block_name' => 'srfm/dropdown',

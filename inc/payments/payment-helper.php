@@ -13,6 +13,7 @@
 namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Field_Rules;
 use SRFM\Inc\Field_Validation;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
@@ -1717,11 +1718,12 @@ class Payment_Helper {
 				// Fail safe when the submitted selection doesn't map to a configured
 				// option value: get_amount_by_the_config_options() returns null, and
 				// abs( $payment_amount - null ) would coerce null to 0 — reject explicitly
-				// so the comparison can never be silently weakened by that coercion.
+				// so the comparison can never be silently weakened by that coercion. The
+				// selection is the visitor's, so the message asks them to change it.
 				if ( ! is_numeric( $get_expected_amount ) ) {
 					return [
 						'valid'   => false,
-						'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+						'message' => __( 'One or more selected options are not valid. Please check your selection and try again.', 'sureforms' ),
 					];
 				}
 
@@ -1965,40 +1967,38 @@ class Payment_Helper {
 			$is_multi_select = empty( $block_config['single_selection'] );
 		}
 
-		$expected_amount = null;
-
-		// Handle multi-select case (submitted value format: "value1 | value2").
-		if ( $is_multi_select && false !== strpos( $submitted_field_value, ' | ' ) ) {
-			// Explode the submitted value by " | " delimiter.
-			$submitted_values = explode( ' | ', $submitted_field_value );
-
-			$combine_amount = 0;
-
-			foreach ( $options as $option ) {
-				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
-
-				foreach ( $submitted_values as $submitted_value ) {
-					if ( trim( $submitted_value ) === $option_label ) {
-						$combine_amount += floatval( $option['value'] );
-						break;
-					}
-				}
+		// Price each option under the label check_choices() accepts it by, so the
+		// recompute and the option-membership check agree on what was selected. Two
+		// options sharing a label at different prices make any selection of it
+		// unpriceable.
+		$prices = [];
+		foreach ( $options as $option ) {
+			$label = is_array( $option ) && isset( $option['label'] ) && is_scalar( $option['label'] ) ? Field_Rules::comparable( (string) $option['label'] ) : '';
+			$price = is_array( $option ) && isset( $option['value'] ) && is_scalar( $option['value'] ) ? floatval( $option['value'] ) : 0.0;
+			if ( '' === $label ) {
+				continue;
 			}
-
-			$expected_amount = $combine_amount;
-
-		} else {
-			// Handle single select case (submitted value is a simple string).
-			foreach ( $options as $option ) {
-				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
-				if ( trim( $submitted_field_value ) === $option_label ) {
-					$expected_amount = floatval( $option['value'] );
-					break;
-				}
+			if ( isset( $prices[ $label ] ) && $prices[ $label ] !== $price ) {
+				return null;
 			}
+			$prices[ $label ] = $price;
 		}
 
-		return $expected_amount;
+		// Single select: the whole value is one choice. Multi-select: "value1 | value2".
+		$submitted_values = $is_multi_select && false !== strpos( $submitted_field_value, ' | ' ) ? explode( ' | ', $submitted_field_value ) : [ $submitted_field_value ];
+
+		// Every choice must be exactly one configured option, each at most once;
+		// anything else leaves the amount undeterminable (null), which the caller rejects.
+		$selected = [];
+		foreach ( $submitted_values as $submitted_value ) {
+			$label = Field_Rules::comparable( $submitted_value );
+			if ( ! isset( $prices[ $label ] ) || isset( $selected[ $label ] ) ) {
+				return null;
+			}
+			$selected[ $label ] = $prices[ $label ];
+		}
+
+		return (float) array_sum( $selected );
 	}
 
 	/**

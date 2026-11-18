@@ -137,6 +137,27 @@ class Field_Rules {
 	}
 
 	/**
+	 * An option label or submitted choice in the form both are compared in.
+	 *
+	 * A label is stored with or without entities depending on who saved the form
+	 * (kses encodes `&` for a user without unfiltered_html), and the browser
+	 * submits it exactly as stored. Decoding both sides, then sanitizing them the
+	 * same way, matches either shape.
+	 *
+	 * Public so the payment amount recompute
+	 * (Payment_Helper::get_amount_by_the_config_options()) maps a submitted choice
+	 * to an option the same way check_choices() does.
+	 *
+	 * @param string $text Label or choice.
+	 * @since 2.13.1
+	 * @since x.x.x Public.
+	 * @return string
+	 */
+	public static function comparable( $text ) {
+		return trim( sanitize_text_field( html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) );
+	}
+
+	/**
 	 * Collect the fields to check, with the attributes the renderer gives them.
 	 *
 	 * Mirrors Field_Validation::collect_field_block_ids(): recurses into inner
@@ -496,22 +517,6 @@ class Field_Rules {
 		$options = apply_filters( 'srfm_field_options', $attrs['options'] ?? '', array_merge( $attrs, [ 'block_args' => [ 'slug' => 'dropdown' === $field['type'] ? 'dropdown' : 'multi-choice' ] ] ) );
 
 		return is_array( $options ) ? $options : [];
-	}
-
-	/**
-	 * An option label or submitted choice in the form both are compared in.
-	 *
-	 * A label is stored with or without entities depending on who saved the form
-	 * (kses encodes `&` for a user without unfiltered_html), and the browser
-	 * submits it exactly as stored. Decoding both sides, then sanitizing them the
-	 * same way, matches either shape.
-	 *
-	 * @param string $text Label or choice.
-	 * @since 2.13.1
-	 * @return string
-	 */
-	private static function comparable( $text ) {
-		return trim( sanitize_text_field( html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) );
 	}
 
 	/**
