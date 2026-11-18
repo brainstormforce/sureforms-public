@@ -103,7 +103,7 @@ class Phone_Markup extends Base {
 		// Why resolve server-side at all (vs. a browser geo-IP fetch)?
 		// A client-side fetch('https://ipapi.co/json') caused CORS failures, 429 rate
 		// limits on high-traffic sites, and exposed visitor IPs to a third party from the
-		// browser. The server path (CDN header first, then a capped, cached ipapi.co
+		// browser. The server path (CDN header first, then a capped, cached SureForms geo API
 		// lookup in Helper::get_geo_country()) avoids all three.
 		if ( $this->auto_country ) {
 			// Pass the configured default as the fallback so a detection failure
