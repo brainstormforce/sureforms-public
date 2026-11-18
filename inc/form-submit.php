@@ -1414,6 +1414,7 @@ class Form_Submit {
 		// Extract and validate field values from POST data.
 		$skip_keys  = [ 'action', 'token', 'id' ];
 		$duplicates = [];
+		$checked    = [];
 
 		foreach ( $_POST as $raw_key => $raw_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verified above.
 			if ( in_array( $raw_key, $skip_keys, true ) ) {
@@ -1438,6 +1439,14 @@ class Form_Submit {
 			if ( '' === $block_id || ! isset( $unique_block_ids[ $block_id ] ) ) {
 				continue;
 			}
+
+			// At most one entries lookup per unique block per request: the form renders
+			// one input per block, so any further key resolving to the same block is
+			// dropped. This bounds the queries to the number of unique fields on the form.
+			if ( isset( $checked[ $block_id ] ) ) {
+				continue;
+			}
+			$checked[ $block_id ] = true;
 
 			// Single optimized query per field instead of loading all entries.
 			if ( Entries::has_duplicate_field_value( $form_id, $field_key, $value ) ) {

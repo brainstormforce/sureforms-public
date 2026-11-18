@@ -2475,6 +2475,83 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * The uniqueness check runs at most one entries lookup per unique block, however
+	 * many keys in the request resolve to that block, and still one per distinct block.
+	 */
+	public function test_field_unique_validation_one_lookup_per_unique_block() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$email_key = $this->make_field_key( 'uniqa111', 'Email', 'email' );
+		$phone_key = $this->make_field_key( 'uniqb222', 'Phone', 'phone' );
+
+		$form_id = wp_insert_post(
+			[
+				'post_title'   => 'Two Unique Fields Form',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"uniqa111","isUnique":true} /--><!-- wp:srfm/input {"block_id":"uniqb222","isUnique":true} /-->',
+			]
+		);
+
+		EntriesTable::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [
+					$email_key => 'taken@example.com',
+					$phone_key => '5551234567',
+				],
+			]
+		);
+
+		$lookups = 0;
+		$counter = static function ( $query ) use ( &$lookups ) {
+			if ( false !== strpos( $query, 'JSON_EXTRACT(form_data' ) ) {
+				++$lookups;
+			}
+			return $query;
+		};
+		add_filter( 'query', $counter );
+
+		try {
+			$this->assert_unique_lookup_counts( $form_id, $email_key, $phone_key, $lookups );
+		} finally {
+			remove_filter( 'query', $counter );
+			wp_delete_post( $form_id, true );
+		}
+	}
+
+	/**
+	 * Assertions for test_field_unique_validation_one_lookup_per_unique_block().
+	 *
+	 * @param int    $form_id   Form ID.
+	 * @param string $email_key First unique field key.
+	 * @param string $phone_key Second unique field key.
+	 * @param int    $lookups   Lookup counter, incremented by the query filter.
+	 * @return void
+	 */
+	private function assert_unique_lookup_counts( $form_id, $email_key, $phone_key, &$lookups ) {
+		// Twenty keys that all resolve to the same unique block.
+		$fields = [];
+		for ( $i = 0; $i < 20; $i++ ) {
+			$fields[ $this->make_field_key( 'uniqa111', 'Alias ' . $i, 'slug' . $i ) ] = 'taken@example.com';
+		}
+		$this->call_unique_validation( $form_id, $fields );
+		$this->assertSame( 1, $lookups, 'Keys resolving to one block must cost one lookup.' );
+
+		// Two distinct unique blocks are both still checked and both reported.
+		$lookups  = 0;
+		$response = $this->call_unique_validation(
+			$form_id,
+			[
+				$email_key => 'taken@example.com',
+				$phone_key => '5551234567',
+			]
+		);
+		$this->assertSame( 2, $lookups );
+		$this->assertSame( [ [ $email_key => 'not unique' ], [ $phone_key => 'not unique' ] ], $response['data'] );
+	}
+
+	/**
 	 * A form with no unique fields answers with an empty result set for any probe.
 	 */
 	public function test_field_unique_validation_form_without_unique_fields() {
