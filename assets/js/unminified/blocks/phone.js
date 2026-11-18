@@ -1,6 +1,13 @@
 // A valid ISO 3166-1 alpha-2 code, lowercase.
 const isIso2 = ( c ) => typeof c === 'string' && /^[a-z]{2}$/.test( c );
 
+// Phone inputs whose country applyAutoCountry() is setting right now. Their
+// `countrychange` event is not a visitor's choice.
+const autoCountryInputs = new WeakSet();
+
+// Event listeners SureForms adds to each phone input, keyed by the input.
+const phoneListeners = new WeakMap();
+
 /**
  * Validates and returns a country code based on filter settings.
  * If the country is not valid for current filters, returns the first valid country.
@@ -160,6 +167,11 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 	let lastAutoApplied = iti.getSelectedCountryData()?.iso2 || null;
 
 	const setCountry = ( country, { isRefine = false } = {} ) => {
+		// The geo fetch can resolve after a re-init replaced this instance.
+		// Only the live instance may change the shared input.
+		if ( window.intlTelInput?.getInstance?.( phoneNumber ) !== iti ) {
+			return;
+		}
 		if ( ! country || typeof country !== 'string' ) {
 			return;
 		}
@@ -188,7 +200,12 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 			filters.excludeCountries
 		);
 		if ( validated ) {
-			iti.setCountry( validated );
+			autoCountryInputs.add( phoneNumber );
+			try {
+				iti.setCountry( validated );
+			} finally {
+				autoCountryInputs.delete( phoneNumber );
+			}
 			lastAutoApplied = validated;
 		}
 	};
@@ -284,8 +301,11 @@ function initializePhoneField() {
 			}
 		}
 
-		// Determine initial country based on filter settings
-		let initialCountry = defaultCountry || 'us';
+		// The visitor's country survives re-initialisation (stored by
+		// cleanupPhoneFields()). The tel input holds only national digits, so
+		// the country can't be recovered from the value.
+		const keptCountry = phoneNumber.dataset.srfmSelectedCountry;
+		let initialCountry = keptCountry || defaultCountry || 'us';
 
 		// Validate the initial country against filters
 		initialCountry = validateCountryWithFilters(
@@ -336,14 +356,31 @@ function initializePhoneField() {
 		// (e.g., browser autocomplete, typing, or deleting the country code).
 		// The flag should only change when the user explicitly selects a country from the dropdown.
 		// Dropdown selection goes through _selectListItem -> _setCountry directly, so it still works.
+		const updateCountryFromNumber = iti._updateCountryFromNumber.bind( iti );
 		iti._updateCountryFromNumber = () => false;
+
+		// setNumber() is a deliberate full number (Pro save-and-resume restores
+		// one this way), so it may set the country from the dial code. It uses
+		// the same method, so lift the block above for that call only.
+		const setNumber = iti.setNumber.bind( iti );
+		iti.setNumber = ( number ) => {
+			iti._updateCountryFromNumber = updateCountryFromNumber;
+			try {
+				setNumber( number );
+			} finally {
+				iti._updateCountryFromNumber = () => false;
+			}
+		};
 
 		// Per-visitor auto country detection. The server bakes an initial
 		// `default-country`, but on full-page-cached sites that value is the first
 		// visitor's. When auto-country is enabled, fetch the current visitor's
 		// country from the same-origin REST endpoint (not part of the cached page
 		// HTML) and apply it — correct per visitor.
-		if ( phoneNumber.getAttribute( 'data-auto-country' ) === 'true' ) {
+		if (
+			! keptCountry &&
+			phoneNumber.getAttribute( 'data-auto-country' ) === 'true'
+		) {
 			applyAutoCountry( iti, phoneNumber, {
 				enableCountryFilter,
 				countryFilterType,
@@ -377,39 +414,64 @@ function initializePhoneField() {
 			selectedCountry.style.paddingRight = '0';
 		}
 
-		const updatePhoneNumber = () => {
+		/**
+		 * Write the number into the hidden input that validation and submission read.
+		 *
+		 * Invalid numbers are copied as typed, so the unique check can be overridden
+		 * and the invalid/required messages still show. Valid numbers use the
+		 * normalized value (phonewords like '+1 800 FLOWERS' become digits).
+		 *
+		 * @return {boolean} True when a number is entered but is not valid.
+		 */
+		const syncHiddenInput = () => {
 			const phoneNumberValue = phoneNumber?.value
 				? phoneNumber?.value.trim()
 				: '';
-			const parentBlock = phoneNumber.closest( '.srfm-block' );
-
-			/**
-			 * Get the normalized phone number (converts phonewords like '+1 800 FLOWERS' to digits).
-			 * Then validate using intlTelInput.utils.isValidNumber() which properly handles
-			 * the normalized value. This approach supports phonewords when allowPhonewords is enabled.
-			 */
 			const normalizedNumber = iti.getNumber();
 			const isValid =
 				normalizedNumber &&
 				window.intlTelInput?.utils?.isValidNumber( normalizedNumber );
+			const isInvalid = !! phoneNumberValue && ! isValid;
 
-			if ( phoneNumberValue && ! isValid ) {
+			iti.hiddenInput.value = isInvalid
+				? iti.telInput.value
+				: normalizedNumber || '';
+
+			return isInvalid;
+		};
+
+		const setPhoneError = ( isInvalid ) => {
+			const parentBlock = phoneNumber.closest( '.srfm-block' );
+
+			if ( isInvalid ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, true );
 				errorMessage.textContent =
 					window?.srfm_submit?.messages?.srfm_valid_phone_number;
-				/**
-				 * Set the phone number input value to the hidden input even if the phone number is not valid,
-				 * so that the unique validation can be overridden and invalid/required validation messages will be visible.
-				 */
-				iti.hiddenInput.value = iti.telInput.value;
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, false );
-				// Use normalized number (ensures phonewords are converted to digits)
-				iti.hiddenInput.value = normalizedNumber || '';
 			}
 		};
+
+		const updatePhoneNumber = () => setPhoneError( syncHiddenInput() );
+
+		// intl-tel-input creates the hidden input empty and only fills it on the
+		// form's native submit, which runs after SureForms validation. Fill it now
+		// so a number already in the field (typed, or a default value) is what
+		// validation reads.
+		//
+		// An invalid number gets srfm-phone-error, because fieldValidation()
+		// relies on that class to reject it. The message text is set but not
+		// shown: validation shows it on blur or submit, so a form doesn't load
+		// with an error. Init never removes an error.
+		if ( syncHiddenInput() ) {
+			phoneNumber
+				.closest( '.srfm-block' )
+				.classList.add( 'srfm-phone-error' );
+			errorMessage.textContent =
+				window?.srfm_submit?.messages?.srfm_valid_phone_number;
+		}
 		/**
 		 * Set the data-unique parameter to the hidden input field based on the data-unique
 		 * parameter of the phone input field.
@@ -421,32 +483,56 @@ function initializePhoneField() {
 		}
 
 		if ( phoneNumber ) {
+			// Aborted by cleanupPhoneFields(), so re-inits don't stack handlers.
+			const listenerController = new AbortController();
+			phoneListeners.set( phoneNumber, listenerController );
+			const { signal } = listenerController;
+
 			/**
 			 * Changed onChange event to input event to handle paste event.
 			 */
-			phoneNumber.addEventListener( 'input', updatePhoneNumber );
-			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
-			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
-			phoneNumber.addEventListener( 'open:countrydropdown', () => {
-				const selectedCountryData = iti.getSelectedCountryData();
-				if ( selectedCountryData ) {
-					countriesData.forEach( ( country ) => {
-						if ( country.classList.contains( 'iti__active' ) ) {
-							country.classList.remove( 'iti__active' );
-						}
-					} );
-					const activeCountry = iti?.countryList.querySelector(
-						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
-					);
-					if ( activeCountry ) {
-						activeCountry.classList.add( 'iti__active' );
-						activeCountry.scrollIntoView( {
-							block: 'nearest',
-							behavior: 'instant',
-						} );
-					}
-				}
+			phoneNumber.addEventListener( 'input', updatePhoneNumber, {
+				signal,
 			} );
+			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber, {
+				signal,
+			} );
+			// Remember that the visitor chose a country, so a re-init keeps it.
+			// Countries set by auto-country don't count.
+			phoneNumber.addEventListener(
+				'countrychange',
+				() => {
+					if ( ! autoCountryInputs.has( phoneNumber ) ) {
+						phoneNumber.dataset.srfmCountryChosen = 'true';
+					}
+				},
+				{ signal }
+			);
+			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
+			phoneNumber.addEventListener(
+				'open:countrydropdown',
+				() => {
+					const selectedCountryData = iti.getSelectedCountryData();
+					if ( selectedCountryData ) {
+						countriesData.forEach( ( country ) => {
+							if ( country.classList.contains( 'iti__active' ) ) {
+								country.classList.remove( 'iti__active' );
+							}
+						} );
+						const activeCountry = iti?.countryList.querySelector(
+							`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
+						);
+						if ( activeCountry ) {
+							activeCountry.classList.add( 'iti__active' );
+							activeCountry.scrollIntoView( {
+								block: 'nearest',
+								behavior: 'instant',
+							} );
+						}
+					}
+				},
+				{ signal }
+			);
 		}
 
 		itiContainerClass( element );
@@ -483,12 +569,45 @@ function itiContainerClass( element ) {
 	} );
 }
 
-// Cleanup function for phone fields
+/**
+ * Tear down phone fields so initializePhoneField() can run on them again.
+ *
+ * Keeps the visitor's country on the input (data-srfm-selected-country) so the
+ * next init restores it, and destroys the intl-tel-input instance so its
+ * listeners (including the form submit one) don't stack up.
+ *
+ * The country is kept only when the visitor picked it or has typed a number
+ * against it. An untouched empty field keeps nothing, so the next init runs
+ * auto-country again, and a repeater template (cloned for new rows) never
+ * carries a country.
+ *
+ * @param {Document|HTMLElement} container Element whose phone fields to clean up.
+ */
 function cleanupPhoneFields( container = document ) {
 	const phoneNumbers = container.querySelectorAll( '.srfm-input-phone' );
 
 	phoneNumbers.forEach( ( phoneNumber ) => {
 		try {
+			phoneListeners.get( phoneNumber )?.abort();
+			phoneListeners.delete( phoneNumber );
+
+			const iti = window.intlTelInput?.getInstance?.( phoneNumber );
+			// getInstance() reads a data attribute, so make sure the instance
+			// really belongs to this input before trusting or destroying it.
+			if ( iti && iti.telInput === phoneNumber ) {
+				const iso2 = iti.getSelectedCountryData()?.iso2;
+				const visitorCountry =
+					phoneNumber.dataset.srfmCountryChosen === 'true' ||
+					phoneNumber.value.trim() !== '';
+				if ( iso2 && visitorCountry ) {
+					phoneNumber.dataset.srfmSelectedCountry = iso2;
+				} else {
+					delete phoneNumber.dataset.srfmSelectedCountry;
+				}
+				iti.destroy();
+			}
+
+			// Fallback for an input whose instance is gone: unwrap it by hand.
 			const itiContainer = phoneNumber.closest( '.iti' );
 			if ( itiContainer && itiContainer.parentNode ) {
 				itiContainer.parentNode.insertBefore(
@@ -527,4 +646,30 @@ document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 	setTimeout( () => {
 		initializePhoneField();
 	}, 100 );
+} );
+
+// form.reset() puts the tel input back to its default value but leaves the
+// hidden input, the selected country and the phone error as they were.
+// Re-initialise the form's phone fields so they match the reset value.
+document.addEventListener( 'srfm_form_reset', ( e ) => {
+	const form = e.detail?.form;
+	if ( ! form ) {
+		return;
+	}
+
+	const phones = form.querySelectorAll( '.srfm-input-phone' );
+	if ( phones.length === 0 ) {
+		return;
+	}
+
+	cleanupPhoneFields( form );
+	// After cleanup, which would otherwise keep the visitor's country.
+	phones.forEach( ( phoneNumber ) => {
+		delete phoneNumber.dataset.srfmCountryChosen;
+		delete phoneNumber.dataset.srfmSelectedCountry;
+		phoneNumber
+			.closest( '.srfm-block' )
+			?.classList.remove( 'srfm-phone-error' );
+	} );
+	initializePhoneField();
 } );

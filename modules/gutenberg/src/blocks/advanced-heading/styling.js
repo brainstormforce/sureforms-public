@@ -3,10 +3,12 @@
  */
 
 import generateBorderCSS from '@Controls/generateBorderCSS';
-import generateCSS from '@Controls/generateCSS';
+import generateCSS, { cssBlockId } from '@Controls/generateCSS';
 import generateCSSUnit from '@Controls/generateCSSUnit';
 import { getFallbackNumber } from '@Controls/getAttributeFallback';
 import { applyFilters } from '@wordpress/hooks';
+
+const ALLOWED_HEADING_TAGS = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div' ];
 
 function styling(
 	attributes,
@@ -23,7 +25,7 @@ function styling(
 		headingAlign,
 		headingAlignTablet,
 		headingAlignMobile,
-		headingTag,
+		headingTag: savedHeadingTag,
 		headingColor,
 		headingColorType,
 		headingGradientColor,
@@ -167,6 +169,11 @@ function styling(
 		subHeadSpaceMobile,
 		headingDescToggle,
 	} = attributes;
+
+	// Mirrors Advanced_Heading::render_html(): headingTag is a selector key, so only the offered tags are used.
+	const headingTag = ALLOWED_HEADING_TAGS.includes( savedHeadingTag )
+		? savedHeadingTag
+		: 'h2';
 
 	let tablet_selectors = {};
 	let mobile_selectors = {};
@@ -669,7 +676,7 @@ function styling(
 		'.editor-styles-wrapper ' +
 		( gbsSelector
 			? gbsSelector + ' '
-			: `#block-${ clientId } .uagb-block-${ block_id }` );
+			: `#block-${ clientId } .uagb-block-${ cssBlockId( block_id ) }` );
 
 	selectors = applyFilters(
 		`spectra.${ blockName }.styling`,
