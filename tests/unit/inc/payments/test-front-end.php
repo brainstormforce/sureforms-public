@@ -413,6 +413,13 @@ class Test_Front_End_Payments extends TestCase {
 		$this->register_conditional_logic_meta();
 
 		$form_id = $this->make_payment_form();
+		// The rule's trigger field must be on the form; a missing one reads as empty.
+		wp_update_post(
+			[
+				'ID'           => $form_id,
+				'post_content' => '<!-- wp:srfm/email {"block_id":"email"} /-->' . get_post_field( 'post_content', $form_id ),
+			]
+		);
 		update_post_meta(
 			$form_id,
 			'_srfm_conditional_logic',
@@ -420,18 +427,19 @@ class Test_Front_End_Payments extends TestCase {
 				[
 					'pay12345' => [
 						'action' => 'show',
-						'logic'  => [ [ [ 'field' => 'email', 'operator' => '===', 'value' => 'yes' ] ] ],
+						'logic'  => [ [ [ 'field' => 'email', 'operator' => '==', 'value' => 'yes' ] ] ],
 					],
 				],
 			]
 		);
 
+		// The `show` condition does not hold for these values, so the field is hidden.
 		$result = $this->front_end->validate_payment_fields( [ 'form-id' => $form_id ] );
 
 		$this->assertArrayNotHasKey( 'error', $result );
 
-		// A `hide` rule leaves the field visible by default, but it can still be hidden
-		// when the conditions match, so it is exempt on the same grounds.
+		// A `hide` rule leaves the field visible by default; it is exempt only when the
+		// submitted values match the conditions.
 		update_post_meta(
 			$form_id,
 			'_srfm_conditional_logic',
@@ -439,12 +447,21 @@ class Test_Front_End_Payments extends TestCase {
 				[
 					'pay12345' => [
 						'action' => 'hide',
-						'logic'  => [ [ [ 'field' => 'email', 'operator' => '===', 'value' => 'yes' ] ] ],
+						'logic'  => [ [ [ 'field' => 'email', 'operator' => '==', 'value' => 'yes' ] ] ],
 					],
 				],
 			]
 		);
-		$this->assertArrayNotHasKey( 'error', $this->front_end->validate_payment_fields( [ 'form-id' => $form_id ] ) );
+		$this->assertArrayNotHasKey(
+			'error',
+			$this->front_end->validate_payment_fields(
+				[
+					'form-id'                      => $form_id,
+					'srfm-email-email-lbl-x-email' => 'yes',
+				]
+			)
+		);
+		$this->assertArrayHasKey( 'error', $this->front_end->validate_payment_fields( [ 'form-id' => $form_id ] ) );
 
 		unregister_post_meta( SRFM_FORMS_POST_TYPE, '_srfm_conditional_logic' );
 		remove_filter( 'srfm_payment_methods_registry', [ $this, 'force_enabled_payment_method' ] );

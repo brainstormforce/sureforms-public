@@ -1201,21 +1201,21 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertNotContains( 'broken03', $required, 'A block that renders nothing must not be required.' );
 		$this->assertNotContains( 'plain04', $required );
 
-		// An actionable conditional-logic rule can hide the field client-side, so that
-		// block is not required — but only while something is there to evaluate it, and
+		// An actionable conditional-logic rule that hides the field for the submitted
+		// values exempts that block — but only while something is there to apply it, and
 		// only for a rule that carries at least one condition.
 		$actionable = [
 			[
 				'active01' => [
 					'action' => 'show',
-					'logic'  => [ [ [ 'field' => 'email', 'operator' => '===', 'value' => 'yes' ] ] ],
+					'logic'  => [ [ [ 'field' => 'email', 'operator' => '==', 'value' => 'yes' ] ] ],
 				],
 			],
 		];
 
 		// Unregistered meta (no evaluator present) => the rule buys nothing.
 		update_post_meta( $form_id, '_srfm_conditional_logic', $actionable );
-		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id ) );
+		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
 
 		register_post_meta(
 			SRFM_FORMS_POST_TYPE,
@@ -1226,12 +1226,12 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 			]
 		);
 
-		$this->assertNotContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id ) );
-		$this->assertContains( 'nested02', Payment_Helper::get_required_payment_block_ids( $form_id ) );
+		$this->assertNotContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
+		$this->assertContains( 'nested02', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
 
 		// A rule with no conditions can never match, so the block stays required.
 		update_post_meta( $form_id, '_srfm_conditional_logic', [ [ 'active01' => [ 'action' => 'show' ] ] ] );
-		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id ) );
+		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
 
 		unregister_post_meta( SRFM_FORMS_POST_TYPE, '_srfm_conditional_logic' );
 		delete_post_meta( $form_id, '_srfm_conditional_logic' );
