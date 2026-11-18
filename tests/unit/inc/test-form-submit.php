@@ -1661,6 +1661,144 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * Without a stored entry, srfm_after_submission_process gets no field that
+	 * srfm_before_prepare_submission_data removed, the same as the stored path.
+	 *
+	 * The filter stands in for Pro's password strip. Fields it keeps reach the
+	 * listeners unchanged, along with the non-field keys and form_id.
+	 */
+	public function test_handle_form_entry_no_entry_dispatch_drops_fields_removed_by_processing() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'No Store Registration',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+
+		$name_key    = 'srfm-input-11112222-lbl-TmFtZQ-name';
+		$pass_key    = 'srfm-password-33334444-lbl-UGFzc3dvcmQ-password';
+		$confirm_key = 'srfm-password-confirm-33334444-lbl-Q29uZmlybSBQYXNzd29yZA';
+
+		$strip = static function ( $submission_data ) {
+			foreach ( array_keys( $submission_data ) as $key ) {
+				if ( 0 === strpos( (string) $key, 'srfm-password' ) ) {
+					unset( $submission_data[ $key ] );
+				}
+			}
+			return $submission_data;
+		};
+		add_filter( 'srfm_before_prepare_submission_data', $strip );
+
+		$dispatched = null;
+		$listen     = static function ( $data ) use ( &$dispatched ) {
+			$dispatched = $data;
+		};
+		add_action( 'srfm_after_submission_process', $listen, 1 );
+
+		try {
+			$response = $this->form_submit->handle_form_entry(
+				[
+					'form-id'    => (string) $form_id,
+					$name_key    => 'Dummy Name',
+					$pass_key    => 'DummyPw#9',
+					$confirm_key => 'DummyPw#9',
+				]
+			);
+		} finally {
+			remove_filter( 'srfm_before_prepare_submission_data', $strip );
+			remove_action( 'srfm_after_submission_process', $listen, 1 );
+			wp_delete_post( $form_id, true );
+		}
+
+		$this->assertTrue( $response['success'] );
+		$this->assertIsArray( $dispatched );
+		$this->assertArrayNotHasKey( $pass_key, $dispatched );
+		$this->assertArrayNotHasKey( $confirm_key, $dispatched );
+		$this->assertSame( 'Dummy Name', $dispatched[ $name_key ] );
+		$this->assertSame( (string) $form_id, $dispatched['form-id'] );
+		$this->assertSame( $form_id, $dispatched['form_id'] );
+	}
+
+	/**
+	 * srfm_submission_accepted gets no field that srfm_before_prepare_submission_data
+	 * removed, whether or not the entry is stored. Non-field keys still reach it.
+	 */
+	public function test_handle_form_entry_submission_accepted_drops_fields_removed_by_processing() {
+		$name_key = 'srfm-input-11112222-lbl-TmFtZQ-name';
+		$pass_key = 'srfm-password-33334444-lbl-UGFzc3dvcmQ-password';
+
+		$strip = static function ( $submission_data ) {
+			foreach ( array_keys( $submission_data ) as $key ) {
+				if ( 0 === strpos( (string) $key, 'srfm-password' ) ) {
+					unset( $submission_data[ $key ] );
+				}
+			}
+			return $submission_data;
+		};
+		add_filter( 'srfm_before_prepare_submission_data', $strip );
+
+		$accepted = null;
+		$listen   = static function ( $entry_id, $form_id, $data ) use ( &$accepted ) {
+			$accepted = $data;
+		};
+		add_action( 'srfm_submission_accepted', $listen, 1, 3 );
+
+		try {
+			foreach ( [ 'no-store' => false, 'stored' => true ] as $path => $stored ) {
+				$accepted = null;
+				$form_id  = wp_insert_post(
+					[
+						'post_type'   => 'sureforms_form',
+						'post_title'  => 'Accepted ' . $path,
+						'post_status' => 'publish',
+					]
+				);
+				if ( ! $stored ) {
+					update_post_meta(
+						$form_id,
+						'_srfm_compliance',
+						[
+							[
+								'gdpr'                 => true,
+								'do_not_store_entries' => true,
+							],
+						]
+					);
+				}
+
+				$this->form_submit->handle_form_entry(
+					[
+						'form-id'                 => (string) $form_id,
+						'srfm_partial_session_id' => 'session-1',
+						$name_key                 => 'Dummy Name',
+						$pass_key                 => 'DummyPw#9',
+					]
+				);
+				wp_delete_post( $form_id, true );
+
+				$this->assertIsArray( $accepted, $path );
+				$this->assertArrayNotHasKey( $pass_key, $accepted, $path );
+				$this->assertSame( 'Dummy Name', $accepted[ $name_key ], $path );
+				$this->assertSame( 'session-1', $accepted['srfm_partial_session_id'], $path );
+			}
+		} finally {
+			remove_filter( 'srfm_before_prepare_submission_data', $strip );
+			remove_action( 'srfm_submission_accepted', $listen, 1 );
+		}
+	}
+
+	/**
 	 * One recipient succeeding while another fails is still a failure.
 	 *
 	 * This is the case the flag is hoisted out of the loop for, and the one

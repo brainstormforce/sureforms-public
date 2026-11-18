@@ -741,7 +741,7 @@ class Form_Submit {
 		// The site-wide Entries switch wins over the form's own setting.
 		if ( ( $gdpr && $do_not_store_entries ) || ! Features::is_enabled( 'entries' ) ) {
 			/** This action is documented below, where the stored-entry path fires it. */
-			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), $form_data );
+			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), self::drop_fields_removed_by_processing( $form_data, $submission_data ) );
 
 			// Same language switch as the stored-entry path below, so the notification,
 			// confirmation and redirect follow the visitor's language here too.
@@ -781,7 +781,8 @@ class Form_Submit {
 			 * @param array $form_data form data related to submission.
 			 */
 			$form_data['form_id'] = $id ? intval( $id ) : '';
-			do_action( 'srfm_after_submission_process', $form_data );
+			// Listeners get the field set that survived processing, as on the stored path.
+			do_action( 'srfm_after_submission_process', self::drop_fields_removed_by_processing( $form_data, $submission_data ) );
 
 			$response = [
 				'success'      => true,
@@ -874,10 +875,12 @@ class Form_Submit {
 			 * @param int          $form_id   Form ID.
 			 * @param array<mixed> $form_data Parsed request data for the submission (JSON or
 			 *                                multipart), including any non-field keys a client
-			 *                                sent alongside the fields.
+			 *                                sent alongside the fields. Fields that
+			 *                                srfm_before_prepare_submission_data removed are
+			 *                                not included.
 			 * @since 2.12.9
 			 */
-			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), $form_data );
+			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), self::drop_fields_removed_by_processing( $form_data, $submission_data ) );
 
 			// Switch the multilingual provider to the entry's language so the
 			// confirmation message, redirect URL, and email notifications render
@@ -1720,6 +1723,30 @@ class Form_Submit {
 		// defaults $entry_language to current_language(), so this keeps mis-tagging
 		// to the server's own determination instead of the (cacheable) client value.
 		return $language === $provider->current_language();
+	}
+
+	/**
+	 * Drop from the request data every field that process_form_fields() left out of the submission data.
+	 *
+	 * A field that a srfm_before_prepare_submission_data callback removes (e.g. a password)
+	 * is then also missing from the returned copy. Keys without -lbl- are not fields and
+	 * are kept. Keys are compared after the same normalisation process_form_fields() applies.
+	 *
+	 * @param array<mixed> $form_data       Request data.
+	 * @param array<mixed> $submission_data Output of process_form_fields() for that request.
+	 * @since x.x.x
+	 * @return array<mixed> Request data without the removed fields.
+	 */
+	private static function drop_fields_removed_by_processing( $form_data, $submission_data ) {
+		// A non-array from a misbehaving filter means no field survived.
+		$kept = is_array( $submission_data ) ? $submission_data : [];
+		foreach ( array_keys( $form_data ) as $key ) {
+			$key = strval( $key );
+			if ( str_contains( $key, '-lbl-' ) && ! array_key_exists( htmlspecialchars( str_replace( '_', ' ', $key ) ), $kept ) ) {
+				unset( $form_data[ $key ] );
+			}
+		}
+		return $form_data;
 	}
 
 	/**
