@@ -43,8 +43,15 @@ class Srfm_String_Translator_Stub_Provider implements \SRFM\Inc\Compatibility\Mu
 	 */
 	public array $package_calls = [];
 
+	/**
+	 * Whether this stub reports an active multilingual plugin.
+	 *
+	 * @var bool
+	 */
+	public bool $active = true;
+
 	public function is_active(): bool {
-		return true;
+		return $this->active;
 	}
 
 	public function current_language(): string {
@@ -825,5 +832,76 @@ class Test_String_Translator extends TestCase {
 	public function test_block_option_name() {
 		$this->assertSame( 'block_abc123_option_0_label', String_Translator::block_option_name( 'abc123', 0 ) );
 		$this->assertSame( 'block_def456_option_2_label', String_Translator::block_option_name( 'def456', 2 ) );
+	}
+
+	/**
+	 * A stored page URL is resolved to its translation in the current language.
+	 *
+	 * The third wpml_permalink argument asks WPML to resolve the object behind the
+	 * URL; without it WPML only rewrites the language part and keeps the
+	 * default-language slug, which 404s or lands on the untranslated page.
+	 */
+	public function test_translate_page_url_resolves_the_translated_object() {
+		$seen   = [];
+		$filter = static function ( $url, $lang = null, $absolute = false ) use ( &$seen ) {
+			$seen[] = [ $url, $lang, $absolute ];
+			return 'https://example.com/de/danke/';
+		};
+		add_filter( 'wpml_permalink', $filter, 10, 3 );
+
+		$result = String_Translator::get_instance()->translate_page_url( 'https://example.com/thank-you/' );
+
+		remove_filter( 'wpml_permalink', $filter, 10 );
+
+		$this->assertSame( 'https://example.com/de/danke/', $result );
+		$this->assertSame( [ [ 'https://example.com/thank-you/', 'de', true ] ], $seen );
+	}
+
+	public function test_translate_page_url_keeps_the_url_when_nothing_resolves_it() {
+		$this->assertSame( 'https://example.com/thank-you/', String_Translator::get_instance()->translate_page_url( 'https://example.com/thank-you/' ) );
+
+		foreach ( [ '', null, 42, [] ] as $unusable ) {
+			$filter = static function () use ( $unusable ) {
+				return $unusable;
+			};
+			add_filter( 'wpml_permalink', $filter );
+			$result = String_Translator::get_instance()->translate_page_url( 'https://example.com/thank-you/' );
+			remove_filter( 'wpml_permalink', $filter );
+
+			$this->assertSame( 'https://example.com/thank-you/', $result );
+		}
+	}
+
+	public function test_translate_page_url_skips_an_empty_url() {
+		$called = false;
+		$filter = static function ( $url ) use ( &$called ) {
+			$called = true;
+			return $url;
+		};
+		add_filter( 'wpml_permalink', $filter );
+
+		$result = String_Translator::get_instance()->translate_page_url( '' );
+
+		remove_filter( 'wpml_permalink', $filter );
+
+		$this->assertSame( '', $result );
+		$this->assertFalse( $called );
+	}
+
+	public function test_translate_page_url_skips_an_inactive_provider() {
+		$this->stub->active = false;
+		$called             = false;
+		$filter             = static function ( $url ) use ( &$called ) {
+			$called = true;
+			return 'https://example.com/de/danke/';
+		};
+		add_filter( 'wpml_permalink', $filter );
+
+		$result = String_Translator::get_instance()->translate_page_url( 'https://example.com/thank-you/' );
+
+		remove_filter( 'wpml_permalink', $filter );
+
+		$this->assertSame( 'https://example.com/thank-you/', $result );
+		$this->assertFalse( $called );
 	}
 }

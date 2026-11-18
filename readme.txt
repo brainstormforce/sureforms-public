@@ -147,7 +147,7 @@ SureForms includes built-in translations for:
 -   Polish
 -   Portuguese
 
-SureForms is also translation-ready and works with multilingual tools such as WPML, Polylang, and TranslatePress.
+SureForms is also translation-ready and works with multilingual tools such as WPML, Polylang, and TranslatePress. See SureForms in the [WPML compatibility directory](https://wpml.org/plugin/sureforms/).
 
 #### Developer-Friendly Customization
 
