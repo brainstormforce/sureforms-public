@@ -61,7 +61,7 @@ class Field_Validation {
 		$block_config = [];
 
 		// Loop through each block.
-		foreach ( $blocks as $block ) {
+		foreach ( self::with_address_children( $blocks ) as $block ) {
 			// Ensure $block is an array and has the required structure.
 			if ( ! is_array( $block ) ) {
 				continue;
@@ -668,6 +668,34 @@ class Field_Validation {
 	}
 
 	/**
+	 * Expand a top-level block list with the sub-fields of each address block.
+	 *
+	 * An address block's children (its Country dropdown, its text inputs) are fields
+	 * in their own right: they render with the same markup as top-level fields and a
+	 * calculation formula may reference them. add_block_config() configures them like
+	 * any other field so every server-side reader of the stored config (the payment
+	 * amount recompute among them) sees the same options the form renders. Children
+	 * follow their address block, keeping document order.
+	 *
+	 * @param array<mixed> $blocks Top-level parsed blocks.
+	 * @since x.x.x
+	 * @return array<mixed> The blocks with address children inserted after their parent.
+	 */
+	private static function with_address_children( $blocks ) {
+		$expanded = [];
+		foreach ( $blocks as $block ) {
+			$expanded[] = $block;
+			if ( is_array( $block ) && isset( $block['blockName'] ) && 'srfm/address' === $block['blockName'] && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				foreach ( $block['innerBlocks'] as $inner_block ) {
+					$expanded[] = $inner_block;
+				}
+			}
+		}
+
+		return $expanded;
+	}
+
+	/**
 	 * The walked allowlists for one form, memoised for the request.
 	 *
 	 * One cache, not one per getter. Both public getters need the same walk, and each
@@ -992,6 +1020,11 @@ class Field_Validation {
 
 		$payment_config['minimum_amount'] = isset( $attrs['minimumAmount'] ) ? floatval( $attrs['minimumAmount'] ) : 0;
 
+		// Records that this config was built with address sub-fields configured
+		// (with_address_children()); has_stale_config() rebuilds a payment form's
+		// config saved without it.
+		$payment_config['address_fields_stored'] = true;
+
 		// Extract variable amount field reference.
 		if ( isset( $attrs['variableAmountField'] ) ) {
 			$variable_amount_slug                    = sanitize_text_field( $attrs['variableAmountField'] );
@@ -1230,10 +1263,13 @@ class Field_Validation {
 	 * range), or a payment config whose amount type is outside
 	 * Payment_Helper::SUPPORTED_AMOUNT_TYPES. The payment validators refuse
 	 * such a type, and process_payment_block() normalises it, so the rebuild
-	 * gives the form the amount type its editor shows.
+	 * gives the form the amount type its editor shows. A payment config saved
+	 * before address sub-fields were configured is stale too, so the payment
+	 * amount recompute can price a calculation operand nested in an address.
 	 *
 	 * @param array<mixed> $block_config Stored block config.
 	 * @since 2.13.1
+	 * @since x.x.x A payment config without address_fields_stored is stale.
 	 * @return bool
 	 */
 	private static function has_stale_config( $block_config ) {
@@ -1247,6 +1283,10 @@ class Field_Validation {
 			}
 
 			if ( 'srfm/payment' === $config['block_name'] ) {
+				if ( empty( $config['address_fields_stored'] ) ) {
+					return true;
+				}
+
 				foreach ( [ 'amount_type', 'one_time_amount_type', 'subscription_amount_type' ] as $key ) {
 					if ( array_key_exists( $key, $config ) && ! in_array( $config[ $key ], Payment_Helper::SUPPORTED_AMOUNT_TYPES, true ) ) {
 						return true;

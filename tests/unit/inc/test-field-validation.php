@@ -393,12 +393,19 @@ class Test_Field_Validation extends TestCase {
 		$this->assertFalse( $method->invoke( null, [] ) );
 		$this->assertFalse( $method->invoke( null, [ 'n' => [ 'block_name' => 'srfm/number', 'read_only' => false ] ] ) );
 		$this->assertTrue( $method->invoke( null, [ 'n' => [ 'block_name' => 'srfm/number' ] ] ), 'A number config without read_only is stale.' );
-		$this->assertFalse( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed' ] ] ) );
-		$this->assertFalse( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment' ] ] ), 'An absent amount type is read as fixed by the validators.' );
+		$this->assertFalse( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed', 'address_fields_stored' => true ] ] ) );
+		$this->assertFalse( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'address_fields_stored' => true ] ] ), 'An absent amount type is read as fixed by the validators.' );
 		foreach ( [ 'user-choice', '', 'foo', null, 1 ] as $type ) {
-			$this->assertTrue( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => $type ] ] ), 'Unsupported amount type: ' . var_export( $type, true ) );
+			$this->assertTrue( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => $type, 'address_fields_stored' => true ] ] ), 'Unsupported amount type: ' . var_export( $type, true ) );
 		}
-		$this->assertTrue( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed', 'subscription_amount_type' => 'user-choice' ] ] ), 'Each per-type amount type is checked.' );
+		$this->assertTrue( $method->invoke( null, [ 'p' => [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed', 'subscription_amount_type' => 'user-choice', 'address_fields_stored' => true ] ] ), 'Each per-type amount type is checked.' );
+		foreach ( [ null, false, '', 0 ] as $marker ) {
+			$config = [ 'block_name' => 'srfm/payment', 'amount_type' => 'fixed' ];
+			if ( null !== $marker ) {
+				$config['address_fields_stored'] = $marker;
+			}
+			$this->assertTrue( $method->invoke( null, [ 'p' => $config ] ), 'A payment config saved without address sub-fields is stale: ' . var_export( $marker, true ) );
+		}
 		$this->assertFalse( $method->invoke( null, [ 'x' => 'not-an-array', 'y' => [ 'slug' => 'no-block-name' ] ] ) );
 	}
 
@@ -1442,6 +1449,87 @@ class Test_Field_Validation extends TestCase {
 		$this->assertSame( 'c', $prepared['x-lbl-y'] ?? null );
 		$this->assertArrayNotHasKey( 'x', $prepared );
 		$this->assertSame( 'Basic', $prepared['plan'] ?? null );
+	}
+
+	/**
+	 * Address block markup with a Country dropdown whose options carry numeric values.
+	 *
+	 * @return string
+	 */
+	private function address_country_markup() {
+		return '<!-- wp:srfm/address {"block_id":"adr00001","slug":"address"} -->'
+			. '<!-- wp:srfm/input {"block_id":"lin00001","slug":"address-line-1","label":"Address Line 1"} /-->'
+			. '<!-- wp:srfm/dropdown {"block_id":"cty00001","slug":"country","label":"Country","required":true,"showValues":true,"options":[{"label":"Germany","icon":"","value":"25"},{"label":"France","icon":"","value":"30"}]} /-->'
+			. '<!-- /wp:srfm/address -->';
+	}
+
+	/**
+	 * Test add_block_config stores a dropdown nested in an address block, with its option
+	 * values, so server-side consumers (payment amount recompute) can price it.
+	 */
+	public function test_add_block_config_stores_address_nested_dropdown() {
+		$form_id = wp_insert_post( [ 'post_type' => 'sureforms_form', 'post_status' => 'publish', 'post_title' => 'Test Form' ] );
+
+		Field_Validation::add_block_config( parse_blocks( $this->address_country_markup() ), $form_id );
+		$config = get_post_meta( $form_id, '_srfm_block_config', true );
+
+		$this->assertIsArray( $config );
+		$this->assertArrayHasKey( 'cty00001', $config );
+		$this->assertSame( 'srfm/dropdown', $config['cty00001']['block_name'] );
+		$this->assertSame( 'country', $config['cty00001']['slug'] );
+		$this->assertTrue( $config['cty00001']['required'] );
+		$this->assertTrue( $config['cty00001']['show_values'] );
+		$this->assertSame( [ '25', '30' ], array_column( $config['cty00001']['options'], 'value' ) );
+		$this->assertArrayNotHasKey( 'adr00001', $config, 'The address wrapper itself needs no config.' );
+		$this->assertArrayNotHasKey( 'lin00001', $config, 'An address text input needs no config.' );
+	}
+
+	/**
+	 * Test add_block_config walks only the children of an address block: a dropdown nested in
+	 * any other block is left to that block's own handling.
+	 */
+	public function test_add_block_config_ignores_dropdown_nested_outside_address() {
+		$form_id = wp_insert_post( [ 'post_type' => 'sureforms_form', 'post_status' => 'publish', 'post_title' => 'Test Form' ] );
+		$markup  = '<!-- wp:core/group --><!-- wp:srfm/dropdown {"block_id":"grp00001","slug":"grouped","options":[{"label":"A","icon":"","value":"1"}]} /--><!-- /wp:core/group -->';
+
+		Field_Validation::add_block_config( parse_blocks( $markup ), $form_id );
+
+		$this->assertSame( '', get_post_meta( $form_id, '_srfm_block_config', true ) );
+	}
+
+	/**
+	 * Test get_or_migrate_block_config_for_legacy_form rebuilds a payment form's config stored
+	 * before address sub-fields were configured, so an existing form picks up the nested
+	 * dropdown without being re-saved.
+	 */
+	public function test_get_or_migrate_block_config_for_legacy_form_adds_address_nested_dropdown() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Test Form',
+				'post_content' => $this->address_country_markup()
+					. '<!-- wp:srfm/payment {"block_id":"pay00001","slug":"payment","amountType":"variable","variableAmountField":"total"} /-->',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay00001' => [
+					'block_name'            => 'srfm/payment',
+					'amount_type'           => 'variable',
+					'variable_amount_field' => 'total',
+				],
+			]
+		);
+
+		$result = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+
+		$this->assertArrayHasKey( 'cty00001', $result );
+		$this->assertSame( 'country', $result['cty00001']['slug'] );
+		$this->assertSame( $result, get_post_meta( $form_id, '_srfm_block_config', true ), 'The rebuilt config is stored, so the next read is not stale.' );
+		$this->assertTrue( $result['pay00001']['address_fields_stored'] );
 	}
 
 	/**
