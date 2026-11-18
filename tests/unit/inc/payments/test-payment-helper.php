@@ -1581,6 +1581,34 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( '' ) );
 	}
 
+	public function test_sanitize_stripe_customer_id_drops_non_stripe_formats() {
+		// customer_id is compared with '=' under the table's (normally *_ci) collation,
+		// so any value MySQL folds onto 'wp_user_{id}' / 'guest_...' must be dropped,
+		// not only the exact lowercase spelling.
+		$dropped = [
+			'WP_USER_5',
+			'Wp_User_5',
+			'wp_USER_5',
+			'GUEST_abc123',
+			"\u{FF57}p_user_5", // Fullwidth 'w'.
+			"wp_\u{00FC}ser_5", // 'u' with diaeresis.
+			'5',
+			'cus_',
+			'cus_abc-def',
+			'CUS_abc123',
+			[ 'cus_abc123' ],
+			123,
+			null,
+		];
+		foreach ( $dropped as $value ) {
+			$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( $value ), 'Not dropped: ' . wp_json_encode( $value ) );
+		}
+
+		// Genuine Stripe customer ids are preserved, including after whitespace trimming.
+		$this->assertSame( 'cus_T4Apjla33GlYAk', Payment_Helper::sanitize_stripe_customer_id( ' cus_T4Apjla33GlYAk ' ) );
+		$this->assertSame( 'cus_123', Payment_Helper::sanitize_stripe_customer_id( 'cus_123' ) );
+	}
+
 	// --- resolve_stored_subscription_cadence (default-plan cadence tampering) ---
 
 	public function test_resolve_stored_subscription_cadence_defaults_when_absent() {

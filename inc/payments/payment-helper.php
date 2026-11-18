@@ -184,23 +184,23 @@ class Payment_Helper {
 	}
 
 	/**
-	 * Reject a client-supplied Stripe customer id that uses the reserved internal
-	 * ownership-key format (wp_user_{id} / guest_{...}). Payment history attributes
-	 * rows to a user by customer_id, so a submitter who sets customer_id to
-	 * 'wp_user_{victim}' could make a Stripe payment appear in that user's history.
-	 * A genuine Stripe customer id is 'cus_...', so this never affects a real
-	 * customer; it only blocks a reserved value from being stored on a Stripe row.
+	 * Accept a client-supplied Stripe customer id only when it has Stripe's own
+	 * format (cus_ followed by letters and digits). Payment history attributes rows
+	 * to a user by customer_id, compared in SQL under the table's collation (usually
+	 * case- and accent-insensitive), so a value in the reserved internal
+	 * ownership-key format (wp_user_{id} / guest_{...}) in any spelling MySQL folds
+	 * onto it must never be stored on a Stripe row. Anything that is not a Stripe
+	 * customer id is dropped, so the allowlist covers every such spelling.
 	 *
 	 * @param mixed $customer_id Client-supplied customer id.
 	 * @since 2.14.0
-	 * @return string The customer id, or '' if it uses a reserved internal format.
+	 * @return string The customer id, or '' if it is not a Stripe customer id.
 	 */
 	public static function sanitize_stripe_customer_id( $customer_id ) {
 		$customer_id = is_string( $customer_id ) ? sanitize_text_field( $customer_id ) : '';
-		if ( '' === $customer_id ) {
-			return '';
-		}
-		if ( 1 === preg_match( '/^(wp_user_|guest_)/', $customer_id ) ) {
+		// Case-sensitive on purpose: Stripe issues the prefix lowercase, and a denylist
+		// of reserved prefixes misses the variants a *_ci collation treats as equal.
+		if ( 1 !== preg_match( '/^cus_[A-Za-z0-9]+\z/', $customer_id ) ) {
 			return '';
 		}
 		return $customer_id;
