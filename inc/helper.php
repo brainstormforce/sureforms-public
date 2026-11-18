@@ -1737,6 +1737,35 @@ class Helper {
 		// Disable parsing of style attributes.
 		return [];
 	}
+
+	/**
+	 * Follow every `{` and `[` in a string with a word joiner (U+2060), so the
+	 * smart tag pass and do_shortcode() read no token in it. A character
+	 * reference that decodes to either one is decoded and treated the same.
+	 * The text reads the same. A word joiner, not a character reference,
+	 * because kses decodes character references (in attribute values, and on
+	 * WordPress 7.2+ in text too). Running it twice changes nothing.
+	 *
+	 * @param string $text Text.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function neutralize_tokens( $text ) {
+		$text = (string) preg_replace_callback(
+			'/&#?[a-z0-9]+;?/i',
+			static function ( $reference ) {
+				$decoded = class_exists( 'WP_HTML_Decoder' )
+					? \WP_HTML_Decoder::decode_text_node( $reference[0] )
+					: html_entity_decode( $reference[0], ENT_QUOTES | ENT_HTML5 );
+				return false !== strpbrk( $decoded, '{[' ) ? $decoded : $reference[0];
+			},
+			self::get_string_value( $text )
+		);
+
+		// Byte pattern, not /u, so invalid UTF-8 cannot make it return nothing.
+		return (string) preg_replace( '/[{\[](?!\xE2\x81\xA0)/', "\$0\u{2060}", $text );
+	}
+
 	/**
 	 * Strips JavaScript attributes from HTML content.
 	 *

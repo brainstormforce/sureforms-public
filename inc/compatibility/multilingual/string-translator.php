@@ -11,6 +11,7 @@
 
 namespace SRFM\Inc\Compatibility\Multilingual;
 
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -612,9 +613,10 @@ class String_Translator {
 			return [ $post_content, [] ];
 		}
 
+		// The `v2` in the key changes with how translations are processed, so markup cached by an older version is not served.
 		$language  = $provider->current_language();
 		$modified  = $post instanceof \WP_Post ? (string) $post->post_modified_gmt : '';
-		$cache_key = 'srfm_xl_form_' . $form_id . '_' . md5( $language . '|' . $modified . '|' . md5( $post_content ) );
+		$cache_key = 'srfm_xl_form_v2_' . $form_id . '_' . md5( $language . '|' . $modified . '|' . md5( $post_content ) );
 
 		$cached = wp_cache_get( $cache_key, 'srfm_multilingual' );
 		if ( is_string( $cached ) ) {
@@ -745,11 +747,12 @@ class String_Translator {
 	 * @param string $value Original value (used as fallback when no translation exists).
 	 * @param string $name  Fully built string name per the documented naming scheme.
 	 * @since 2.11.0
+	 * @since x.x.x Smart tags and shortcodes absent from `$value` are neutralized.
 	 * @return string Translated value, or the original value when the provider has no translation.
 	 */
 	private function dispatch( string $value, string $name ): string {
 		$provider = Multilingual_Manager::get_instance()->provider();
-		return $provider->translate( $value, $name, self::DOMAIN );
+		return self::neutralize_tokens_not_in( $provider->translate( $value, $name, self::DOMAIN ), $value );
 	}
 
 	/**
@@ -760,10 +763,14 @@ class String_Translator {
 	 * naming) when the provider can't do packages — keeping older WPML setups and
 	 * non-package providers working.
 	 *
+	 * The translation is passed through {@see neutralize_tokens_not_in()}, so it can
+	 * only carry the smart tags and shortcodes the form's own string already has.
+	 *
 	 * @param int    $form_id Form post ID.
 	 * @param string $name    Package-scoped string name (see the *_name() builders).
 	 * @param string $value   Original value (fallback when untranslated).
 	 * @since 2.11.0
+	 * @since x.x.x Smart tags and shortcodes absent from `$value` are neutralized.
 	 * @return string Translated value, or the original when no translation exists.
 	 */
 	private function dispatch_package( int $form_id, string $name, string $value ): string {
@@ -774,10 +781,44 @@ class String_Translator {
 		$provider = Multilingual_Manager::get_instance()->provider();
 
 		if ( $provider->supports_packages() ) {
-			return $provider->translate_package_string( self::form_package( $form_id ), $name, $value );
+			$translated = $provider->translate_package_string( self::form_package( $form_id ), $name, $value );
+		} else {
+			// Legacy / non-package fallback: flat string with the form-scoped name.
+			$translated = $provider->translate( $value, 'form_' . $form_id . '_' . $name, self::DOMAIN );
 		}
 
-		// Legacy / non-package fallback: flat string with the form-scoped name.
-		return $provider->translate( $value, 'form_' . $form_id . '_' . $name, self::DOMAIN );
+		return self::neutralize_tokens_not_in( $translated, $value );
+	}
+
+	/**
+	 * Neutralize every smart tag and shortcode in a translation with
+	 * Helper::neutralize_tokens(), except a `{…}` or `[…]` token that appears
+	 * verbatim in the original.
+	 *
+	 * Translations render with the form author's trust: the smart-tag pass and
+	 * do_shortcode() run over the form markup. Keeping only the original's tokens
+	 * means a translation can reword a string but not add a token to it.
+	 *
+	 * @param string $translation Provider output.
+	 * @param string $original    Form-authored source string.
+	 * @since x.x.x
+	 * @return string The translation with every token not in `$original` neutralized.
+	 */
+	private static function neutralize_tokens_not_in( string $translation, string $original ): string {
+		if ( $translation === $original ) {
+			return $translation;
+		}
+
+		$result = Helper::neutralize_tokens( $translation );
+
+		// The original's shortcodes first (one may hold a smart tag), then its smart tags.
+		foreach ( [ '/\[[^\[\]]*\]/', '/\{[^{}\[\]]*\}/' ] as $pattern ) {
+			preg_match_all( $pattern, $original, $tokens );
+			foreach ( array_unique( $tokens[0] ) as $token ) {
+				$result = str_replace( Helper::neutralize_tokens( $token ), $token, $result );
+			}
+		}
+
+		return $result;
 	}
 }

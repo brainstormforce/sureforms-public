@@ -819,6 +819,115 @@ class Test_String_Translator extends TestCase {
 		$this->assertSame( '42', $this->stub->package_calls[0]['package']['name'] );
 	}
 
+	/**
+	 * Assert that no smart tag or shortcode in `$text` can run: every `{` and `[`
+	 * is followed by a word joiner, after the text goes through kses as content
+	 * and as an attribute value (both decode character references on some
+	 * WordPress versions).
+	 *
+	 * @param string $text Translated value.
+	 * @return void
+	 */
+	private function assert_no_live_tokens( string $text ): void {
+		foreach ( [ $text, wp_kses_post( $text ), wp_kses_post( '<span title="' . esc_attr( $text ) . '">x</span>' ) ] as $sink ) {
+			$this->assertDoesNotMatchRegularExpression( '/[{\[](?!\x{2060})/u', $sink );
+		}
+	}
+
+	/**
+	 * A package translation can only carry the smart tags and shortcodes the
+	 * original string already has; any other `{` or `[` is followed by a word
+	 * joiner, so neither the smart-tag pass nor do_shortcode() reads it.
+	 */
+	public function test_dispatch_package_neutralizes_tokens_missing_from_the_original() {
+		$this->stub->supports_packages = true;
+		$this->stub->translate_returns = 'Nom {admin_email} [srfm_show_entries id=5 public=true]';
+
+		$result = String_Translator::get_instance()->translate_block_attribute( 42, 'abc123', 'label', 'Name' );
+
+		$this->assertSame( "Nom {\u{2060}admin_email} [\u{2060}srfm_show_entries id=5 public=true]", $result );
+		$this->assert_no_live_tokens( $result );
+	}
+
+	/**
+	 * Character references to `{` and `[` in a translation are neutralized too:
+	 * kses decodes them, which would otherwise bring the token back.
+	 */
+	public function test_dispatch_package_neutralizes_tokens_written_as_references() {
+		$this->stub->supports_packages = true;
+		$this->stub->translate_returns = 'Nom &#123;admin_email&#125; &#x5B;srfm_show_entries id=5] &lbrace;site_title} &#91srfm_x] &amp;';
+
+		$result = String_Translator::get_instance()->translate_block_attribute( 42, 'abc123', 'label', 'Name' );
+
+		$this->assertStringContainsString( '&amp;', $result, 'References to other characters are left as they are.' );
+		$this->assert_no_live_tokens( $result );
+	}
+
+	/**
+	 * Tokens that appear verbatim in the original survive; added ones and stray
+	 * delimiters are neutralized.
+	 */
+	public function test_dispatch_package_keeps_tokens_present_in_the_original() {
+		$this->stub->supports_packages = true;
+		$this->stub->translate_returns = 'Merci {form:name} [b]ok[/b] {admin_email} [b x=1] { ] [y {form:name}]';
+
+		$result = String_Translator::get_instance()->translate_confirmation_message( 42, 0, 'Thanks {form:name} [b]ok[/b]' );
+
+		$this->assertSame(
+			"Merci {form:name} [b]ok[/b] {\u{2060}admin_email} [\u{2060}b x=1] {\u{2060} ] [\u{2060}y {form:name}]",
+			$result
+		);
+	}
+
+	/**
+	 * The flat-string fallback (provider without package support) applies the same rule.
+	 */
+	public function test_dispatch_package_flat_fallback_neutralizes_added_tokens() {
+		$this->stub->translate_returns = 'Envoyer {admin_email}';
+
+		$this->assertSame( "Envoyer {\u{2060}admin_email}", String_Translator::get_instance()->translate_submit_button( 42, 'Send' ) );
+	}
+
+	/**
+	 * Global validation messages render in the form markup too, so their
+	 * translations get the same rule as per-form strings.
+	 */
+	public function test_translate_validation_message_neutralizes_added_tokens() {
+		$this->stub->translate_returns = 'Ungültig {admin_email} &#91;srfm_show_entries id=5]';
+
+		$result = String_Translator::get_instance()->translate_validation_message( 'srfm_valid_email', 'Enter a valid email address.' );
+
+		$this->assertStringStartsWith( "Ungültig {\u{2060}admin_email}", $result );
+		$this->assert_no_live_tokens( $result );
+	}
+
+	/**
+	 * Translated block attributes written into the form content carry the neutralized value.
+	 */
+	public function test_translate_form_content_neutralizes_tokens_added_by_the_translation() {
+		$this->stub->supports_packages = true;
+		$this->stub->translate_returns = 'Nom {site_title} [srfm_show_entries id=5]';
+
+		[ , $blocks ] = String_Translator::get_instance()->translate_form_content_with_blocks(
+			42,
+			'<!-- wp:srfm/input {"block_id":"tok3504","label":"Name"} /-->'
+		);
+
+		$this->assertSame( "Nom {\u{2060}site_title} [\u{2060}srfm_show_entries id=5]", $blocks[0]['attrs']['label'] );
+	}
+
+	/**
+	 * Markup cached under the key of a version that did not neutralize translations is not served.
+	 */
+	public function test_translate_form_content_with_blocks_ignores_markup_cached_by_older_versions() {
+		$content = '<!-- wp:srfm/input {"block_id":"tok3504c","label":"Name"} /-->';
+		wp_cache_set( 'srfm_xl_form_42_' . md5( 'de||' . md5( $content ) ), 'stale {admin_email}', 'srfm_multilingual' );
+
+		[ $markup ] = String_Translator::get_instance()->translate_form_content_with_blocks( 42, $content );
+
+		$this->assertStringNotContainsString( 'stale', $markup );
+	}
+
 	public function test_block_type_label() {
 		// Curated label from the built-in map.
 		$this->assertSame( 'Email', String_Translator::block_type_label( 'srfm/email' ) );

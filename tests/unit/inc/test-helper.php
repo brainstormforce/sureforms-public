@@ -881,6 +881,23 @@ class Test_Helper extends TestCase {
         }
     }
     /**
+     * Every `{` and `[`, literal or as a character reference, gets a word joiner
+     * that kses keeps, so no smart tag or shortcode is left to run.
+     */
+    public function test_neutralize_tokens() {
+        $wj = "\u{2060}";
+
+        $this->assertSame( "{{$wj}admin_email} [{$wj}x] }]", Helper::neutralize_tokens( '{admin_email} [x] }]' ) );
+        $this->assertSame( "{{$wj}a} [{$wj}b] [{$wj}c] {{$wj}d}", Helper::neutralize_tokens( '&#123;a} &#x5B;b] &#91c] &lbrace;d}' ) );
+        $this->assertSame( '&#913; &amp; &lt; &#125;', Helper::neutralize_tokens( '&#913; &amp; &lt; &#125;' ), 'References to other characters are left as they are.' );
+        $this->assertSame( "{{$wj}a}", Helper::neutralize_tokens( Helper::neutralize_tokens( '{a}' ) ), 'Running it twice changes nothing.' );
+        $this->assertSame( "\xFF{{$wj}a}", Helper::neutralize_tokens( "\xFF{a}" ), 'Invalid UTF-8 is not emptied.' );
+
+        $out = wp_kses_post( '<p title="' . esc_attr( Helper::neutralize_tokens( '&#123;admin_email&#125;' ) ) . '">' . Helper::neutralize_tokens( '&#123;admin_email&#125; &#91;srfm_show_entries]' ) . '</p>' );
+        $this->assertDoesNotMatchRegularExpression( '/[{\[](?!\x{2060})/u', $out, 'kses brings no token back.' );
+    }
+
+    /**
      * Test the strip_js_attributes method with various inputs.
      */
     public function test_strip_js_attributes() {

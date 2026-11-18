@@ -3368,7 +3368,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 			public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string {
 				unset( $value, $domain, $language );
-				return '[' . $this->language . '] ' . $name;
+				return strtoupper( $this->language ) . ': ' . $name;
 			}
 
 			public function switch_language( string $language ): void {
@@ -3404,7 +3404,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 			public function translate_package_string( array $package, string $name, string $value ): string {
 				unset( $package, $value );
-				return '[' . $this->language . '] ' . $name;
+				return strtoupper( $this->language ) . ': ' . $name;
 			}
 
 			public function delete_package( array $package ): void {
@@ -3527,9 +3527,9 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		wp_delete_post( $form_id, true );
 
 		$this->assertCount( 1, $mail );
-		$this->assertSame( '[es] notification_1_subject', $mail[0]['subject'] );
-		$this->assertStringContainsString( '[es] notification_1_body', $mail[0]['message'] );
-		$this->assertStringContainsString( 'From: [es] notification_1_from_name <', implode( "\n", (array) $mail[0]['headers'] ) );
+		$this->assertSame( 'ES: notification_1_subject', $mail[0]['subject'] );
+		$this->assertStringContainsString( 'ES: notification_1_body', $mail[0]['message'] );
+		$this->assertStringContainsString( 'From: ES: notification_1_from_name <', implode( "\n", (array) $mail[0]['headers'] ) );
 	}
 
 	/**
@@ -3624,7 +3624,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$this->assertTrue( $response['success'] );
 		$this->assertSame( 'https://example.com/thank-you/es/', $response['redirect_url'] );
-		$this->assertSame( '[es] notification_0_subject', $mail[0]['subject'] );
+		$this->assertSame( 'ES: notification_0_subject', $mail[0]['subject'] );
 		$this->assertSame( 'en', $stub->language, 'The request language must be restored after the submission.' );
 
 		EntriesTable::delete( Helper::get_integer_value( $response['data']['submission_id'] ) );
@@ -3643,7 +3643,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$this->assertTrue( $response['success'] );
 		$this->assertSame( 'https://example.com/thank-you/es/', $response['redirect_url'] );
-		$this->assertSame( '[es] notification_0_subject', $mail[0]['subject'] );
+		$this->assertSame( 'ES: notification_0_subject', $mail[0]['subject'] );
 		$this->assertSame( 'en', $stub->language, 'The request language must be restored after the submission.' );
 
 		wp_delete_post( $form_id, true );
