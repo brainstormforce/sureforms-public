@@ -675,6 +675,132 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertFalse( $result['valid'] );
 	}
 
+	/**
+	 * Create a form whose payment block 'sharedblk' has the given payment_type and a
+	 * fixed price of 100, as a duplicated form would (same block id, same price).
+	 *
+	 * @param string $payment_type 'one-time', 'subscription' or 'both'.
+	 * @return int Form ID.
+	 */
+	private function create_fixed_price_payment_form( $payment_type ) {
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => '' ] );
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'sharedblk' => [
+					'block_id'     => 'sharedblk',
+					'payment_type' => $payment_type,
+					'amount_type'  => 'fixed',
+					'fixed_amount' => 100.00,
+				],
+			]
+		);
+		return $form_id;
+	}
+
+	/**
+	 * Store intent metadata the way create_payment_intent() does.
+	 *
+	 * @param int   $form_id   Originating form ID.
+	 * @param array $overrides Keys to replace (null removes the key).
+	 */
+	private function store_one_time_intent( $form_id, $overrides = [] ) {
+		$metadata = array_merge(
+			[
+				'form_id'     => $form_id,
+				'block_id'    => 'sharedblk',
+				'amount'      => 100.00,
+				'currency'    => 'usd',
+				'active_type' => 'one-time',
+			],
+			$overrides
+		);
+		Payment_Helper::store_payment_intent_metadata( 'sharedblk', 'pi_bind', array_filter( $metadata, static fn( $v ) => null !== $v ) );
+	}
+
+	public function test_verify_payment_intent_binds_intent_to_originating_form() {
+		$form_a = $this->create_fixed_price_payment_form( 'one-time' );
+		$form_b = $this->create_fixed_price_payment_form( 'subscription' );
+		$form_c = $this->create_fixed_price_payment_form( 'one-time' );
+		$this->store_one_time_intent( $form_a );
+
+		// Same block id, price, currency and type on another form: rejected.
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_c ], 'one-time' )['valid'] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_b ], 'one-time' )['valid'] );
+
+		// The rejected attempts did not consume the intent; the originating form still verifies.
+		$this->assertNotFalse( get_transient( 'srfm_pi_sharedblk_pi_bind' ) );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_a ], 'one-time' )['valid'] );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => (string) $form_a ], 'one-time' )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
+	public function test_verify_payment_intent_rejects_flow_the_form_no_longer_allows() {
+		$form_id = $this->create_fixed_price_payment_form( 'one-time' );
+		$this->store_one_time_intent( $form_id );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'] );
+
+		// Form switched to subscription-only after the intent was created.
+		$config                              = get_post_meta( $form_id, '_srfm_block_config', true );
+		$config['sharedblk']['payment_type'] = 'subscription';
+		update_post_meta( $form_id, '_srfm_block_config', $config );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'] );
+
+		// "both" permits either flow.
+		$config['sharedblk']['payment_type'] = 'both';
+		update_post_meta( $form_id, '_srfm_block_config', $config );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
+	public function test_verify_payment_intent_rejects_metadata_without_trusted_binding() {
+		$form_id = $this->create_fixed_price_payment_form( 'one-time' );
+		$cases   = [
+			'no form_id'        => [ 'form_id' => null ],
+			'zero form_id'      => [ 'form_id' => 0 ],
+			'non-numeric form'  => [ 'form_id' => 'abc' ],
+			'no block_id'       => [ 'block_id' => null ],
+			'other block_id'    => [ 'block_id' => 'otherblk' ],
+			'other active_type' => [ 'active_type' => 'subscription' ],
+		];
+		foreach ( $cases as $label => $overrides ) {
+			$this->store_one_time_intent( $form_id, $overrides );
+			$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'], $label );
+		}
+
+		// A caller that names no flow cannot verify either.
+		$this->store_one_time_intent( $form_id );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ] )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
+	public function test_verify_payment_intent_accepts_legacy_metadata_without_active_type() {
+		// Pro <= 2.12.2 PayPal writers stored no active_type; those intents must still verify.
+		$one_time = $this->create_fixed_price_payment_form( 'one-time' );
+		foreach ( [ 'no active_type' => null, 'empty active_type' => '' ] as $label => $stored ) {
+			$this->store_one_time_intent( $one_time, [ 'active_type' => $stored ] );
+			$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $one_time ], 'one-time' )['valid'], $label );
+		}
+
+		// The form/block binding and the form's payment_type still apply to legacy metadata.
+		$other = $this->create_fixed_price_payment_form( 'one-time' );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $other ], 'one-time' )['valid'] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $one_time ], 'subscription' )['valid'] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $one_time ] )['valid'] );
+
+		// A stored active_type that disagrees with the caller is still refused, even where
+		// the form's "both" payment_type would permit either flow.
+		$both = $this->create_fixed_price_payment_form( 'both' );
+		$this->store_one_time_intent( $both, [ 'active_type' => 'subscription' ] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $both ], 'one-time' )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
 	public function test_get_submitted_value_by_slug() {
 		$form_data = [
 			'srfm-input-abc-lbl-RnVsbCBOYW1l-full-name' => 'John',

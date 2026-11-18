@@ -954,16 +954,44 @@ class Payment_Helper {
 			];
 		}
 
-		// Reject when the submit path's active_type does not match the type that
-		// was validated at intent-creation time. Prevents an attacker from passing
-		// a one-time intent_id through the subscription submit path (or vice versa)
-		// to replay a small one-time charge in place of a recurring subscription.
+		// An intent is valid only on the form and block it was created for: duplicated
+		// forms share payment block IDs, so the transient key alone does not identify
+		// the form. Metadata without this binding cannot be trusted and needs a new intent.
+		// The block ID is compared through sanitize_key(), the normalisation the key uses.
+		$stored_form_id  = isset( $metadata['form_id'] ) && is_numeric( $metadata['form_id'] ) ? intval( $metadata['form_id'] ) : 0;
+		$stored_block_id = isset( $metadata['block_id'] ) && is_string( $metadata['block_id'] ) ? sanitize_key( $metadata['block_id'] ) : '';
+		$request_block   = sanitize_key( $block_id );
+		if ( $stored_form_id <= 0 || $stored_form_id !== $form_id || '' === $stored_block_id || $request_block !== $stored_block_id ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+			];
+		}
+
+		// The submit path must name its flow (one-time vs subscription), and that flow must
+		// be the one validated at intent-creation time. Metadata written without an
+		// active_type (SureForms Pro 2.12.2 and earlier PayPal) has no stored flow to compare;
+		// it is still bound by the form/block check above and the payment_type check below.
 		$stored_active_type = isset( $metadata['active_type'] ) && is_string( $metadata['active_type'] ) ? $metadata['active_type'] : '';
-		if ( ! empty( $active_type ) && ! empty( $stored_active_type ) && $active_type !== $stored_active_type ) {
+		if ( empty( $active_type ) || ( '' !== $stored_active_type && $active_type !== $stored_active_type ) ) {
 			return [
 				'valid'   => false,
 				'message' => __( 'Payment verification failed. Payment type mismatch.', 'sureforms' ),
 			];
+		}
+
+		// The form's current payment_type must still permit that flow ("both" permits
+		// either), mirroring validate_payment_amount(). A block missing from the config
+		// is rejected by validate_payment_intent_amount() below.
+		$block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+		if ( is_array( $block_config ) && isset( $block_config[ $block_id ] ) && is_array( $block_config[ $block_id ] ) ) {
+			$payment_type = isset( $block_config[ $block_id ]['payment_type'] ) && is_string( $block_config[ $block_id ]['payment_type'] ) ? $block_config[ $block_id ]['payment_type'] : 'one-time';
+			if ( 'both' !== $payment_type && $active_type !== $payment_type ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'Payment type does not match the form configuration.', 'sureforms' ),
+				];
+			}
 		}
 
 		$payment_amount = isset( $metadata['amount'] ) && ! empty( $metadata['amount'] ) && is_numeric( $metadata['amount'] ) ? floatval( $metadata['amount'] ) : 0;
