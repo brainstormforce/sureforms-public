@@ -74,7 +74,8 @@ class Form_Views {
 	 * — standard on any VPS — gets a fresh bucket per address, and the first request
 	 * to each new bucket is always allowed. This ceiling is what actually caps a
 	 * distributed flood, both for the counter's accuracy and for the number of
-	 * buckets that can be minted.
+	 * buckets that can be minted: once it is reached, is_rate_limited() refuses
+	 * before any per-network counter is created.
 	 */
 	private const RATE_LIMIT_FORM_MAX = 200;
 
@@ -543,6 +544,25 @@ class Form_Views {
 		// them a fresh allowance — plus a fresh wp_options row — for each one.
 		$bucket = self::network_bucket( $ip );
 
+		/**
+		 * Filters the per-form counted-view ceiling (summed across visitors, per minute).
+		 *
+		 * A genuinely popular landing-page form can organically pass the default and
+		 * silently drop real views past it; raise it for such forms.
+		 *
+		 * @since 2.12.6
+		 * @param int $max The default ceiling.
+		 */
+		$form_max = Helper::get_integer_value( apply_filters( 'srfm_form_views_rate_limit_form_max', self::RATE_LIMIT_FORM_MAX ) );
+		$form_key = 'form_' . $form_id;
+
+		// Read-only check first: a form whose window is already full refuses here,
+		// before a per-network counter is created, so the number of counters one
+		// form can hold per window stays bounded by the ceiling.
+		if ( self::peek_counter( $form_key ) >= $form_max ) {
+			return true;
+		}
+
 		// The caller's own bucket is charged FIRST, and a caller that is over its own
 		// limit returns here without touching the shared per-form counter. Charging
 		// the shared ceiling first let one address spend the whole form's budget and
@@ -564,20 +584,9 @@ class Form_Views {
 			return true;
 		}
 
-		/**
-		 * Filters the per-form counted-view ceiling (summed across visitors, per minute).
-		 *
-		 * A genuinely popular landing-page form can organically pass the default and
-		 * silently drop real views past it; raise it for such forms.
-		 *
-		 * @since 2.12.6
-		 * @param int $max The default ceiling.
-		 */
-		$form_max = Helper::get_integer_value( apply_filters( 'srfm_form_views_rate_limit_form_max', self::RATE_LIMIT_FORM_MAX ) );
-
 		// The per-form ceiling still bounds a distributed flood, where rotating
 		// networks defeats the per-network counter above.
-		return self::hit_counter( 'form_' . $form_id ) > $form_max;
+		return self::hit_counter( $form_key ) > $form_max;
 	}
 
 	/**
@@ -614,5 +623,18 @@ class Form_Views {
 	 */
 	private static function hit_counter( $key ) {
 		return Helper::hit_rate_counter( 'srfm_view_', $key );
+	}
+
+	/**
+	 * Read a rate-limit counter's current value without writing anything.
+	 *
+	 * Reads the same storage hit_counter() writes. Absent or expired reads as 0.
+	 *
+	 * @param string $key Counter key, as passed to hit_counter().
+	 * @since x.x.x
+	 * @return int The counter's current value.
+	 */
+	private static function peek_counter( $key ) {
+		return Helper::peek_rate_counter( 'srfm_view_', $key );
 	}
 }

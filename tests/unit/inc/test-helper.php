@@ -3363,6 +3363,24 @@ class Test_Helper extends TestCase {
         remove_filter( 'srfm_pro_tier', $unknown );
     }
 
+    /**
+     * Reading a counter reports its running total and never writes one.
+     */
+    public function test_peek_rate_counter() {
+        $key       = 'srfm_peek_' . wp_rand();
+        $transient = 'srfm_view_' . md5( $key );
+
+        $this->assertSame( 0, Helper::peek_rate_counter( 'srfm_view_', $key ), 'An unopened window reads as zero.' );
+        $this->assertFalse( get_transient( $transient ), 'Reading must not open a window.' );
+
+        Helper::hit_rate_counter( 'srfm_view_', $key );
+        Helper::hit_rate_counter( 'srfm_view_', $key );
+        $this->assertSame( 2, Helper::peek_rate_counter( 'srfm_view_', $key ), 'Reads the running total.' );
+        $this->assertSame( 2, Helper::peek_rate_counter( 'srfm_view_', $key ), 'Reading does not increment.' );
+
+        delete_transient( $transient );
+    }
+
     public function test_tier_from_product_maps_each_build_name() {
         $this->assertSame( 'business', Helper::tier_from_product( 'SureForms Business' ), 'The single 2.13.1 build is Business.' );
         $this->assertSame( 'pro', Helper::tier_from_product( 'SureForms Pro' ) );

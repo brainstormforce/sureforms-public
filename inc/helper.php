@@ -2890,6 +2890,27 @@ class Helper {
 	}
 
 	/**
+	 * Read a hit_rate_counter() bucket's current count without writing anything.
+	 *
+	 * Reads the storage hit_rate_counter() writes for the same $prefix and $key.
+	 * Absent or expired reads as 0.
+	 *
+	 * @param string $prefix Bucket namespace, as passed to hit_rate_counter().
+	 * @param string $key    Bucket key, as passed to hit_rate_counter().
+	 * @since x.x.x
+	 * @return int The bucket's current count.
+	 */
+	public static function peek_rate_counter( $prefix, $key ) {
+		$hash = md5( $key );
+
+		if ( wp_using_ext_object_cache() ) {
+			return self::get_integer_value( wp_cache_get( $hash, $prefix ) );
+		}
+
+		return self::get_integer_value( get_transient( $prefix . $hash ) );
+	}
+
+	/**
 	 * Read a visitor country code from a CDN / server geo header, if present.
 	 *
 	 * Many hosts sit behind Cloudflare, CloudFront or a geo-aware web server that

@@ -394,6 +394,72 @@ class Test_Form_Views extends TestCase {
 		$this->assertSame( 1, $hit( $key . '_other' ), 'A different key starts its own count.' );
 	}
 
+	/**
+	 * Once a form's window is full, refused requests write no per-network state.
+	 *
+	 * RATE_LIMIT_FORM_MAX bounds how many per-network buckets one form can hold per
+	 * window; that only holds if a refusal is decided before a bucket is created.
+	 */
+	public function test_is_rate_limited_writes_no_bucket_once_form_ceiling_is_reached() {
+		$form_id  = 900000 + wp_rand( 1, 99999 );
+		$form_max = function () {
+			return 3;
+		};
+		add_filter( 'srfm_form_views_rate_limit_form_max', $form_max );
+
+		$bucket_transient = function ( $ip ) use ( $form_id ) {
+			$m = new ReflectionMethod( Form_Views::class, 'network_bucket' );
+			$m->setAccessible( true );
+			return 'srfm_view_' . md5( $m->invoke( null, $ip ) . '_' . $form_id );
+		};
+
+		$created = [ 'srfm_view_' . md5( 'form_' . $form_id ) ];
+
+		try {
+			for ( $i = 1; $i <= 3; $i++ ) {
+				$_SERVER['REMOTE_ADDR'] = "2001:db8:1:{$i}::1";
+				$created[]              = $bucket_transient( $_SERVER['REMOTE_ADDR'] );
+				$this->assertFalse( $this->call_private_method( $this->views, 'is_rate_limited', [ $form_id ] ), "Hit {$i} is within the form ceiling." );
+			}
+
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:2:1::1';
+			$fresh                  = $bucket_transient( $_SERVER['REMOTE_ADDR'] );
+			$created[]              = $fresh;
+
+			$this->assertTrue( $this->call_private_method( $this->views, 'is_rate_limited', [ $form_id ] ), 'A full form window refuses a new network.' );
+			$this->assertFalse( get_transient( $fresh ), 'The refused network must not get a bucket.' );
+		} finally {
+			remove_filter( 'srfm_form_views_rate_limit_form_max', $form_max );
+			array_map( 'delete_transient', $created );
+		}
+	}
+
+	/**
+	 * A network over its own limit is refused without spending the form's budget.
+	 */
+	public function test_is_rate_limited_charges_network_before_form() {
+		$form_id     = 900000 + wp_rand( 1, 99999 );
+		$network_max = function () {
+			return 1;
+		};
+		add_filter( 'srfm_form_views_rate_limit_max', $network_max );
+
+		$_SERVER['REMOTE_ADDR'] = '198.51.100.7';
+		$m                      = new ReflectionMethod( Form_Views::class, 'network_bucket' );
+		$m->setAccessible( true );
+		$bucket = $m->invoke( null, '198.51.100.7' ) . '_' . $form_id;
+
+		try {
+			$this->assertFalse( $this->call_private_method( $this->views, 'is_rate_limited', [ $form_id ] ) );
+			$this->assertTrue( $this->call_private_method( $this->views, 'is_rate_limited', [ $form_id ] ), 'Second hit exceeds the network limit.' );
+			$this->assertSame( 1, (int) get_transient( 'srfm_view_' . md5( 'form_' . $form_id ) ), 'The refused hit must not charge the form counter.' );
+		} finally {
+			remove_filter( 'srfm_form_views_rate_limit_max', $network_max );
+			delete_transient( 'srfm_view_' . md5( $bucket ) );
+			delete_transient( 'srfm_view_' . md5( 'form_' . $form_id ) );
+		}
+	}
+
 	// ──────────────────────────────────────────────
 	// permissions_check (HMAC token)
 	// ──────────────────────────────────────────────
