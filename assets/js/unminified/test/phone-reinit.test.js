@@ -266,3 +266,78 @@ describe( 'phone field with a default value', () => {
 		).toBe( 'Invalid phone number' );
 	} );
 } );
+
+describe( 'phone field setNumber()', () => {
+	beforeEach( () => renderForm() );
+
+	const iti = () => window.intlTelInput.getInstance( phoneInput() );
+
+	it( 'switches to the country of an international number', () => {
+		// Pro save-and-resume restores a saved number this way.
+		window.srfmInitializePhoneField();
+		iti().setNumber( '+33612345678' );
+
+		expect( selectedCountry() ).toBe( 'fr' );
+		expect( hiddenValue() ).toBe( '+33612345678' );
+	} );
+
+	it( 'keeps the restored country across re-init', () => {
+		window.srfmInitializePhoneField();
+		iti().setNumber( '+33612345678' );
+
+		window.srfmInitializePhoneField();
+		expect( selectedCountry() ).toBe( 'fr' );
+		expect( hiddenValue() ).toBe( '+33612345678' );
+	} );
+
+	it( 'still does not change the country while the visitor types', () => {
+		window.srfmInitializePhoneField();
+		type( '+33612345678' );
+		expect( selectedCountry() ).toBe( 'gb' );
+
+		// Not even after a setNumber() call has lifted the block for itself.
+		iti().setNumber( '+33612345678' );
+		type( '+447911123456' );
+		expect( selectedCountry() ).toBe( 'fr' );
+	} );
+} );
+
+describe( 'phone field form reset', () => {
+	const resetForm = () => {
+		const form = document.querySelector( 'form' );
+		form.reset();
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_reset', { detail: { form } } )
+		);
+	};
+
+	it( 'clears the number, the country and the hidden input', () => {
+		renderForm();
+		window.srfmInitializePhoneField();
+		pickCountry( 'fr' );
+		type( '612345678' );
+		expect( hiddenValue() ).toBe( '+33612345678' );
+
+		resetForm();
+
+		expect( phoneInput().value ).toBe( '' );
+		expect( hiddenValue() ).toBe( '' );
+		expect( selectedCountry() ).toBe( 'gb' );
+		expect( phoneInput().dataset.srfmCountryChosen ).toBeUndefined();
+		expect( phoneInput().dataset.srfmSelectedCountry ).toBeUndefined();
+	} );
+
+	it( 'goes back to the default value and clears the phone error', () => {
+		renderForm( '7911123456' );
+		window.srfmInitializePhoneField();
+		type( '123' );
+		expect( block().classList.contains( 'srfm-phone-error' ) ).toBe( true );
+
+		resetForm();
+
+		// Re-init formats it, the same as on page load.
+		expect( phoneInput().value.replace( /\s/g, '' ) ).toBe( '7911123456' );
+		expect( hiddenValue() ).toBe( '+447911123456' );
+		expect( block().classList.contains( 'srfm-phone-error' ) ).toBe( false );
+	} );
+} );

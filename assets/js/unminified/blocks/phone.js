@@ -356,7 +356,21 @@ function initializePhoneField() {
 		// (e.g., browser autocomplete, typing, or deleting the country code).
 		// The flag should only change when the user explicitly selects a country from the dropdown.
 		// Dropdown selection goes through _selectListItem -> _setCountry directly, so it still works.
+		const updateCountryFromNumber = iti._updateCountryFromNumber.bind( iti );
 		iti._updateCountryFromNumber = () => false;
+
+		// setNumber() is a deliberate full number (Pro save-and-resume restores
+		// one this way), so it may set the country from the dial code. It uses
+		// the same method, so lift the block above for that call only.
+		const setNumber = iti.setNumber.bind( iti );
+		iti.setNumber = ( number ) => {
+			iti._updateCountryFromNumber = updateCountryFromNumber;
+			try {
+				setNumber( number );
+			} finally {
+				iti._updateCountryFromNumber = () => false;
+			}
+		};
 
 		// Per-visitor auto country detection. The server bakes an initial
 		// `default-country`, but on full-page-cached sites that value is the first
@@ -632,4 +646,30 @@ document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 	setTimeout( () => {
 		initializePhoneField();
 	}, 100 );
+} );
+
+// form.reset() puts the tel input back to its default value but leaves the
+// hidden input, the selected country and the phone error as they were.
+// Re-initialise the form's phone fields so they match the reset value.
+document.addEventListener( 'srfm_form_reset', ( e ) => {
+	const form = e.detail?.form;
+	if ( ! form ) {
+		return;
+	}
+
+	const phones = form.querySelectorAll( '.srfm-input-phone' );
+	if ( phones.length === 0 ) {
+		return;
+	}
+
+	cleanupPhoneFields( form );
+	// After cleanup, which would otherwise keep the visitor's country.
+	phones.forEach( ( phoneNumber ) => {
+		delete phoneNumber.dataset.srfmCountryChosen;
+		delete phoneNumber.dataset.srfmSelectedCountry;
+		phoneNumber
+			.closest( '.srfm-block' )
+			?.classList.remove( 'srfm-phone-error' );
+	} );
+	initializePhoneField();
 } );
