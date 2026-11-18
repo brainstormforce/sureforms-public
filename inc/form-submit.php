@@ -735,8 +735,8 @@ class Form_Submit {
 		// hidden srfm-form-language input) so the confirmation message and email
 		// notifications below can be rendered in it — WPML's language detection on
 		// the REST submit endpoint frequently falls back to the default. This value
-		// is used only to switch_language() at submit time; it is not persisted. The
-		// hidden input is client-supplied, so:
+		// is used to switch_language() at submit time and is stored on the entry
+		// (extras.language) for later sends. The hidden input is client-supplied, so:
 		// 1. Validate shape with a BCP-47 regex.
 		// 2. Cross-check against the active multilingual provider's known
 		// languages (active + default) so a crafted request can't switch rendering
@@ -866,6 +866,16 @@ class Form_Submit {
 				'submission_data' => $submission_data,
 			]
 		);
+
+		// Keep the validated submission language, so notifications sent later from
+		// this entry (e.g. a resend) use the language the visitor submitted in.
+		// Merged after the filter, so a filter that replaces extras keeps it.
+		if ( '' !== $entry_language && Multilingual_Manager::get_instance()->provider()->is_active() ) {
+			$entries_data['extras'] = array_merge(
+				Helper::get_array_value( $entries_data['extras'] ?? [] ),
+				[ 'language' => $entry_language ]
+			);
+		}
 
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {

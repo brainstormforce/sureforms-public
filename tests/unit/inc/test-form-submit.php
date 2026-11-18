@@ -3746,6 +3746,25 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * The submission language is stored on the entry, so a later resend can
+	 * send the notification in the same language.
+	 */
+	public function test_handle_form_entry_stores_the_visitor_language_on_the_entry() {
+		$this->use_language_stub();
+		$form_id = $this->create_multilingual_form( true );
+
+		[ $response ] = $this->submit_in_spanish( $form_id );
+
+		$entry_id = Helper::get_integer_value( $response['data']['submission_id'] );
+		$extras   = Helper::get_array_value( EntriesTable::get( $entry_id )['extras'] );
+
+		$this->assertSame( 'es', $extras['language'] ?? null );
+
+		EntriesTable::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * The compact address map reaches srfm_before_submission only for the form's own
 	 * address blocks, as scalars, and never replaces a validated field.
 	 *
@@ -3776,6 +3795,50 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->assertSame( '1 Main St, Springfield', $hook_data['home-address'] ?? null, 'a real address block keeps its compact string' );
 		$this->assertArrayNotHasKey( 'work-address', $hook_data, 'a non-scalar address value is dropped' );
 
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Without an active multilingual plugin there is no language to keep.
+	 */
+	public function test_handle_form_entry_stores_no_language_without_a_multilingual_plugin() {
+		$form_id = $this->create_multilingual_form( true );
+
+		[ $response ] = $this->submit_in_spanish( $form_id );
+
+		$entry_id = Helper::get_integer_value( $response['data']['submission_id'] );
+		$extras   = Helper::get_array_value( EntriesTable::get( $entry_id )['extras'] );
+
+		$this->assertArrayNotHasKey( 'language', $extras );
+
+		EntriesTable::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A srfm_before_entry_data filter that replaces extras keeps its own keys
+	 * and does not drop the stored language.
+	 */
+	public function test_handle_form_entry_keeps_the_language_when_a_filter_replaces_extras() {
+		$this->use_language_stub();
+		$form_id = $this->create_multilingual_form( true );
+		$replace = static function ( $data ) {
+			$data['extras'] = [ 'site_key' => 'kept' ];
+			return $data;
+		};
+		add_filter( 'srfm_before_entry_data', $replace );
+
+		[ $response ] = $this->submit_in_spanish( $form_id );
+
+		remove_filter( 'srfm_before_entry_data', $replace );
+
+		$entry_id = Helper::get_integer_value( $response['data']['submission_id'] );
+		$extras   = Helper::get_array_value( EntriesTable::get( $entry_id )['extras'] );
+
+		$this->assertSame( 'es', $extras['language'] ?? null );
+		$this->assertSame( 'kept', $extras['site_key'] ?? null );
+
+		EntriesTable::delete( $entry_id );
 		wp_delete_post( $form_id, true );
 	}
 
