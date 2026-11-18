@@ -132,7 +132,8 @@ class Form_Submit {
 					'form_title' => $form_id ? Helper::get_string_value( get_the_title( $form_id ) ) : '',
 					'message'    => 'Integration failed. ' . Helper::get_string_value( $reason ),
 				]
-			)
+			),
+			'server'
 		);
 
 		Client_Logger::record_failure(
@@ -213,6 +214,8 @@ class Form_Submit {
 
 		// Cap the batch as well as each entry: a single request must not be able to
 		// consume the whole file and evict the failure someone is trying to capture.
+		// append() holds each line to MAX_LINE_BYTES and these browser-reported lines
+		// to CLIENT_MAX_FILE_SIZE, so that holds in bytes and across requests too.
 		foreach ( array_slice( $entries, 0, 10 ) as $raw ) {
 			if ( ! is_array( $raw ) ) {
 				continue;
@@ -1298,7 +1301,8 @@ class Form_Submit {
 											'form_title' => Helper::get_string_value( get_the_title( intval( $id ) ) ),
 											'message'    => 'Email notification failed to send. ' . $reason . ( $entry_saved ? '' : ' The form does not store entries, so this submission was not saved.' ),
 										]
-									)
+									),
+									'server'
 								);
 
 								// Its own category: the submission reached PHP, so this is

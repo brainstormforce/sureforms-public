@@ -1118,6 +1118,74 @@ class Test_Client_Logger extends TestCase {
 	}
 
 	// ---------------------------------------------------------------
+	// Byte budgets
+	// ---------------------------------------------------------------
+
+	/**
+	 * Browser-reported lines stop short of the cap, so a failure the server
+	 * records afterwards still has room to be written and shows in the excerpt.
+	 */
+	public function test_append_reserves_room_for_server_lines() {
+		$blob = str_repeat( 'a', Client_Logger::MAX_TEXT_LENGTH );
+
+		for ( $i = 0; $i < 5000; $i++ ) {
+			if ( ! Client_Logger::append( [ 'type' => 'network', 'status' => 400, 'message' => $blob ] ) ) {
+				break;
+			}
+		}
+
+		$this->assertFalse( Client_Logger::is_full(), 'Browser lines must not reach the cap.' );
+		$this->assertFalse(
+			Client_Logger::append( [ 'type' => 'network', 'status' => 400, 'message' => 'one more' ] ),
+			'Without an origin a line is budgeted as browser-reported.'
+		);
+		$this->assertFalse( Client_Logger::append( [ 'type' => 'network', 'status' => 400, 'message' => 'one more' ], 'Server' ), 'Only the exact server origin gets the reserve.' );
+
+		$this->assertTrue( Client_Logger::append( [ 'type' => 'message', 'message' => 'Integration failed. HubSpot 401' ], 'server' ) );
+		$this->assertStringContainsString( 'HubSpot 401', Client_Logger::get_tail( 1200 )['text'] );
+	}
+
+	/**
+	 * Characters are not bytes: wp_json_encode() writes an astral character as a
+	 * 12-byte surrogate pair. A line is bounded by its encoded size, so one entry
+	 * cannot be worth a tenth of the file however it is spelled.
+	 */
+	public function test_append_refuses_a_line_over_the_byte_budget() {
+		$emoji = str_repeat( "\u{1F600}", Client_Logger::MAX_TEXT_LENGTH );
+
+		$entry = Client_Logger::sanitize_entry(
+			[
+				'type'       => 'network',
+				'message'    => $emoji,
+				'source'     => $emoji,
+				'body'       => $emoji,
+				'field_keys' => array_fill( 0, 100, str_repeat( "\u{1F600}", Client_Logger::MAX_KEY_LENGTH ) ),
+			]
+		);
+
+		$this->assertNotEmpty( $entry );
+		$this->assertFalse( Client_Logger::append( $entry ) );
+		$this->assertSame( 0, Client_Logger::get_file_size() );
+
+		// The other direction: the largest entry a real non-Latin site produces --
+		// every text field at its limit in CJK -- is still written.
+		$cjk  = str_repeat( "\u{4E00}", Client_Logger::MAX_TEXT_LENGTH );
+		$real = Client_Logger::sanitize_entry(
+			[
+				'type'       => 'response',
+				'status'     => 500,
+				'message'    => $cjk,
+				'source'     => $cjk,
+				'body'       => $cjk,
+				'form_title' => $cjk,
+				'field_keys' => array_fill( 0, 20, 'srfm-input-lbl-' . str_repeat( 'Q', 24 ) ),
+			]
+		);
+
+		$this->assertTrue( Client_Logger::append( $real ) );
+	}
+
+	// ---------------------------------------------------------------
 	// Helpers
 	// ---------------------------------------------------------------
 
@@ -1143,7 +1211,9 @@ class Test_Client_Logger extends TestCase {
 		$blob = str_repeat( 'a', Client_Logger::MAX_TEXT_LENGTH );
 
 		for ( $i = 0; $i < 5000; $i++ ) {
-			if ( ! Client_Logger::append( [ 'type' => 'error', 'message' => $blob ] ) ) {
+			// Server origin, so the fill reaches the hard cap rather than stopping
+			// at the browser lines' share of it.
+			if ( ! Client_Logger::append( [ 'type' => 'error', 'message' => $blob ], 'server' ) ) {
 				return;
 			}
 		}

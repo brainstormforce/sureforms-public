@@ -333,10 +333,11 @@ const UsageTrackingContent = ( {
  * @param {Object}   props.logMeta              - Server-reported log size and expiry.
  * @param {Function} props.setLogMeta           - Updates the reported log status.
  */
-// Mirrors Client_Logger::MAX_FILE_SIZE. Once the file is full it stops accepting
-// lines rather than evicting the repro someone is trying to capture, so the UI has
-// to say so — silently dropping new entries is the one bad outcome here.
-const MAX_LOG_SIZE = 1048576;
+// Mirrors Client_Logger::CLIENT_MAX_FILE_SIZE, where browser-reported failures
+// stop being written (the rest is kept for server-recorded ones). It stops rather
+// than evicting the repro someone is trying to capture, so the UI has to say so —
+// silently dropping new entries is the one bad outcome here.
+const MAX_LOG_SIZE = 786432;
 
 const LogsContent = ( {
 	generalTabOptions,

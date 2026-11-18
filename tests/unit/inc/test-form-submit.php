@@ -3128,6 +3128,102 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * Anonymous reports cannot use up the log. However many requests arrive, and
+	 * whatever characters they carry, an integration failure recorded afterwards
+	 * is still written and still reaches the support excerpt.
+	 */
+	public function test_handle_client_error_log_leaves_room_for_a_later_integration_failure() {
+		$this->set_client_logging( true );
+		Client_Logger::clear();
+		delete_option( Client_Logger::FAILURES_OPTION );
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Budget Form',
+				'post_status' => 'publish',
+			]
+		);
+
+		$emoji = str_repeat( "\u{1F600}", Client_Logger::MAX_TEXT_LENGTH );
+		$ascii = str_repeat( 'a', Client_Logger::MAX_TEXT_LENGTH );
+
+		$payloads = [
+			[
+				'type'       => 'network',
+				'message'    => $emoji,
+				'source'     => $emoji,
+				'body'       => $emoji,
+				'field_keys' => array_fill( 0, 100, str_repeat( "\u{1F600}", Client_Logger::MAX_KEY_LENGTH ) ),
+			],
+			[
+				'type'       => 'network',
+				'message'    => $ascii,
+				'source'     => $ascii,
+				'body'       => $ascii,
+				'field_keys' => array_fill( 0, 100, str_repeat( 'k', Client_Logger::MAX_KEY_LENGTH ) ),
+			],
+		];
+
+		// A fresh address per request, as a caller rotating IPs would, so the rate
+		// limit is not what stops the fill.
+		for ( $i = 0; $i < 40; $i++ ) {
+			$_SERVER['REMOTE_ADDR'] = '198.51.100.' . ( $i + 1 );
+
+			$request = new WP_REST_Request( 'POST', '/sureforms/v1/log-client-error' );
+			$request->set_param( 'form_id', $form_id );
+			$request->set_param( 'entries', array_fill( 0, 10, $payloads[ 0 === $i ? 0 : 1 ] ) );
+
+			Form_Submit::get_instance()->handle_client_error_log( $request );
+
+			if ( 0 === $i ) {
+				$this->assertLessThan( Client_Logger::MAX_FILE_SIZE / 4, Client_Logger::get_file_size(), 'One request must not come near the cap.' );
+			}
+		}
+
+		$this->assertFalse( Client_Logger::is_full() );
+		$this->assertSame( [], Client_Logger::get_open_failures(), 'Statusless network lines are not faults.' );
+
+		do_action( 'srfm_integration_failed', $form_id, 'HubSpot 401' );
+
+		$this->assertStringContainsString( 'HubSpot 401', (string) file_get_contents( Client_Logger::get_log_path( false ) ) );
+		$this->assertStringContainsString( 'HubSpot 401', Client_Logger::get_tail( 1200 )['text'] );
+
+		wp_delete_post( $form_id, true );
+		Client_Logger::clear();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		$this->set_client_logging( false );
+		unset( $_SERVER['REMOTE_ADDR'] );
+	}
+
+	/**
+	 * A failed notification is written to the debug log even after browser
+	 * reports have used their whole share of it.
+	 */
+	public function test_send_email_logs_the_failure_after_browser_lines_fill_their_share() {
+		$this->reset_email_delivery_state();
+		$this->set_client_logging( true );
+		Client_Logger::clear();
+
+		$blob = str_repeat( 'a', Client_Logger::MAX_TEXT_LENGTH );
+
+		for ( $i = 0; $i < 5000; $i++ ) {
+			if ( ! Client_Logger::append( [ 'type' => 'network', 'status' => 400, 'message' => $blob ] ) ) {
+				break;
+			}
+		}
+
+		$this->send_one_notification( '__return_false' );
+
+		$this->assertStringContainsString( 'Email notification failed to send', Client_Logger::get_tail( 1200 )['text'] );
+
+		Client_Logger::clear();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		$this->set_client_logging( false );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
 	 * Switch the client log setting on or off.
 	 *
 	 * @param bool $enabled Whether logging should be on.

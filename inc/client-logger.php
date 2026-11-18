@@ -66,6 +66,28 @@ class Client_Logger {
 	public const MAX_FILE_SIZE = 1048576;
 
 	/**
+	 * Size at which the log stops accepting browser-reported lines, in bytes.
+	 *
+	 * The space between this and MAX_FILE_SIZE is kept for lines the server
+	 * records itself -- a notification or integration failure -- so those are
+	 * still written however many browser reports arrived first.
+	 *
+	 * @since x.x.x
+	 */
+	public const CLIENT_MAX_FILE_SIZE = 786432;
+
+	/**
+	 * Longest single log line, in bytes as encoded.
+	 *
+	 * Bounds what one entry can cost in bytes rather than characters, because
+	 * wp_json_encode() writes a non-ASCII character as 6 bytes, or 12 for one
+	 * outside the BMP. Every text field at MAX_TEXT_LENGTH in CJK fits.
+	 *
+	 * @since x.x.x
+	 */
+	public const MAX_LINE_BYTES = 16384;
+
+	/**
 	 * Longest free-text value stored on a single entry, in characters.
 	 *
 	 * @since 2.12.6
@@ -464,11 +486,19 @@ class Client_Logger {
 	/**
 	 * Append one validated entry to the log.
 	 *
-	 * @param array<string,mixed> $entry Entry as returned by sanitize_entry().
+	 * Every line is held to MAX_LINE_BYTES. A line is budgeted as
+	 * browser-reported, and stops at CLIENT_MAX_FILE_SIZE, unless $origin is
+	 * exactly 'server'; only a line the server composed itself may use the space
+	 * above that.
+	 *
+	 * @param array<string,mixed> $entry  Entry as returned by sanitize_entry().
+	 * @param string              $origin 'server' for a line the server records
+	 *                                    itself; anything else is browser-reported.
 	 * @since 2.12.6
+	 * @since x.x.x Added $origin and the per-line byte budget.
 	 * @return bool True when the line was written.
 	 */
-	public static function append( array $entry ) {
+	public static function append( array $entry, $origin = 'client' ) {
 		// Any write invalidates a memoised tail, whether or not this one lands.
 		self::$tail_memo = [];
 
@@ -517,11 +547,15 @@ class Client_Logger {
 			return false;
 		}
 
+		if ( 'server' !== $origin && self::get_file_size() >= self::CLIENT_MAX_FILE_SIZE ) {
+			return false;
+		}
+
 		$entry['time'] = gmdate( 'Y-m-d H:i:s' );
 
 		$line = wp_json_encode( $entry );
 
-		if ( ! is_string( $line ) ) {
+		if ( ! is_string( $line ) || strlen( $line ) > self::MAX_LINE_BYTES ) {
 			return false;
 		}
 
