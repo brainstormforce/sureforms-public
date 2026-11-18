@@ -642,7 +642,7 @@ class Payment_Markup extends Base {
 					<?php
 					if ( 'subscription' === $payment_type && ! empty( $this->subscription_plan ) ) {
 						$interval       = $this->subscription_plan['interval'] ?? 'month';
-						$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+						$billing_cycles = $this->get_billing_cycles();
 						$interval_label = $this->get_interval_label( $interval );
 
 						if ( 'ongoing' === $billing_cycles ) {
@@ -686,7 +686,7 @@ class Payment_Markup extends Base {
 			$message_format = '{amount}';
 			if ( 'subscription' === $payment_type && ! empty( $this->subscription_plan ) ) {
 				$interval       = $this->subscription_plan['interval'] ?? 'month';
-				$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+				$billing_cycles = $this->get_billing_cycles();
 				$interval_label = $this->get_interval_label( $interval );
 
 				if ( 'ongoing' === $billing_cycles ) {
@@ -877,8 +877,12 @@ class Payment_Markup extends Base {
 	/**
 	 * Get the human-readable label for a payment interval slug.
 	 *
-	 * @param string $interval_slug The slug (e.g., 'day', 'week', 'month', 'quarter', 'yearly').
-	 * @return string The translated interval label, or the slug itself if not found.
+	 * Only labels from this map are returned, so the label is always plain
+	 * translated text. An unknown or non-string slug gets the 'month' label,
+	 * the same default the block attribute falls back to.
+	 *
+	 * @param mixed $interval_slug The slug (e.g., 'day', 'week', 'month', 'quarter', 'year').
+	 * @return string The translated interval label.
 	 * @since 2.0.0
 	 */
 	private function get_interval_label( $interval_slug ) {
@@ -887,10 +891,36 @@ class Payment_Markup extends Base {
 			'week'    => __( 'week', 'sureforms' ),
 			'month'   => __( 'month', 'sureforms' ),
 			'quarter' => __( 'quarter', 'sureforms' ),
+			'year'    => __( 'year', 'sureforms' ),
+			// Kept for blocks saved with the older slug.
 			'yearly'  => __( 'year', 'sureforms' ),
 		];
 
-		return $interval_labels[ $interval_slug ] ?? $interval_slug;
+		if ( is_string( $interval_slug ) && isset( $interval_labels[ $interval_slug ] ) ) {
+			return $interval_labels[ $interval_slug ];
+		}
+
+		return $interval_labels['month'];
+	}
+
+	/**
+	 * Get the subscription billing cycles for the amount display.
+	 *
+	 * Returns 'ongoing' or a non-negative integer count, the values the
+	 * block editor saves for subscriptionPlan.billingCycles; anything else
+	 * (including an empty custom count) is 0.
+	 *
+	 * @return string|int 'ongoing' or the number of billing cycles.
+	 * @since x.x.x
+	 */
+	private function get_billing_cycles() {
+		$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+
+		if ( 'ongoing' === $billing_cycles ) {
+			return 'ongoing';
+		}
+
+		return is_numeric( $billing_cycles ) ? max( 0, (int) $billing_cycles ) : 0;
 	}
 
 	/**

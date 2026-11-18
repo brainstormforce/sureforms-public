@@ -1084,7 +1084,8 @@ const PAYMENT_UTILITY = {
 							getCurrencySymbol,
 							inputFormatType
 						);
-					getPlaceHolderElement.innerHTML = formattedMessage;
+					// Text, not markup: the template is decoded from a data attribute.
+					getPlaceHolderElement.textContent = formattedMessage;
 				} else {
 					// Fallback to simple amount display (backward compatible)
 					// Format the amount according to the number format type and currency position
@@ -1093,7 +1094,7 @@ const PAYMENT_UTILITY = {
 						inputFormatType
 					);
 
-					getPlaceHolderElement.innerHTML =
+					getPlaceHolderElement.textContent =
 						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
 							getCurrencySymbol,
 							formattedNumber
