@@ -1428,6 +1428,98 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );
 	}
 
+	public function test_is_payment_rate_limited_buckets_ipv6_by_64_prefix() {
+		$original = $_SERVER['REMOTE_ADDR'] ?? null;
+		add_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+
+		try {
+			// Two hits from one address fill the bucket.
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:1:2::1';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+
+			// Another address in the same /64 shares that bucket.
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:1:2:ffff:ffff:ffff:ffff';
+			$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ), 'same /64 is one bucket' );
+
+			// A different /64 is its own bucket.
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:1:3::1';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ), 'other /64 is unaffected' );
+
+			// IPv4-mapped addresses keep the full IPv4 address, not a shared ::/64.
+			$_SERVER['REMOTE_ADDR'] = '::ffff:192.0.2.1';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+			$_SERVER['REMOTE_ADDR'] = '::ffff:192.0.2.2';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ), 'IPv4-mapped clients are not pooled' );
+		} finally {
+			remove_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+			foreach ( [ '2001:db8:1:2::', '2001:db8:1:3::', '2001:db8:1:2::1', '2001:db8:1:2:ffff:ffff:ffff:ffff', '2001:db8:1:3::1', '::', '::ffff:192.0.2.1', '::ffff:192.0.2.2' ] as $bucket ) {
+				delete_transient( 'srfm_pay_rl_unit6_' . md5( $bucket . '_123' ) );
+			}
+			$this->restore_remote_addr( $original );
+		}
+	}
+
+	public function test_is_payment_rate_limited_client_ip_filter_splits_shared_proxy_address() {
+		$original               = $_SERVER['REMOTE_ADDR'] ?? null;
+		$_SERVER['REMOTE_ADDR'] = '198.51.100.10'; // One proxy address for every visitor.
+		$client                 = '203.0.113.1';
+		$client_ip              = static function () use ( &$client ) {
+			return $client;
+		};
+		add_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+		add_filter( 'srfm_payment_client_ip', $client_ip );
+
+		try {
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ), 'the filtered client is throttled' );
+
+			// A second client behind the same proxy address keeps its own allowance.
+			$client = '203.0.113.2';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ), 'another client behind the proxy is not throttled' );
+
+			// An invalid filtered value falls back to REMOTE_ADDR rather than turning throttling off.
+			$client = 'not-an-ip';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$client = null;
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$client = '';
+			$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ), 'an invalid filtered IP is throttled on REMOTE_ADDR' );
+		} finally {
+			remove_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+			remove_filter( 'srfm_payment_client_ip', $client_ip );
+			foreach ( [ '198.51.100.10', '203.0.113.1', '203.0.113.2' ] as $bucket ) {
+				delete_transient( 'srfm_pay_rl_unitproxy_' . md5( $bucket . '_123' ) );
+			}
+			$this->restore_remote_addr( $original );
+		}
+	}
+
+	/**
+	 * Rate limit filter callback: two attempts per minute.
+	 *
+	 * @return int
+	 */
+	public function rate_limit_of_two() {
+		return 2;
+	}
+
+	/**
+	 * Restore $_SERVER['REMOTE_ADDR'] to its value before the test.
+	 *
+	 * @param string|null $original Original value, null when it was unset.
+	 * @return void
+	 */
+	private function restore_remote_addr( $original ) {
+		if ( null === $original ) {
+			unset( $_SERVER['REMOTE_ADDR'] );
+		} else {
+			$_SERVER['REMOTE_ADDR'] = $original;
+		}
+	}
+
 	// --- claim_payment_reference (non-atomic intent claim / duplicate paid entries) ---
 
 	public function test_claim_payment_reference_is_single_use() {

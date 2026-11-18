@@ -64,19 +64,57 @@ class Payment_Helper {
 	 *
 	 * The limit (default 30 per minute) is filterable via
 	 * `srfm_payment_rate_limit_per_minute`; a value <= 0 disables throttling. It fails
-	 * open when the client IP cannot be determined, so a proxy that hides the IP never
-	 * blocks a real checkout.
+	 * open when the client IP cannot be determined.
+	 *
+	 * Bucket: the connection's REMOTE_ADDR (filterable via `srfm_payment_client_ip`; a
+	 * filtered value that is not a valid IP is ignored), with an IPv6 address reduced to
+	 * its /64 prefix. Every visitor that reaches the
+	 * site from the same address shares one bucket, so behind a reverse proxy or CDN
+	 * that does not restore the client address, all of them share one allowance.
 	 *
 	 * @param int    $form_id Form id.
 	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
 	 * @since 2.14.0
+	 * @since x.x.x IPv6 is bucketed per /64; client IP is filterable.
 	 * @return bool True when the request should be rejected.
 	 */
 	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- validated as an IP below.
 		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-		if ( '' === $ip || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+
+		/**
+		 * Filters the client IP that payment rate limits are bucketed on.
+		 *
+		 * Defaults to REMOTE_ADDR, the one value the client cannot set. Behind a reverse
+		 * proxy or CDN that does not restore the client address, REMOTE_ADDR is the
+		 * proxy's address and every visitor shares one bucket. Such a site can return the
+		 * real client address here, but only from a header its own proxy sets and
+		 * overwrites: a value the client can choose gives each request its own bucket.
+		 * A return value that is not a valid IP is ignored and REMOTE_ADDR is used.
+		 *
+		 * @since x.x.x
+		 * @param string $ip      The connection's REMOTE_ADDR.
+		 * @param int    $form_id Form id.
+		 * @param string $context Bucket key.
+		 */
+		$filtered = apply_filters( 'srfm_payment_client_ip', $ip, (int) $form_id, $context );
+
+		// A filter that returns no valid IP leaves the bucket on REMOTE_ADDR, not unthrottled.
+		if ( is_string( $filtered ) && filter_var( $filtered, FILTER_VALIDATE_IP ) ) {
+			$ip = $filtered;
+		} elseif ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 			return false;
+		}
+
+		// One IPv6 subscriber is normally given a whole /64, so key on that prefix rather
+		// than the address; otherwise each address in it would get its own allowance.
+		// An IPv4-mapped address (::ffff:a.b.c.d) is one IPv4 client and keeps its full
+		// address, or every IPv4 visitor on a dual-stack listener would share ::/64.
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$packed = inet_pton( $ip );
+			if ( false !== $packed && 0 !== strpos( $packed, str_repeat( "\0", 10 ) . "\xff\xff" ) ) {
+				$ip = (string) inet_ntop( substr( $packed, 0, 8 ) . str_repeat( "\0", 8 ) );
+			}
 		}
 
 		$limit = Helper::get_integer_value( apply_filters( 'srfm_payment_rate_limit_per_minute', 30, (int) $form_id, $context ) );
