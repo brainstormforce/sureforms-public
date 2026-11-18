@@ -495,7 +495,20 @@ class Form_Submit {
 					break;
 			}
 
-			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? trim( Helper::get_string_value( $global_setting_options[ $key ] ) ) : '';
+
+			// A form set to reCAPTCHA must be verified. Without a secret for its stored version
+			// there is nothing to verify against, so the submission stops here, before siteverify,
+			// the entry, payments and emails.
+			if ( '' === $google_captcha_secret_key ) {
+				$this->recaptcha_error_response(
+					'g-recaptcha',
+					[
+						'success'     => false,
+						'error-codes' => [ 'secret-not-configured' ],
+					]
+				);
+			}
 		}
 
 		if ( 'cf-turnstile' === $security_type ) {
@@ -1557,6 +1570,8 @@ class Form_Submit {
 			'timeout-or-duplicate'    => 'The response is no longer valid: either is too old or has been used previously.',
 			// Set by SureForms, not Google: the v3 score was under srfm_recaptcha_v3_score_threshold.
 			'score-threshold-not-met' => 'The reCAPTCHA v3 score was below the accepted threshold.',
+			// Set by SureForms, not Google: no secret key is saved for the form's reCAPTCHA version.
+			'secret-not-configured'   => 'No secret key is saved for this form\'s reCAPTCHA version. Add it in SureForms > Settings > Spam Protection, or change the form\'s spam protection.',
 		];
 
 		// hCaptcha error codes.

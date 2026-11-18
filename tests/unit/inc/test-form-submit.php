@@ -851,6 +851,136 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A form set to Google reCAPTCHA with no usable secret for its stored version
+	 * is rejected before siteverify and before any entry, with the honeypot field
+	 * present, absent, or filled.
+	 *
+	 * @dataProvider provide_recaptcha_missing_secret_configs
+	 *
+	 * @param mixed $version Stored _srfm_form_recaptcha value.
+	 * @param mixed $options Stored srfm_security_settings_options value, or null to leave it unset.
+	 */
+	public function test_handle_form_submission_recaptcha_missing_secret_rejected( $version, $options ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'reCAPTCHA Missing Secret Form',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
+		if ( null !== $options ) {
+			update_option( 'srfm_security_settings_options', $options );
+		}
+
+		$verified   = false;
+		$siteverify = static function () use ( &$verified ) {
+			$verified = true;
+			return new \WP_Error( 'http_request_failed', 'blocked in test' );
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$entries_before = EntriesTable::get_total_entries_by_status( 'all', $form_id );
+
+		foreach ( [ 'present' => '', 'absent' => null, 'filled' => 'bot' ] as $label => $honeypot ) {
+			$params = [
+				'form-id'              => (string) $form_id,
+				'g-recaptcha-response' => 'visitor-token',
+			];
+			if ( null !== $honeypot ) {
+				$params['srfm-honeypot-field'] = $honeypot;
+			}
+			$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+			$request->set_body_params( $params );
+
+			$data = null;
+			ob_start();
+			try {
+				$this->form_submit->handle_form_submission( $request );
+				ob_end_clean();
+			} catch ( \WPDieException $e ) {
+				$data = json_decode( (string) ob_get_clean(), true );
+			}
+
+			$this->assertIsArray( $data, "Honeypot {$label}: the submission must be stopped." );
+			$this->assertFalse( $data['success'] );
+			$this->assertSame( [ 'secret-not-configured' ], $data['data']['api_response']['error-codes'] ?? null, "Honeypot {$label}: must be rejected as an unconfigured reCAPTCHA." );
+		}
+
+		remove_filter( 'pre_http_request', $siteverify );
+
+		$this->assertFalse( $verified, 'A missing secret must not reach siteverify.' );
+		$this->assertSame( $entries_before, EntriesTable::get_total_entries_by_status( 'all', $form_id ), 'No entry may be stored.' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Stored reCAPTCHA configurations that leave no secret for the form's version.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_recaptcha_missing_secret_configs() {
+		$all = [
+			'srfm_v2_checkbox_secret_key'  => 'secret-key',
+			'srfm_v2_invisible_secret_key' => 'secret-key',
+			'srfm_v3_secret_key'           => 'secret-key',
+		];
+
+		return [
+			'v2 checkbox, option unset'        => [ 'v2-checkbox', null ],
+			'v2 checkbox, option not array'    => [ 'v2-checkbox', 'garbage' ],
+			'v2 checkbox, empty secret'        => [ 'v2-checkbox', [ 'srfm_v2_checkbox_secret_key' => '' ] ],
+			'v2 invisible, empty secret'       => [ 'v2-invisible', [ 'srfm_v2_invisible_secret_key' => '' ] ],
+			'v3, empty secret'                 => [ 'v3-reCAPTCHA', [ 'srfm_v3_secret_key' => '' ] ],
+			'v3, whitespace secret'            => [ 'v3-reCAPTCHA', [ 'srfm_v3_secret_key' => '   ' ] ],
+			'v3, array secret'                 => [ 'v3-reCAPTCHA', [ 'srfm_v3_secret_key' => [ 'secret-key' ] ] ],
+			'v3, only another version secret'  => [ 'v3-reCAPTCHA', [ 'srfm_v2_checkbox_secret_key' => 'secret-key' ] ],
+			'version empty, all secrets set'   => [ '', $all ],
+			'version none, all secrets set'    => [ 'none', $all ],
+			'version unknown, all secrets set' => [ 'v4', $all ],
+		];
+	}
+
+	/**
+	 * Forms that do not use Google reCAPTCHA are not affected by the missing-secret
+	 * guard, even with no reCAPTCHA secret saved anywhere.
+	 */
+	public function test_handle_form_submission_recaptcha_missing_secret_ignores_other_providers() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'No Captcha Form',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'none' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', 'v2-checkbox' );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'             => (string) $form_id,
+				'srfm-honeypot-field' => '',
+			]
+		);
+
+		$data = null;
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+			ob_end_clean();
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+		}
+
+		wp_delete_post( $form_id, true );
+
+		$this->assertArrayNotHasKey( 'api_response', is_array( $data ) ? (array) $data['data'] : [], 'A form without reCAPTCHA must not get a captcha error.' );
+	}
+
+	/**
 	 * Test parse_email_notification_template returns expected structure.
 	 */
 	public function test_parse_email_notification_template() {
