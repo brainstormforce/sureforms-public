@@ -1984,8 +1984,7 @@ class Form_Submit {
 	/**
 	 * Check if the current request is rate-limited for unique validation.
 	 *
-	 * Uses transients keyed by IP + form ID to throttle requests.
-	 * Allows 10 requests per 60-second window per IP per form.
+	 * Allows 10 requests per one-minute window per IP per form.
 	 *
 	 * @param int $form_id The form ID being validated.
 	 * @since 2.7.0
@@ -1999,11 +1998,15 @@ class Form_Submit {
 	 * Throttle a public endpoint to 10 requests per minute per IP per form.
 	 *
 	 * Shared by the uniqueness check and the client log route rather than
-	 * duplicated, so a change to the window applies to both.
+	 * duplicated, so a change to the window applies to both. Each prefix and
+	 * form is its own bucket. The count and window come from
+	 * Helper::hit_rate_counter(), which also limits a request that arrives while
+	 * another request holds the same bucket.
 	 *
-	 * @param string $prefix  Transient key prefix, unique per endpoint.
+	 * @param string $prefix  Bucket prefix, unique per endpoint.
 	 * @param int    $form_id The form ID the request relates to.
 	 * @since 2.12.6
+	 * @since x.x.x Counts through Helper::hit_rate_counter(); fixed window from the first request.
 	 * @return bool True if rate-limited (should block), false if allowed.
 	 */
 	private function is_rate_limited( $prefix, $form_id ) {
@@ -2013,22 +2016,7 @@ class Form_Submit {
 			return true; // Fail closed if IP cannot be determined.
 		}
 
-		$transient_key = $prefix . md5( $ip . '_' . $form_id );
-		$attempts      = get_transient( $transient_key );
-
-		if ( false === $attempts ) {
-			set_transient( $transient_key, 1, MINUTE_IN_SECONDS );
-			return false;
-		}
-
-		$attempts_count = Helper::get_integer_value( $attempts );
-
-		if ( $attempts_count >= 10 ) {
-			return true;
-		}
-
-		set_transient( $transient_key, $attempts_count + 1, MINUTE_IN_SECONDS );
-		return false;
+		return Helper::hit_rate_counter( $prefix, $ip . '_' . $form_id ) > 10;
 	}
 
 	/**

@@ -79,11 +79,6 @@ class Form_Views {
 	private const RATE_LIMIT_FORM_MAX = 200;
 
 	/**
-	 * Cache group for the beacon's rate-limit counters.
-	 */
-	private const RATE_LIMIT_GROUP = 'srfm_form_views';
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 2.12.6
@@ -612,92 +607,12 @@ class Form_Views {
 	/**
 	 * Increment a rate-limit counter and return its new value.
 	 *
-	 * Atomic where it matters. The previous implementation read a transient,
-	 * compared, then wrote it back — so N concurrent requests all read the same
-	 * value and all wrote value+1, and the limit only ever constrained sequential
-	 * traffic. That mattered here because this counter is the only thing standing
-	 * between an anonymous caller and an unbounded write loop.
-	 *
-	 * With a persistent object cache, wp_cache_add() + wp_cache_incr() is atomic.
-	 * Without one, wp_cache_* is request-local, so the value is carried in a
-	 * transient instead; that path is still not atomic under concurrency, but it
-	 * keeps the per-form ceiling meaningful across sequential requests and avoids
-	 * pretending to a guarantee the storage cannot make.
-	 *
 	 * @param string $key Counter key, unique per bucket and form.
 	 * @since 2.12.6
-	 * @return int The counter value after this hit.
+	 * @since x.x.x Delegates to Helper::hit_rate_counter(), shared with Form_Submit.
+	 * @return int The counter value after this hit, or PHP_INT_MAX when the hit is denied.
 	 */
 	private static function hit_counter( $key ) {
-		if ( wp_using_ext_object_cache() ) {
-			// add() only succeeds for the first caller, so exactly one request seeds
-			// the window and every other one increments atomically.
-			wp_cache_add( $key, 0, self::RATE_LIMIT_GROUP, MINUTE_IN_SECONDS );
-
-			$count = wp_cache_incr( $key, 1, self::RATE_LIMIT_GROUP );
-
-			// incr() returns false when the backend errors or the key was evicted
-			// between the add() and here. Returning 0 for that would report "no hits
-			// yet" and admit every request, so a broken cache would silently remove
-			// the limiter. Report the ceiling instead: an unavailable backend denies.
-			if ( false === $count ) {
-				return self::RATE_LIMIT_FORM_MAX + 1;
-			}
-
-			return Helper::get_integer_value( $count );
-		}
-
-		global $wpdb;
-
-		$transient_key = 'srfm_view_' . md5( $key );
-
-		// The get-then-set below is not atomic on its own, so a burst of concurrent
-		// beacons could each read the same pre-increment value and all admit, lifting
-		// the ceiling this limiter exists to enforce. Serialize the critical section on
-		// a MySQL advisory lock. timeout 0 so a lone visitor never waits.
-		$lock   = substr( 'srfm_view_' . md5( $key ), 0, 64 );
-		$locked = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock; nothing to cache.
-
-		// '0' means another request holds the lock right now — active contention, i.e.
-		// the burst this guards against — so deny, the safe direction for a limiter.
-		// NULL/anything else means the host does not support GET_LOCK; fall through to
-		// the best-effort non-atomic path rather than deny every view on such a host.
-		if ( '0' === (string) $locked ) {
-			return self::RATE_LIMIT_FORM_MAX + 1;
-		}
-
-		$got_lock = '1' === (string) $locked;
-
-		try {
-			$count = Helper::get_integer_value( get_transient( $transient_key ) ) + 1;
-
-			// Only extend the window when opening it, so a steady stream just under the
-			// limit cannot hold a bucket open indefinitely by refreshing its own TTL.
-			if ( 1 === $count ) {
-				set_transient( $transient_key, $count, MINUTE_IN_SECONDS );
-			} else {
-				set_transient( $transient_key, $count, self::remaining_window( $transient_key ) );
-			}
-		} finally {
-			if ( $got_lock ) {
-				$wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Releasing the advisory lock; nothing to cache.
-			}
-		}
-
-		return $count;
-	}
-
-	/**
-	 * Seconds left on an open rate-limit window, floored at one second.
-	 *
-	 * @param string $transient_key Transient holding the counter.
-	 * @since 2.12.6
-	 * @return int
-	 */
-	private static function remaining_window( $transient_key ) {
-		$timeout   = Helper::get_integer_value( get_option( '_transient_timeout_' . $transient_key, 0 ) );
-		$remaining = $timeout - time();
-
-		return $remaining > 0 ? $remaining : 1;
+		return Helper::hit_rate_counter( 'srfm_view_', $key );
 	}
 }

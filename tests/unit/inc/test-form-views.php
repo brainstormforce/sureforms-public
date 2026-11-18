@@ -394,32 +394,6 @@ class Test_Form_Views extends TestCase {
 		$this->assertSame( 1, $hit( $key . '_other' ), 'A different key starts its own count.' );
 	}
 
-	/**
-	 * An open window is never extended by later hits.
-	 *
-	 * Refreshing the TTL on every request makes the window sliding rather than
-	 * fixed, so a steady stream just under the limit holds its bucket open forever.
-	 */
-	public function test_remaining_window() {
-		$remaining = function ( $key ) {
-			$m = new ReflectionMethod( Form_Views::class, 'remaining_window' );
-			$m->setAccessible( true );
-			return $m->invoke( null, $key );
-		};
-
-		$key = 'srfm_window_' . wp_rand();
-
-		// No transient yet → floored at one second rather than a negative TTL.
-		$this->assertSame( 1, $remaining( $key ), 'An unknown window must floor at 1, never go negative.' );
-
-		set_transient( $key, 1, MINUTE_IN_SECONDS );
-		$left = $remaining( $key );
-		$this->assertGreaterThan( 0, $left );
-		$this->assertLessThanOrEqual( MINUTE_IN_SECONDS, $left, 'Must never exceed the original window.' );
-
-		delete_transient( $key );
-	}
-
 	// ──────────────────────────────────────────────
 	// permissions_check (HMAC token)
 	// ──────────────────────────────────────────────

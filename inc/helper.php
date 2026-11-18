@@ -2821,6 +2821,75 @@ class Helper {
 	}
 
 	/**
+	 * Record one hit against a rate-limit bucket and return the bucket's count.
+	 *
+	 * The single counter behind the public rate limits (Form_Submit::is_rate_limited(),
+	 * Form_Views::is_rate_limited()). Callers compare the result to their own ceiling.
+	 *
+	 * Window: fixed, one minute from the bucket's first hit. Later hits never extend it.
+	 *
+	 * Concurrency: with a persistent object cache, wp_cache_add() + wp_cache_incr() make
+	 * the increment atomic. Without one the count lives in a transient, and the
+	 * read-increment-write is serialized per bucket on a MySQL advisory lock taken with
+	 * a zero timeout; a request that finds the lock held is answered as over the limit
+	 * and is not counted. Only a host whose database lacks GET_LOCK() falls back to an
+	 * unserialized read-increment-write.
+	 *
+	 * Failure: a cache increment error returns PHP_INT_MAX, so an unavailable backend
+	 * denies rather than admits.
+	 *
+	 * @param string $prefix Bucket namespace, unique per endpoint. Also the cache group.
+	 * @param string $key    Bucket key within the namespace (e.g. IP and form id).
+	 * @since x.x.x
+	 * @return int The bucket's count after this hit, or PHP_INT_MAX when the hit is denied.
+	 */
+	public static function hit_rate_counter( $prefix, $key ) {
+		$hash = md5( $key );
+
+		if ( wp_using_ext_object_cache() ) {
+			// add() only succeeds for the first caller, so exactly one request opens the
+			// window and every other one increments atomically.
+			wp_cache_add( $hash, 0, $prefix, MINUTE_IN_SECONDS );
+
+			$count = wp_cache_incr( $hash, 1, $prefix );
+
+			// false = backend error, or the key was evicted between add() and incr().
+			return false === $count ? PHP_INT_MAX : self::get_integer_value( $count );
+		}
+
+		global $wpdb;
+
+		$transient_key = $prefix . $hash;
+		$lock          = substr( $transient_key, 0, 64 );
+		$locked        = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock; nothing to cache.
+
+		// '0' = another request holds this bucket right now. NULL or anything else means
+		// the database does not support GET_LOCK(); continue without the lock rather
+		// than deny every request on such a host.
+		if ( '0' === (string) $locked ) {
+			return PHP_INT_MAX;
+		}
+
+		try {
+			$count = self::get_integer_value( get_transient( $transient_key ) ) + 1;
+			$ttl   = MINUTE_IN_SECONDS;
+
+			if ( $count > 1 ) {
+				$remaining = self::get_integer_value( get_option( '_transient_timeout_' . $transient_key, 0 ) ) - time();
+				$ttl       = max( 1, $remaining );
+			}
+
+			set_transient( $transient_key, $count, $ttl );
+		} finally {
+			if ( '1' === (string) $locked ) {
+				$wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Releasing the advisory lock; nothing to cache.
+			}
+		}
+
+		return $count;
+	}
+
+	/**
 	 * Read a visitor country code from a CDN / server geo header, if present.
 	 *
 	 * Many hosts sit behind Cloudflare, CloudFront or a geo-aware web server that
