@@ -294,7 +294,7 @@ SureForms may connect to third-party services only when the related feature is e
 
 -   **ipinfo** may show visitor IP information when IP logging is enabled. [Terms](https://ipinfo.io/terms-of-service) and [Privacy Policy](https://ipinfo.io/privacy-policy)
 -   **Google Fonts** may load when a Google font is selected. [Terms](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
--   **ipapi** may detect a visitor's region for the phone field. [Terms](https://ipapi.co/terms/) and [Privacy Policy](https://ipapi.co/privacy/)
+-   **SureForms API** (api.sureforms.com) may detect a visitor's country from their IP address for the phone field. [Terms](https://sureforms.com/terms-and-conditions/) and [Privacy Policy](https://sureforms.com/privacy-policy/)
 -   **Google reCAPTCHA** may be used for spam prevention.
 -   **Stripe** is used to process Stripe payment forms. [Terms](https://stripe.com/legal/ssa) and [Privacy Policy](https://stripe.com/privacy)
 
