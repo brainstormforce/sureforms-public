@@ -25,6 +25,25 @@ class Smart_Tags {
 	use Get_Instance;
 
 	/**
+	 * Smart tags whose value differs between visitors of the same URL. {get_cookie:*}
+	 * is matched by prefix in smart_tags_callback().
+	 *
+	 * @since x.x.x
+	 */
+	private const PER_VISITOR_TAGS = [
+		'{ip}',
+		'{http_referer}',
+		'{browser_name}',
+		'{browser_platform}',
+		'{user_id}',
+		'{user_display_name}',
+		'{user_first_name}',
+		'{user_last_name}',
+		'{user_email}',
+		'{user_login}',
+	];
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
@@ -263,9 +282,22 @@ class Smart_Tags {
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1
+	 * @since x.x.x Marks the page as not cacheable for a per-visitor tag.
 	 * @return mixed
 	 */
 	public static function smart_tags_callback( $tag, $submission_data = null, $form_data = null ) {
+		// These tags resolve from the current visitor's request or session, so a page
+		// that carries one must not be stored in a shared page cache. Signalled before
+		// the filter, so a filtered value is covered too.
+		if ( in_array( $tag, self::PER_VISITOR_TAGS, true ) || 0 === strpos( $tag, '{get_cookie:' ) ) {
+			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+				define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Standard page-cache opt-out constant.
+			}
+			if ( ! headers_sent() ) {
+				nocache_headers();
+			}
+		}
+
 		$parsed_tag = apply_filters( 'srfm_parse_smart_tags', null, compact( 'tag', 'submission_data', 'form_data' ) );
 
 		if ( ! is_null( $parsed_tag ) ) {

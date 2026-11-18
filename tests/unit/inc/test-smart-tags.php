@@ -742,6 +742,79 @@ class Test_Smart_Tags extends TestCase {
 	}
 
 	/**
+	 * Tags that resolve from the visitor's own request or session mark the page as
+	 * not cacheable, so a shared page cache never serves one visitor's value to another.
+	 *
+	 * @dataProvider per_visitor_tag_provider
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 *
+	 * @param string $tag Smart tag.
+	 */
+	public function test_smart_tags_callback_marks_page_uncacheable_for_per_visitor_tag( $tag ) {
+		$this->assertFalse( defined( 'DONOTCACHEPAGE' ), 'Precondition: a fresh process has no cache opt-out.' );
+
+		Smart_Tags::smart_tags_callback( $tag );
+
+		$this->assertTrue( defined( 'DONOTCACHEPAGE' ) && DONOTCACHEPAGE, "{$tag} must opt the page out of page caching." );
+	}
+
+	/**
+	 * Per-visitor smart tags.
+	 *
+	 * @return array<string, array<string>>
+	 */
+	public function per_visitor_tag_provider() {
+		return [
+			'ip'                => [ '{ip}' ],
+			'http_referer'      => [ '{http_referer}' ],
+			'get_cookie'        => [ '{get_cookie:ref}' ],
+			'browser_name'      => [ '{browser_name}' ],
+			'browser_platform'  => [ '{browser_platform}' ],
+			'user_id'           => [ '{user_id}' ],
+			'user_display_name' => [ '{user_display_name}' ],
+			'user_first_name'   => [ '{user_first_name}' ],
+			'user_last_name'    => [ '{user_last_name}' ],
+			'user_email'        => [ '{user_email}' ],
+			'user_login'        => [ '{user_login}' ],
+		];
+	}
+
+	/**
+	 * The opt-out holds on the front-end render path, where the value is written
+	 * into the form markup, and when a filter supplies the value.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_render_form_marks_page_uncacheable_for_cookie_tag_even_when_filtered() {
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->set_rendering_form_id( $form_id );
+		$_COOKIE['ref'] = 'campaign';
+		add_filter( 'srfm_parse_smart_tags', static fn() => 'filtered' );
+
+		$html = '<input value="{get_cookie:ref}" />';
+		$this->assertSame( '<input value="filtered" />', $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) ) );
+		$this->assertTrue( defined( 'DONOTCACHEPAGE' ) && DONOTCACHEPAGE );
+	}
+
+	/**
+	 * Tags whose value is the same for every visitor of a URL keep the page cacheable.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_smart_tags_callback_keeps_page_cacheable_for_shared_tags() {
+		$_SERVER['QUERY_STRING'] = 'u=hello';
+
+		foreach ( [ '{site_url}', '{site_title}', '{form_title}', '{date_mdy}', '{embed_post_id}', '{get_input:u}', '{current_page_url}' ] as $tag ) {
+			Smart_Tags::smart_tags_callback( $tag );
+		}
+
+		$this->assertFalse( defined( 'DONOTCACHEPAGE' ) );
+	}
+
+	/**
 	 * A value resolved while a form renders is inert to every later smart tag pass
 	 * (nested blocks, then the srfm/form block's own render_block pass), and still
 	 * reads as the original text once the browser decodes it.
