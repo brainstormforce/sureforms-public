@@ -7,6 +7,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Payments\Stripe\Stripe_Webhook;
+use SRFM\Inc\Database\Tables\Payments;
 
 class Test_Stripe_Webhook extends TestCase {
 
@@ -403,5 +404,139 @@ class Test_Stripe_Webhook extends TestCase {
 		// Payment ID 999999 won't exist in the test database.
 		$result = $this->webhook->update_refund_data( 999999, $refund_response, 1000, 'usd' );
 		$this->assertFalse( $result );
+	}
+
+	/**
+	 * Payment rows created by the dispute tests, deleted in tearDown.
+	 *
+	 * @var int[]
+	 */
+	private $dispute_payment_ids = [];
+
+	/**
+	 * srfm_payment_disputed calls captured by the dispute tests.
+	 *
+	 * @var array<int, array<int, mixed>>
+	 */
+	private $disputed_calls = [];
+
+	protected function tearDown(): void {
+		foreach ( $this->dispute_payment_ids as $id ) {
+			Payments::delete( $id );
+		}
+		$this->dispute_payment_ids = [];
+		$this->disputed_calls      = [];
+		remove_all_actions( 'srfm_payment_disputed' );
+		parent::tearDown();
+	}
+
+	private function add_dispute_payment( $transaction_id, $status = 'succeeded' ) {
+		$id = Payments::add(
+			[
+				'form_id'        => 777,
+				'gateway'        => 'stripe',
+				'status'         => $status,
+				'type'           => 'payment',
+				'mode'           => 'test',
+				'transaction_id' => $transaction_id,
+				'customer_email' => 'payer@example.test',
+				'total_amount'   => '10.00',
+				'currency'       => 'USD',
+			]
+		);
+		$this->assertIsInt( $id );
+		$this->dispute_payment_ids[] = $id;
+		add_action(
+			'srfm_payment_disputed',
+			function ( $payment, $dispute_status, $context ) {
+				$this->disputed_calls[] = [ $payment, $dispute_status, $context ];
+			},
+			10,
+			3
+		);
+		return $id;
+	}
+
+	public function test_handle_dispute_lost_marks_payment_charged_back_and_fires_hook_once() {
+		$id      = $this->add_dispute_payment( 'pi_dispute_lost' );
+		$dispute = [
+			'id'             => 'dp_lost',
+			'status'         => 'lost',
+			'payment_intent' => 'pi_dispute_lost',
+			'charge'         => 'ch_dispute_lost',
+			'amount'         => 1000,
+			'currency'       => 'usd',
+			'reason'         => 'fraudulent',
+		];
+
+		$this->webhook->handle_dispute( $dispute );
+		// Stripe redelivers events; the same dispute status must not fire twice.
+		$this->webhook->handle_dispute( $dispute );
+
+		$this->assertSame( 'charged_back', Payments::get( $id )['status'] );
+		$this->assertCount( 1, $this->disputed_calls );
+		$this->assertSame( 'lost', $this->disputed_calls[0][1] );
+		$this->assertSame( 777, $this->disputed_calls[0][2]['form_id'] );
+	}
+
+	public function test_handle_dispute_open_fires_hook_but_keeps_status() {
+		$id = $this->add_dispute_payment( 'pi_dispute_open' );
+
+		$this->webhook->handle_dispute(
+			[
+				'id'             => 'dp_open',
+				'status'         => 'needs_response',
+				'payment_intent' => 'pi_dispute_open',
+				'charge'         => 'ch_dispute_open',
+			]
+		);
+
+		$this->assertSame( 'succeeded', Payments::get( $id )['status'] );
+		$this->assertCount( 1, $this->disputed_calls );
+		$this->assertSame( 'needs_response', $this->disputed_calls[0][1] );
+	}
+
+	public function test_handle_dispute_won_keeps_status() {
+		$id = $this->add_dispute_payment( 'pi_dispute_won' );
+
+		$this->webhook->handle_dispute(
+			[
+				'id'             => 'dp_won',
+				'status'         => 'won',
+				'payment_intent' => 'pi_dispute_won',
+			]
+		);
+
+		$this->assertSame( 'succeeded', Payments::get( $id )['status'] );
+		$this->assertCount( 1, $this->disputed_calls );
+		$this->assertSame( 'won', $this->disputed_calls[0][1] );
+	}
+
+	public function test_handle_dispute_lost_finds_subscription_payment_by_charge_id() {
+		$id = $this->add_dispute_payment( 'ch_dispute_renewal' );
+
+		$this->webhook->handle_dispute(
+			[
+				'id'             => 'dp_renewal',
+				'status'         => 'lost',
+				'payment_intent' => null,
+				'charge'         => 'ch_dispute_renewal',
+			]
+		);
+
+		$this->assertSame( 'charged_back', Payments::get( $id )['status'] );
+		$this->assertCount( 1, $this->disputed_calls );
+	}
+
+	public function test_handle_dispute_ignores_unknown_payment_and_malformed_dispute() {
+		$id = $this->add_dispute_payment( 'pi_dispute_untouched' );
+
+		$this->webhook->handle_dispute( [ 'id' => 'dp_x', 'status' => 'lost', 'payment_intent' => 'pi_not_ours' ] );
+		$this->webhook->handle_dispute( [ 'status' => 'lost', 'payment_intent' => 'pi_dispute_untouched' ] );
+		$this->webhook->handle_dispute( [ 'id' => 'dp_y', 'payment_intent' => 'pi_dispute_untouched' ] );
+		$this->webhook->handle_dispute( [ 'id' => [ 'dp_z' ], 'status' => [ 'lost' ], 'payment_intent' => 'pi_dispute_untouched' ] );
+
+		$this->assertSame( 'succeeded', Payments::get( $id )['status'] );
+		$this->assertCount( 0, $this->disputed_calls );
 	}
 }
