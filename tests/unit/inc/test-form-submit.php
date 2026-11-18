@@ -991,6 +991,36 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A From Name resolved from a textarea {form:} tag stays a single header
+	 * line: the submitter's line breaks never start a header of their own once
+	 * wp_mail() splits the header string on "\n".
+	 */
+	public function test_add_from_data_in_header_keeps_textarea_from_name_on_one_line() {
+		$result = Form_Submit::parse_email_notification_template(
+			[ 'srfm-textarea-lbl-TWVzc2FnZQ-message' => htmlspecialchars( "Hello\r\nBcc: bcc@example.test, x\nFrom: Other\x0B" ) ],
+			[
+				'email_to'   => 'admin@example.com',
+				'subject'    => 'S',
+				'email_body' => 'B',
+				'from_name'  => '{form:message}',
+				'from_email' => 'site@example.com',
+			],
+			[ 'form-id' => '1' ]
+		);
+
+		// Split the way wp_mail() does before it reads each header name.
+		$names = [];
+		foreach ( explode( "\n", str_replace( "\r\n", "\n", $result['headers'] ) ) as $line ) {
+			if ( '' !== trim( $line ) ) {
+				$names[] = strtolower( trim( strtok( $line, ':' ) ) );
+			}
+		}
+
+		$this->assertSame( [ 'x-mailer', 'content-type', 'from' ], $names );
+		$this->assertStringContainsString( "From: Hello Bcc: bcc@example.test, x From: Other <site@example.com>\r\n", $result['headers'] );
+	}
+
+	/**
 	 * Callbacks registered by add_page_email_tag().
 	 *
 	 * @var array<string,callable>

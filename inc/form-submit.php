@@ -2132,6 +2132,7 @@ class Form_Submit {
 	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
 	 * @since 2.13.1 Added $form_data.
+	 * @since x.x.x The resolved From name is reduced to a single line.
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {
@@ -2154,7 +2155,13 @@ class Form_Submit {
 			$resolved_from = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) ) ) . ' <' . esc_html( $resolved_from ) . '>' . "\r\n";
+		// The resolved name can carry submitted values (e.g. a textarea {form:} tag), and wp_mail()
+		// splits string headers on "\n". Control characters become spaces and sanitize_text_field()
+		// strips tags and collapses whitespace, so the name is always one header line.
+		$resolved_name = Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) );
+		$resolved_name = sanitize_text_field( (string) preg_replace( '/[\x00-\x1F\x7F]+/', ' ', $resolved_name ) );
+
+		return 'From: ' . esc_html( $resolved_name ) . ' <' . esc_html( $resolved_from ) . '>' . "\r\n";
 	}
 
 	/**
