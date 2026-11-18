@@ -2,7 +2,7 @@
  * Block Icon : Returns dynamic css for Editor.
  */
 
-import generateCSS from '@Controls/generateCSS';
+import generateCSS, { cssBlockId } from '@Controls/generateCSS';
 import generateCSSUnit from '@Controls/generateCSSUnit';
 import { getFallbackNumber } from '@Controls/getAttributeFallback';
 import generateBorderCSS from '@Controls/generateBorderCSS';
@@ -290,7 +290,7 @@ function styling(
 	let stylingCss = '';
 	const base_selector = gbsSelector
 		? gbsSelector
-		: `.uagb-block-${ block_id }`;
+		: `.uagb-block-${ cssBlockId( block_id ) }`;
 
 	stylingCss = generateCSS( selectors, base_selector );
 

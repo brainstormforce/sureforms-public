@@ -1,3 +1,18 @@
+// Mirrors Spec_Gb_Helper::is_safe_css_value(): a value must stay inside its own declaration.
+const UNSAFE_CSS_VALUE = /[{};<\\]|\/\*/;
+
+/**
+ * Reduce a block_id to the identifier characters used in CSS selectors.
+ *
+ * Mirrors Spec_Gb_Helper::sanitize_block_id().
+ *
+ * @since x.x.x
+ * @param {*} blockId Saved block_id attribute.
+ * @return {string} Sanitised block id.
+ */
+export const cssBlockId = ( blockId ) =>
+	String( blockId ?? '' ).replace( /[^A-Za-z0-9_-]/g, '' );
+
 function generateCSS(
 	selectorsObj,
 	id,
@@ -21,7 +36,10 @@ function generateCSS(
 
 			const propertyValue = cssProps[ property ];
 
-			if ( 'font-family' === property && 'Default' === propertyValue ) {
+			if (
+				( 'font-family' === property && 'Default' === propertyValue ) ||
+				UNSAFE_CSS_VALUE.test( String( propertyValue ) )
+			) {
 				continue;
 			}
 
