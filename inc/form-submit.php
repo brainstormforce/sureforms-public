@@ -38,6 +38,13 @@ class Form_Submit {
 	use Get_Instance;
 
 	/**
+	 * Option listing forms that accepted submissions while set to reCAPTCHA without keys.
+	 *
+	 * @since x.x.x
+	 */
+	private const RECAPTCHA_UNPROTECTED_OPTION = 'srfm_recaptcha_unprotected_forms';
+
+	/**
 	 * Namespace.
 	 *
 	 * @var string
@@ -76,6 +83,7 @@ class Form_Submit {
 		 * @param string $reason  Short description of what failed.
 		 */
 		add_action( 'srfm_integration_failed', [ $this, 'record_integration_failure' ], 10, 2 );
+		add_action( 'admin_notices', [ $this, 'recaptcha_unprotected_notice' ] );
 		add_action( 'wp_ajax_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		add_action( 'wp_ajax_nopriv_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		// for quick action bar.
@@ -483,34 +491,25 @@ class Form_Submit {
 		}
 
 		if ( 'g-recaptcha' === $security_type ) {
-			switch ( $selected_captcha_type ) {
-				case 'v2-checkbox':
-					$key = 'srfm_v2_checkbox_secret_key';
-					break;
-				case 'v2-invisible':
-					$key = 'srfm_v2_invisible_secret_key';
-					break;
-				case 'v3-reCAPTCHA':
-					$key = 'srfm_v3_secret_key';
-					break;
-				default:
-					$key = '';
-					break;
-			}
+			[ $google_captcha_site_key, $google_captcha_secret_key ] = self::recaptcha_keys( $selected_captcha_type, $global_setting_options );
 
-			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? trim( Helper::get_string_value( $global_setting_options[ $key ] ) ) : '';
-
-			// A form set to reCAPTCHA must be verified. Without a secret for its stored version
-			// there is nothing to verify against, so the submission stops here, before siteverify,
-			// the entry, payments and emails.
+			// With a site key the form renders the widget, so a submission must be verified,
+			// and without a secret it cannot be: it stops here, before siteverify, the entry,
+			// payments and emails. With neither key there is no widget for a visitor to
+			// complete, so the form is accepted unverified (as it was before keys were
+			// required) and named in an admin notice instead of refusing every visitor.
 			if ( '' === $google_captcha_secret_key ) {
-				$this->recaptcha_error_response(
-					'g-recaptcha',
-					[
-						'success'     => false,
-						'error-codes' => [ 'secret-not-configured' ],
-					]
-				);
+				if ( '' !== $google_captcha_site_key ) {
+					$this->recaptcha_error_response(
+						'g-recaptcha',
+						[
+							'success'     => false,
+							'error-codes' => [ 'secret-not-configured' ],
+						]
+					);
+				}
+
+				self::record_recaptcha_unprotected_form( Helper::get_integer_value( $current_form_id ) );
 			}
 		}
 
@@ -1531,6 +1530,81 @@ class Form_Submit {
 	}
 
 	/**
+	 * Show users who manage options which forms are set to Google reCAPTCHA but have no
+	 * reCAPTCHA keys saved for their version, so their submissions are not spam checked.
+	 *
+	 * Forms are recorded at submission time. Each is checked again here, and one that
+	 * has been fixed, deleted or switched to other spam protection is dropped.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function recaptcha_unprotected_notice() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$recorded = get_option( self::RECAPTCHA_UNPROTECTED_OPTION );
+		if ( ! is_array( $recorded ) || [] === $recorded ) {
+			return;
+		}
+
+		$options = get_option( 'srfm_security_settings_options' );
+		$forms   = array_values(
+			array_filter(
+				array_map( 'absint', $recorded ),
+				static function ( $form_id ) use ( $options ) {
+					if ( SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) || 'g-recaptcha' !== Helper::get_meta_value( $form_id, '_srfm_captcha_security_type' ) ) {
+						return false;
+					}
+					[ $site_key, $secret_key ] = self::recaptcha_keys( Helper::get_string_value( get_post_meta( $form_id, '_srfm_form_recaptcha', true ) ), $options );
+					return '' === $site_key && '' === $secret_key;
+				}
+			)
+		);
+
+		if ( $forms !== $recorded ) {
+			if ( [] === $forms ) {
+				delete_option( self::RECAPTCHA_UNPROTECTED_OPTION );
+			} else {
+				update_option( self::RECAPTCHA_UNPROTECTED_OPTION, $forms, false );
+			}
+		}
+
+		if ( [] === $forms ) {
+			return;
+		}
+
+		$titles = implode(
+			', ',
+			array_map(
+				static function ( $form_id ) {
+					return '"' . get_the_title( $form_id ) . '"';
+				},
+				$forms
+			)
+		);
+		?>
+		<div class="notice notice-warning">
+			<p>
+				<?php
+				printf(
+					/* translators: 1: comma-separated form titles, 2: link to the Spam Protection settings */
+					esc_html__( 'SureForms: these forms are set to Google reCAPTCHA, but no reCAPTCHA keys are saved for the version they use, so their submissions are not checked for spam: %1$s. Add the keys in %2$s, or change the spam protection in each form\'s settings.', 'sureforms' ),
+					esc_html( $titles ),
+					sprintf(
+						'<a href="%s">%s</a>',
+						esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=security-settings' ) ),
+						esc_html__( 'Settings > Spam Protection', 'sureforms' )
+					)
+				);
+				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Send error response for reCAPTCHA validation failure.
 	 *
 	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
@@ -1750,6 +1824,56 @@ class Form_Submit {
 		// defaults $entry_language to current_language(), so this keeps mis-tagging
 		// to the server's own determination instead of the (cacheable) client value.
 		return $language === $provider->current_language();
+	}
+
+	/**
+	 * The trimmed site key and secret saved for a reCAPTCHA version.
+	 *
+	 * An unknown, empty or 'none' version, a settings option that is not an array, and
+	 * a value that is not a string all read as an empty key.
+	 *
+	 * @param string $version Stored _srfm_form_recaptcha value.
+	 * @param mixed  $options Stored srfm_security_settings_options value.
+	 * @since x.x.x
+	 * @return array{0: string, 1: string} Site key, secret.
+	 */
+	private static function recaptcha_keys( $version, $options ) {
+		$prefixes = [
+			'v2-checkbox'  => 'srfm_v2_checkbox_',
+			'v2-invisible' => 'srfm_v2_invisible_',
+			'v3-reCAPTCHA' => 'srfm_v3_',
+		];
+
+		if ( ! isset( $prefixes[ $version ] ) || ! is_array( $options ) ) {
+			return [ '', '' ];
+		}
+
+		$read = static function ( $key ) use ( $options ) {
+			return isset( $options[ $key ] ) && is_string( $options[ $key ] ) ? trim( $options[ $key ] ) : '';
+		};
+
+		return [ $read( $prefixes[ $version ] . 'site_key' ), $read( $prefixes[ $version ] . 'secret_key' ) ];
+	}
+
+	/**
+	 * Remember a form that accepted a submission while set to reCAPTCHA without keys,
+	 * for recaptcha_unprotected_notice(). Writes only the first time a form is seen.
+	 *
+	 * @param int $form_id Form ID.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function record_recaptcha_unprotected_form( $form_id ) {
+		$recorded = get_option( self::RECAPTCHA_UNPROTECTED_OPTION );
+		$recorded = is_array( $recorded ) ? array_map( 'absint', $recorded ) : [];
+
+		// Bounded so a site with many such forms cannot grow the option without limit.
+		if ( $form_id <= 0 || in_array( $form_id, $recorded, true ) || count( $recorded ) >= 20 ) {
+			return;
+		}
+
+		$recorded[] = $form_id;
+		update_option( self::RECAPTCHA_UNPROTECTED_OPTION, $recorded, false );
 	}
 
 	/**

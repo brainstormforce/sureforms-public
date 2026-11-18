@@ -1423,6 +1423,30 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	/**
+	 * The window is fixed from the first request: a later request counts against it
+	 * without pushing its expiry back, as with the other limiters that share
+	 * Helper::hit_rate_counter().
+	 */
+	public function test_is_payment_rate_limited_keeps_a_fixed_window() {
+		$_SERVER['REMOTE_ADDR'] = '203.0.113.8';
+		$key                    = 'srfm_pay_rl_window_' . md5( '203.0.113.8_123' );
+		delete_transient( $key );
+
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'window' ) );
+
+		// Ten seconds of the window left.
+		$expires = time() + 10;
+		update_option( '_transient_timeout_' . $key, $expires );
+
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'window' ) );
+
+		$this->assertSame( 2, (int) get_transient( $key ), 'Both requests are counted in one bucket.' );
+		$this->assertLessThanOrEqual( $expires, (int) get_option( '_transient_timeout_' . $key ), 'A request inside the window must not extend it.' );
+
+		delete_transient( $key );
+	}
+
 	public function test_is_payment_rate_limited_fails_open_without_ip() {
 		unset( $_SERVER['REMOTE_ADDR'] );
 		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );

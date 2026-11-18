@@ -851,9 +851,10 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
-	 * A form set to Google reCAPTCHA with no usable secret for its stored version
-	 * is rejected before siteverify and before any entry, with the honeypot field
-	 * present, absent, or filled.
+	 * A form set to Google reCAPTCHA whose stored version has a site key but no usable
+	 * secret renders the widget yet cannot verify it, so it is rejected before
+	 * siteverify and before any entry, with the honeypot field present, absent, or
+	 * filled.
 	 *
 	 * @dataProvider provide_recaptcha_missing_secret_configs
 	 *
@@ -922,25 +923,142 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 * @return array<string,array<mixed>>
 	 */
 	public function provide_recaptcha_missing_secret_configs() {
-		$all = [
+		return [
+			'v2 checkbox, empty secret'       => [ 'v2-checkbox', [ 'srfm_v2_checkbox_site_key' => 'site-key', 'srfm_v2_checkbox_secret_key' => '' ] ],
+			'v2 checkbox, secret unset'       => [ 'v2-checkbox', [ 'srfm_v2_checkbox_site_key' => 'site-key' ] ],
+			'v2 invisible, empty secret'      => [ 'v2-invisible', [ 'srfm_v2_invisible_site_key' => 'site-key', 'srfm_v2_invisible_secret_key' => '' ] ],
+			'v3, empty secret'                => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v3_secret_key' => '' ] ],
+			'v3, whitespace secret'           => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v3_secret_key' => '   ' ] ],
+			'v3, array secret'                => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v3_secret_key' => [ 'secret-key' ] ] ],
+			'v3, only another version secret' => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v2_checkbox_secret_key' => 'secret-key' ] ],
+		];
+	}
+
+	/**
+	 * A form set to Google reCAPTCHA with neither key saved for its stored version shows
+	 * no widget, so there is nothing a visitor could complete. The submission is not
+	 * refused; it is accepted without a CAPTCHA check, as it was before reCAPTCHA keys
+	 * were required, and the form is recorded for the admin notice.
+	 *
+	 * @dataProvider provide_recaptcha_unconfigured_configs
+	 *
+	 * @param mixed $version Stored _srfm_form_recaptcha value.
+	 * @param mixed $options Stored srfm_security_settings_options value, or null to leave it unset.
+	 */
+	public function test_handle_form_submission_recaptcha_without_keys_is_accepted_and_flagged( $version, $options ) {
+		delete_option( 'srfm_recaptcha_unprotected_forms' );
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'reCAPTCHA Without Keys Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"a1b2c3d4","slug":"name","label":"Name"} /-->',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
+		if ( null === $options ) {
+			delete_option( 'srfm_security_settings_options' );
+		} else {
+			update_option( 'srfm_security_settings_options', $options );
+		}
+
+		$verified   = false;
+		$siteverify = static function () use ( &$verified ) {
+			$verified = true;
+			return new \WP_Error( 'http_request_failed', 'blocked in test' );
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'             => (string) $form_id,
+				'srfm-honeypot-field' => '',
+			]
+		);
+
+		$data = null;
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+			ob_end_clean();
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+		}
+
+		remove_filter( 'pre_http_request', $siteverify );
+
+		$this->assertArrayNotHasKey( 'api_response', is_array( $data ) && is_array( $data['data'] ?? null ) ? $data['data'] : [], 'A form with no reCAPTCHA keys must not get a captcha error.' );
+		$this->assertFalse( $verified, 'There is no secret to verify against.' );
+		$this->assertSame( [ $form_id ], get_option( 'srfm_recaptcha_unprotected_forms' ), 'The form is recorded for the admin notice.' );
+
+		delete_option( 'srfm_recaptcha_unprotected_forms' );
+		delete_option( 'srfm_security_settings_options' );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Stored reCAPTCHA configurations with neither key for the form's version.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_recaptcha_unconfigured_configs() {
+		$secrets_only = [
 			'srfm_v2_checkbox_secret_key'  => 'secret-key',
 			'srfm_v2_invisible_secret_key' => 'secret-key',
 			'srfm_v3_secret_key'           => 'secret-key',
 		];
 
 		return [
-			'v2 checkbox, option unset'        => [ 'v2-checkbox', null ],
-			'v2 checkbox, option not array'    => [ 'v2-checkbox', 'garbage' ],
-			'v2 checkbox, empty secret'        => [ 'v2-checkbox', [ 'srfm_v2_checkbox_secret_key' => '' ] ],
-			'v2 invisible, empty secret'       => [ 'v2-invisible', [ 'srfm_v2_invisible_secret_key' => '' ] ],
-			'v3, empty secret'                 => [ 'v3-reCAPTCHA', [ 'srfm_v3_secret_key' => '' ] ],
-			'v3, whitespace secret'            => [ 'v3-reCAPTCHA', [ 'srfm_v3_secret_key' => '   ' ] ],
-			'v3, array secret'                 => [ 'v3-reCAPTCHA', [ 'srfm_v3_secret_key' => [ 'secret-key' ] ] ],
-			'v3, only another version secret'  => [ 'v3-reCAPTCHA', [ 'srfm_v2_checkbox_secret_key' => 'secret-key' ] ],
-			'version empty, all secrets set'   => [ '', $all ],
-			'version none, all secrets set'    => [ 'none', $all ],
-			'version unknown, all secrets set' => [ 'v4', $all ],
+			'v2 checkbox, option unset'         => [ 'v2-checkbox', null ],
+			'v2 checkbox, option not array'     => [ 'v2-checkbox', 'garbage' ],
+			'v2 checkbox, both keys empty'      => [ 'v2-checkbox', [ 'srfm_v2_checkbox_site_key' => '', 'srfm_v2_checkbox_secret_key' => '' ] ],
+			'v3, whitespace site key, no secret' => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => '  ' ] ],
+			'version empty'                     => [ '', $secrets_only ],
+			'version unknown'                   => [ 'v4', $secrets_only ],
 		];
+	}
+
+	/**
+	 * The admin notice names a recorded form only while it is still set to reCAPTCHA
+	 * without keys, only to users who manage options, and forgets fixed forms.
+	 */
+	public function test_recaptcha_unprotected_notice() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Contact <b>Us</b>',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', 'v2-checkbox' );
+		delete_option( 'srfm_security_settings_options' );
+		update_option( 'srfm_recaptcha_unprotected_forms', [ $form_id ] );
+
+		$render = function () {
+			ob_start();
+			$this->form_submit->recaptcha_unprotected_notice();
+			return (string) ob_get_clean();
+		};
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$this->assertSame( '', $render(), 'Only users who manage options see it.' );
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$html = $render();
+		$this->assertStringContainsString( 'Contact &lt;b&gt;Us&lt;/b&gt;', $html, 'The form is named, escaped.' );
+		$this->assertStringContainsString( 'tab=security-settings', $html );
+
+		// Keys saved for the form's version: the notice goes away and the record is cleared.
+		update_option( 'srfm_security_settings_options', [ 'srfm_v2_checkbox_site_key' => 'site-key', 'srfm_v2_checkbox_secret_key' => 'secret-key' ] );
+		$this->assertSame( '', $render() );
+		$this->assertFalse( get_option( 'srfm_recaptcha_unprotected_forms' ) );
+
+		wp_set_current_user( 0 );
+		delete_option( 'srfm_security_settings_options' );
+		wp_delete_post( $form_id, true );
 	}
 
 	/**
@@ -2517,6 +2635,74 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 */
 	public function get_noop_die_handler() {
 		return static function () {};
+	}
+
+	/**
+	 * The quick action sidebar toggle saves only for a user who manages options with a
+	 * valid nonce, and stores 'enabled' or 'disabled' and nothing else.
+	 */
+	public function test_srfm_global_sidebar_enabled() {
+		$admin  = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		$editor = self::factory()->user->create( [ 'role' => 'editor' ] );
+
+		$call = function ( $user_id, $post ) {
+			wp_set_current_user( $user_id );
+			$previous_post    = $_POST;
+			$previous_request = $_REQUEST;
+			// check_ajax_referer() reads the nonce from $_REQUEST.
+			$_POST    = $post;
+			$_REQUEST = $post;
+			$die      = static function () {
+				return static function () {
+					throw new \WPDieException( 'ajax die' );
+				};
+			};
+			add_filter( 'wp_doing_ajax', '__return_true' );
+			add_filter( 'wp_die_ajax_handler', $die );
+
+			ob_start();
+			try {
+				$this->form_submit->srfm_global_sidebar_enabled();
+			} catch ( \WPDieException $e ) {
+				unset( $e );
+			}
+			$json = (string) ob_get_clean();
+
+			remove_filter( 'wp_die_ajax_handler', $die );
+			remove_filter( 'wp_doing_ajax', '__return_true' );
+			$_POST    = $previous_post;
+			$_REQUEST = $previous_request;
+
+			return json_decode( $json, true );
+		};
+
+		update_option( 'srfm_enable_quick_action_sidebar', 'unchanged' );
+
+		wp_set_current_user( $admin );
+		$nonce = wp_create_nonce( 'srfm_ajax_nonce' );
+
+		$result = $call( $editor, [ 'security' => $nonce, 'enableQuickActionSidebar' => 'enabled' ] );
+		$this->assertFalse( $result['success'] ?? null, 'A user who cannot manage options is refused.' );
+		$this->assertSame( 'unchanged', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => 'bad-nonce', 'enableQuickActionSidebar' => 'enabled' ] );
+		$this->assertFalse( $result['success'] ?? null, 'An invalid nonce is refused.' );
+		$this->assertSame( 'unchanged', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => $nonce ] );
+		$this->assertFalse( $result['success'] ?? null, 'A request without a value is refused.' );
+		$this->assertSame( 'unchanged', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => $nonce, 'enableQuickActionSidebar' => 'enabled' ] );
+		$this->assertTrue( $result['success'] ?? null );
+		$this->assertSame( 'enabled', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => $nonce, 'enableQuickActionSidebar' => '<script>' ] );
+		$this->assertTrue( $result['success'] ?? null );
+		$this->assertSame( 'disabled', get_option( 'srfm_enable_quick_action_sidebar' ), 'Any other value is stored as disabled.' );
+
+		wp_set_current_user( 0 );
+		delete_option( 'srfm_enable_quick_action_sidebar' );
 	}
 
 	/**

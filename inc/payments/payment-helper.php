@@ -75,7 +75,8 @@ class Payment_Helper {
 	 * @param int    $form_id Form id.
 	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
 	 * @since 2.14.0
-	 * @since x.x.x IPv6 is bucketed per /64; client IP is filterable.
+	 * @since x.x.x IPv6 is bucketed per /64; client IP is filterable; counted through
+	 *              Helper::hit_rate_counter() in a window fixed from the first request.
 	 * @return bool True when the request should be rejected.
 	 */
 	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
@@ -122,14 +123,9 @@ class Payment_Helper {
 			return false;
 		}
 
-		$transient_key = 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_' . md5( $ip . '_' . (int) $form_id );
-		$attempts      = Helper::get_integer_value( get_transient( $transient_key ) );
-		if ( $attempts >= $limit ) {
-			return true;
-		}
-
-		set_transient( $transient_key, $attempts + 1, MINUTE_IN_SECONDS );
-		return false;
+		// Counted atomically in a window fixed from the first request, so parallel
+		// requests cannot each read the same count and all pass.
+		return Helper::hit_rate_counter( 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_', $ip . '_' . (int) $form_id ) > $limit;
 	}
 
 	/**
