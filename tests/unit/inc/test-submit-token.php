@@ -303,6 +303,55 @@ class Test_Submit_Token extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A token only authorises a password-protected form for a visitor holding its current password cookie.
+	 *
+	 * Password protection keeps the form published, so this is checked separately
+	 * from is_form_open(). Covers both namespaces, the unlocked case, and a password
+	 * change invalidating a cookie issued for the old one.
+	 */
+	public function test_verify_requires_post_password_cookie_for_protected_form() {
+		$cookie_name = 'wp-postpass_' . COOKIEHASH;
+		$had_cookie  = array_key_exists( $cookie_name, $_COOKIE );
+		$old_cookie  = $had_cookie ? $_COOKIE[ $cookie_name ] : null;
+		unset( $_COOKIE[ $cookie_name ] );
+
+		require_once ABSPATH . WPINC . '/class-phpass.php';
+		$hasher = new PasswordHash( 8, true );
+
+		try {
+			$token      = Submit_Token::generate( $this->form_id );
+			$view_token = Submit_Token::generate( $this->form_id, Submit_Token::NAMESPACE_VIEW );
+			$this->assertTrue( Submit_Token::verify( $token, $this->form_id ), 'Precondition: token verifies while the form has no password.' );
+
+			wp_update_post( [ 'ID' => $this->form_id, 'post_password' => 'first-secret' ] );
+			$this->assertSame( 'publish', get_post_status( $this->form_id ), 'Precondition: the form stays published.' );
+
+			$this->assertFalse( Submit_Token::verify( $token, $this->form_id ), 'A token must not verify without the post-password cookie.' );
+			$this->assertFalse( Submit_Token::verify( $view_token, $this->form_id, Submit_Token::NAMESPACE_VIEW ), 'A view token must not verify without the post-password cookie.' );
+
+			$_COOKIE[ $cookie_name ] = $hasher->HashPassword( 'wrong-secret' );
+			$this->assertFalse( Submit_Token::verify( $token, $this->form_id ), 'A cookie for a different password must not unlock the form.' );
+
+			$_COOKIE[ $cookie_name ] = $hasher->HashPassword( 'first-secret' );
+			$this->assertTrue( Submit_Token::verify( $token, $this->form_id ), 'A visitor who entered the password can still submit.' );
+			$this->assertTrue( Submit_Token::verify( $view_token, $this->form_id, Submit_Token::NAMESPACE_VIEW ), 'A visitor who entered the password can still record a view.' );
+
+			wp_update_post( [ 'ID' => $this->form_id, 'post_password' => 'second-secret' ] );
+			$this->assertFalse( Submit_Token::verify( $token, $this->form_id ), 'Changing the password must invalidate the old cookie.' );
+
+			wp_update_post( [ 'ID' => $this->form_id, 'post_password' => '' ] );
+			unset( $_COOKIE[ $cookie_name ] );
+			$this->assertTrue( Submit_Token::verify( $token, $this->form_id ), 'Removing the password restores ordinary guest submissions.' );
+		} finally {
+			if ( $had_cookie ) {
+				$_COOKIE[ $cookie_name ] = $old_cookie;
+			} else {
+				unset( $_COOKIE[ $cookie_name ] );
+			}
+		}
+	}
+
+	/**
 	 * signature_matches() checks only the token's signature, whatever the form's status.
 	 */
 	public function test_signature_matches() {
