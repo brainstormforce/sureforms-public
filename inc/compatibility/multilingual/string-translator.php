@@ -359,10 +359,16 @@ class String_Translator {
 	/**
 	 * Translate a per-confirmation message.
 	 *
+	 * A translation that differs from `$value` passes through wp_kses_post(), the
+	 * same allowlist the `_srfm_form_confirmation` meta applies on save, so the
+	 * rendered confirmation holds that allowlist whichever language it is in.
+	 * An untranslated value is returned unchanged.
+	 *
 	 * @param int    $form_id Form post ID.
 	 * @param int    $index   Zero-based index of the confirmation within the form's confirmation set.
 	 * @param string $value   Original value.
 	 * @since 2.11.0
+	 * @since x.x.x Translations are filtered through wp_kses_post().
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_confirmation_message( int $form_id, int $index, string $value ): string {
@@ -370,7 +376,10 @@ class String_Translator {
 			return $value;
 		}
 
-		return $this->dispatch_package( $form_id, self::confirmation_name( $index ), $value );
+		$translated = $this->dispatch_package( $form_id, self::confirmation_name( $index ), $value );
+
+		// Identical means no translation applied; the caller's value keeps any markup added upstream (quiz/survey output).
+		return $translated === $value ? $value : wp_kses_post( $translated );
 	}
 
 	/**

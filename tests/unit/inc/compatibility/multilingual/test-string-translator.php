@@ -297,6 +297,38 @@ class Test_String_Translator extends TestCase {
 		$this->assertSame( 'Thanks', $result );
 	}
 
+	/**
+	 * A translated confirmation message is held to the same wp_kses_post allowlist
+	 * as the stored message, on both the package and the flat-string path.
+	 */
+	public function test_translate_confirmation_message_applies_kses_to_translation() {
+		$this->stub->translate_returns = '<p>Merci</p><iframe srcdoc="x"></iframe><a href="javascript:void(0)">l</a><script>x</script>';
+
+		$flat = String_Translator::get_instance()->translate_confirmation_message( 42, 0, '<p>Thanks</p>' );
+
+		$this->stub->supports_packages = true;
+		$package                       = String_Translator::get_instance()->translate_confirmation_message( 42, 0, '<p>Thanks</p>' );
+
+		// What kses removes, not its exact output, which differs between WordPress versions.
+		foreach ( [ $flat, $package ] as $result ) {
+			$this->assertStringStartsWith( '<p>Merci</p>', $result );
+			$this->assertStringContainsString( '>l</a>', $result );
+			foreach ( [ '<iframe', 'srcdoc', 'javascript:', '<script' ] as $removed ) {
+				$this->assertStringNotContainsString( $removed, $result );
+			}
+		}
+	}
+
+	/**
+	 * With no translation the caller's value comes back byte-for-byte, so markup
+	 * appended upstream (e.g. by srfm_form_confirmation_data) is not re-filtered.
+	 */
+	public function test_translate_confirmation_message_untranslated_value_is_unchanged() {
+		$value = '<p>Thanks</p><svg viewBox="0 0 1 1"><circle r="1"></circle></svg>';
+
+		$this->assertSame( $value, String_Translator::get_instance()->translate_confirmation_message( 42, 0, $value ) );
+	}
+
 	public function test_translate_notification_subject_uses_correct_name() {
 		String_Translator::get_instance()->translate_notification_subject( 42, 0, 'Subject line' );
 
