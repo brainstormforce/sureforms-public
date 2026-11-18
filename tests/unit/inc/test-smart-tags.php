@@ -740,4 +740,54 @@ class Test_Smart_Tags extends TestCase {
 
 		$this->assertSame( 'see [1]', $this->smart_tags->process_smart_tags( '{get_input:msg}', null, [] ) );
 	}
+
+	/**
+	 * A value resolved while a form renders is inert to every later smart tag pass
+	 * (nested blocks, then the srfm/form block's own render_block pass), and still
+	 * reads as the original text once the browser decodes it.
+	 */
+	public function test_render_form_resolved_value_is_not_resolved_again() {
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->make_current_post( 'page' );
+		$GLOBALS['post']->post_title = 'Hi {admin_email} [x]';
+		$this->set_rendering_form_id( $form_id );
+
+		$html  = '<p>{embed_post_title}</p>';
+		$first = $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) );
+
+		$this->set_rendering_form_id( 0 );
+		$form_block = [
+			'blockName' => 'srfm/form',
+			'attrs'     => [ 'id' => $form_id ],
+		];
+		$second     = $this->smart_tags->render_form( $first, $form_block );
+
+		$this->assertSame( $first, $second );
+		$this->assertStringNotContainsString( '{', $second );
+		$this->assertStringNotContainsString( get_option( 'admin_email' ), $second );
+		$this->assertSame( '<p>Hi {admin_email} [x]</p>', html_entity_decode( $second, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+	}
+
+	/**
+	 * End to end: a form embedded on a page whose field default is {embed_post_title}.
+	 * The page title reaches the field as text, never as another smart tag.
+	 */
+	public function test_embedded_form_does_not_resolve_a_tag_from_the_post_title() {
+		$form_id          = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Prefill',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"ta654321","slug":"message","label":"Message","defaultValue":"{embed_post_title}"} /-->',
+			]
+		);
+		$this->post_ids[] = $form_id;
+		$this->make_current_post( 'page' );
+		$GLOBALS['post']->post_title = 'T {admin_email}';
+
+		$output = apply_filters( 'the_content', '<!-- wp:srfm/form {"id":' . $form_id . '} /-->' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core hook.
+
+		$this->assertStringContainsString( 'T &#123;admin_email&#125;', $output, 'the title still renders as text' );
+		$this->assertStringNotContainsString( get_option( 'admin_email' ), $output );
+	}
 }
