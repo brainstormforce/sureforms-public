@@ -427,7 +427,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 ## Changelog ##
 ### 2.14.1 - 19th November 2026 ###
-* Fix: Phone fields keep their number and country when the field reloads or a saved form is resumed.
 * Fix: This update addressed a security bug. Props to Dthangws from Patchstack for reporting it responsibly to our team.
 * Fix: WPML sites now send translated notification emails and redirect to the translated thank-you page.
 ### 2.14.0 - 12th November 2026 ###
