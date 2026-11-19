@@ -21,7 +21,7 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 		 *
 		 * Keys are lowercase because wp_kses() compares attribute names in lowercase.
 		 *
-		 * @since x.x.x
+		 * @since 2.14.1
 		 * @var array<string, array<string, bool>>
 		 */
 		private const ALLOWED_SVG_HTML = [
