@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: forms, ai forms, contact form, form builder, payment form
 Requires at least: 6.4
-Tested up to: 7.1.4
+Tested up to: 7.1.5
 Requires PHP: 7.4
-Stable tag: 2.14.0
+Stable tag: 2.14.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -147,7 +147,7 @@ SureForms includes built-in translations for:
 -   Polish
 -   Portuguese
 
-SureForms is also translation-ready and works with multilingual tools such as WPML, Polylang, and TranslatePress.
+SureForms is also translation-ready and works with multilingual tools such as WPML, Polylang, and TranslatePress. See SureForms in the [WPML compatibility directory](https://wpml.org/plugin/sureforms/).
 
 #### Developer-Friendly Customization
 
@@ -294,7 +294,7 @@ SureForms may connect to third-party services only when the related feature is e
 
 -   **ipinfo** may show visitor IP information when IP logging is enabled. [Terms](https://ipinfo.io/terms-of-service) and [Privacy Policy](https://ipinfo.io/privacy-policy)
 -   **Google Fonts** may load when a Google font is selected. [Terms](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
--   **ipapi** may detect a visitor's region for the phone field. [Terms](https://ipapi.co/terms/) and [Privacy Policy](https://ipapi.co/privacy/)
+-   **SureForms API** (api.sureforms.com) may detect a visitor's country from their IP address for the phone field. [Terms](https://sureforms.com/terms-and-conditions/) and [Privacy Policy](https://sureforms.com/privacy-policy/)
 -   **Google reCAPTCHA** may be used for spam prevention.
 -   **Stripe** is used to process Stripe payment forms. [Terms](https://stripe.com/legal/ssa) and [Privacy Policy](https://stripe.com/privacy)
 
@@ -426,6 +426,9 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= 2.14.1 - 19th November 2026 =
+* Fix: This update addressed a security bug. Props to Dthangws from Patchstack for reporting it responsibly to our team.
+* Fix: WPML sites now send translated notification emails and redirect to the translated thank-you page.
 = 2.14.0 - 12th November 2026 =
 * New: Added Settings → Features, where you can turn Entries, AI form builder, OttoKit automations and Payments on or off.
 * New: Added the `srfm_resolve_guest_payment_user_by_email` developer filter to stop linking a guest payment to a user account by email address.
@@ -442,10 +445,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Fix: Apple Pay and Google Pay now show the form's real amount instead of 120.00, and stay hidden when turned off in your Stripe dashboard.
 * Fix: Custom smart tags now resolve in the To, Reply-To, Cc, Bcc and From fields of email notifications.
 * Fix: This update addressed a security bug. Props to fccsec.dev from Patchstack for reporting it responsibly to our team.
-= 2.13.0 - 26th October 2026 =
-* New: Start from 43 ready-made form templates covering contact, booking, payments, quizzes, calculators, agreements, sign-ups and more.
-* Fix: Default field labels now appear in the WPML Translation Editor and show translated on the form.
-* Fix: This update addressed security bugs. Props to Luke Schneider and Filip Kowalski from Patchstack for reporting them responsibly to our team.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 == Upgrade Notice ==

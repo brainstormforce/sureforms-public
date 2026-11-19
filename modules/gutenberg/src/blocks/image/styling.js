@@ -3,7 +3,7 @@
  */
 
 import generateBorderCSS from '@Controls/generateBorderCSS';
-import generateCSS from '@Controls/generateCSS';
+import generateCSS, { cssBlockId } from '@Controls/generateCSS';
 import generateCSSUnit from '@Controls/generateCSSUnit';
 import { getFallbackNumber } from '@Controls/getAttributeFallback';
 import generateShadowCSS from '@Controls/generateShadowCSS';
@@ -513,7 +513,7 @@ export default function styling(
 		}
 		if ( typeof imagePath !== 'undefined' && imagePath ) {
 			selectors[
-				`.wp-block-uagb-image .wp-block-uagb-image__figure img, .uagb-block-${ block_id } .wp-block-uagb-image--layout-overlay__color-wrapper`
+				`.wp-block-uagb-image .wp-block-uagb-image__figure img, .uagb-block-${ cssBlockId( block_id ) } .wp-block-uagb-image--layout-overlay__color-wrapper`
 			] = {
 				'mask-image': `url(${ imagePath })`,
 				'-webkit-mask-image': `url(${ imagePath })`,
@@ -813,7 +813,7 @@ export default function styling(
 
 	const base_selector = gbsSelector
 		? `.editor-styles-wrapper ${ gbsSelector } `
-		: `.editor-styles-wrapper .uagb-block-${ block_id }`;
+		: `.editor-styles-wrapper .uagb-block-${ cssBlockId( block_id ) }`;
 
 	let styling_css = generateCSS( selectors, base_selector );
 

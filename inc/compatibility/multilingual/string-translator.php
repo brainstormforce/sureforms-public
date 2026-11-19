@@ -425,6 +425,33 @@ class String_Translator {
 	}
 
 	/**
+	 * Resolve a stored page URL to the same page in the current language.
+	 *
+	 * Uses WPML's `wpml_permalink` filter with object resolution, which returns the
+	 * translated post's permalink, or the URL unchanged when the page has no
+	 * translation or is not a post on this site. The URL is returned as given when
+	 * no multilingual plugin is active or the filter returns nothing usable.
+	 *
+	 * @param string $url Stored page URL.
+	 * @since 2.14.1
+	 * @return string URL of the page in the current language.
+	 */
+	public function translate_page_url( string $url ): string {
+		if ( '' === $url ) {
+			return $url;
+		}
+
+		$provider = Multilingual_Manager::get_instance()->provider();
+		if ( ! $provider->is_active() ) {
+			return $url;
+		}
+
+		$translated = apply_filters( 'wpml_permalink', $url, $provider->current_language(), true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML's own filter; the name must match WPML exactly to integrate.
+
+		return is_string( $translated ) && '' !== $translated ? $translated : $url;
+	}
+
+	/**
 	 * Translate a single built-in validation message keyed by its srfm_* identifier.
 	 *
 	 * Falls back to the supplied `$value` (which is typically already the
