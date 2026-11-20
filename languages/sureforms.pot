@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 2.14.0\n"
+"Project-Id-Version: SureForms 2.14.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-12T11:14:16+00:00\n"
+"POT-Creation-Date: 2026-11-19T09:39:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -1307,7 +1307,7 @@ msgid "OttoKit is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:279
-#: inc/form-submit.php:1369
+#: inc/form-submit.php:1412
 msgid "Invalid form ID."
 msgstr ""
 
@@ -1442,10 +1442,10 @@ msgid "You are not allowed to convert HTML forms."
 msgstr ""
 
 #: inc/admin/html-form-detector.php:268
-#: inc/form-submit.php:262
-#: inc/form-submit.php:573
-#: inc/form-submit.php:623
-#: inc/form-submit.php:1365
+#: inc/form-submit.php:263
+#: inc/form-submit.php:574
+#: inc/form-submit.php:624
+#: inc/form-submit.php:1408
 #: inc/migrator/bootstrap.php:357
 #: inc/payments/front-end.php:79
 #: inc/payments/front-end.php:272
@@ -2404,11 +2404,11 @@ msgstr ""
 msgid "This form is not accepting submissions right now."
 msgstr ""
 
-#: inc/form-submit.php:167
+#: inc/form-submit.php:168
 msgid "Not found."
 msgstr ""
 
-#: inc/form-submit.php:178
+#: inc/form-submit.php:179
 #: inc/form-views.php:205
 #: inc/payments/admin/admin-handler.php:99
 #: inc/payments/admin/admin-handler.php:183
@@ -2421,125 +2421,125 @@ msgstr ""
 msgid "Security verification failed."
 msgstr ""
 
-#: inc/form-submit.php:255
+#: inc/form-submit.php:256
 msgid "This form is currently unavailable."
 msgstr ""
 
-#: inc/form-submit.php:278
+#: inc/form-submit.php:279
 msgid "Sorry, you do not have permission to access this resource."
 msgstr ""
 
-#: inc/form-submit.php:296
+#: inc/form-submit.php:297
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr ""
 
-#: inc/form-submit.php:303
+#: inc/form-submit.php:304
 msgid "Cloudflare Turnstile response is missing."
 msgstr ""
 
-#: inc/form-submit.php:347
+#: inc/form-submit.php:348
 msgid "hCaptcha secret key is invalid."
 msgstr ""
 
-#: inc/form-submit.php:354
+#: inc/form-submit.php:355
 msgid "hCaptcha response is missing."
 msgstr ""
 
-#: inc/form-submit.php:396
-#: inc/form-submit.php:669
+#: inc/form-submit.php:397
+#: inc/form-submit.php:670
 msgid "Form data is not found."
 msgstr ""
 
-#: inc/form-submit.php:402
+#: inc/form-submit.php:403
 msgid "Form ID is missing."
 msgstr ""
 
-#: inc/form-submit.php:438
+#: inc/form-submit.php:439
 msgid "You do not have permission to submit this form."
 msgstr ""
 
-#: inc/form-submit.php:448
+#: inc/form-submit.php:449
 msgid "This form is no longer available."
 msgstr ""
 
-#: inc/form-submit.php:466
+#: inc/form-submit.php:467
 msgid "Please check the form for errors."
 msgstr ""
 
-#: inc/form-submit.php:598
-#: inc/form-submit.php:644
+#: inc/form-submit.php:599
+#: inc/form-submit.php:645
 msgid "Your submission was flagged as spam. Please try again."
 msgstr ""
 
-#: inc/form-submit.php:662
+#: inc/form-submit.php:663
 msgid "Form data was not found."
 msgstr ""
 
-#: inc/form-submit.php:946
+#: inc/form-submit.php:972
 msgid "Unable to submit form. Please try again."
 msgstr ""
 
-#: inc/form-submit.php:1136
+#: inc/form-submit.php:1162
 msgid "Email notification passed to the sending server"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:1226
+#: inc/form-submit.php:1269
 msgid "Email notification recipient: %s"
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:1240
+#: inc/form-submit.php:1283
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
-#: inc/form-submit.php:1298
+#: inc/form-submit.php:1341
 msgid "No emails were sent."
 msgstr ""
 
-#: inc/form-submit.php:1374
+#: inc/form-submit.php:1417
 msgid "Invalid form."
 msgstr ""
 
-#: inc/form-submit.php:1379
+#: inc/form-submit.php:1422
 msgid "Too many requests. Please try again shortly."
 msgstr ""
 
-#: inc/form-submit.php:1504
+#: inc/form-submit.php:1547
 msgid "Captcha validation failed. No error code provided."
 msgstr ""
 
-#: inc/form-submit.php:1505
+#: inc/form-submit.php:1548
 msgid "Captcha validation failed."
 msgstr ""
 
-#: inc/form-submit.php:1562
+#: inc/form-submit.php:1605
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:1566
+#: inc/form-submit.php:1609
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
 msgstr ""
 
-#: inc/form-submit.php:1570
+#: inc/form-submit.php:1613
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
-#: inc/form-submit.php:1574
+#: inc/form-submit.php:1617
 msgid "Unknown Captcha"
 msgstr ""
 
-#: inc/form-submit.php:1575
+#: inc/form-submit.php:1618
 msgid "Invalid captcha type."
 msgstr ""
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1588
+#: inc/form-submit.php:1631
 msgid "%s verification failed. Please contact your site administrator."
 msgstr ""
 
@@ -7820,7 +7820,7 @@ msgstr ""
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
-#: inc/generate-form-markup.php:1582
+#: inc/generate-form-markup.php:1583
 #: inc/page-builders/elementor/form-widget.php:332
 #: inc/post-types.php:95
 #: inc/post-types.php:271
@@ -7828,13 +7828,13 @@ msgstr ""
 msgid "Edit Form"
 msgstr ""
 
-#: inc/generate-form-markup.php:1583
+#: inc/generate-form-markup.php:1584
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
 msgid "(opens in a new tab)"
 msgstr ""
 
-#: inc/generate-form-markup.php:1615
+#: inc/generate-form-markup.php:1616
 msgid "Submissions are disabled until this form is published."
 msgstr ""
 

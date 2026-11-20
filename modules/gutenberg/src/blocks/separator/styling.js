@@ -2,7 +2,7 @@
  * Returns Dynamic Generated CSS
  */
 
-import generateCSS from '@Controls/generateCSS';
+import generateCSS, { cssBlockId } from '@Controls/generateCSS';
 import generateCSSUnit from '@Controls/generateCSSUnit';
 import { getFallbackNumber } from '@Controls/getAttributeFallback';
 const alignmentCSS = ( align ) => {
@@ -714,7 +714,7 @@ function styling( attributes, clientId, name, deviceType ) {
 		},
 	};
 
-	const base_selector = `.editor-styles-wrapper .uagb-block-${ block_id }`;
+	const base_selector = `.editor-styles-wrapper .uagb-block-${ cssBlockId( block_id ) }`;
 
 	let styling_css = generateCSS( selectors, base_selector );
 

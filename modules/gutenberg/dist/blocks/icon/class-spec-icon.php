@@ -17,6 +17,27 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 	class Spec_Icon {
 
 		/**
+		 * Markup the icon's <svg> may contain when it is printed.
+		 *
+		 * Keys are lowercase because wp_kses() compares attribute names in lowercase.
+		 *
+		 * @since 2.14.1
+		 * @var array<string, array<string, bool>>
+		 */
+		private const ALLOWED_SVG_HTML = [
+			'svg'  => [
+				'xmlns'       => true,
+				'viewbox'     => true,
+				'role'        => true,
+				'aria-hidden' => true,
+				'aria-label'  => true,
+			],
+			'path' => [
+				'd' => true,
+			],
+		];
+
+		/**
 		 * Member Variable
 		 *
 		 * @var instance
@@ -455,7 +476,7 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 			$block_id = '';
 
 			if ( isset( $attributes['block_id'] ) ) {
-				$block_id = $attributes['block_id'];
+				$block_id = Spec_Gb_Helper::sanitize_block_id( $attributes['block_id'] );
 			}
 
 			$icon         = isset( $attributes['icon'] ) && $attributes['icon'] ? $attributes['icon'] : 'circle-check';
@@ -472,11 +493,19 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 				$aria_hidden_attr = ( 'presentation' === $attributes['iconAccessabilityMode'] ) ? 'true' : 'false';
 				$aria_label_attr  = ( 'presentation' !== $attributes['iconAccessabilityMode'] ) ? ' aria-label="' . esc_attr( $attributes['iconAccessabilityDesc'] ) . '"' : '';
 
-				$icon_html = preg_replace(
+				$extra_attrs = $role_attr . ' aria-hidden="' . $aria_hidden_attr . '"' . $aria_label_attr;
+
+				// A callback's return value is inserted literally, so `$1` or `\1` in the description stays text.
+				$icon_html = preg_replace_callback(
 					'/<svg(.*?)>/',
-					'<svg$1' . $role_attr . ' aria-hidden="' . $aria_hidden_attr . '"' . $aria_label_attr . '>',
-					$icon_html
+					static function ( $matches ) use ( $extra_attrs ) {
+						return '<svg' . $matches[1] . $extra_attrs . '>';
+					},
+					$icon_html,
+					1
 				);
+
+				$icon_html = wp_kses( (string) $icon_html, self::ALLOWED_SVG_HTML );
 			}
 
 			$target_val = $target ? '_blank' : '_self';

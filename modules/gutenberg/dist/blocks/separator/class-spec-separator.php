@@ -400,7 +400,7 @@ if ( ! class_exists( 'Spec_Separator' ) ) {
 			$block_id = '';
 
 			if ( isset( $attributes['block_id'] ) ) {
-				$block_id = $attributes['block_id'];
+				$block_id = Spec_Gb_Helper::sanitize_block_id( $attributes['block_id'] );
 			}
 
 			$custom_svg = [

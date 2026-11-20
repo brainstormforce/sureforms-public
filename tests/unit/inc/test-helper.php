@@ -2690,7 +2690,7 @@ class Test_Helper extends TestCase {
 
     /**
      * Test the srfm_cdn_country filter can short-circuit detection before the
-     * ipapi.co fallback.
+     * geo API fallback.
      */
     public function test_get_geo_country_uses_cdn_country_filter() {
         $this->clear_geo_server_vars();
@@ -2716,32 +2716,40 @@ class Test_Helper extends TestCase {
         delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.77' ) );
 
         $requests = 0;
-        $stub     = static function () use ( &$requests ) {
+        $url      = '';
+        $stub     = static function ( $pre, $args, $request_url ) use ( &$requests, &$url ) {
             $requests++;
+            $url = $request_url;
             return [
                 'headers'  => [],
-                'body'     => (string) wp_json_encode( [ 'country_code' => 'IN' ] ),
+                'body'     => (string) wp_json_encode(
+                    [
+                        'ip'      => '203.0.113.77',
+                        'country' => 'IN',
+                    ]
+                ),
                 'response' => [
                     'code'    => 200,
                     'message' => 'OK',
                 ],
             ];
         };
-        add_filter( 'pre_http_request', $stub );
+        add_filter( 'pre_http_request', $stub, 10, 3 );
 
         $this->assertSame( 'in', Helper::get_geo_country() );
         $this->assertSame( 'in', Helper::get_geo_country(), 'Second lookup must be served from the transient cache.' );
         $this->assertSame( 1, $requests, 'Only the first lookup may hit the API.' );
+        $this->assertSame( 'https://api.sureforms.com/geo/?ip=203.0.113.77', $url, 'Lookup must go to the SureForms geo API with the visitor IP.' );
 
-        remove_filter( 'pre_http_request', $stub );
+        remove_filter( 'pre_http_request', $stub, 10 );
         delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.77' ) );
         $this->clear_geo_server_vars();
     }
 
     /**
-     * Test get_geo_country returns the fallback when ipapi.co answers HTTP 200
-     * with an error body (free-tier rate limiting), and caches the failure so
-     * the next call does not retry immediately.
+     * Test get_geo_country returns the fallback when the geo API answers with a
+     * JSON error body, and caches the failure so the next call does not retry
+     * immediately.
      */
     public function test_get_geo_country_falls_back_on_api_error_body() {
         $this->clear_geo_server_vars();
@@ -2755,13 +2763,13 @@ class Test_Helper extends TestCase {
                 'headers'  => [],
                 'body'     => (string) wp_json_encode(
                     [
-                        'error'  => true,
-                        'reason' => 'RateLimited',
+                        'error'   => 'invalid_ip',
+                        'message' => 'Pass a public IPv4 or IPv6 address as ?ip=.',
                     ]
                 ),
                 'response' => [
-                    'code'    => 200,
-                    'message' => 'OK',
+                    'code'    => 400,
+                    'message' => 'Bad Request',
                 ],
             ];
         };

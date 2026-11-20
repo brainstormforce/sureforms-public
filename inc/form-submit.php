@@ -9,6 +9,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Email_Delivery\Lost_Submissions;
@@ -718,12 +719,36 @@ class Form_Submit {
 		$name   = sanitize_text_field( get_the_title( intval( $id ) ) );
 		$emails = [];
 
+		// Resolve the language the visitor saw at form-render time (captured in a
+		// hidden srfm-form-language input) so the confirmation message and email
+		// notifications below can be rendered in it — WPML's language detection on
+		// the REST submit endpoint frequently falls back to the default. This value
+		// is used to switch_language() at submit time and is stored on the entry
+		// (extras.language) for later sends. The hidden input is client-supplied, so:
+		// 1. Validate shape with a BCP-47 regex.
+		// 2. Cross-check against the active multilingual provider's known
+		// languages (active + default) so a crafted request can't switch rendering
+		// to a code the site doesn't support.
+		// 3. Fall back to the provider's current_language() on either failure.
+		$entry_language     = Multilingual_Manager::get_instance()->provider()->current_language();
+		$submitted_language = isset( $form_data['srfm-form-language'] ) ? sanitize_text_field( Helper::get_string_value( $form_data['srfm-form-language'] ) ) : '';
+		if ( '' !== $submitted_language && preg_match( '/^[a-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/', $submitted_language ) === 1 && $this->is_known_language( $submitted_language ) ) {
+			$entry_language = $submitted_language;
+		}
+
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		// The site-wide Entries switch wins over the form's own setting.
 		if ( ( $gdpr && $do_not_store_entries ) || ! Features::is_enabled( 'entries' ) ) {
 			/** This action is documented below, where the stored-entry path fires it. */
 			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), $form_data );
+
+			// Same language switch as the stored-entry path below, so the notification,
+			// confirmation and redirect follow the visitor's language here too.
+			$provider = Multilingual_Manager::get_instance()->provider();
+			if ( $provider->is_active() && '' !== $entry_language ) {
+				$provider->switch_language( $entry_language );
+			}
 
 			// Send email before early return. No entry is created in this path so {entry_id} will be empty — that is expected.
 			// The email is the only copy of this submission, so a failure is recorded as such.
@@ -732,12 +757,19 @@ class Form_Submit {
 				$emails = $send_email['emails'];
 			}
 
+			$confirmation_message = Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data );
+			$redirect_url         = Generate_Form_Markup::get_redirect_url( $form_data, $submission_data );
+
+			if ( $provider->is_active() && '' !== $entry_language ) {
+				$provider->restore_language();
+			}
+
 			$form_submit_response = [
 				'success'   => true,
 				'form_id'   => $id ? intval( $id ) : '',
 				'to_emails' => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'message'   => $confirmation_message,
 				'data'      => $modified_message,
 			];
 
@@ -753,12 +785,12 @@ class Form_Submit {
 
 			$response = [
 				'success'      => true,
-				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'message'      => $confirmation_message,
 				'data'         => [
 					'name'         => $name,
 					'after_submit' => false,
 				],
-				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
+				'redirect_url' => $redirect_url,
 			];
 
 			/** This filter is documented below, where the stored-entry path applies it. */
@@ -797,22 +829,6 @@ class Form_Submit {
 			'device_name'    => $device_name,
 			'submission_url' => $submission_url,
 		];
-		// Resolve the language the visitor saw at form-render time (captured in a
-		// hidden srfm-form-language input) so the confirmation message and email
-		// notifications below can be rendered in it — WPML's language detection on
-		// the REST submit endpoint frequently falls back to the default. This value
-		// is used only to switch_language() at submit time; it is not persisted. The
-		// hidden input is client-supplied, so:
-		// 1. Validate shape with a BCP-47 regex.
-		// 2. Cross-check against the active multilingual provider's known
-		// languages (active + default) so a crafted request can't switch rendering
-		// to a code the site doesn't support.
-		// 3. Fall back to the provider's current_language() on either failure.
-		$entry_language     = Multilingual_Manager::get_instance()->provider()->current_language();
-		$submitted_language = isset( $form_data['srfm-form-language'] ) ? sanitize_text_field( Helper::get_string_value( $form_data['srfm-form-language'] ) ) : '';
-		if ( '' !== $submitted_language && preg_match( '/^[a-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/', $submitted_language ) === 1 && $this->is_known_language( $submitted_language ) ) {
-			$entry_language = $submitted_language;
-		}
 
 		$entries_data = [
 			'form_id'         => $id,
@@ -837,6 +853,16 @@ class Form_Submit {
 				'submission_data' => $submission_data,
 			]
 		);
+
+		// Keep the validated submission language, so notifications sent later from
+		// this entry (e.g. a resend) use the language the visitor submitted in.
+		// Merged after the filter, so a filter that replaces extras keeps it.
+		if ( '' !== $entry_language && Multilingual_Manager::get_instance()->provider()->is_active() ) {
+			$entries_data['extras'] = array_merge(
+				Helper::get_array_value( $entries_data['extras'] ?? [] ),
+				[ 'language' => $entry_language ]
+			);
+		}
 
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
@@ -1135,9 +1161,26 @@ class Form_Submit {
 			$entries_db_instance = Entries::get_instance();
 			$log_key             = $entries_db_instance->add_log( __( 'Email notification passed to the sending server', 'sureforms' ) );
 
+			$translator = String_Translator::get_instance();
+
 			foreach ( $email_notification as $notification ) {
-				foreach ( $notification as $item ) {
+				foreach ( $notification as $index => $item ) {
 					if ( true === $item['status'] ) {
+
+						// Translations are registered per notification index (see String_Collector),
+						// so each notification reads its own. Smart tags are resolved afterwards, so
+						// translated text keeps working tags.
+						$form_id = intval( $id );
+						$index   = Helper::get_integer_value( $index );
+						if ( isset( $item['subject'] ) && is_string( $item['subject'] ) ) {
+							$item['subject'] = $translator->translate_notification_subject( $form_id, $index, $item['subject'] );
+						}
+						if ( isset( $item['email_body'] ) && is_string( $item['email_body'] ) ) {
+							$item['email_body'] = $translator->translate_notification_body( $form_id, $index, $item['email_body'] );
+						}
+						if ( isset( $item['from_name'] ) && is_string( $item['from_name'] ) ) {
+							$item['from_name'] = $translator->translate_notification_from_name( $form_id, $index, $item['from_name'] );
+						}
 
 						$parsed = self::parse_email_notification_template( $submission_data, $item, $form_data );
 
