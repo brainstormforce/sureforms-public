@@ -771,9 +771,9 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			$vertical_unit   = isset( $shadow_properties['vertical_unit'] ) ? $shadow_properties['vertical_unit'] : 'px';
 			$blur_unit       = isset( $shadow_properties['blur_unit'] ) ? $shadow_properties['blur_unit'] : 'px';
 			$spread_unit     = isset( $shadow_properties['spread_unit'] ) ? $shadow_properties['spread_unit'] : 'px';
-			$color           = isset( $shadow_properties['color'] ) ? $shadow_properties['color'] : '';
+			$color           = isset( $shadow_properties['color'] ) && is_scalar( $shadow_properties['color'] ) ? $shadow_properties['color'] : '';
 			$position        = isset( $shadow_properties['position'] ) ? $shadow_properties['position'] : 'outset';
-			$alt_color       = isset( $shadow_properties['alt_color'] ) ? $shadow_properties['alt_color'] : '';
+			$alt_color       = isset( $shadow_properties['alt_color'] ) && is_scalar( $shadow_properties['alt_color'] ) ? $shadow_properties['alt_color'] : '';
 
 			// Although optional, color is required for Sarafi on PC. Return early if color isn't set.
 			if ( ! $color && ! $alt_color ) {
@@ -834,11 +834,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 							continue;
 						}
 
-						if ( ! empty( $val ) && is_array( $val ) ) {
-							foreach ( $val as $key => $css_value ) {
-								$css .= $key . ': ' . $css_value . ';';
-							}
-						} elseif ( ! empty( $val ) || 0 === $val ) {
+						if ( ( ! empty( $val ) || 0 === $val ) && self::is_safe_css_value( $val ) ) {
 							if ( 'font-family' === $j ) {
 								$css .= $j . ': "' . $val . '";';
 							} else {
@@ -856,6 +852,38 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			}
 
 			return $styling_css;
+		}
+
+		/**
+		 * Whether a value can be emitted as a single CSS declaration value.
+		 *
+		 * A value must stay inside its own declaration: it may not end the
+		 * declaration or rule, open a block, start a comment, use a CSS escape,
+		 * or close the surrounding <style> element. Unsafe values are dropped.
+		 *
+		 * Non-scalar values are dropped, so an attribute saved as an object
+		 * cannot add its own property names.
+		 *
+		 * @param mixed $value Declaration value.
+		 * @since 2.14.1
+		 * @return bool
+		 */
+		private static function is_safe_css_value( $value ) {
+			return is_scalar( $value ) && ! preg_match( '#[{};<\\\\]|/\*#', (string) $value );
+		}
+
+		/**
+		 * Reduce a block_id to the identifier characters used in its CSS selector and HTML class.
+		 *
+		 * The CSS builders and each block's render_html() call this, so the
+		 * printed class and the selector always match.
+		 *
+		 * @param mixed $block_id Saved block_id attribute.
+		 * @since 2.14.1
+		 * @return string Empty for a non-scalar value.
+		 */
+		public static function sanitize_block_id( $block_id ) {
+			return is_scalar( $block_id ) ? (string) preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $block_id ) : '';
 		}
 
 		/**
@@ -901,7 +929,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 
 				$blockattr = $block['attrs'];
 				if ( isset( $blockattr['block_id'] ) ) {
-					$block_id = $blockattr['block_id'];
+					$block_id = self::sanitize_block_id( $blockattr['block_id'] );
 				}
 
 				self::$current_block_list[] = $name;
@@ -1166,6 +1194,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			$path                = isset( $icon_brand_or_solid['path'] ) ? $icon_brand_or_solid['path'] : '';
 			$view                = isset( $icon_brand_or_solid['width'] ) && isset( $icon_brand_or_solid['height'] ) ? '0 0 ' . $icon_brand_or_solid['width'] . ' ' . $icon_brand_or_solid['height'] : null;
 
+			// The icon block prints this markup through Spec_Icon::ALLOWED_SVG_HTML; tags or attributes added here must be added there too.
 			if ( $path && $view ) {
 				if ( $return ) {
 					ob_start();

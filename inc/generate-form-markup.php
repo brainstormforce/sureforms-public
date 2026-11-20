@@ -1370,7 +1370,8 @@ class Generate_Form_Markup {
 		$confirmation_type = $confirmation_data['confirmation_type'] ?? '';
 
 		if ( 'different page' === $confirmation_type ) {
-			$redirect_url = esc_url_raw( $page_url );
+			// The page is stored once, in the default language; send the visitor to its translation.
+			$redirect_url = esc_url_raw( String_Translator::get_instance()->translate_page_url( Helper::get_string_value( $page_url ) ) );
 		} elseif ( 'custom url' === $confirmation_type ) {
 			$redirect_url = esc_url_raw( $custom_url );
 		}
