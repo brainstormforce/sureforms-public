@@ -863,4 +863,27 @@ class Test_Smart_Tags extends TestCase {
 		$this->assertStringContainsString( 'T &#123;admin_email&#125;', $output, 'the title still renders as text' );
 		$this->assertStringNotContainsString( get_option( 'admin_email' ), $output );
 	}
+
+	/**
+	 * A tag inside a resolved value stays text: a submitted value that contains a tag the
+	 * template also uses is not expanded, whatever order the tags appear in.
+	 */
+	public function test_process_smart_tags_does_not_expand_tags_inside_resolved_values() {
+		$submission = [ 'srfm-textarea-a1b2c3d4-lbl-Tm90ZQ-note' => '{site_title}{admin_email}' ];
+
+		$value_first = $this->smart_tags->process_smart_tags( 'Note: {form:note} | {site_title} {admin_email}', $submission );
+		$this->assertSame(
+			'Note: {site_title}{admin_email} | ' . get_option( 'blogname' ) . ' ' . get_option( 'admin_email' ),
+			$value_first
+		);
+
+		$tag_first = $this->smart_tags->process_smart_tags( '{site_title} | {form:note}', $submission );
+		$this->assertSame( get_option( 'blogname' ) . ' | {site_title}{admin_email}', $tag_first );
+
+		// The same tag written twice in the template still resolves everywhere.
+		$this->assertSame(
+			get_option( 'blogname' ) . ' ' . get_option( 'blogname' ),
+			$this->smart_tags->process_smart_tags( '{site_title} {site_title}' )
+		);
+	}
 }

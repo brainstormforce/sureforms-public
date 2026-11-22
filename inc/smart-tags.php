@@ -160,7 +160,7 @@ class Smart_Tags {
 	 * @since 0.0.1 - return string
 	 * @since 1.11.0 - return array<mixed>
 	 * @since 2.13.0 - $encode_shortcode_brackets
-	 * @since x.x.x - $encode_shortcode_brackets also encodes `{` and `}`
+	 * @since x.x.x - $encode_shortcode_brackets also encodes `{` and `}`; tags are replaced in one pass, so a tag inside a resolved value is not expanded
 	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null, $encode_shortcode_brackets = false ) {
@@ -176,8 +176,13 @@ class Smart_Tags {
 		}
 
 		$get_smart_tag_list = self::smart_tag_list();
+		$replacements       = [];
 
 		foreach ( $matches[0] as $tag ) {
+			if ( isset( $replacements[ $tag ] ) ) {
+				continue;
+			}
+
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
 			self::is_request_tag( $tag ) ||
 			0 === strpos( $tag, '{form:' ) ||
@@ -256,8 +261,12 @@ class Smart_Tags {
 				// over the same markup may read a shortcode or a tag inside it.
 				$replace = str_replace( [ '[', ']', '{', '}' ], [ '&#91;', '&#93;', '&#123;', '&#125;' ], $replace );
 			}
-			$content = str_replace( $tag, $replace, $content );
+			$replacements[ $tag ] = $replace;
 		}
+
+		// One pass: strtr() never rescans replaced text, so a tag inside a resolved value
+		// (a visitor's submission, a post title) stays text.
+		$content = strtr( Helper::get_string_value( $content ), $replacements );
 
 		// Replace <p> around block-level elements with <div>.
 		$content = preg_replace(
