@@ -192,6 +192,9 @@ function validateThePaymentBlock( form ) {
 	};
 }
 
+// stripe-payment.js runs the same check before opening the wallet sheet.
+window.srfmValidatePaymentBlock = validateThePaymentBlock;
+
 /**
  * Main payment handler function called from form submission
  * @param {HTMLElement} form - The form element.
