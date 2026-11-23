@@ -23,10 +23,15 @@
 
 import apiFetch from '@wordpress/api-fetch';
 import { BlockControls } from '@wordpress/block-editor';
-import { createBlock } from '@wordpress/blocks';
+import {
+	createBlock,
+	getBlockContent,
+	getBlockType,
+	parse,
+} from '@wordpress/blocks';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
-import { dispatch, select } from '@wordpress/data';
+import { dispatch, select, useSelect } from '@wordpress/data';
 import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
@@ -66,6 +71,63 @@ function deriveFormTitle() {
 		);
 	}
 	return __( 'Converted form', 'sureforms' );
+}
+
+/**
+ * Whether the registered Custom HTML block still sources its markup from
+ * its `content` attribute, as it does before WordPress 7.1.
+ *
+ * WordPress 7.1 dropped `source: 'raw'` from that attribute and
+ * deprecated it in favour of inner content. Checking for the old format
+ * directly, rather than for the new one, keeps the inner-content path in
+ * use if a later release removes the deprecated attribute altogether —
+ * `createBlock()` discards attributes the block does not declare, so
+ * falling back to `content` there would lose the markup.
+ *
+ * @since x.x.x
+ * @return {boolean} True when the markup lives in `attributes.content`.
+ */
+function htmlBlockUsesContentAttribute() {
+	return (
+		getBlockType( HTML_BLOCK_NAME )?.attributes?.content?.source === 'raw'
+	);
+}
+
+/**
+ * Build a Custom HTML block holding the given markup, matching how the
+ * running WordPress version stores that markup.
+ *
+ * Before WP 7.1 the markup goes into the `content` attribute, unchanged
+ * from the original behaviour. On 7.1+ it goes through `parse()` — the
+ * same way core's own HTML block builds itself from markup — so it lands
+ * in inner content instead of the deprecated attribute.
+ *
+ * @since x.x.x
+ * @param {string} html Markup for the new block.
+ * @return {Object} Block object ready for `replaceBlock`.
+ */
+function createHtmlBlock( html ) {
+	if ( htmlBlockUsesContentAttribute() ) {
+		return createBlock( HTML_BLOCK_NAME, { content: html } );
+	}
+
+	// Accept the parse result only when it is a single Custom HTML block.
+	// The block parser closes the wrapper at any closing block comment, so
+	// a stray one in the markup would split it into several blocks, and
+	// keeping just the first would silently drop the rest.
+	const parsedBlocks = parse(
+		`<!-- wp:html -->\n${ html }\n<!-- /wp:html -->`
+	);
+	if (
+		parsedBlocks.length === 1 &&
+		parsedBlocks[ 0 ].name === HTML_BLOCK_NAME
+	) {
+		return parsedBlocks[ 0 ];
+	}
+
+	// Otherwise keep the whole string as the block's inner content — the
+	// same fallback core's HTML block transforms use on 7.1+.
+	return createBlock( HTML_BLOCK_NAME, {}, [], [ html ] );
 }
 
 /**
@@ -171,9 +233,7 @@ async function convertBlock( clientId, content, parsed ) {
 		// so the user does not lose context they almost certainly meant
 		// to keep alongside the form.
 		if ( surroundingHtml ) {
-			const preservedBlock = createBlock( HTML_BLOCK_NAME, {
-				content: surroundingHtml,
-			} );
+			const preservedBlock = createHtmlBlock( surroundingHtml );
 			blockEditorDispatch.replaceBlock( clientId, [
 				preservedBlock,
 				shortcodeBlock,
@@ -261,7 +321,8 @@ function errorMessageForCode( code ) {
  * HTML form blocks on the same page each render their own toolbar
  * button — no manual reconciliation is needed.
  *
- * Parsing is memoized against the block's current `content` attribute
+ * Parsing is memoized against the block's current markup — its `content`
+ * attribute before WordPress 7.1, its serialized inner content on 7.1+ —
  * so re-renders driven by unrelated state (selection changes, sidebar
  * toggles) do not re-run `DOMParser`. The parser itself short-circuits
  * cheaply for HTML blocks that hold non-form markup.
@@ -276,7 +337,24 @@ const withConvertToSureForms = createHigherOrderComponent(
 			return <BlockEdit { ...props } />;
 		}
 
-		const content = props.attributes?.content ?? '';
+		// WordPress 7.1 moved the Custom HTML block's markup out of the
+		// `content` attribute and into the block's inner content (core
+		// marks the attribute deprecated "since 7.1"). Prefer the
+		// attribute so earlier versions behave exactly as before;
+		// otherwise serialize the block, which is how core's own HTML
+		// block edit component reads its markup on 7.1+.
+		const attributeContent = props.attributes?.content;
+		const block = useSelect(
+			( registrySelect ) =>
+				registrySelect( CORE_BLOCK_EDITOR ).getBlock( props.clientId ),
+			[ props.clientId ]
+		);
+		const content = useMemo( () => {
+			if ( typeof attributeContent === 'string' && attributeContent ) {
+				return attributeContent;
+			}
+			return block ? getBlockContent( block ) : '';
+		}, [ attributeContent, block ] );
 
 		// Debounce the parse so typing inside the source HTML block does
 		// not run `DOMParser` + the per-field walk on every keystroke.
