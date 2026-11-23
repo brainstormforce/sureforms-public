@@ -177,6 +177,51 @@ describe( 'srfmConfirmPayment', () => {
 	} );
 } );
 
+describe( 'updatePaymentBlockAmount', () => {
+	const renderAmountBlock = ( messageFormat, currencySymbol = '$' ) => {
+		document.body.innerHTML = `
+			<form data-srfm-instance="7">
+				<div class="srfm-block srfm-payment-block" data-block-id="b3">
+					<input class="srfm-payment-input" />
+					<span class="srfm-payment-value"></span>
+				</div>
+			</form>`;
+		const span = document.querySelector( '.srfm-payment-value' );
+		span.setAttribute( 'data-currency-symbol', currencySymbol );
+		if ( null !== messageFormat ) {
+			// setAttribute stores the decoded value, the same thing getAttribute
+			// returns for an entity-encoded attribute printed by PHP.
+			span.setAttribute( 'data-message-format', messageFormat );
+		}
+		return {
+			input: document.querySelector( '.srfm-payment-input' ),
+			span,
+		};
+	};
+
+	it( 'renders the subscription message as text, never as markup', () => {
+		const { input, span } = renderAmountBlock(
+			'{amount} per <img src=x onerror=alert(1)> (until cancelled)'
+		);
+
+		window.srfmPaymentUtility.updatePaymentBlockAmount( input, '5' );
+
+		expect( span.querySelector( 'img' ) ).toBeNull();
+		expect( span.textContent ).toBe(
+			'$5.00 per <img src=x onerror=alert(1)> (until cancelled)'
+		);
+	} );
+
+	it( 'renders the plain amount as text', () => {
+		const { input, span } = renderAmountBlock( null, '<b>$</b>' );
+
+		window.srfmPaymentUtility.updatePaymentBlockAmount( input, '5' );
+
+		expect( span.children ).toHaveLength( 0 );
+		expect( span.textContent ).toBe( '<b>$</b>5.00' );
+	} );
+} );
+
 // Safari opens Apple Pay only while the click that asked for it is fresh, and
 // Stripe.js reaches the sheet through a postMessage hop that WebKit lets
 // through for one second after the click. elements.submit() therefore has to
