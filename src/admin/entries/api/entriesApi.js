@@ -5,6 +5,36 @@
 
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
+import { __ } from '@wordpress/i18n';
+
+/**
+ * Normalise an entry ID taken from the URL or a caller.
+ *
+ * Entry IDs are written into REST paths, so only a plain positive integer
+ * that a JS number holds exactly is accepted; anything else returns null and
+ * must not be requested.
+ *
+ * @since x.x.x
+ *
+ * @param {*} id - Raw entry ID, e.g. a route param.
+ * @return {number|null} The entry ID, or null when it is not a positive integer.
+ */
+export const toEntryId = ( id ) => {
+	const value = String( id );
+	return /^[1-9]\d*$/.test( value ) && Number.isSafeInteger( Number( value ) )
+		? Number( value )
+		: null;
+};
+
+/**
+ * Rejected promise returned instead of a request for an invalid entry ID.
+ *
+ * @since x.x.x
+ *
+ * @return {Promise<never>} Rejected promise.
+ */
+const rejectInvalidEntryId = () =>
+	Promise.reject( new Error( __( 'Invalid entry ID.', 'sureforms' ) ) );
 
 /**
  * Get the REST API nonce from the global srfm_admin object
@@ -77,8 +107,13 @@ export const fetchEntriesList = ( params = {} ) => {
  * @return {Promise<Object>} Promise resolving to entry data
  */
 export const fetchEntryDetail = ( entryId ) => {
+	const id = toEntryId( entryId );
+	if ( ! id ) {
+		return rejectInvalidEntryId();
+	}
+
 	return apiFetch( {
-		path: `/sureforms/v1/entry/${ entryId }/details`,
+		path: `/sureforms/v1/entry/${ id }/details`,
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -195,13 +230,18 @@ export const exportEntries = ( params = {} ) => {
  * @return {Promise<Object>} Promise resolving to logs data with pagination
  */
 export const fetchEntryLogs = ( { id, page = 1, per_page = 3 } ) => {
+	const entryId = toEntryId( id );
+	if ( ! entryId ) {
+		return rejectInvalidEntryId();
+	}
+
 	const queryParams = {
 		page,
 		per_page,
 	};
 
 	return apiFetch( {
-		path: addQueryArgs( `/sureforms/v1/entry/${ id }/logs`, queryParams ),
+		path: addQueryArgs( `/sureforms/v1/entry/${ entryId }/logs`, queryParams ),
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
