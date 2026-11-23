@@ -9,7 +9,7 @@
  */
 
 import { Alert, Button } from '@bsf/force-ui';
-import { TriangleAlert, Info, CheckCircle, CircleAlert } from 'lucide-react';
+import { TriangleAlert, Info, CheckCircle, CircleAlert, X } from 'lucide-react';
 import { useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
@@ -30,6 +30,38 @@ const NOTICE_ACTION_HANDLERS = {
 			path: '/sureforms/v1/database/repair-entries-table',
 			method: 'POST',
 		} ),
+};
+
+/**
+ * Tell the server which button was pressed.
+ *
+ * The same srfm_notice_response call the dashboard and the classic notices make,
+ * so the click is counted and Contact Support retires the fault it reports. The
+ * button name comes from PHP, which also holds the allowlist it is checked
+ * against. keepalive, because the action may navigate this tab straight after.
+ *
+ * @param {string} noticeId - Notice id, as registered.
+ * @param {string} button   - Button name from the action's `response`.
+ */
+const recordResponse = ( noticeId, button ) => {
+	const ajaxUrl = window.srfm_admin?.ajax_url;
+	const nonce = window.srfm_admin?.notice_response_nonce;
+
+	if ( ! button || ! ajaxUrl || ! nonce ) {
+		return;
+	}
+
+	fetch( ajaxUrl, {
+		method: 'POST',
+		credentials: 'same-origin',
+		keepalive: true,
+		body: new URLSearchParams( {
+			action: 'srfm_notice_response',
+			nonce,
+			notice_id: noticeId,
+			button,
+		} ),
+	} ).catch( () => {} );
 };
 
 /**
@@ -76,14 +108,25 @@ const getNoticeClassName = ( variant ) => {
 /**
  * SingleNotice component - renders an individual notice.
  *
- * @param {Object} props         - Component props
- * @param {string} props.variant - Notice type (error, warning, info, success)
- * @param {string} props.message - Notice message text
- * @param {string} props.title   - Optional notice title
- * @param {Array}  props.actions - Optional array of action buttons
+ * @param {Object}   props             - Component props
+ * @param {string}   props.id          - Notice id, sent with any action response
+ * @param {string}   props.variant     - Notice type (error, warning, info, success)
+ * @param {string}   props.message     - Notice message text
+ * @param {string}   props.title       - Optional notice title
+ * @param {Array}    props.actions     - Optional array of action buttons
+ * @param {boolean}  props.dismissible - Whether the notice can be dismissed
+ * @param {Function} props.onDismiss   - Callback when notice is dismissed
  * @return {JSX.Element} - The rendered notice
  */
-const SingleNotice = ( { variant = 'info', message, title, actions = [] } ) => {
+const SingleNotice = ( {
+	id,
+	variant = 'info',
+	message,
+	title,
+	actions = [],
+	dismissible = true,
+	onDismiss,
+} ) => {
 	// Only ever set by a server-backed action; a plain link action never touches it.
 	const [ status, setStatus ] = useState( { busy: false, error: '' } );
 	// Synchronous guard: `disabled={status.busy}` only takes effect after the next
@@ -97,6 +140,8 @@ const SingleNotice = ( { variant = 'info', message, title, actions = [] } ) => {
 		// No handler for this identifier — fall back to the URL, which is why PHP
 		// ships both.
 		if ( ! handler ) {
+			recordResponse( id, action.response );
+
 			if ( action.url ) {
 				if ( action.target === '_blank' ) {
 					window.open( action.url, '_blank', 'noopener,noreferrer' );
@@ -174,13 +219,27 @@ const SingleNotice = ( { variant = 'info', message, title, actions = [] } ) => {
 	);
 
 	return (
-		<Alert
-			content={ content }
-			icon={ getNoticeIcon( variant ) }
-			title={ title || null }
-			variant={ variant }
-			className={ getNoticeClassName( variant ) }
-		/>
+		<div className="relative">
+			<Alert
+				content={ content }
+				icon={ getNoticeIcon( variant ) }
+				title={ title || null }
+				variant={ variant }
+				className={ getNoticeClassName( variant ) }
+			/>
+			{ /* Not Alert's own onClose: its close button is labelled with an
+			     untranslated "Close alert". */ }
+			{ dismissible && onDismiss && (
+				<Button
+					variant="ghost"
+					size="xs"
+					icon={ <X className="size-4" /> }
+					onClick={ onDismiss }
+					className="absolute top-2 end-2 p-1 text-icon-secondary hover:text-icon-primary"
+					aria-label={ __( 'Dismiss notice', 'sureforms' ) }
+				/>
+			) }
+		</div>
 	);
 };
 
@@ -202,6 +261,7 @@ const SingleNotice = ( { variant = 'info', message, title, actions = [] } ) => {
  *       label: 'Button text',
  *       url: 'https://example.com',
  *       target: '_blank' | '_self',
+ *       response: 'contact_support', // Optional srfm_notice_response button name
  *       variant: 'primary' | 'secondary' | 'link',
  *       size: 'sm' | 'md' | 'lg',
  *       className: 'custom-classes',
@@ -217,6 +277,8 @@ const SingleNotice = ( { variant = 'info', message, title, actions = [] } ) => {
  * @return {JSX.Element|null} - The rendered notices or null
  */
 const AdminNotice = ( { currentPage = 'all' } ) => {
+	const [ dismissedIds, setDismissedIds ] = useState( [] );
+
 	// Get notices from localized data
 	const notices = window.srfm_admin?.notices || [];
 
@@ -224,8 +286,11 @@ const AdminNotice = ( { currentPage = 'all' } ) => {
 		return null;
 	}
 
-	// Filter notices based on current page
+	// Filter notices based on current page and dismissed state
 	const filteredNotices = notices.filter( ( notice ) => {
+		if ( dismissedIds.includes( notice.id ) ) {
+			return false;
+		}
 		if ( ! notice.pages || notice.pages.includes( 'all' ) ) {
 			return true;
 		}
@@ -236,15 +301,22 @@ const AdminNotice = ( { currentPage = 'all' } ) => {
 		return null;
 	}
 
+	const handleDismiss = ( id ) => {
+		setDismissedIds( ( prev ) => [ ...prev, id ] );
+	};
+
 	return (
 		<div className="flex flex-col gap-4">
 			{ filteredNotices.map( ( notice ) => (
 				<SingleNotice
 					key={ notice.id }
+					id={ notice.id }
 					variant={ notice.variant || 'info' }
 					message={ notice.message }
 					title={ notice.title }
 					actions={ notice.actions || [] }
+					dismissible={ notice.dismissible !== false }
+					onDismiss={ () => handleDismiss( notice.id ) }
 				/>
 			) ) }
 		</div>

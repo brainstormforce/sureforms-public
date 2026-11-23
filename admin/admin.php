@@ -2525,13 +2525,13 @@ JS;
 
 		Notice_Manager::register_notice(
 			[
-				'id'      => 'srfm-database-maintenance',
-				'variant' => 'warning',
-				'title'   => __( 'Database update needed', 'sureforms' ),
+				'id'          => 'srfm-database-maintenance',
+				'variant'     => 'warning',
+				'title'       => __( 'Database update needed', 'sureforms' ),
 				// Plain text only. AdminNotice.js renders this as a React child, so
 				// any markup here would show up as literal characters.
-				'message' => $this->get_database_notice_message(),
-				'actions' => [
+				'message'     => $this->get_database_notice_message(),
+				'actions'     => [
 					[
 						'label'  => __( 'Fix now', 'sureforms' ),
 						// Opaque identifier, resolved to a handler in AdminNotice.js.
@@ -2541,7 +2541,10 @@ JS;
 						'url'    => $this->get_database_repair_url(),
 					],
 				],
-				'pages'   => [ 'all' ],
+				// Submissions cannot be saved until this is fixed. It clears itself
+				// once the table exists, so there is nothing to wave away.
+				'dismissible' => false,
+				'pages'       => [ 'all' ],
 			]
 		);
 	}
@@ -3956,6 +3959,55 @@ JS;
 			// the selector.
 			if ( isset( $item['id'] ) ) {
 				$items[ $index ]['id'] = sanitize_key( Helper::get_string_value( $item['id'] ) );
+			}
+		}
+
+		// The Forms listing hides classic notices and has no Form Checks panel, so a
+		// failed notification reaches it through the React notice bar. Built here,
+		// from the filtered and normalised items, so the URLs it hands React are the
+		// same ones every other renderer uses. Not in get_first_party_action_items():
+		// that also backs has_action_item_warnings(), which must stay free of side
+		// effects. Each action names its srfm_notice_response button, because
+		// Contact Support is what retires the fault and this notice cannot be
+		// dismissed.
+		if ( Helper::validate_request_context( 'sureforms_forms', 'page' ) ) {
+			foreach ( $items as $item ) {
+				if ( ! is_array( $item ) || 'notification_error' !== ( $item['id'] ?? '' ) ) {
+					continue;
+				}
+
+				$react_actions = [];
+
+				foreach ( [ 'connect', 'guide', 'cta' ] as $prefix ) {
+					$label = Helper::get_string_value( $item[ $prefix . '_label' ] ?? '' );
+					$url   = Helper::get_string_value( $item[ $prefix . '_url' ] ?? '' );
+
+					if ( '' === $label || '' === $url ) {
+						continue;
+					}
+
+					$react_actions[] = [
+						'label'    => $label,
+						'url'      => $url,
+						// A mailto: must reach the mail client in place; _blank
+						// leaves an empty tab behind. The connect step stays in
+						// wp-admin.
+						'target'   => 'connect' === $prefix || 0 === stripos( $url, 'mailto:' ) ? '_self' : '_blank',
+						'response' => Helper::get_string_value( $item[ $prefix . '_action' ] ?? '' ),
+					];
+				}
+
+				Notice_Manager::register_notice(
+					[
+						'id'          => $item['id'],
+						'variant'     => Helper::get_string_value( $item['status'] ?? 'error' ),
+						'title'       => Helper::get_string_value( $item['title'] ?? '' ),
+						'message'     => Helper::get_string_value( $item['message'] ?? '' ),
+						'actions'     => $react_actions,
+						'dismissible' => false,
+						'pages'       => [ 'sureforms_forms' ],
+					]
+				);
 			}
 		}
 

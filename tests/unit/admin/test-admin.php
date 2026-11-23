@@ -827,6 +827,10 @@ class Test_Admin extends TestCase {
 
 		$this->assertSame( 'warning', $notice['variant'], 'This is routine maintenance, not an error.' );
 		$this->assertSame( 'repair-entries-table', $notice['actions'][0]['action'] );
+		$this->assertFalse(
+			$notice['dismissible'],
+			'Submissions cannot be saved until the table is repaired, so the notice must not offer a close button.'
+		);
 	}
 
 	/**
@@ -2634,6 +2638,145 @@ class Test_Admin extends TestCase {
 		unset( $_GET['page'], $_REQUEST['page'] );
 
 		$this->assertSame( '', $output );
+	}
+
+	/**
+	 * A notification failure reaches the Forms listing through the React notice bar,
+	 * and only from get_action_items(): has_action_item_warnings() backs show_if
+	 * callbacks and must not register anything.
+	 */
+	public function test_notification_failure_registers_react_notice_on_forms_page_only() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+
+		$_GET['page']     = 'sureforms_forms';
+		$_REQUEST['page'] = 'sureforms_forms';
+
+		$this->assertTrue( Admin::get_instance()->has_action_item_warnings() );
+		$after_check = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+
+		Admin::reset_action_items_cache();
+		Admin::get_instance()->get_action_items();
+		$on_forms = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		$_GET['page']     = 'sureforms_menu';
+		$_REQUEST['page'] = 'sureforms_menu';
+		Admin::reset_action_items_cache();
+		Admin::get_instance()->get_action_items();
+		$on_dashboard = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+
+		unset( $_GET['page'], $_REQUEST['page'] );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+
+		$this->assertNotContains( 'notification_error', $after_check );
+		$this->assertContains( 'notification_error', $on_forms );
+		$this->assertNotContains( 'notification_error', $on_dashboard );
+	}
+
+	/**
+	 * The Forms page notice is built from the filtered, normalised action items.
+	 *
+	 * React assigns href and window.open() URLs verbatim, so an esc_url()'d
+	 * `&#038;` would turn every later UTM parameter into a fragment. A mailto: must
+	 * open in place, and every action names the srfm_notice_response button that
+	 * retires the fault and records the click.
+	 */
+	public function test_get_action_items_registers_normalised_forms_page_notice() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		// A second item, so the filter below returns a non-empty list.
+		// apply_filters_as_array() treats an empty one as "no answer" and keeps
+		// the default.
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+
+		$_GET['page']     = 'sureforms_forms';
+		$_REQUEST['page'] = 'sureforms_forms';
+
+		Admin::get_instance()->get_action_items();
+
+		$notice = null;
+		foreach ( \SRFM\Admin\Notice_Manager::get_notices() as $candidate ) {
+			if ( 'notification_error' === $candidate['id'] ) {
+				$notice = $candidate;
+			}
+		}
+
+		// A filter that drops the item must drop the React notice with it.
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+		$drop = static function ( $items ) {
+			return array_values(
+				array_filter(
+					$items,
+					static function ( $item ) {
+						return 'notification_error' !== ( $item['id'] ?? '' );
+					}
+				)
+			);
+		};
+		add_filter( 'srfm_action_items', $drop );
+		Admin::get_instance()->get_action_items();
+		$filtered = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+		remove_filter( 'srfm_action_items', $drop );
+
+		unset( $_GET['page'], $_REQUEST['page'] );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+
+		$this->assertNotNull( $notice, 'The notification failure must reach the Forms page.' );
+		$this->assertSame( 'error', $notice['variant'], 'The React notice must match the item status.' );
+		$this->assertFalse( $notice['dismissible'] );
+		$this->assertNotContains( 'notification_error', $filtered );
+
+		$allowed = [ 'connect_surecontact', 'help_me_fix', 'view_logs', 'contact_support' ];
+
+		foreach ( $notice['actions'] as $action ) {
+			$this->assertStringNotContainsString( '&#038;', $action['url'], $action['label'] . ' URL must not carry HTML entities.' );
+			$this->assertContains( $action['response'] ?? '', $allowed, $action['label'] . ' must name a srfm_notice_response button.' );
+
+			if ( 0 === stripos( $action['url'], 'mailto:' ) ) {
+				$this->assertSame( '_self', $action['target'], 'A mailto: must not open a blank tab.' );
+			}
+		}
+
+		$responses = wp_list_pluck( $notice['actions'], 'response' );
+		$this->assertContains( 'contact_support', $responses, 'Contact Support is the action that retires the fault.' );
+	}
+
+	/**
+	 * The classic action-item notice leaves dismissal to its own Dismiss link.
+	 *
+	 * Core's is-dismissible removes the card from the page, which strands the
+	 * notice carousel, and would put a close button on faults that are
+	 * dismissible => false.
+	 */
+	public function test_render_action_item_notices_does_not_use_core_dismiss() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		Admin::reset_action_items_cache();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+
+		global $pagenow;
+		$previous_pagenow = $pagenow;
+		$pagenow          = 'plugins.php';
+
+		ob_start();
+		Admin::get_instance()->render_action_item_notices();
+		$html = (string) ob_get_clean();
+
+		$pagenow = $previous_pagenow;
+		Admin::reset_action_items_cache();
+
+		$this->assertGreaterThanOrEqual( 2, substr_count( $html, 'srfm-action-item-notice' ), 'Both faults must render.' );
+		$this->assertStringNotContainsString( 'is-dismissible', $html );
 	}
 
 	/**
