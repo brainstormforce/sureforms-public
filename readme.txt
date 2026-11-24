@@ -427,7 +427,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 == Changelog ==
 = 2.14.2 - 24th November 2026 =
-* Improvement: Admin notices now have a dismiss button, including on the SureForms Forms page.
 * Fix: Apple Pay no longer shows "Unable to show Apple Pay" on sites where form checks take a moment to finish.
 * Fix: The Convert to SureForms button now appears on Custom HTML blocks that contain a form on WordPress 7.1 and later.
 * Fix: This update addressed security bugs. Props to dzaku and Santh from Patchstack for reporting them responsibly to our team.

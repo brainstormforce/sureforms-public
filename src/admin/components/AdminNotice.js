@@ -269,6 +269,7 @@ const SingleNotice = ( {
  *     }
  *   ],
  *   dismissible: true/false,
+ *   dismiss_response: 'dismissed', // Optional srfm_notice_response button sent on close
  *   pages: ['all'] or ['sureforms_entries', 'sureforms_forms'] // Which pages to show on
  * }
  *
@@ -301,8 +302,11 @@ const AdminNotice = ( { currentPage = 'all' } ) => {
 		return null;
 	}
 
-	const handleDismiss = ( id ) => {
-		setDismissedIds( ( prev ) => [ ...prev, id ] );
+	const handleDismiss = ( notice ) => {
+		setDismissedIds( ( prev ) => [ ...prev, notice.id ] );
+		// A notice that names a dismiss_response is closed on the server too, so
+		// it stays closed on the next page load rather than for this view only.
+		recordResponse( notice.id, notice.dismiss_response );
 	};
 
 	return (
@@ -316,7 +320,7 @@ const AdminNotice = ( { currentPage = 'all' } ) => {
 					title={ notice.title }
 					actions={ notice.actions || [] }
 					dismissible={ notice.dismissible !== false }
-					onDismiss={ () => handleDismiss( notice.id ) }
+					onDismiss={ () => handleDismiss( notice ) }
 				/>
 			) ) }
 		</div>

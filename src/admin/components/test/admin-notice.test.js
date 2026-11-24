@@ -77,11 +77,14 @@ describe( 'AdminNotice', () => {
 	} );
 
 	it( 'hides a dismissible notice when its close button is clicked', () => {
+		global.fetch = jest.fn( () => Promise.resolve() );
 		const container = render( [ { id: 'tip', message: 'A tip' } ] );
 
 		act( () => dismissButton( container ).click() );
 
 		expect( container.textContent ).not.toContain( 'A tip' );
+		// No dismiss_response, so the close stays in the browser.
+		expect( global.fetch ).not.toHaveBeenCalled();
 	} );
 
 	it( 'reports the pressed button to srfm_notice_response before following it', () => {
@@ -156,5 +159,25 @@ describe( 'AdminNotice', () => {
 		expect( open ).toHaveBeenCalled();
 
 		open.mockRestore();
+	} );
+
+	it( 'records the close on the server when the notice names a dismiss response', () => {
+		global.fetch = jest.fn( () => Promise.resolve() );
+
+		const container = render( [
+			{
+				id: 'notification_error',
+				message: 'Email failed',
+				dismiss_response: 'dismissed',
+			},
+		] );
+
+		act( () => dismissButton( container ).click() );
+
+		expect( container.textContent ).not.toContain( 'Email failed' );
+		expect( global.fetch ).toHaveBeenCalledTimes( 1 );
+		const body = new URLSearchParams( global.fetch.mock.calls[ 0 ][ 1 ].body );
+		expect( body.get( 'notice_id' ) ).toBe( 'notification_error' );
+		expect( body.get( 'button' ) ).toBe( 'dismissed' );
 	} );
 } );

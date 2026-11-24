@@ -2921,6 +2921,9 @@ JS;
 			[
 				'ajaxurl'  => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'srfm_notice_response' ),
+				// For the close cross on a notice that can be put away. Its own
+				// nonce, because srfm_dismiss_action_item checks a different action.
+				'dismiss'  => wp_create_nonce( 'srfm_dismiss_action_item' ),
 				// Carousel chrome. Built in the browser rather than printed here so
 				// that with JavaScript off every notice simply stays visible, which
 				// is the behaviour this replaced -- controls that cannot work must
@@ -3048,6 +3051,15 @@ JS;
 			if ( 'form_submission_error' === $notice_id ) {
 				Client_Logger::acknowledge_failures();
 			}
+		}
+
+		// Closing a fault notice on the Forms page. The React notice posts its
+		// close cross here; the classic notice and the dashboard panel close
+		// through srfm_dismiss_action_item, which does the same thing. Marked
+		// reported, so it stays closed until a new failure is recorded. Notices
+		// that cannot be closed are ignored by acknowledge_closed_fault().
+		if ( 'dismissed' === $button ) {
+			$this->acknowledge_closed_fault( $notice_id );
 		}
 
 		wp_send_json_success();
@@ -3649,6 +3661,14 @@ JS;
 			// A fault reads as an error; advice reads as a warning. Both are shown,
 			// but they are not the same kind of message and should not look alike.
 			$class = 'error' === $status ? 'notice-error' : 'notice-warning';
+
+			// A close cross only on what can be closed. A fault that must stay
+			// until it is reported carries dismissible => false and gets none.
+			$closable = ! empty( $item['dismissible'] );
+
+			if ( $closable ) {
+				$class .= ' srfm-action-item-closable';
+			}
 			?>
 			<div class="notice srfm-action-item-notice <?php echo esc_attr( $class ); ?>">
 				<?php
@@ -3720,12 +3740,26 @@ JS;
 							<?php echo esc_html( $item['cta_label'] ); ?>
 						</a>
 					<?php } ?>
-					<?php if ( ! empty( $item['dismissible'] ) ) { ?>
-						<a href="<?php echo esc_url( $this->get_dismiss_action_item_url( Helper::get_string_value( $item['id'] ) ) ); ?>" class="button">
-							<?php esc_html_e( 'Dismiss', 'sureforms' ); ?>
-						</a>
-					<?php } ?>
 				</p>
+				<?php
+				/*
+				 * Core's look for the cross, not core's is-dismissible: core's close
+				 * only hides the card for one page view, and the carousel has to
+				 * know when a card leaves. notice-response.js closes it through
+				 * srfm_dismiss_action_item;
+				 * without JavaScript the link is the nonced admin-post URL, which
+				 * records the same dismissal.
+				 */
+				?>
+				<?php if ( $closable ) { ?>
+					<a
+						href="<?php echo esc_url( $this->get_dismiss_action_item_url( Helper::get_string_value( $item['id'] ) ) ); ?>"
+						class="notice-dismiss srfm-action-item-close"
+						data-srfm-dismiss-item="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
+					>
+						<span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'sureforms' ); ?></span>
+					</a>
+				<?php } ?>
 			</div>
 			<?php
 		}
@@ -3817,9 +3851,10 @@ JS;
 	 * front end has no rules of its own to keep in sync -- adding a new item here
 	 * makes it appear with no JavaScript change.
 	 *
-	 * `dismissible` separates a fault from advice. A run of failed submissions is
-	 * not something to wave away, and clears itself when a submission succeeds. A
-	 * caching plugin being present is information, so it can be dismissed.
+	 * `dismissible` marks what can be closed. A caching plugin being present is
+	 * information, so closing it hides it for good. A notification or submission
+	 * failure can be closed too, which marks it seen until the next one fails. An
+	 * integration failure cannot be closed.
 	 *
 	 * @since 2.12.6
 	 * @return array<int,array<string,mixed>>
@@ -3968,8 +4003,8 @@ JS;
 		// same ones every other renderer uses. Not in get_first_party_action_items():
 		// that also backs has_action_item_warnings(), which must stay free of side
 		// effects. Each action names its srfm_notice_response button, because
-		// Contact Support is what retires the fault and this notice cannot be
-		// dismissed.
+		// Contact Support is what retires the fault. The close cross does too:
+		// dismiss_response posts `dismissed`, which marks it seen the same way.
 		if ( Helper::validate_request_context( 'sureforms_forms', 'page' ) ) {
 			foreach ( $items as $item ) {
 				if ( ! is_array( $item ) || 'notification_error' !== ( $item['id'] ?? '' ) ) {
@@ -3999,13 +4034,14 @@ JS;
 
 				Notice_Manager::register_notice(
 					[
-						'id'          => $item['id'],
-						'variant'     => Helper::get_string_value( $item['status'] ?? 'error' ),
-						'title'       => Helper::get_string_value( $item['title'] ?? '' ),
-						'message'     => Helper::get_string_value( $item['message'] ?? '' ),
-						'actions'     => $react_actions,
-						'dismissible' => false,
-						'pages'       => [ 'sureforms_forms' ],
+						'id'               => $item['id'],
+						'variant'          => Helper::get_string_value( $item['status'] ?? 'error' ),
+						'title'            => Helper::get_string_value( $item['title'] ?? '' ),
+						'message'          => Helper::get_string_value( $item['message'] ?? '' ),
+						'actions'          => $react_actions,
+						'dismissible'      => ! empty( $item['dismissible'] ),
+						'dismiss_response' => 'dismissed',
+						'pages'            => [ 'sureforms_forms' ],
 					]
 				);
 			}
@@ -4021,8 +4057,9 @@ JS;
 	 *
 	 * Hooked - wp_ajax_srfm_dismiss_action_item.
 	 *
-	 * Only items get_action_items() marks dismissible can be dismissed, so a
-	 * crafted request cannot silence a genuine fault.
+	 * Allowlisted in dismiss_action_item(). A closed notification or submission
+	 * failure is only marked seen, so the next failure shows again; an
+	 * integration failure is refused.
 	 *
 	 * @since 2.12.6
 	 * @return void
@@ -4081,22 +4118,29 @@ JS;
 			return;
 		}
 
-		// Nothing to style unless the carousel is actually going to build. Cheap to
-		// ask: get_action_items() is memoised for the request.
+		// Nothing to style unless the carousel is actually going to build, or a
+		// notice carries the close cross. Cheap to ask: get_action_items() is
+		// memoised for the request.
 		//
-		// Two, not one: notice-response.js bails below two cards, so these rules
-		// have no consumer on a site with a single open fault.
-		$notices = 0;
+		// Two, not one, for the carousel: notice-response.js bails below two
+		// cards, so those rules have no consumer on a site with a single open
+		// fault. A single closable notice still needs its cross placed.
+		$notices  = 0;
+		$closable = 0;
 
 		foreach ( $this->get_action_items() as $item ) {
 			$status = Helper::get_string_value( is_array( $item ) ? $item['status'] ?? '' : '' );
 
 			if ( 'success' !== $status && '' !== $status ) {
 				$notices++;
+
+				if ( is_array( $item ) && ! empty( $item['dismissible'] ) ) {
+					$closable++;
+				}
 			}
 		}
 
-		if ( $notices < 2 ) {
+		if ( $notices < 2 && 0 === $closable ) {
 			return;
 		}
 
@@ -4119,6 +4163,14 @@ JS;
 	align-items: center;
 	gap: 8px;
 }
+/* The close cross. Core's .notice-dismiss supplies the look and its RTL flip;
+   the card is its positioning box, and 48px is core's is-dismissible reserve. */
+.srfm-action-item-closable { position: relative; padding-inline-end: 48px; }
+.srfm-action-item-notice .srfm-action-item-close { text-decoration: none; }
+/* With a cross on any card, the arrows sit beside it rather than under it, and
+   stay there while stepping so they do not jump sideways under the pointer. */
+.srfm-action-item-carousel--closable .srfm-action-item-carousel-nav { inset-inline-end: 44px; }
+.srfm-action-item-carousel.srfm-action-item-carousel--closable .srfm-action-item-notice { padding-inline-end: calc( var( --srfm-carousel-reserve, 130px ) + 32px ); }
 CSS;
 
 		wp_add_inline_style( 'srfm-action-items', $css );
@@ -4231,7 +4283,10 @@ CSS;
 				'cta_label'   => __( 'Contact Support', 'sureforms' ),
 				'cta_url'     => $this->get_support_contact_url( $category, $form_title ),
 				'cta_action'  => 'contact_support',
-				'dismissible' => false,
+				// Notification and submission failures can be closed. Closing marks
+				// the failures so far as seen, so the notice comes back when the
+				// next one fails. A failed integration stays until it is reported.
+				'dismissible' => in_array( $category, [ 'notification', 'submission' ], true ),
 			];
 
 			// A second, optional action. Absent keys render nothing, so a category
@@ -4259,7 +4314,7 @@ CSS;
 		}
 
 		// Read here rather than at the top: with no caching plugin active nothing
-		// consults it, and this is the only dismissible item.
+		// consults it.
 		$dismissed = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
 
 		if ( ! in_array( 'caching_plugin', $dismissed, true ) ) {
@@ -5307,11 +5362,11 @@ CSS;
 		// neither renderer has to trust what comes back.
 		$safe = esc_url_raw( $filtered, [ 'http', 'https', 'mailto' ] );
 
-		// Never empty. Contact Support is the only action that retires these
-		// notices and they are dismissible => false, so returning '' for a filter
-		// value that cannot survive escaping leaves an undismissable notice with
-		// nothing on it that works. The unfiltered URL is built here rather than
-		// supplied, so it always escapes.
+		// Never empty. Contact Support is the only action that retires the
+		// integration notice, which is dismissible => false, so returning '' for
+		// a filter value that cannot survive escaping leaves an undismissable
+		// notice with nothing on it that works. The unfiltered URL is built here
+		// rather than supplied, so it always escapes.
 		return '' !== $safe ? $safe : esc_url_raw( $url, [ 'mailto' ] );
 	}
 
@@ -5658,11 +5713,39 @@ CSS;
 	}
 
 	/**
+	 * Mark a closed fault notice as seen.
+	 *
+	 * Shared by the close cross on every surface. The failures recorded so far
+	 * count as seen, and the notice returns only when a new one is recorded.
+	 * Seen is not reported: the support email's "Previously reported" line is
+	 * left to Contact Support.
+	 *
+	 * @param string $item_id form_submission_error or notification_error.
+	 * @since 2.14.3
+	 * @return bool False for any other id, which is left untouched.
+	 */
+	private function acknowledge_closed_fault( $item_id ) {
+		$categories = [
+			'form_submission_error' => 'submission',
+			'notification_error'    => 'notification',
+		];
+
+		if ( ! isset( $categories[ $item_id ] ) ) {
+			return false;
+		}
+
+		Client_Logger::acknowledge_category( $categories[ $item_id ], false );
+
+		return true;
+	}
+
+	/**
 	 * Record one dismissal, shared by the AJAX and no-JS entry points.
 	 *
-	 * Allowlisted, so only advisory items can be dismissed. A run of failed
-	 * submissions is a fault and must stay put until it actually resolves --
-	 * otherwise a crafted request could silence the one message that matters.
+	 * Allowlisted. Advisory items are hidden for good. A closed notification or
+	 * submission failure is only marked seen, so a new failure brings it back
+	 * and a crafted request cannot hide one that has not happened yet. An
+	 * integration failure cannot be closed.
 	 *
 	 * @param string $item_id Item to dismiss.
 	 * @since 2.12.6
@@ -5674,6 +5757,21 @@ CSS;
 		if ( 'lost_submissions' === $item_id ) {
 			Lost_Submissions::acknowledge();
 			$this->track_notice_event( 'lost_submissions_notice_dismiss' );
+			return true;
+		}
+
+		// Closing a notification or submission failure means "I have seen it",
+		// as Contact Support does: the failures so far are marked reported, so
+		// the notice stays closed on every screen and comes back only when a new
+		// one fails. Integration failures stay off this list.
+		$closable_faults = [
+			'notification_error'    => 'notification_failure_notice_dismiss',
+			'form_submission_error' => 'submission_failure_notice_dismiss',
+		];
+
+		if ( isset( $closable_faults[ $item_id ] ) ) {
+			$this->acknowledge_closed_fault( $item_id );
+			$this->track_notice_event( $closable_faults[ $item_id ] );
 			return true;
 		}
 
