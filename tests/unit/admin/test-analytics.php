@@ -9,6 +9,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Admin\Analytics;
+use SRFM\Inc\Features;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
 
@@ -81,6 +82,9 @@ class Test_Analytics extends TestCase {
 		delete_option( 'srfm_mcp_settings_options' );
 		Helper::update_srfm_option( 'usage_events_pushed', [] );
 		Helper::update_srfm_option( 'usage_events_pending', [] );
+
+		delete_option( Features::OPTION );
+		Features::reset();
 
 		// Only the onboarding_completed tests touch these, and this class has no
 		// DB rollback, so put back exactly what was there rather than blanketing
@@ -2420,5 +2424,103 @@ class Test_Analytics extends TestCase {
 		Helper::update_srfm_option( Analytics::UNINSTALL_PREF_KEY, false );
 		wp_set_current_user( 0 );
 		wp_delete_user( $admin_id );
+	}
+
+	// ─── manage_features ─────────────────────────────────────────
+
+	/**
+	 * A site that never saved Settings → Features sends nothing: every switch is
+	 * at its default, so the event would only add a row per site saying so.
+	 */
+	public function test_track_manage_features_not_sent_when_tab_never_saved() {
+		delete_option( Features::OPTION );
+		Features::reset();
+
+		$this->assertNull( $this->manage_features_event( Analytics::get_instance()->add_srfm_analytics_data( [] ) ) );
+	}
+
+	/**
+	 * Each feature is reported as `on`/`off`, an unsaved key at its default, and the
+	 * value counts the features switched off.
+	 */
+	public function test_track_manage_features_reports_each_switch() {
+		Features::save(
+			[
+				'payments'   => false,
+				'ai_builder' => true,
+			]
+		);
+
+		$event = $this->manage_features_event( Analytics::get_instance()->add_srfm_analytics_data( [] ) );
+
+		$this->assertNotNull( $event );
+		$this->assertSame( '1', $event['event_value'] );
+		$this->assertSame( 'off', $event['properties']['payments'] );
+		$this->assertSame( 'on', $event['properties']['ai_builder'] );
+		$this->assertSame( 'on', $event['properties']['entries'], 'A key never saved reports its default.' );
+		$this->assertSame( 'on', $event['properties']['ottokit'] );
+	}
+
+	/**
+	 * Rows added through `srfm_features` (how Pro registers its features) are
+	 * reported by their own switch. Turning Entries off keeps a dependent feature
+	 * off, but the owner did not switch that one off, so it must not be counted.
+	 * Keys from the public filter go through sanitize_key().
+	 */
+	public function test_track_manage_features_reports_filter_rows_by_their_own_switch() {
+		$register = static function ( $rows ) {
+			$rows['quiz']    = [
+				'group'      => 'pro',
+				'depends_on' => [ 'entries' ],
+			];
+			$rows['Odd Key'] = [];
+			return $rows;
+		};
+		add_filter( 'srfm_features', $register );
+
+		try {
+			Features::reset();
+			Features::save( [ 'entries' => false ] );
+			$this->assertFalse( Features::is_enabled( 'quiz' ), 'Fixture: quiz must resolve off while Entries is off.' );
+
+			$event = $this->manage_features_event( Analytics::get_instance()->add_srfm_analytics_data( [] ) );
+		} finally {
+			remove_filter( 'srfm_features', $register );
+			Features::reset();
+		}
+
+		$this->assertNotNull( $event );
+		$this->assertSame( '1', $event['event_value'] );
+		$this->assertSame( 'off', $event['properties']['entries'] );
+		$this->assertSame( 'on', $event['properties']['quiz'] );
+		$this->assertSame( 'on', $event['properties']['oddkey'] );
+		$this->assertArrayNotHasKey( 'Odd Key', $event['properties'] );
+	}
+
+	/**
+	 * The snapshot is re-sent every cycle, so each day shows the site's current
+	 * switches rather than only the first report ever sent.
+	 */
+	public function test_track_manage_features_resent_every_cycle() {
+		Features::save( [ 'payments' => false ] );
+		$analytics = Analytics::get_instance();
+
+		$this->assertNotNull( $this->manage_features_event( $analytics->add_srfm_analytics_data( [] ) ) );
+		$this->assertNotNull( $this->manage_features_event( $analytics->add_srfm_analytics_data( [] ) ) );
+	}
+
+	/**
+	 * The `manage_features` entry of a stats payload's events_record, if any.
+	 *
+	 * @param array<mixed> $stats Stats payload.
+	 * @return array<string,mixed>|null
+	 */
+	private function manage_features_event( $stats ) {
+		foreach ( $stats['plugin_data']['sureforms']['events_record'] ?? [] as $event ) {
+			if ( 'manage_features' === ( $event['event_name'] ?? '' ) ) {
+				return $event;
+			}
+		}
+		return null;
 	}
 }
