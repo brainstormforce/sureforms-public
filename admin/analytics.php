@@ -1545,7 +1545,7 @@ class Analytics {
 	 * Not queued for a site that never saved the tab, where every switch is at its
 	 * default. Forced, so the current snapshot is re-sent every cycle.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.2
 	 * @return void
 	 */
 	private function track_manage_features() {

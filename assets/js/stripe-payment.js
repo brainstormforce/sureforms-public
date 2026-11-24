@@ -414,7 +414,7 @@ class StripePayment {
 	 * has to begin before them. srfmConfirmPayment() awaits the stored promise
 	 * instead of calling elements.submit() a second time.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.2
 	 * @param {HTMLFormElement} form - The form being submitted.
 	 * @return {void}
 	 */

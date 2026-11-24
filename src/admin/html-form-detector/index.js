@@ -84,7 +84,7 @@ function deriveFormTitle() {
  * `createBlock()` discards attributes the block does not declare, so
  * falling back to `content` there would lose the markup.
  *
- * @since x.x.x
+ * @since 2.14.2
  * @return {boolean} True when the markup lives in `attributes.content`.
  */
 function htmlBlockUsesContentAttribute() {
@@ -102,7 +102,7 @@ function htmlBlockUsesContentAttribute() {
  * same way core's own HTML block builds itself from markup — so it lands
  * in inner content instead of the deprecated attribute.
  *
- * @since x.x.x
+ * @since 2.14.2
  * @param {string} html Markup for the new block.
  * @return {Object} Block object ready for `replaceBlock`.
  */

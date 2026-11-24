@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
  * that a JS number holds exactly is accepted; anything else returns null and
  * must not be requested.
  *
- * @since x.x.x
+ * @since 2.14.2
  *
  * @param {*} id - Raw entry ID, e.g. a route param.
  * @return {number|null} The entry ID, or null when it is not a positive integer.
@@ -29,7 +29,7 @@ export const toEntryId = ( id ) => {
 /**
  * Rejected promise returned instead of a request for an invalid entry ID.
  *
- * @since x.x.x
+ * @since 2.14.2
  *
  * @return {Promise<never>} Rejected promise.
  */
