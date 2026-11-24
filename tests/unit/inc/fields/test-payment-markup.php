@@ -240,6 +240,54 @@ class Test_Payment_Markup extends TestCase {
 		$this->assertSame( 'fixed', $property( $both, 'amount_type' ), 'The active (default) choice renders as fixed.' );
 	}
 
+	/**
+	 * The variable-amount message template only ever carries a known interval
+	 * label and an integer cycle count, whatever the block attributes hold.
+	 *
+	 * @dataProvider provide_subscription_plans_for_message_format
+	 *
+	 * @param array  $plan     subscriptionPlan block attribute.
+	 * @param string $expected Expected data-message-format value (decoded).
+	 */
+	public function test_render_amount_display_message_format_is_built_from_known_values( $plan, $expected ) {
+		$payment = new Payment_Markup(
+			[
+				'block_id'         => 'pay006',
+				'slug'             => 'payment',
+				'paymentType'      => 'subscription',
+				'amountType'       => 'variable',
+				'subscriptionPlan' => $plan,
+			]
+		);
+
+		$html = $this->call_private_method( $payment, 'render_amount_display', [ 'subscription', 'variable', 0, 0 ] );
+
+		$this->assertSame( 1, preg_match( '/data-message-format="([^"]*)"/', $html, $match ) );
+		$this->assertSame( $expected, html_entity_decode( $match[1], ENT_QUOTES ) );
+	}
+
+	/**
+	 * Subscription plans for the message-format test.
+	 *
+	 * @return array<string, array{0: array, 1: string}>
+	 */
+	public function provide_subscription_plans_for_message_format() {
+		return [
+			'known interval, ongoing'           => [ [ 'interval' => 'week', 'billingCycles' => 'ongoing' ], '{amount} per week (until cancelled)' ],
+			'editor yearly slug'                => [ [ 'interval' => 'year', 'billingCycles' => 'ongoing' ], '{amount} per year (until cancelled)' ],
+			'legacy yearly slug'                => [ [ 'interval' => 'yearly', 'billingCycles' => 3 ], '{amount} per year (3 payments)' ],
+			'numeric string cycles'             => [ [ 'interval' => 'month', 'billingCycles' => '12' ], '{amount} per month (12 payments)' ],
+			'unknown interval, entity markup'   => [ [ 'interval' => '&lt;img src=x onerror=alert(1)&gt;', 'billingCycles' => 'ongoing' ], '{amount} per month (until cancelled)' ],
+			'unknown interval, raw markup'      => [ [ 'interval' => '<b>x</b>', 'billingCycles' => 0 ], '{amount} per month' ],
+			'non-string interval'               => [ [ 'interval' => [ 'month' ], 'billingCycles' => 'ongoing' ], '{amount} per month (until cancelled)' ],
+			'non-numeric cycles with markup'    => [ [ 'interval' => 'day', 'billingCycles' => '2 &lt;img src=x onerror=alert(1)&gt;' ], '{amount} per day' ],
+			'array cycles'                      => [ [ 'interval' => 'day', 'billingCycles' => [ 5 ] ], '{amount} per day' ],
+			'negative cycles'                   => [ [ 'interval' => 'day', 'billingCycles' => '-3' ], '{amount} per day' ],
+			'empty custom cycles'               => [ [ 'interval' => 'day', 'billingCycles' => '' ], '{amount} per day' ],
+			'absent plan keys'                  => [ [ 'name' => 'Plan' ], '{amount} per month' ],
+		];
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );

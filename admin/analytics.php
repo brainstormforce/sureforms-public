@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Features;
 use SRFM\Inc\Form_Start;
 use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Form_Views;
@@ -309,6 +310,7 @@ class Analytics {
 		// Recount published template forms so this report carries current numbers.
 		self::refresh_form_template_usage();
 		self::refresh_form_start_funnel();
+		$this->track_manage_features();
 
 		// Flush pending events into payload (only if any exist).
 		$pending_events = self::events()->flush_pending();
@@ -1528,6 +1530,39 @@ class Analytics {
 			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
 			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
 		}
+	}
+
+	/**
+	 * Queue the site's Settings → Features switches as a `manage_features` event.
+	 *
+	 * One property per registered feature, `on` or `off`, read from its saved
+	 * switch (or its default when never saved) rather than its resolved state: a
+	 * feature kept off only because one it depends on is off still reads `on`, so
+	 * switching Entries off is not also counted against the features that depend
+	 * on it. The value is the number of features switched off. Rows added through
+	 * `srfm_features`, including Pro's, are reported the same way.
+	 *
+	 * Not queued for a site that never saved the tab, where every switch is at its
+	 * default. Forced, so the current snapshot is re-sent every cycle.
+	 *
+	 * @since 2.14.2
+	 * @return void
+	 */
+	private function track_manage_features() {
+		$saved = Features::get_saved();
+		if ( empty( $saved ) ) {
+			return;
+		}
+
+		$properties = [];
+		$off        = 0;
+		foreach ( Features::definitions() as $key => $row ) {
+			$on                                 = $saved[ $key ] ?? (bool) $row['default'];
+			$off                               += $on ? 0 : 1;
+			$properties[ sanitize_key( $key ) ] = $on ? 'on' : 'off';
+		}
+
+		self::events()->track( 'manage_features', (string) $off, $properties, true );
 	}
 
 	/**

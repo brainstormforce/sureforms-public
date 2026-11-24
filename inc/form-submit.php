@@ -1342,10 +1342,9 @@ class Form_Submit {
 			}
 
 			// The notification fault clears when notifications work again. Nothing
-			// else retired it: Client_Logger::clear_category() had a single caller
-			// hardcoded to 'submission', and the notice is deliberately not
-			// dismissible, so a site that had fixed its SMTP kept an undismissable
-			// banner on every admin page until somebody opened a support ticket.
+			// else retires it for good: closing the notice only marks the failures
+			// so far as seen, so a site that had fixed its SMTP would otherwise keep
+			// the record until somebody reported it.
 			// Held until the loop is done because one recipient succeeding while
 			// another fails is still a failure.
 			//
