@@ -2,6 +2,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import Header from '@Admin/components/Header';
 import { cn } from '@Utils/Helpers';
+import { toEntryId } from '../api/entriesApi';
 
 /**
  * FormPageHeader Component
@@ -11,7 +12,8 @@ import { cn } from '@Utils/Helpers';
  * @return {JSX.Element}            FormPageHeader component
  */
 const PageHeader = ( { className } ) => {
-	const { id } = useParams( { strict: false } );
+	const { id: routeId } = useParams( { strict: false } );
+	const id = toEntryId( routeId );
 
 	return (
 		<div className={ cn( 'z-50 relative', className ) }>

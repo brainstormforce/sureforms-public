@@ -19,6 +19,7 @@ import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { ArrowLeft } from 'lucide-react';
 import UpgradeTooltip from '../components/UpgradeTooltip';
 import { transformEntryDetail } from '../utils/entryHelpers';
+import { toEntryId } from '../api/entriesApi';
 
 /**
  * Button to send entry details via email
@@ -66,7 +67,9 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
  * Displays detailed view of a single entry
  */
 const EntryDetailPage = () => {
-	const { id } = useParams();
+	const { id: routeId } = useParams();
+	// Only a positive integer reaches REST paths and the components below.
+	const id = toEntryId( routeId );
 	const navigate = useNavigate();
 	const [ searchParams, setSearchParams ] = useSearchParams();
 	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
@@ -226,7 +229,7 @@ const EntryDetailPage = () => {
 							{ sprintf(
 								// translators: %s is the entry ID
 								__( 'Entry #%s', 'sureforms' ),
-								id
+								id ?? ''
 							) }
 						</Text>
 					</div>
@@ -234,7 +237,7 @@ const EntryDetailPage = () => {
 						{ applyFilters(
 							'srfm.entryDetail.extraNavActions',
 							null,
-							{ formId: entryData?.formId, entryId: parseInt( id, 10 ) }
+							{ formId: entryData?.formId, entryId: id }
 						) }
 						<EntryNavigation { ...navigationProps } />
 					</div>
@@ -268,7 +271,7 @@ const EntryDetailPage = () => {
 									'srfm.entryDetail.extraActions',
 									null,
 									{
-										entryId: parseInt( id, 10 ),
+										entryId: id,
 										formId: entryData?.formId,
 									}
 								) }
@@ -298,7 +301,7 @@ const EntryDetailPage = () => {
 				<ResendNotificationModal
 					open={ openResendNotificationModal }
 					setOpen={ setOpenResendNotificationModal }
-					entryIds={ [ parseInt( id, 10 ) ] }
+					entryIds={ [ id ] }
 					formId={ entryData.formId }
 				/>
 			) }
