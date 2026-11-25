@@ -1,16 +1,75 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { ArrowRight, X } from 'lucide-react';
 
+// Yellow from the BFCM banner calendar, used for the timer, prices and button.
+const HIGHLIGHT = 'text-[#FEF08A]';
+
 const PART_CLASSES = {
 	plain: '',
 	bold: 'font-bold',
-	accent: 'font-bold text-brand-200',
-	strike: 'line-through opacity-70',
+	accent: `font-bold ${ HIGHLIGHT }`,
 };
 
-const MINUTE_IN_MS = 60 * 1000;
+const SECOND_IN_MS = 1000;
+const MINUTE_IN_MS = 60 * SECOND_IN_MS;
+
+/**
+ * Days, hours, minutes and seconds left until `endsAt`, never below zero.
+ *
+ * @since x.x.x
+ * @param {number} endsAt End time in milliseconds.
+ * @param {number} now    Current time in milliseconds.
+ * @return {Array<number>} [ days, hours, minutes, seconds ].
+ */
+export const getTimeLeft = ( endsAt, now ) => {
+	const total = Math.max( 0, Math.floor( ( endsAt - now ) / SECOND_IN_MS ) );
+	return [
+		Math.floor( total / 86400 ),
+		Math.floor( ( total % 86400 ) / 3600 ),
+		Math.floor( ( total % 3600 ) / 60 ),
+		total % 60,
+	];
+};
+
+/**
+ * Countdown to the end of the sale, ticking every second.
+ *
+ * @since x.x.x
+ * @param {Object} props        Component props.
+ * @param {number} props.endsAt End time in milliseconds.
+ * @param {string} props.label  Screen reader label, e.g. "Sale ends in".
+ * @return {JSX.Element} The countdown.
+ */
+const Countdown = ( { endsAt, label } ) => {
+	const [ now, setNow ] = useState( () => Date.now() );
+
+	useEffect( () => {
+		const timer = setInterval( () => setNow( Date.now() ), SECOND_IN_MS );
+		return () => clearInterval( timer );
+	}, [] );
+
+	const [ days, hours, minutes, seconds ] = getTimeLeft( endsAt, now );
+	const pad = ( value ) => String( value ).padStart( 2, '0' );
+
+	return (
+		<span
+			role="timer"
+			className={ `hidden shrink-0 font-bold tabular-nums tracking-wide sm:inline ${ HIGHLIGHT }` }
+			aria-label={ sprintf(
+				/* translators: 1: label such as "Sale ends in", 2: days, 3: hours, 4: minutes. */
+				__( '%1$s %2$d days, %3$d hours, %4$d minutes', 'sureforms' ),
+				label,
+				days,
+				hours,
+				minutes
+			) }
+		>
+			{ [ days, hours, minutes, seconds ].map( pad ).join( ' : ' ) }
+		</span>
+	);
+};
 
 /**
  * One full run of the segments, each followed by a star. Rendered twice so the
@@ -42,7 +101,7 @@ const Run = ( { items, hidden = false } ) => (
 						</span>
 					) ) }
 				</span>
-				<span className="text-brand-200" aria-hidden="true">
+				<span className={ HIGHLIGHT } aria-hidden="true">
 					✦
 				</span>
 			</span>
@@ -54,9 +113,9 @@ const Run = ( { items, hidden = false } ) => (
  * Scrolling sale bar above the SureForms admin header.
  *
  * The server sends `promotion` only while the sale is live, to users who
- * manage SureForms without Pro and have not dismissed it. The end time is
- * checked again every minute, so the bar also goes away from a tab left open
- * past the end of the sale.
+ * manage SureForms without Pro and have not dismissed it, with the copy for
+ * the running sale period. The end time is checked again every minute, so the
+ * bar also goes away from a tab left open past the end of the sale.
  *
  * @since x.x.x
  * @param {Object} props           Component props.
@@ -99,12 +158,7 @@ const PromoBar = ( { promotion } ) => {
 			className="group relative flex min-w-0 items-center gap-3 bg-background-brand px-4 py-2 text-sm text-white"
 			aria-label={ __( 'Promotion', 'sureforms' ) }
 		>
-			{ promotion.badge && (
-				<span className="hidden shrink-0 items-center gap-1.5 rounded-full border border-solid border-white/70 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white sm:inline-flex">
-					<span className="size-1.5 rounded-full bg-white" />
-					{ promotion.badge }
-				</span>
-			) }
+			<Countdown endsAt={ endsAt } label={ promotion.timer_label } />
 
 			<div className="relative min-w-0 flex-1 overflow-hidden motion-reduce:overflow-x-auto [mask-image:linear-gradient(to_right,transparent,#000_24px,#000_calc(100%-24px),transparent)]">
 				<div className="flex w-max animate-srfm-marquee group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused] motion-reduce:animate-none">
@@ -117,7 +171,7 @@ const PromoBar = ( { promotion } ) => {
 				href={ promotion.cta.url }
 				target="_blank"
 				rel="noopener noreferrer"
-				className="inline-flex shrink-0 items-center gap-1 rounded-md bg-white px-3 py-1.5 text-sm font-bold text-brand-primary-600 no-underline hover:bg-brand-background-50 hover:text-brand-primary-600 focus:text-brand-primary-600"
+				className="inline-flex shrink-0 items-center gap-1 rounded-md bg-[#FEF08A] px-3 py-1.5 text-sm font-bold text-text-primary no-underline hover:bg-[#FDE047] hover:text-text-primary focus:text-text-primary"
 			>
 				{ promotion.cta.label }
 				<ArrowRight className="size-4" aria-hidden="true" />

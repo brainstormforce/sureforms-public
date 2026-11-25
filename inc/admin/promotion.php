@@ -60,6 +60,19 @@ class Promotion {
 	public const DISMISSED_META = 'srfm_dismissed_promotion';
 
 	/**
+	 * Sale periods from the BFCM banner calendar, each with its UTC start
+	 * (00:00 PT). The last period that has started is the running one.
+	 *
+	 * @since x.x.x
+	 */
+	public const PHASES = [
+		'black-friday'       => '2026-11-15 08:00:00',
+		'cyber-monday'       => '2026-11-30 08:00:00',
+		'after-cyber-monday' => '2026-12-01 08:00:00',
+		'final-hours'        => '2026-12-06 08:00:00',
+	];
+
+	/**
 	 * Register the dismiss route through the SureForms REST registry.
 	 *
 	 * @since x.x.x
@@ -135,6 +148,7 @@ class Promotion {
 	 * @return array<string,mixed>|null
 	 */
 	public function get_for_current_user( $now = null ) {
+		$now     = null === $now ? time() : (int) $now;
 		$user_id = get_current_user_id();
 
 		if ( ! $user_id || ! Helper::current_user_can() || Helper::has_pro() || Helper::hide_promotions() || ! $this->is_live( $now ) ) {
@@ -145,19 +159,24 @@ class Promotion {
 			return null;
 		}
 
+		$phase   = $this->get_phase( $now );
+		$content = $this->get_content( $phase );
+
 		return [
-			'id'      => self::ID,
-			'ends_at' => (int) strtotime( self::ENDS_AT . ' UTC' ),
-			'badge'   => __( 'Live now', 'sureforms' ),
-			'items'   => $this->get_items(),
-			'cta'     => [
-				'label' => __( 'Grab the Deal', 'sureforms' ),
+			'id'          => self::ID,
+			'phase'       => $phase,
+			'ends_at'     => (int) strtotime( self::ENDS_AT . ' UTC' ),
+			'timer_label' => __( 'Sale ends in', 'sureforms' ),
+			'items'       => $content['items'],
+			'cta'         => [
+				'label' => $content['cta'],
 				'url'   => esc_url_raw(
 					add_query_arg(
 						[
 							'utm_source'   => 'sureforms_plugin',
 							'utm_medium'   => 'top-bar',
 							'utm_campaign' => 'bfcm-2026',
+							'utm_content'  => $phase,
 						],
 						SRFM_WEBSITE . 'pricing/'
 					)
@@ -181,70 +200,90 @@ class Promotion {
 	}
 
 	/**
-	 * Scrolling segments, each a list of text parts with a style: plain,
-	 * bold, accent or strike. Prices match sureforms.com/pricing.
+	 * Key of the running sale period, or an empty string outside the sale.
 	 *
 	 * @since x.x.x
 	 *
-	 * @return array<int, array<int, array{text: string, style: string}>>
+	 * @param int|null $now Unix timestamp. Defaults to now.
+	 * @return string
 	 */
-	private function get_items() {
-		$plan = static function ( $name, $price, $was ) {
+	public function get_phase( $now = null ) {
+		$now = null === $now ? time() : (int) $now;
+
+		if ( ! $this->is_live( $now ) ) {
+			return '';
+		}
+
+		$running = '';
+		foreach ( self::PHASES as $phase => $starts_at ) {
+			if ( $now >= strtotime( $starts_at . ' UTC' ) ) {
+				$running = $phase;
+			}
+		}
+
+		return $running;
+	}
+
+	/**
+	 * Scrolling segments and button label for a sale period, from the BFCM
+	 * banner calendar. Each segment is a list of text parts with a style:
+	 * plain, bold or accent. Annual prices always say "for the first year".
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $phase Sale period key.
+	 * @return array{items: array<int, array<int, array{text: string, style: string}>>, cta: string}
+	 */
+	private function get_content( $phase ) {
+		$part = static function ( $text, $style = 'plain' ) {
 			return [
-				[
-					'text'  => $name,
-					'style' => 'plain',
-				],
-				[
-					'text'  => $price,
-					'style' => 'accent',
-				],
-				[
-					'text'  => $was,
-					'style' => 'strike',
-				],
+				'text'  => $text,
+				'style' => $style,
 			];
 		};
 
-		return [
-			[
-				[
-					'text'  => __( 'Black Friday Sale', 'sureforms' ),
-					'style' => 'bold',
-				],
-			],
-			[
-				[
-					'text'  => __( 'Up to 50% OFF', 'sureforms' ),
-					'style' => 'accent',
-				],
-				[
-					'text'  => __( 'SureForms Pro', 'sureforms' ),
-					'style' => 'plain',
-				],
-			],
-			array_merge(
-				[
-					[
-						'text'  => __( 'Annual', 'sureforms' ),
-						'style' => 'bold',
+		$from_49 = static function ( $lead ) use ( $part ) {
+			return [ $part( $lead ), $part( '$49', 'accent' ), $part( __( 'for the first year', 'sureforms' ) ) ];
+		};
+
+		switch ( $phase ) {
+			case 'final-hours':
+				return [
+					'items' => [
+						[ $part( __( 'Final hours', 'sureforms' ), 'bold' ) ],
+						[ $part( __( 'Save', 'sureforms' ) ), $part( __( 'up to 50%', 'sureforms' ), 'accent' ) ],
+						$from_49( __( 'Plans from', 'sureforms' ) ),
 					],
-				],
-				$plan( __( 'Solo', 'sureforms' ), '$49', '$69' ),
-				$plan( __( 'Team', 'sureforms' ), '$79', '$149' ),
-				$plan( __( 'Agency', 'sureforms' ), '$199', '$249' )
-			),
-			array_merge(
-				[
-					[
-						'text'  => __( 'Lifetime', 'sureforms' ),
-						'style' => 'bold',
+					'cta'   => __( 'Get the deal before it ends', 'sureforms' ),
+				];
+			case 'after-cyber-monday':
+				return [
+					'items' => [
+						[ $part( __( 'Missed Cyber Monday?', 'sureforms' ), 'bold' ) ],
+						[ $part( __( 'You can still save', 'sureforms' ) ), $part( __( 'up to 50%', 'sureforms' ), 'accent' ) ],
+						$from_49( __( 'Plans start at', 'sureforms' ) ),
 					],
-				],
-				$plan( __( 'Solo', 'sureforms' ), '$199', '$349' ),
-				$plan( __( 'Team', 'sureforms' ), '$279', '$449' ),
-				$plan( __( 'Agency', 'sureforms' ), '$499', '$999' )
-			),
-		];
+					'cta'   => __( 'Pick a plan and save', 'sureforms' ),
+				];
+			case 'cyber-monday':
+				return [
+					'items' => [
+						[ $part( __( 'Cyber Monday Sale', 'sureforms' ), 'bold' ) ],
+						[ $part( __( 'Pay yearly or pay once.', 'sureforms' ) ), $part( __( 'Save up to 50%', 'sureforms' ), 'accent' ) ],
+						[ $part( __( 'Save up to $500', 'sureforms' ), 'accent' ) ],
+					],
+					'cta'   => __( 'View Cyber Monday deals', 'sureforms' ),
+				];
+			default:
+				return [
+					'items' => [
+						[ $part( __( 'Black Friday Sale', 'sureforms' ), 'bold' ) ],
+						[ $part( __( 'Up to 50% off', 'sureforms' ), 'accent' ) ],
+						$from_49( __( 'Annual plans from', 'sureforms' ) ),
+						[ $part( __( 'Lifetime plans from', 'sureforms' ) ), $part( '$199', 'accent' ) ],
+					],
+					'cta'   => __( 'View Black Friday deals', 'sureforms' ),
+				];
+		}
 	}
 }

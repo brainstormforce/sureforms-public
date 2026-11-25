@@ -89,6 +89,62 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 		$this->assertSame( 'top-bar', $query['utm_medium'] ?? null );
 		$this->assertSame( 'bfcm-2026', $query['utm_campaign'] ?? null );
 		$this->assertSame( 'sureforms_plugin', $query['utm_source'] ?? null );
+		$this->assertSame( 'black-friday', $query['utm_content'] ?? null );
+	}
+
+	/**
+	 * Each sale period starts at its calendar time, the last one runs until
+	 * the end of the sale, and there is no period outside the sale.
+	 */
+	public function test_phase_follows_calendar() {
+		$previous = '';
+		foreach ( Promotion::PHASES as $phase => $starts_at ) {
+			$start = strtotime( $starts_at . ' UTC' );
+			$this->assertSame( $previous, $this->promotion->get_phase( $start - 1 ), "Before {$phase}." );
+			$this->assertSame( $phase, $this->promotion->get_phase( $start ), "At the start of {$phase}." );
+			$previous = $phase;
+		}
+
+		$end = strtotime( Promotion::ENDS_AT . ' UTC' );
+		$this->assertSame( 'final-hours', $this->promotion->get_phase( $end - 1 ) );
+		$this->assertSame( '', $this->promotion->get_phase( $end ), 'After the sale.' );
+		$this->assertSame( Promotion::STARTS_AT, Promotion::PHASES['black-friday'], 'The first period opens the sale.' );
+	}
+
+	/**
+	 * Every period has its own copy and button, tagged with the period. The
+	 * copy never names Pro, and an annual price always says it is for the
+	 * first year.
+	 */
+	public function test_each_phase_copy_rules() {
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$this->markTestSkipped( 'SureForms Pro is loaded, so the bar is hidden.' );
+		}
+		wp_set_current_user( $this->admin_id );
+
+		$labels = [];
+		foreach ( Promotion::PHASES as $phase => $starts_at ) {
+			$data = $this->promotion->get_for_current_user( strtotime( $starts_at . ' UTC' ) );
+
+			$this->assertIsArray( $data, $phase );
+			$this->assertSame( $phase, $data['phase'] );
+			$this->assertNotEmpty( $data['items'], $phase );
+			$labels[] = $data['cta']['label'];
+
+			$query = [];
+			parse_str( (string) wp_parse_url( $data['cta']['url'], PHP_URL_QUERY ), $query );
+			$this->assertSame( $phase, $query['utm_content'] ?? null );
+
+			foreach ( $data['items'] as $segment ) {
+				$text = implode( ' ', wp_list_pluck( $segment, 'text' ) );
+				$this->assertStringNotContainsString( 'Pro', $text, "{$phase}: {$text}" );
+				if ( false !== strpos( $text, '$49' ) ) {
+					$this->assertStringContainsString( 'for the first year', $text, "{$phase}: {$text}" );
+				}
+			}
+		}
+
+		$this->assertCount( count( Promotion::PHASES ), array_unique( $labels ), 'Each period has its own button.' );
 	}
 
 	/**
