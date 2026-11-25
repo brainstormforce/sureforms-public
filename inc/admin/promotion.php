@@ -227,7 +227,7 @@ class Promotion {
 	/**
 	 * Scrolling segments and button label for a sale period, from the BFCM
 	 * banner calendar. Each segment is a list of text parts with a style:
-	 * plain, bold or accent. Annual prices always say "for the first year".
+	 * plain, bold or accent. The entry price always reads "Plans start at $49".
 	 *
 	 * @since x.x.x
 	 *
@@ -242,9 +242,7 @@ class Promotion {
 			];
 		};
 
-		$from_49 = static function ( $lead ) use ( $part ) {
-			return [ $part( $lead ), $part( '$49', 'accent' ), $part( __( 'for the first year', 'sureforms' ) ) ];
-		};
+		$from_49 = [ $part( __( 'Plans start at', 'sureforms' ) ), $part( '$49', 'accent' ) ];
 
 		switch ( $phase ) {
 			case 'final-hours':
@@ -252,7 +250,7 @@ class Promotion {
 					'items' => [
 						[ $part( __( 'Final hours', 'sureforms' ), 'bold' ) ],
 						[ $part( __( 'Save', 'sureforms' ) ), $part( __( 'up to 50%', 'sureforms' ), 'accent' ) ],
-						$from_49( __( 'Plans from', 'sureforms' ) ),
+						$from_49,
 					],
 					'cta'   => __( 'Get the deal before it ends', 'sureforms' ),
 				];
@@ -261,7 +259,7 @@ class Promotion {
 					'items' => [
 						[ $part( __( 'Missed Cyber Monday?', 'sureforms' ), 'bold' ) ],
 						[ $part( __( 'You can still save', 'sureforms' ) ), $part( __( 'up to 50%', 'sureforms' ), 'accent' ) ],
-						$from_49( __( 'Plans start at', 'sureforms' ) ),
+						$from_49,
 					],
 					'cta'   => __( 'Pick a plan and save', 'sureforms' ),
 				];
@@ -279,7 +277,7 @@ class Promotion {
 					'items' => [
 						[ $part( __( 'Black Friday Sale', 'sureforms' ), 'bold' ) ],
 						[ $part( __( 'Up to 50% off', 'sureforms' ), 'accent' ) ],
-						$from_49( __( 'Annual plans from', 'sureforms' ) ),
+						$from_49,
 						[ $part( __( 'Lifetime plans from', 'sureforms' ) ), $part( '$199', 'accent' ) ],
 					],
 					'cta'   => __( 'View Black Friday deals', 'sureforms' ),

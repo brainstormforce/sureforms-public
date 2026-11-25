@@ -113,8 +113,8 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 
 	/**
 	 * Every period has its own copy and button, tagged with the period. The
-	 * copy never names Pro, and an annual price always says it is for the
-	 * first year.
+	 * copy never names Pro or annual plans, and the entry price always reads
+	 * "Plans start at $49".
 	 */
 	public function test_each_phase_copy_rules() {
 		if ( defined( 'SRFM_PRO_VER' ) ) {
@@ -138,8 +138,9 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 			foreach ( $data['items'] as $segment ) {
 				$text = implode( ' ', wp_list_pluck( $segment, 'text' ) );
 				$this->assertStringNotContainsString( 'Pro', $text, "{$phase}: {$text}" );
+				$this->assertStringNotContainsString( 'Annual', $text, "{$phase}: {$text}" );
 				if ( false !== strpos( $text, '$49' ) ) {
-					$this->assertStringContainsString( 'for the first year', $text, "{$phase}: {$text}" );
+					$this->assertSame( 'Plans start at $49', $text, "{$phase}: the entry price reads the same everywhere." );
 				}
 			}
 		}
