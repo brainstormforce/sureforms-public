@@ -7,6 +7,7 @@
 
 namespace SRFM\Admin;
 
+use SRFM\Inc\Admin\Promotion;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
@@ -311,6 +312,7 @@ class Analytics {
 		self::refresh_form_template_usage();
 		self::refresh_form_start_funnel();
 		$this->track_manage_features();
+		$this->track_bfcm_banner();
 
 		// Flush pending events into payload (only if any exist).
 		$pending_events = self::events()->flush_pending();
@@ -1530,6 +1532,36 @@ class Analytics {
 			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
 			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
 		}
+	}
+
+	/**
+	 * Queue the Black Friday sale bar's counts as a `bfcm_2026_banner` event.
+	 *
+	 * One property per action and sale period (`shown_black_friday`,
+	 * `click_cyber_monday`, `dismiss_final_hours`, ...); the value is the total
+	 * clicks. Not queued until the bar has counted something. Forced, so the
+	 * running totals are re-sent every cycle.
+	 *
+	 * Temporary: remove with `Promotion` in the first release after the sale.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function track_bfcm_banner() {
+		$stats = Promotion::get_instance()->get_stats();
+
+		$properties = [];
+		foreach ( $stats as $action => $phases ) {
+			foreach ( $phases as $phase => $count ) {
+				$properties[ $action . '_' . str_replace( '-', '_', $phase ) ] = $count;
+			}
+		}
+
+		if ( 0 === array_sum( $properties ) ) {
+			return;
+		}
+
+		self::events()->track( 'bfcm_2026_banner', (string) array_sum( $stats['click'] ), $properties, true );
 	}
 
 	/**

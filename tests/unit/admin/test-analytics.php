@@ -9,6 +9,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Admin\Analytics;
+use SRFM\Inc\Admin\Promotion;
 use SRFM\Inc\Features;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
@@ -2511,6 +2512,64 @@ class Test_Analytics extends TestCase {
 	 * @param array<mixed> $stats Stats payload.
 	 * @return array<string,mixed>|null
 	 */
+	// ─── bfcm_2026_banner ────────────────────────────────────────
+
+	/**
+	 * Nothing is sent while the sale bar has no counts.
+	 */
+	public function test_add_srfm_analytics_data_skips_bfcm_banner_without_counts() {
+		delete_option( Promotion::STATS_OPTION );
+
+		$this->assertNull( $this->event_named( Analytics::get_instance()->add_srfm_analytics_data( [] ), 'bfcm_2026_banner' ) );
+	}
+
+	/**
+	 * The counts are sent as one property per action and sale period, the value
+	 * is the total clicks, and the event is re-sent every cycle.
+	 */
+	public function test_add_srfm_analytics_data_reports_bfcm_banner_counts() {
+		$promotion = Promotion::get_instance();
+		$friday    = strtotime( Promotion::PHASES['black-friday'] . ' UTC' );
+		$cyber     = strtotime( Promotion::PHASES['cyber-monday'] . ' UTC' );
+		$promotion->record( 'shown', $friday );
+		$promotion->record( 'click', $friday );
+		$promotion->record( 'click', $cyber );
+		$promotion->record( 'dismiss', $cyber );
+
+		try {
+			$event = $this->event_named( Analytics::get_instance()->add_srfm_analytics_data( [] ), 'bfcm_2026_banner' );
+
+			$this->assertNotNull( $event );
+			$this->assertSame( '2', $event['event_value'] );
+			$this->assertSame( 1, $event['properties']['shown_black_friday'] );
+			$this->assertSame( 1, $event['properties']['click_black_friday'] );
+			$this->assertSame( 1, $event['properties']['click_cyber_monday'] );
+			$this->assertSame( 1, $event['properties']['dismiss_cyber_monday'] );
+			$this->assertSame( 0, $event['properties']['click_final_hours'] );
+
+			$again = $this->event_named( Analytics::get_instance()->add_srfm_analytics_data( [] ), 'bfcm_2026_banner' );
+			$this->assertNotNull( $again, 'Re-sent on the next cycle.' );
+		} finally {
+			delete_option( Promotion::STATS_OPTION );
+		}
+	}
+
+	/**
+	 * Find an event by name in an analytics payload.
+	 *
+	 * @param array  $stats Payload from add_srfm_analytics_data().
+	 * @param string $name  Event name.
+	 * @return array|null
+	 */
+	private function event_named( $stats, $name ) {
+		foreach ( $stats['plugin_data']['sureforms']['events_record'] ?? [] as $event ) {
+			if ( $name === ( $event['event_name'] ?? '' ) ) {
+				return $event;
+			}
+		}
+		return null;
+	}
+
 	private function manage_features_event( $stats ) {
 		foreach ( $stats['plugin_data']['sureforms']['events_record'] ?? [] as $event ) {
 			if ( 'manage_features' === ( $event['event_name'] ?? '' ) ) {

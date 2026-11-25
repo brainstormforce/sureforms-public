@@ -165,13 +165,17 @@ const PromoBar = ( { promotion } ) => {
 		return null;
 	}
 
-	const handleDismiss = () => {
-		setIsDismissed( true );
+	// Analytics and dismissal calls never block the bar or the link.
+	const post = ( action ) =>
 		apiFetch( {
-			path: '/sureforms/v1/promotion/dismiss',
+			path: `/sureforms/v1/promotion/${ action }`,
 			method: 'POST',
 			data: { id: promotion.id },
 		} ).catch( () => {} );
+
+	const handleDismiss = () => {
+		setIsDismissed( true );
+		post( 'dismiss' );
 	};
 
 	return (
@@ -190,6 +194,7 @@ const PromoBar = ( { promotion } ) => {
 
 			<a
 				href={ promotion.cta.url }
+				onClick={ () => post( 'click' ) }
 				target="_blank"
 				rel="noopener noreferrer"
 				className="inline-flex shrink-0 items-center gap-1 rounded-md bg-[#FEF08A] px-3 py-1.5 text-sm font-bold text-text-primary no-underline hover:bg-[#FDE047] hover:text-text-primary focus:text-text-primary"

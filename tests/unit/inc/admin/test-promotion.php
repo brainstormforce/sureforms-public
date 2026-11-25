@@ -51,6 +51,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	protected function tearDown(): void {
 		wp_set_current_user( 0 );
 		remove_all_filters( 'srfm_hide_promotions' );
+		delete_option( Promotion::STATS_OPTION );
 		parent::tearDown();
 	}
 
@@ -71,7 +72,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	/**
 	 * An administrator gets the bar during the sale, with a tagged pricing link.
 	 */
-	public function test_admin_gets_promotion_during_sale() {
+	public function test_get_for_current_user_during_sale() {
 		if ( defined( 'SRFM_PRO_VER' ) ) {
 			$this->markTestSkipped( 'SureForms Pro is loaded, so the bar is hidden.' );
 		}
@@ -96,7 +97,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	 * Each sale period starts at its calendar time, the last one runs until
 	 * the end of the sale, and there is no period outside the sale.
 	 */
-	public function test_phase_follows_calendar() {
+	public function test_get_phase_follows_calendar() {
 		$previous = '';
 		foreach ( Promotion::PHASES as $phase => $starts_at ) {
 			$start = strtotime( $starts_at . ' UTC' );
@@ -116,7 +117,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	 * copy never names Pro or annual plans, and the entry price always reads
 	 * "Plans start at $49".
 	 */
-	public function test_each_phase_copy_rules() {
+	public function test_get_for_current_user_copy_rules() {
 		if ( defined( 'SRFM_PRO_VER' ) ) {
 			$this->markTestSkipped( 'SureForms Pro is loaded, so the bar is hidden.' );
 		}
@@ -151,7 +152,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	/**
 	 * Every case that should hide the bar returns null.
 	 */
-	public function test_promotion_hidden_cases() {
+	public function test_get_for_current_user_hidden_cases() {
 		$end = strtotime( Promotion::ENDS_AT . ' UTC' );
 
 		wp_set_current_user( 0 );
@@ -174,7 +175,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	/**
 	 * Dismissing an earlier sale does not hide this one.
 	 */
-	public function test_other_dismissed_id_does_not_hide() {
+	public function test_get_for_current_user_ignores_other_dismissed_id() {
 		if ( defined( 'SRFM_PRO_VER' ) ) {
 			$this->markTestSkipped( 'SureForms Pro is loaded, so the bar is hidden.' );
 		}
@@ -187,7 +188,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	/**
 	 * The dismiss route is registered and needs the SureForms admin capability.
 	 */
-	public function test_dismiss_route_requires_capability() {
+	public function test_register_routes_dismiss_requires_capability() {
 		$endpoints = $this->promotion->register_routes( [] );
 
 		$this->assertArrayHasKey( 'promotion/dismiss', $endpoints );
@@ -206,7 +207,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	/**
 	 * A missing or wrong nonce is rejected and nothing is stored.
 	 */
-	public function test_dismiss_rejects_bad_nonce() {
+	public function test_rest_dismiss_rejects_bad_nonce() {
 		wp_set_current_user( $this->admin_id );
 
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/promotion/dismiss' );
@@ -231,7 +232,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	 *
 	 * @param mixed $id Submitted id.
 	 */
-	public function test_dismiss_rejects_unknown_id( $id ) {
+	public function test_rest_dismiss_rejects_unknown_id( $id ) {
 		wp_set_current_user( $this->admin_id );
 
 		$request = $this->signed_request();
@@ -265,7 +266,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	/**
 	 * A valid request stores the dismissal for the current user only.
 	 */
-	public function test_dismiss_stores_for_current_user() {
+	public function test_rest_dismiss_stores_for_current_user() {
 		wp_set_current_user( $this->admin_id );
 
 		$request = $this->signed_request();
@@ -279,6 +280,132 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 
 		$other_admin = self::factory()->user->create( [ 'role' => 'administrator' ] );
 		$this->assertSame( '', get_user_meta( $other_admin, Promotion::DISMISSED_META, true ) );
+	}
+
+	// ─── Analytics counts ────────────────────────────────────────
+
+	/**
+	 * Counts are kept per sale period, only for known actions, and nothing is
+	 * counted outside the sale.
+	 */
+	public function test_record_counts_per_phase() {
+		$cyber = strtotime( Promotion::PHASES['cyber-monday'] . ' UTC' );
+
+		$this->assertTrue( $this->promotion->record( 'click', $this->during ) );
+		$this->assertTrue( $this->promotion->record( 'click', $this->during ) );
+		$this->assertTrue( $this->promotion->record( 'click', $cyber ) );
+		$this->assertTrue( $this->promotion->record( 'dismiss', $cyber ) );
+
+		$this->assertFalse( $this->promotion->record( 'click', strtotime( Promotion::ENDS_AT . ' UTC' ) ), 'After the sale.' );
+		$this->assertFalse( $this->promotion->record( 'hover', $this->during ), 'Unknown action.' );
+
+		$stats = $this->promotion->get_stats();
+		$this->assertSame( 2, $stats['click']['black-friday'] );
+		$this->assertSame( 1, $stats['click']['cyber-monday'] );
+		$this->assertSame( 0, $stats['click']['final-hours'] );
+		$this->assertSame( 1, $stats['dismiss']['cyber-monday'] );
+		$this->assertSame( 0, $stats['shown']['black-friday'] );
+		$this->assertArrayNotHasKey( 'hover', $stats );
+	}
+
+	/**
+	 * A stored option of the wrong shape reads as zeros instead of breaking.
+	 */
+	public function test_get_stats_survives_bad_option() {
+		update_option( Promotion::STATS_OPTION, 'garbage' );
+		$this->assertSame( 0, $this->promotion->get_stats()['click']['black-friday'] );
+
+		update_option( Promotion::STATS_OPTION, [ 'click' => [ 'black-friday' => 'x', 'other' => 5 ] ] );
+		$stats = $this->promotion->get_stats();
+		$this->assertSame( 0, $stats['click']['black-friday'] );
+		$this->assertArrayNotHasKey( 'other', $stats['click'] );
+	}
+
+	/**
+	 * Each user is counted as shown once, the first time the bar is built for
+	 * them; users who never get the bar are not counted.
+	 */
+	public function test_get_for_current_user_counts_shown_once() {
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$this->markTestSkipped( 'SureForms Pro is loaded, so the bar is hidden.' );
+		}
+		wp_set_current_user( $this->subscriber_id );
+		$this->promotion->get_for_current_user( $this->during );
+
+		wp_set_current_user( $this->admin_id );
+		$this->promotion->get_for_current_user( $this->during );
+		$this->promotion->get_for_current_user( $this->during );
+		$this->assertSame( 1, $this->promotion->get_stats()['shown']['black-friday'] );
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->promotion->get_for_current_user( $this->during );
+		$this->assertSame( 2, $this->promotion->get_stats()['shown']['black-friday'] );
+	}
+
+	/**
+	 * The click route needs the SureForms admin capability.
+	 */
+	public function test_register_routes_click_requires_capability() {
+		$endpoints = $this->promotion->register_routes( [] );
+
+		$this->assertArrayHasKey( 'promotion/click', $endpoints );
+		$permission = $endpoints['promotion/click']['permission_callback'];
+
+		wp_set_current_user( $this->subscriber_id );
+		$this->assertFalse( (bool) call_user_func( $permission ) );
+
+		wp_set_current_user( $this->admin_id );
+		$this->assertTrue( (bool) call_user_func( $permission ) );
+	}
+
+	/**
+	 * A click is counted only with a valid nonce, the running promotion id,
+	 * and while the bar is actually showing to this user.
+	 */
+	public function test_rest_click_counted_only_when_valid() {
+		if ( defined( 'SRFM_PRO_VER' ) || ! $this->promotion->is_live() ) {
+			$this->markTestSkipped( 'The bar is not showing right now.' );
+		}
+		wp_set_current_user( $this->admin_id );
+		$phase = $this->promotion->get_phase();
+
+		$unsigned = new WP_REST_Request( 'POST', '/sureforms/v1/promotion/click' );
+		$unsigned->set_param( 'id', Promotion::ID );
+		$this->assertInstanceOf( WP_Error::class, $this->promotion->rest_click( $unsigned ) );
+
+		$wrong_id = $this->signed_request();
+		$wrong_id->set_param( 'id', 'sureforms-bfcm-2025' );
+		$this->assertInstanceOf( WP_Error::class, $this->promotion->rest_click( $wrong_id ) );
+
+		$this->assertSame( 0, $this->promotion->get_stats()['click'][ $phase ] );
+
+		$request = $this->signed_request();
+		$request->set_param( 'id', Promotion::ID );
+		$this->assertInstanceOf( WP_REST_Response::class, $this->promotion->rest_click( $request ) );
+		$this->assertSame( 1, $this->promotion->get_stats()['click'][ $phase ] );
+
+		update_user_meta( $this->admin_id, Promotion::DISMISSED_META, Promotion::ID );
+		$response = $this->promotion->rest_click( $request );
+		$this->assertInstanceOf( WP_Error::class, $response, 'Dismissed, so the bar is not showing.' );
+		$this->assertSame( 1, $this->promotion->get_stats()['click'][ $phase ] );
+	}
+
+	/**
+	 * A dismissal is counted once per user, however often the route is called.
+	 */
+	public function test_rest_dismiss_counted_once_per_user() {
+		if ( ! $this->promotion->is_live() ) {
+			$this->markTestSkipped( 'The sale is over.' );
+		}
+		wp_set_current_user( $this->admin_id );
+		$phase = $this->promotion->get_phase();
+
+		$request = $this->signed_request();
+		$request->set_param( 'id', Promotion::ID );
+		$this->promotion->rest_dismiss( $request );
+		$this->promotion->rest_dismiss( $request );
+
+		$this->assertSame( 1, $this->promotion->get_stats()['dismiss'][ $phase ] );
 	}
 
 	/**
