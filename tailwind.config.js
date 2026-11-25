@@ -209,6 +209,16 @@ module.exports = withTW( {
 				'sm-blur-2': '0 1px 2px rgba(0, 0, 0, 0.05)',
 				'md-blur-32': '0px 10px 32px -12px rgba(149,160,178,0.2)',
 			},
+			// Sale bar above the admin header: scrolls by one of its two copies.
+			keyframes: {
+				'srfm-marquee': {
+					from: { transform: 'translateX(0)' },
+					to: { transform: 'translateX(-50%)' },
+				},
+			},
+			animation: {
+				'srfm-marquee': 'srfm-marquee 40s linear infinite',
+			},
 		},
 	},
 	variants: {

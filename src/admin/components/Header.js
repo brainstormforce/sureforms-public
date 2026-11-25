@@ -6,6 +6,7 @@ import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
+import PromoBar from './PromoBar';
 import LogoFull from '@Admin/dashboard/templates/LogoFull';
 import Breadcrumb from './Breadcrumb';
 import Tooltip from './Tooltip';
@@ -15,6 +16,7 @@ const {
 	site_url: siteURL = '',
 	is_pro_active: isProActive = false,
 	hide_promotions: hidePromotions = false,
+	promotion = null,
 	additional_header_nav_items: additionalNavItems = [],
 } = srfm_admin;
 
@@ -159,7 +161,9 @@ const Header = ( { breadCrumb } ) => {
 
 	return (
 		<div className="top-8 z-[1]">
-			{ ! isProActive &&
+			<PromoBar promotion={ promotion } />
+			{ ! promotion &&
+				! isProActive &&
 				! isLicenseActive &&
 				activePage?.slug === 'sureforms_menu' &&
 				isFirstFormCreated &&

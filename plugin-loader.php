@@ -19,6 +19,7 @@ use SRFM\Inc\Abilities\Abilities_Registrar;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin\Editor_Nudge;
 use SRFM\Inc\Admin\Html_Form_Detector;
+use SRFM\Inc\Admin\Promotion;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
@@ -347,6 +348,7 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		Onboarding::get_instance();
+		Promotion::get_instance();
 		DatabaseRegister::init();
 		Form_Restriction::get_instance();
 		Abilities_Registrar::get_instance();
