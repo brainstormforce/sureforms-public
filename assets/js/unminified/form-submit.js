@@ -1142,6 +1142,10 @@ async function handleFormSubmission(
 		// Hide any previous error messages.
 		hideErrorMessage( form );
 
+		// Must run before the first await: Safari opens Apple Pay only while
+		// the submit click is fresh. Payment awaits the submit started here.
+		window.StripePayment?.startWalletSubmit?.( form );
+
 		const isValidate = await fieldValidation(
 			formId,
 			ajaxUrl,

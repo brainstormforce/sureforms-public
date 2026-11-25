@@ -1,6 +1,6 @@
 {
 	"name": "sureforms",
-	"version": "2.14.0",
+	"version": "2.14.2",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
@@ -8,7 +8,7 @@
 		"build": "export SASS_SILENCE_DEPRECATION=legacy-js-api:import:global-builtin && wp-scripts build && npm run build:sass && grunt minify",
 		"build:script": "wp-scripts build",
 		"build:sass": "node scripts/generate-assets-files.js",
-		"makepot": "wp i18n make-pot . --skip-audit --exclude='.dev,.github,.wordpress-org,docs,src,node_modules,tests,vendor,wordpress' languages/sureforms.pot",
+		"makepot": "php -d memory_limit=-1 \"$(command -v wp)\" i18n make-pot . --skip-audit --exclude='.dev,.github,.wordpress-org,docs,src,node_modules,tests,vendor,wordpress' languages/sureforms.pot",
 		"pretty": "prettier --check .",
 		"pretty:fix": "prettier --write .",
 		"lint-js": "wp-scripts lint-js",

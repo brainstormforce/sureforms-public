@@ -221,3 +221,220 @@ describe( 'updatePaymentBlockAmount', () => {
 		expect( span.textContent ).toBe( '<b>$</b>5.00' );
 	} );
 } );
+
+// Safari opens Apple Pay only while the click that asked for it is fresh, and
+// Stripe.js reaches the sheet through a postMessage hop that WebKit lets
+// through for one second after the click. elements.submit() therefore has to
+// start in the submit click itself, before any network round trip.
+describe( 'startWalletSubmit', () => {
+	const tick = () => new Promise( ( resolve ) => setTimeout( resolve, 0 ) );
+
+	const renderPaymentForm = (
+		blockAttrs = '',
+		inputAttrs = 'data-amount-type="fixed" data-fixed-amount="110"'
+	) => {
+		document.body.innerHTML = `
+			<form data-srfm-instance="7">
+				<div class="srfm-block srfm-payment-block ${ blockAttrs }" data-block-id="b1">
+					<input class="srfm-payment-input" ${ inputAttrs } data-currency="eur" />
+				</div>
+			</form>`;
+		return document.querySelector( 'form' );
+	};
+
+	const mountWallet = ( key = '7-b1' ) => {
+		const order = [];
+		const elements = {
+			update: jest.fn( () => order.push( 'update' ) ),
+			submit: jest.fn( () => {
+				order.push( 'submit' );
+				return Promise.resolve( {} );
+			} ),
+		};
+		StripePayment.paymentElements[ key ] = { elements, amount: 12000 };
+		return { elements, order };
+	};
+
+	const confirmFor = ( form ) =>
+		StripePayment.srfmConfirmPayment(
+			'7-b1',
+			StripePayment.paymentElements[ '7-b1' ],
+			form
+		);
+
+	afterEach( () => {
+		delete window.srfmPaymentManagers;
+		delete window.srfmValidatePaymentBlock;
+		delete StripePayment.paymentElements[ '7-b1' ];
+		delete StripePayment.paymentElements[ '7-b0' ];
+		jest.restoreAllMocks();
+	} );
+
+	it( 'calls elements.submit() before returning, with the amount brought up to date first', () => {
+		const form = renderPaymentForm();
+		const { elements, order } = mountWallet();
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( elements.submit ).toHaveBeenCalledTimes( 1 );
+		expect( order ).toEqual( [ 'update', 'submit' ] );
+		expect( elements.update ).toHaveBeenCalledWith( { amount: 11000 } );
+	} );
+
+	it( 'lets srfmConfirmPayment use the submit already started instead of calling it again', async () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		const confirm = jest
+			.spyOn( StripePayment, 'confirmStripePayment' )
+			.mockResolvedValue( { valid: true } );
+
+		StripePayment.startWalletSubmit( form );
+		const result = await confirmFor( form );
+
+		expect( elements.submit ).toHaveBeenCalledTimes( 1 );
+		expect( confirm ).toHaveBeenCalledTimes( 1 );
+		expect( result ).toEqual( { valid: true } );
+		expect(
+			StripePayment.paymentElements[ '7-b1' ].submitPromise
+		).toBeUndefined();
+	} );
+
+	it( 'stops before confirming when the started submit returned an error', async () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		elements.submit.mockReturnValueOnce(
+			Promise.resolve( { error: { message: 'Card incomplete' } } )
+		);
+		const confirm = jest.spyOn( StripePayment, 'confirmStripePayment' );
+
+		StripePayment.startWalletSubmit( form );
+		const result = await confirmFor( form );
+
+		expect( result.valid ).toBe( false );
+		expect( result.message ).toBe( 'Card incomplete' );
+		expect( confirm ).not.toHaveBeenCalled();
+	} );
+
+	it( 'turns a rejected submit into an error result instead of an unhandled rejection', async () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		// Rejected lazily, so a missing startWalletSubmit fails this test
+		// instead of crashing the suite with an unhandled rejection.
+		elements.submit.mockImplementationOnce( () =>
+			Promise.reject( new Error( 'IntegrationError' ) )
+		);
+		const confirm = jest.spyOn( StripePayment, 'confirmStripePayment' );
+
+		StripePayment.startWalletSubmit( form );
+		const stored = StripePayment.paymentElements[ '7-b1' ].submitPromise;
+
+		await expect( stored ).resolves.toEqual( {
+			error: expect.objectContaining( { message: 'IntegrationError' } ),
+		} );
+		const result = await confirmFor( form );
+		expect( result.valid ).toBe( false );
+		expect( confirm ).not.toHaveBeenCalled();
+	} );
+
+	it( 'does nothing when another gateway is selected', () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		window.srfmPaymentManagers = {
+			'7-b1': { getSelectedMethod: () => 'paypal' },
+		};
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( elements.submit ).not.toHaveBeenCalled();
+	} );
+
+	it( 'does nothing when the payment block is hidden by conditional logic', () => {
+		const form = renderPaymentForm( 'hide-element' );
+		const { elements } = mountWallet();
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( elements.submit ).not.toHaveBeenCalled();
+	} );
+
+	// The sheet would show the mount-time stand-in (120.00) or a stale amount.
+	it( 'does not open the wallet before the visitor has picked an amount', () => {
+		const form = renderPaymentForm(
+			'',
+			'data-amount-type="variable" data-current-amount=""'
+		);
+		const { elements } = mountWallet();
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( elements.submit ).not.toHaveBeenCalled();
+	} );
+
+	it( 'does not open the wallet when the payment block fails validation', () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		window.srfmValidatePaymentBlock = jest.fn( () => ( {
+			valid: false,
+			slug: 'invalid-minimum-amount',
+		} ) );
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( window.srfmValidatePaymentBlock ).toHaveBeenCalledWith( form );
+		expect( elements.submit ).not.toHaveBeenCalled();
+	} );
+
+	it( 'drops a finished submit from an earlier attempt that never reached payment', async () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		StripePayment.startWalletSubmit( form );
+		await tick();
+		window.srfmPaymentManagers = {
+			'7-b1': { getSelectedMethod: () => 'paypal' },
+		};
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( elements.submit ).toHaveBeenCalledTimes( 1 );
+		expect(
+			StripePayment.paymentElements[ '7-b1' ].submitPromise
+		).toBeUndefined();
+	} );
+
+	it( 'drops a finished submit left on another payment block of the same form', async () => {
+		const form = renderPaymentForm();
+		form.insertAdjacentHTML(
+			'afterbegin',
+			'<div class="srfm-block srfm-payment-block hide-element" data-block-id="b0"></div>'
+		);
+		mountWallet();
+		const other = mountWallet( '7-b0' );
+		StripePayment.paymentElements[ '7-b0' ].submitPromise =
+			Promise.resolve( {} );
+		StripePayment.paymentElements[ '7-b0' ].submitSettled = true;
+
+		StripePayment.startWalletSubmit( form );
+
+		expect( other.elements.submit ).not.toHaveBeenCalled();
+		expect(
+			StripePayment.paymentElements[ '7-b0' ].submitPromise
+		).toBeUndefined();
+	} );
+
+	// reCAPTCHA v2-invisible runs a second submission from its callback, after
+	// the click; replacing the click's submit there would lose the gesture.
+	it( 'keeps a submit that is still waiting on the wallet sheet', () => {
+		const form = renderPaymentForm();
+		const { elements } = mountWallet();
+		elements.submit.mockReturnValueOnce( new Promise( () => {} ) );
+
+		StripePayment.startWalletSubmit( form );
+		const first = StripePayment.paymentElements[ '7-b1' ].submitPromise;
+		StripePayment.startWalletSubmit( form );
+
+		expect( elements.submit ).toHaveBeenCalledTimes( 1 );
+		expect( StripePayment.paymentElements[ '7-b1' ].submitPromise ).toBe(
+			first
+		);
+	} );
+} );
