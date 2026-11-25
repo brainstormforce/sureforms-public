@@ -10,12 +10,8 @@ describe( 'getTimeLeft', () => {
 	const end = Date.UTC( 2026, 11, 7, 8, 0, 0 );
 
 	it( 'splits the time left into days, hours, minutes and seconds', () => {
-		// 2 days, 3 hours, 4 minutes, 5 seconds.
-		const left =
-			( 2 * 86400 ) * 1000 +
-			( 3 * 3600 ) * 1000 +
-			( 4 * 60 ) * 1000 +
-			5 * 1000;
+		// 2 days, 3 hours, 4 minutes and 5 seconds, in milliseconds.
+		const left = 183845000;
 		expect( getTimeLeft( end, end - left ) ).toEqual( [ 2, 3, 4, 5 ] );
 	} );
 
