@@ -4,7 +4,7 @@ Tags: forms, ai forms, contact form, form builder, payment form
 Requires at least: 6.4
 Tested up to: 7.1.5
 Requires PHP: 7.4
-Stable tag: 2.14.1
+Stable tag: 2.14.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -426,6 +426,10 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= 2.14.2 - 24th November 2026 =
+* Fix: Apple Pay no longer shows "Unable to show Apple Pay" on sites where form checks take a moment to finish.
+* Fix: The Convert to SureForms button now appears on Custom HTML blocks that contain a form on WordPress 7.1 and later.
+* Fix: This update addressed security bugs. Props to dzaku and Santh from Patchstack for reporting them responsibly to our team.
 = 2.14.1 - 19th November 2026 =
 * Fix: This update addressed a security bug. Props to Dthangws from Patchstack for reporting it responsibly to our team.
 * Fix: WPML sites now send translated notification emails and redirect to the translated thank-you page.
@@ -437,14 +441,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Fix: Fields in forms shown inside Elementor Pro popups now work when the popup opens.
 * Fix: The Stripe card field now loads when a form uses a dynamic amount the visitor has not picked yet.
 * Fix: This update addressed a security bug. Props to Truebird from Patchstack for reporting it responsibly to our team.
-= 2.13.1 - 4th November 2026 =
-* New: Added a reCAPTCHA v3 score threshold in Spam Protection settings to block low-scoring submissions.
-* New: Multiple Choice options can now show a short description under each option.
-* New: Turnstile can now run its challenge on the visitor's first interaction with the form instead of on page load.
-* Fix: After-submission actions no longer run twice for the same entry when requests overlap.
-* Fix: Apple Pay and Google Pay now show the form's real amount instead of 120.00, and stay hidden when turned off in your Stripe dashboard.
-* Fix: Custom smart tags now resolve in the To, Reply-To, Cc, Bcc and From fields of email notifications.
-* Fix: This update addressed a security bug. Props to fccsec.dev from Patchstack for reporting it responsibly to our team.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 == Upgrade Notice ==

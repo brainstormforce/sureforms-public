@@ -404,6 +404,86 @@ class StripePayment {
 	}
 
 	/**
+	 * Start Stripe's elements.submit() for the form's visible payment block,
+	 * synchronously, from the submit click.
+	 *
+	 * Safari shows the Apple Pay sheet only while the click that asked for it
+	 * is fresh, and Stripe.js reaches the sheet through a postMessage hop that
+	 * WebKit lets through for one second after the click. Field validation and
+	 * intent creation take longer than that on slower servers, so the submit
+	 * has to begin before them. srfmConfirmPayment() awaits the stored promise
+	 * instead of calling elements.submit() a second time.
+	 *
+	 * @since 2.14.2
+	 * @param {HTMLFormElement} form - The form being submitted.
+	 * @return {void}
+	 */
+	static startWalletSubmit( form ) {
+		if ( ! form ) {
+			return;
+		}
+
+		// A finished submit from an attempt that stopped before payment must
+		// not be reused by a later one, on any payment block of this form.
+		form.querySelectorAll( '.srfm-block.srfm-payment-block' ).forEach(
+			( block ) => {
+				const data =
+					StripePayment.paymentElements[
+						getPaymentKey( form, block.getAttribute( 'data-block-id' ) )
+					];
+				if ( data?.submitSettled ) {
+					delete data.submitPromise;
+					delete data.submitSettled;
+				}
+			}
+		);
+
+		const paymentBlock = form.querySelector(
+			'.srfm-block.srfm-payment-block:not(.hide-element)'
+		);
+		const paymentInput = paymentBlock?.querySelector(
+			'.srfm-payment-input'
+		);
+		const blockId = paymentBlock?.getAttribute( 'data-block-id' );
+		if ( ! paymentInput || ! blockId ) {
+			return;
+		}
+
+		const compositeKey = getPaymentKey( form, blockId );
+		const elementData = StripePayment.paymentElements[ compositeKey ];
+
+		// A submit still waiting on the wallet sheet holds the click; a second
+		// submission (reCAPTCHA v2-invisible callback) must not replace it.
+		if ( ! elementData?.elements || elementData.submitPromise ) {
+			return;
+		}
+
+		const manager = window.srfmPaymentManagers?.[ compositeKey ];
+		if ( manager && 'stripe' !== manager.getSelectedMethod() ) {
+			return;
+		}
+
+		// The sheet shows the Elements amount. Without a valid one it would
+		// show the mount-time stand-in, and payment would reject it anyway.
+		if (
+			false === StripePayment.getPaymentAmount( paymentInput ) ||
+			false === window.srfmValidatePaymentBlock?.( form )?.valid
+		) {
+			return;
+		}
+
+		StripePayment.syncElementsAmount( paymentInput );
+		const submitPromise = elementData.elements
+			.submit()
+			.catch( ( error ) => ( { error } ) );
+		elementData.submitPromise = submitPromise;
+		elementData.submitSettled = false;
+		submitPromise.then( () => {
+			elementData.submitSettled = true;
+		} );
+	}
+
+	/**
 	 * Get payment amount based on amount type (fixed or user-defined).
 	 *
 	 * @param {HTMLElement} paymentInput - The payment input element.
@@ -695,8 +775,7 @@ class StripePayment {
 	static async srfmConfirmPayment( compositeKey, paymentData, form ) {
 		const { elements } = paymentData;
 
-		// The wallet sheet opens inside elements.submit() and shows the
-		// Elements amount, so it must be the amount the intent was created
+		// The Elements amount must match the amount the intent was created
 		// with. compositeKey is "instanceId-blockId".
 		const separator = compositeKey.indexOf( '-' );
 		const keyBlockId =
@@ -707,9 +786,13 @@ class StripePayment {
 			)
 		);
 
-		// Validate card details AFTER payment intent is created but BEFORE confirmation
-		// This is the correct timing to avoid card data loss
-		const { error: submitError } = await elements.submit();
+		// Use the submit startWalletSubmit() began in the submit click, so the
+		// Apple Pay sheet was asked for while the click still counted. Called
+		// here only by code that reaches payment without that click.
+		const submitPromise = paymentData.submitPromise || elements.submit();
+		delete paymentData.submitPromise;
+		delete paymentData.submitSettled;
+		const { error: submitError } = await submitPromise;
 
 		if ( submitError ) {
 			return {
@@ -1084,7 +1167,8 @@ const PAYMENT_UTILITY = {
 							getCurrencySymbol,
 							inputFormatType
 						);
-					getPlaceHolderElement.innerHTML = formattedMessage;
+					// Text, not markup: the template is decoded from a data attribute.
+					getPlaceHolderElement.textContent = formattedMessage;
 				} else {
 					// Fallback to simple amount display (backward compatible)
 					// Format the amount according to the number format type and currency position
@@ -1093,7 +1177,7 @@ const PAYMENT_UTILITY = {
 						inputFormatType
 					);
 
-					getPlaceHolderElement.innerHTML =
+					getPlaceHolderElement.textContent =
 						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
 							getCurrencySymbol,
 							formattedNumber
