@@ -71,39 +71,60 @@ const Countdown = ( { endsAt, label } ) => {
 	);
 };
 
+// How many times the segments repeat inside one run. The marquee slides by
+// one run, so a run narrower than the bar shows a gap before the loop restarts.
+// ponytail: fixed count covers bars up to ~4x the copy width (about 2800px with
+// today's copy); measure with a ResizeObserver if longer bars or shorter copy
+// show a gap.
+const REPEAT = 4;
+
 /**
  * One full run of the segments, each followed by a star. Rendered twice so the
- * marquee loops without a gap. With reduced motion the copy is dropped and the
- * single run scrolls by hand instead.
+ * marquee loops without a gap. Only the first set of the first run is read by
+ * assistive tech. With reduced motion the repeats are dropped and the single
+ * set scrolls by hand instead.
  *
  * @since x.x.x
  * @param {Object}  props        Component props.
  * @param {Array}   props.items  Segments, each a list of `{ text, style }` parts.
- * @param {boolean} props.hidden Hide this copy from assistive tech.
+ * @param {boolean} props.hidden Hide this run from assistive tech.
  * @return {JSX.Element} One run of segments.
  */
 const Run = ( { items, hidden = false } ) => (
 	<div
-		className={ `flex shrink-0 items-center gap-6 pr-6 ${
-			hidden ? 'motion-reduce:hidden' : ''
-		}` }
+		className={ `flex shrink-0 ${ hidden ? 'motion-reduce:hidden' : '' }` }
 		aria-hidden={ hidden || undefined }
 	>
-		{ items.map( ( parts, index ) => (
-			<span key={ index } className="inline-flex items-center gap-6">
-				<span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-					{ parts.map( ( part, partIndex ) => (
-						<span
-							key={ partIndex }
-							className={ PART_CLASSES[ part.style ] || '' }
-						>
-							{ part.text }
+		{ Array.from( { length: REPEAT }, ( _, copy ) => (
+			<span
+				key={ copy }
+				className={ `flex shrink-0 items-center gap-6 pr-6 ${
+					copy ? 'motion-reduce:hidden' : ''
+				}` }
+				aria-hidden={ copy ? true : undefined }
+			>
+				{ items.map( ( parts, index ) => (
+					<span
+						key={ index }
+						className="inline-flex items-center gap-6"
+					>
+						<span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+							{ parts.map( ( part, partIndex ) => (
+								<span
+									key={ partIndex }
+									className={
+										PART_CLASSES[ part.style ] || ''
+									}
+								>
+									{ part.text }
+								</span>
+							) ) }
 						</span>
-					) ) }
-				</span>
-				<span className={ HIGHLIGHT } aria-hidden="true">
-					✦
-				</span>
+						<span className={ HIGHLIGHT } aria-hidden="true">
+							✦
+						</span>
+					</span>
+				) ) }
 			</span>
 		) ) }
 	</div>

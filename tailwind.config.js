@@ -217,7 +217,7 @@ module.exports = withTW( {
 				},
 			},
 			animation: {
-				'srfm-marquee': 'srfm-marquee 40s linear infinite',
+				'srfm-marquee': 'srfm-marquee 80s linear infinite',
 			},
 		},
 	},
