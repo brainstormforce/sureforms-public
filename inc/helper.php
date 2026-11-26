@@ -1747,7 +1747,7 @@ class Helper {
 	 * WordPress 7.2+ in text too). Running it twice changes nothing.
 	 *
 	 * @param string $text Text.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return string
 	 */
 	public static function neutralize_tokens( $text ) {
@@ -2850,7 +2850,7 @@ class Helper {
 	 *
 	 * @param string $prefix Bucket namespace, unique per endpoint. Also the cache group.
 	 * @param string $key    Bucket key within the namespace (e.g. IP and form id).
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return int The bucket's count after this hit, or PHP_INT_MAX when the hit is denied.
 	 */
 	public static function hit_rate_counter( $prefix, $key ) {
@@ -2907,7 +2907,7 @@ class Helper {
 	 *
 	 * @param string $prefix Bucket namespace, as passed to hit_rate_counter().
 	 * @param string $key    Bucket key, as passed to hit_rate_counter().
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return int The bucket's current count.
 	 */
 	public static function peek_rate_counter( $prefix, $key ) {

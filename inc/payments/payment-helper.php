@@ -75,7 +75,7 @@ class Payment_Helper {
 	 * @param int    $form_id Form id.
 	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
 	 * @since 2.14.0
-	 * @since x.x.x IPv6 is bucketed per /64; client IP is filterable; counted through
+	 * @since 2.14.3 IPv6 is bucketed per /64; client IP is filterable; counted through
 	 *              Helper::hit_rate_counter() in a window fixed from the first request.
 	 * @return bool True when the request should be rejected.
 	 */
@@ -93,7 +93,7 @@ class Payment_Helper {
 		 * overwrites: a value the client can choose gives each request its own bucket.
 		 * A return value that is not a valid IP is ignored and REMOTE_ADDR is used.
 		 *
-		 * @since x.x.x
+		 * @since 2.14.3
 		 * @param string $ip      The connection's REMOTE_ADDR.
 		 * @param int    $form_id Form id.
 		 * @param string $context Bucket key.
@@ -1224,7 +1224,7 @@ class Payment_Helper {
 	 * @param array<mixed>|null $form_data Submitted form data the rules are evaluated against.
 	 *
 	 * @since 2.12.3
-	 * @since x.x.x Added the `$form_data` parameter.
+	 * @since 2.14.3 Added the `$form_data` parameter.
 	 * @return array<string> Block IDs that require a verified payment.
 	 */
 	public static function get_required_payment_block_ids( $form_id, $form_data = null ) {
@@ -1266,7 +1266,7 @@ class Payment_Helper {
 		 * rule is known to have matched.
 		 *
 		 * @since 2.12.3
-		 * @since x.x.x Added the `$form_data` parameter.
+		 * @since 2.14.3 Added the `$form_data` parameter.
 		 *
 		 * @param array<string>     $block_ids Block IDs requiring a verified payment.
 		 * @param int               $form_id   Form ID.
@@ -1432,7 +1432,7 @@ class Payment_Helper {
 	 * @param int $form_id Form ID.
 	 *
 	 * @since 2.12.3
-	 * @since x.x.x Returns the rules, keyed by block ID, instead of the block IDs.
+	 * @since 2.14.3 Returns the rules, keyed by block ID, instead of the block IDs.
 	 * @return array<string, array<int, array<mixed>>> Actionable rules, keyed by block ID.
 	 */
 	private static function get_conditional_logic_rules( $form_id ) {
@@ -1517,7 +1517,7 @@ class Payment_Helper {
 	 * @param array<mixed>                                            $form_data Submitted form data.
 	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool True only when every rule resolves to hidden.
 	 */
 	private static function is_hidden_by_conditional_rules( $rules, $form_data, $fields ) {
@@ -1549,7 +1549,7 @@ class Payment_Helper {
 	 * @param array<mixed>                                            $form_data Submitted form data.
 	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool|null Whether the conditions match, null when that cannot be determined.
 	 */
 	private static function evaluate_conditional_logic( $logic, $form_data, $fields ) {
@@ -1599,7 +1599,7 @@ class Payment_Helper {
 	 * @param array<mixed>                                            $form_data Submitted form data.
 	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool|null Whether the condition holds, null when it cannot be evaluated.
 	 */
 	private static function evaluate_conditional_condition( $condition, $form_data, $fields ) {
@@ -1637,7 +1637,7 @@ class Payment_Helper {
 	 * @param string                                        $field    The field's value as the browser reads it.
 	 * @param array{name: string, attrs: array<mixed>}|null $block    The field's block, null when the form has none.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool|null Whether the condition holds, null when it cannot be evaluated.
 	 */
 	private static function match_conditional_value( $operator, $value, $field, $block ) {
@@ -1750,7 +1750,7 @@ class Payment_Helper {
 	 * @param string $pattern Stored pattern, without delimiters or flags.
 	 * @param string $field   Field value.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool|null Whether the value matches, null when that cannot be determined.
 	 */
 	private static function match_conditional_pattern( $pattern, $field ) {
@@ -1775,7 +1775,7 @@ class Payment_Helper {
 	 *
 	 * @param string $pattern Stored pattern, without delimiters or flags.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool
 	 */
 	private static function has_non_javascript_group( $pattern ) {
@@ -1811,7 +1811,7 @@ class Payment_Helper {
 	 * @param string                                        $field    Field value.
 	 * @param array{name: string, attrs: array<mixed>}|null $block    The field's block.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool|null Whether the condition holds, null when it cannot be evaluated.
 	 */
 	private static function match_conditional_datetime( $operator, $value, $field, $block ) {
@@ -1873,7 +1873,7 @@ class Payment_Helper {
 	 * @param string $input  Value to read.
 	 * @param string $format yyyy-mm-dd, dd/mm/yyyy, mm/dd/yyyy or yyyy/mm/dd; anything else reads no date.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array{kind: string, value: float}|null Null where the browser gets `undefined`.
 	 */
 	private static function parse_conditional_datetime( $input, $format ) {
@@ -1934,7 +1934,7 @@ class Payment_Helper {
 	 *
 	 * @param string $value Value.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return int|null The number, null where parseInt() gives NaN.
 	 */
 	private static function to_conditional_integer( $value ) {
@@ -1960,7 +1960,7 @@ class Payment_Helper {
 	 * @param array<mixed>                                            $form_data Submitted form data.
 	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array<int, string>|null Candidate readings, null when the value cannot be determined.
 	 */
 	private static function get_conditional_field_value( $block_id, $form_data, $fields ) {
@@ -2021,7 +2021,7 @@ class Payment_Helper {
 	 * @param array<mixed>     $blocks       Parsed blocks.
 	 * @param array<int, true> $visited_refs Reusable-block post IDs already expanded.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array<string, array{name: string, attrs: array<mixed>}>
 	 */
 	private static function collect_conditional_fields( $blocks, &$visited_refs = [] ) {
@@ -2069,7 +2069,7 @@ class Payment_Helper {
 	 *
 	 * @param string $value Operand.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return float|null The number (empty reads as 0), null when the operand is not numeric.
 	 */
 	private static function to_conditional_number( $value ) {

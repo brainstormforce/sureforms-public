@@ -44,7 +44,7 @@ class Register {
 	 *
 	 * @var array<int,bool>
 	 * @since 2.12.6
-	 * @since x.x.x Keyed by blog id.
+	 * @since 2.14.3 Keyed by blog id.
 	 */
 	private static $entries_table_present = [];
 

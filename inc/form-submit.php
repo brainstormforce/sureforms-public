@@ -40,7 +40,7 @@ class Form_Submit {
 	/**
 	 * Option listing forms that accepted submissions while set to reCAPTCHA without keys.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	private const RECAPTCHA_UNPROTECTED_OPTION = 'srfm_recaptcha_unprotected_forms';
 
@@ -1535,7 +1535,7 @@ class Form_Submit {
 	 * Forms are recorded at submission time. Each is checked again here, and one that
 	 * has been fixed, deleted or switched to other spam protection is dropped.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return void
 	 */
 	public function recaptcha_unprotected_notice() {
@@ -1833,7 +1833,7 @@ class Form_Submit {
 	 *
 	 * @param string $version Stored _srfm_form_recaptcha value.
 	 * @param mixed  $options Stored srfm_security_settings_options value.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array{0: string, 1: string} Site key, secret.
 	 */
 	private static function recaptcha_keys( $version, $options ) {
@@ -1859,7 +1859,7 @@ class Form_Submit {
 	 * for recaptcha_unprotected_notice(). Writes only the first time a form is seen.
 	 *
 	 * @param int $form_id Form ID.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return void
 	 */
 	private static function record_recaptcha_unprotected_form( $form_id ) {
@@ -1883,7 +1883,7 @@ class Form_Submit {
 	 *
 	 * @param mixed      $raw     The submitted `srfm_addresses` value, a slashed JSON object.
 	 * @param int|string $form_id The form being submitted.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array<string,string> Address block slug => compact address.
 	 */
 	private static function get_compact_addresses( $raw, $form_id ) {
@@ -1916,7 +1916,7 @@ class Form_Submit {
 	 *
 	 * @param array<mixed> $form_data       Request data.
 	 * @param array<mixed> $submission_data Output of process_form_fields() for that request.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array<mixed> Request data without the removed fields.
 	 */
 	private static function drop_fields_removed_by_processing( $form_data, $submission_data ) {
@@ -2188,7 +2188,7 @@ class Form_Submit {
 	 * @param string $prefix  Bucket prefix, unique per endpoint.
 	 * @param int    $form_id The form ID the request relates to.
 	 * @since 2.12.6
-	 * @since x.x.x Counts through Helper::hit_rate_counter(); fixed window from the first request.
+	 * @since 2.14.3 Counts through Helper::hit_rate_counter(); fixed window from the first request.
 	 * @return bool True if rate-limited (should block), false if allowed.
 	 */
 	private function is_rate_limited( $prefix, $form_id ) {
@@ -2332,7 +2332,7 @@ class Form_Submit {
 	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
 	 * @since 2.13.1 Added $form_data.
-	 * @since x.x.x The resolved From name is reduced to a single line.
+	 * @since 2.14.3 The resolved From name is reduced to a single line.
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {

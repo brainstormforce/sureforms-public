@@ -369,7 +369,7 @@ class String_Translator {
 	 * @param int    $index   Zero-based index of the confirmation within the form's confirmation set.
 	 * @param string $value   Original value.
 	 * @since 2.11.0
-	 * @since x.x.x Translations are filtered through wp_kses_post().
+	 * @since 2.14.3 Translations are filtered through wp_kses_post().
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_confirmation_message( int $form_id, int $index, string $value ): string {
@@ -747,7 +747,7 @@ class String_Translator {
 	 * @param string $value Original value (used as fallback when no translation exists).
 	 * @param string $name  Fully built string name per the documented naming scheme.
 	 * @since 2.11.0
-	 * @since x.x.x Smart tags and shortcodes absent from `$value` are neutralized.
+	 * @since 2.14.3 Smart tags and shortcodes absent from `$value` are neutralized.
 	 * @return string Translated value, or the original value when the provider has no translation.
 	 */
 	private function dispatch( string $value, string $name ): string {
@@ -770,7 +770,7 @@ class String_Translator {
 	 * @param string $name    Package-scoped string name (see the *_name() builders).
 	 * @param string $value   Original value (fallback when untranslated).
 	 * @since 2.11.0
-	 * @since x.x.x Smart tags and shortcodes absent from `$value` are neutralized.
+	 * @since 2.14.3 Smart tags and shortcodes absent from `$value` are neutralized.
 	 * @return string Translated value, or the original when no translation exists.
 	 */
 	private function dispatch_package( int $form_id, string $name, string $value ): string {
@@ -801,7 +801,7 @@ class String_Translator {
 	 *
 	 * @param string $translation Provider output.
 	 * @param string $original    Form-authored source string.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return string The translation with every token not in `$original` neutralized.
 	 */
 	private static function neutralize_tokens_not_in( string $translation, string $original ): string {

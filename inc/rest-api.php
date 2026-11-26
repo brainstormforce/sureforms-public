@@ -602,7 +602,7 @@ class Rest_Api {
 	 * by sanitize_entry_ids() into the empty "no selection" value.
 	 *
 	 * @param mixed $value Value to validate.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return bool
 	 */
 	public function validate_entry_ids( $value ) {

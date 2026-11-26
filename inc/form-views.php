@@ -618,7 +618,7 @@ class Form_Views {
 	 *
 	 * @param string $key Counter key, unique per bucket and form.
 	 * @since 2.12.6
-	 * @since x.x.x Delegates to Helper::hit_rate_counter(), shared with Form_Submit.
+	 * @since 2.14.3 Delegates to Helper::hit_rate_counter(), shared with Form_Submit.
 	 * @return int The counter value after this hit, or PHP_INT_MAX when the hit is denied.
 	 */
 	private static function hit_counter( $key ) {
@@ -631,7 +631,7 @@ class Form_Views {
 	 * Reads the same storage hit_counter() writes. Absent or expired reads as 0.
 	 *
 	 * @param string $key Counter key, as passed to hit_counter().
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return int The counter's current value.
 	 */
 	private static function peek_counter( $key ) {

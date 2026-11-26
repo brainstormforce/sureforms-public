@@ -72,7 +72,7 @@ class Client_Logger {
 	 * records itself -- a notification or integration failure -- so those are
 	 * still written however many browser reports arrived first.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const CLIENT_MAX_FILE_SIZE = 786432;
 
@@ -83,7 +83,7 @@ class Client_Logger {
 	 * wp_json_encode() writes a non-ASCII character as 6 bytes, or 12 for one
 	 * outside the BMP. Every text field at MAX_TEXT_LENGTH in CJK fits.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const MAX_LINE_BYTES = 16384;
 
@@ -502,7 +502,7 @@ class Client_Logger {
 	 * @param string              $origin 'server' for a line the server records
 	 *                                    itself; anything else is browser-reported.
 	 * @since 2.12.6
-	 * @since x.x.x Added $origin and the per-line byte budget.
+	 * @since 2.14.3 Added $origin and the per-line byte budget.
 	 * @return bool True when the line was written.
 	 */
 	public static function append( array $entry, $origin = 'client' ) {

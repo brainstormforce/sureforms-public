@@ -107,7 +107,7 @@ class Submit_Token {
 	 * @since  2.6.0
 	 * @since  2.12.6 Added the $namespace parameter.
 	 * @since  2.13.1 Returns false unless the form is currently published.
-	 * @since  x.x.x  Returns false while the form's post password is required for this request.
+	 * @since  2.14.3  Returns false while the form's post password is required for this request.
 	 * @param  string $token     Token value received from the client.
 	 * @param  int    $form_id   Form post ID extracted from the request body.
 	 * @param  string $namespace Purpose the token must have been minted for.

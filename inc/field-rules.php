@@ -150,7 +150,7 @@ class Field_Rules {
 	 *
 	 * @param string $text Label or choice.
 	 * @since 2.13.1
-	 * @since x.x.x Public.
+	 * @since 2.14.3 Public.
 	 * @return string
 	 */
 	public static function comparable( $text ) {

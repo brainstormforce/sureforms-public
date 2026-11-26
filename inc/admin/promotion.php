@@ -16,7 +16,7 @@
  * across the network, while the counts are kept per site.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.14.3
  */
 
 namespace SRFM\Inc\Admin;
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Promotion class.
  *
- * @since x.x.x
+ * @since 2.14.3
  */
 class Promotion {
 	use Get_Instance;
@@ -43,49 +43,49 @@ class Promotion {
 	 * Id of the running promotion. Also the dismissal value, so a later sale
 	 * with a new id shows again for users who dismissed this one.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const ID = 'sureforms-bfcm-2026';
 
 	/**
 	 * Start of the sale, UTC.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const STARTS_AT = '2026-11-15 08:00:00';
 
 	/**
 	 * End of the sale, UTC: Dec 7, 00:00 PT, right after Dec 6, 11:59:59 PM PT.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const ENDS_AT = '2026-12-07 08:00:00';
 
 	/**
 	 * User meta holding the id of the promotion the user dismissed.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const DISMISSED_META = 'srfm_dismissed_promotion';
 
 	/**
 	 * User meta marking that the user has been counted as shown the bar.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const SEEN_META = 'srfm_bfcm_2026_banner_seen';
 
 	/**
 	 * Option holding the bar's analytics counts, per action and sale period.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const STATS_OPTION = 'srfm_bfcm_2026_banner_stats';
 
 	/**
 	 * Actions counted for analytics.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const ACTIONS = [ 'shown', 'click', 'dismiss' ];
 
@@ -94,7 +94,7 @@ class Promotion {
 	 * (30 days). Long enough for the final totals to go out in a few analytics
 	 * cycles; after that a site that never updates stops re-sending them.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const REPORTING_GRACE = 2592000;
 
@@ -102,7 +102,7 @@ class Promotion {
 	 * Sale periods from the BFCM banner calendar, each with its UTC start
 	 * (00:00 PT). The last period that has started is the running one.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public const PHASES = [
 		'black-friday'       => '2026-11-15 08:00:00',
@@ -114,7 +114,7 @@ class Promotion {
 	/**
 	 * Register the routes through the SureForms REST registry.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	public function __construct() {
 		add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_routes' ] );
@@ -126,7 +126,7 @@ class Promotion {
 	 * The `id` is checked in the callbacks rather than through an `args`
 	 * schema, because core validates `args` before the permission callback.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param array<string,array<string,mixed>> $endpoints Existing registry.
 	 * @return array<string,array<string,mixed>>
@@ -151,7 +151,7 @@ class Promotion {
 	 * REST callback: count the bar as shown, sent by the bar once it is on
 	 * screen.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -170,7 +170,7 @@ class Promotion {
 	/**
 	 * REST callback: count a click on the bar's button for analytics.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -198,7 +198,7 @@ class Promotion {
 	 * Only the running promotion id is accepted, and the stored value is the
 	 * class constant, never the submitted string.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -224,7 +224,7 @@ class Promotion {
 	 * Count the bar as shown to a user, once per user, and only while it is
 	 * showing to them.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int      $user_id User ID.
 	 * @param int|null $now     Unix timestamp. Defaults to now.
@@ -248,7 +248,7 @@ class Promotion {
 	 * Count a click on the bar's button, only while the bar is showing to the
 	 * user.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int      $user_id User ID.
 	 * @param int|null $now     Unix timestamp. Defaults to now.
@@ -268,7 +268,7 @@ class Promotion {
 	 * Hide the running promotion for a user, for good. The first dismissal is
 	 * counted, and only when the bar was showing to the user.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int      $user_id User ID.
 	 * @param int|null $now     Unix timestamp. Defaults to now.
@@ -297,7 +297,7 @@ class Promotion {
 	/**
 	 * Add one to an analytics count for the running sale period.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param string   $action One of self::ACTIONS.
 	 * @param int|null $now    Unix timestamp. Defaults to now.
@@ -320,7 +320,7 @@ class Promotion {
 	/**
 	 * Analytics counts, every action and sale period present, zero when unset.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @return array<string, array<string, int>>
 	 */
@@ -340,7 +340,7 @@ class Promotion {
 	 * Whether the counts are still reported to analytics: through the sale
 	 * and for REPORTING_GRACE after it ends.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int|null $now Unix timestamp. Defaults to now.
 	 * @return bool
@@ -359,7 +359,7 @@ class Promotion {
 	 * Read-only: it is built on every admin page, and the bar counts itself as
 	 * shown through the `promotion/shown` route once it is on screen.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int|null $now Unix timestamp to check the window against. Defaults to now.
 	 * @return array<string,mixed>|null
@@ -401,7 +401,7 @@ class Promotion {
 	/**
 	 * Whether the sale window is open.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int|null $now Unix timestamp. Defaults to now.
 	 * @return bool
@@ -415,7 +415,7 @@ class Promotion {
 	/**
 	 * Key of the running sale period, or an empty string outside the sale.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int|null $now Unix timestamp. Defaults to now.
 	 * @return string
@@ -440,7 +440,7 @@ class Promotion {
 	/**
 	 * Check the REST nonce and that the request names the running promotion.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
 	 * @return WP_Error|null Error to return, or null when the request is valid.
@@ -469,7 +469,7 @@ class Promotion {
 	/**
 	 * Whether the bar should show to a user at a given time.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param int $user_id User ID.
 	 * @param int $now     Unix timestamp.
@@ -490,7 +490,7 @@ class Promotion {
 	 * plain, bold or accent. The entry price always reads "Plans start at $49".
 	 * A price inside a sentence is a placeholder, so translators can move it.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 *
 	 * @param string $phase Sale period key.
 	 * @return array{items: array<int, array<int, array{text: string, style: string}>>, cta: string}

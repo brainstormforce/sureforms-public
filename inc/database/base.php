@@ -219,7 +219,7 @@ abstract class Base {
 	 * this name, so cached results stay per site too.
 	 *
 	 * @since 0.0.10
-	 * @since x.x.x Resolved from the current prefix instead of the one at construction.
+	 * @since 2.14.3 Resolved from the current prefix instead of the one at construction.
 	 * @return string
 	 */
 	public function get_tablename() {
