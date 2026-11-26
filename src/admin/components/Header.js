@@ -11,7 +11,7 @@ import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
-import PromoBar from './PromoBar';
+import PromoBar, { pageView } from './PromoBar';
 import LogoFull from '@Admin/dashboard/templates/LogoFull';
 import Breadcrumb from './Breadcrumb';
 import Tooltip from './Tooltip';
@@ -129,8 +129,11 @@ const Header = ( { breadCrumb } ) => {
 	);
 	const isFirstFormCreated = srfm_admin?.is_first_form_created || false;
 	// The sale bar takes the place of the upgrade strip while it shows, and
-	// gives it back once it is dismissed or the sale ends.
-	const [ isPromoShowing, setIsPromoShowing ] = useState( !! promotion );
+	// gives it back once it is dismissed or the sale ends. A header mounted
+	// after a dismissal on the same page starts with the strip back.
+	const [ isPromoShowing, setIsPromoShowing ] = useState(
+		!! promotion && ! pageView.dismissed
+	);
 	const handlePromoHide = useCallback( () => setIsPromoShowing( false ), [] );
 
 	useEffect( () => {

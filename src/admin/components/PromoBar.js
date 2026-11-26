@@ -26,6 +26,17 @@ const SECOND_IN_MS = 1000;
 export const SPEED = 21;
 
 /**
+ * What happened to the bar in this page view, shared by every bar the page
+ * mounts. Entries and Payments mount a new header, and so a new bar, on each
+ * route change, while `srfm_admin.promotion` keeps its page-load value. A
+ * dismissal must hold, and `shown` be sent once, across those remounts.
+ *
+ * @since 2.14.3
+ * @type {{dismissed: boolean, shown: boolean}}
+ */
+export const pageView = { dismissed: false, shown: false };
+
+/**
  * Days, hours, minutes and seconds left until `endsAt`, never below zero.
  *
  * @since 2.14.3
@@ -234,8 +245,10 @@ const useMarqueeLayout = () => {
  * The server sends `promotion` only while the sale is live, to users who
  * manage SureForms without Pro and have not dismissed it, with the copy for
  * the running sale period. The bar counts itself as shown once it is on
- * screen, and in a tab left open past the end of the sale it goes away the
- * moment the countdown reaches zero.
+ * screen, unless the server has already counted the user in this period
+ * (`promotion.seen`) or this page view already sent it. In a tab left open
+ * past the end of the sale it goes away the moment the countdown reaches
+ * zero.
  *
  * @since 2.14.3
  * @param {Object}   props           Component props.
@@ -259,6 +272,7 @@ const PromoBar = ( { promotion, onHide = () => {} } ) => {
 		!! promotion?.items?.length &&
 		!! promotion?.cta?.url &&
 		! isDismissed &&
+		! pageView.dismissed &&
 		! isOver;
 
 	// Analytics and dismissal calls never block the bar or the link.
@@ -284,7 +298,10 @@ const PromoBar = ( { promotion, onHide = () => {} } ) => {
 	const isShowingOnMount = useRef( isShowing );
 	useEffect( () => {
 		if ( isShowingOnMount.current ) {
-			post( 'shown' );
+			if ( ! promotion.seen && ! pageView.shown ) {
+				pageView.shown = true;
+				post( 'shown' );
+			}
 		} else {
 			onHide();
 		}
@@ -305,6 +322,7 @@ const PromoBar = ( { promotion, onHide = () => {} } ) => {
 				'a[href], button:not([disabled])'
 			) || []
 		).find( ( element ) => element.getClientRects().length > 0 );
+		pageView.dismissed = true;
 		setIsDismissed( true );
 		onHide();
 		window.requestAnimationFrame( () => next?.focus() );

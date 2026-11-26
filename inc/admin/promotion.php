@@ -10,10 +10,10 @@
  * together with its analytics event (`Analytics::track_bfcm_banner()`), the
  * `PromoBar` component and its `Header` hook, the `srfm-marquee` keyframes, and
  * the `srfm_bfcm_2026_banner_stats` option and `srfm_dismissed_promotion` /
- * `srfm_bfcm_2026_banner_seen` user meta.
+ * `srfm_bfcm_2026_banner_seen` / `srfm_bfcm_2026_banner_clicked` user meta.
  *
- * On multisite the dismissal and the "shown" flag are user meta, so they hold
- * across the network, while the counts are kept per site.
+ * On multisite the dismissal and the "shown" and "clicked" flags are user
+ * meta, so they hold across the network, while the counts are kept per site.
  *
  * @package sureforms
  * @since 2.14.3
@@ -55,11 +55,11 @@ class Promotion {
 	public const STARTS_AT = '2026-11-15 08:00:00';
 
 	/**
-	 * End of the sale, UTC: Dec 7, 00:00 PT, right after Dec 6, 11:59:59 PM PT.
+	 * End of the sale, UTC: Monday Dec 7, 09:30 IST (Dec 6, 8:00 PM PT).
 	 *
 	 * @since 2.14.3
 	 */
-	public const ENDS_AT = '2026-12-07 08:00:00';
+	public const ENDS_AT = '2026-12-07 04:00:00';
 
 	/**
 	 * User meta holding the id of the promotion the user dismissed.
@@ -69,11 +69,20 @@ class Promotion {
 	public const DISMISSED_META = 'srfm_dismissed_promotion';
 
 	/**
-	 * User meta marking that the user has been counted as shown the bar.
+	 * User meta holding the sale period the user was last counted as shown
+	 * the bar in.
 	 *
 	 * @since 2.14.3
 	 */
 	public const SEEN_META = 'srfm_bfcm_2026_banner_seen';
+
+	/**
+	 * User meta holding the sale period the user was last counted as clicking
+	 * the bar's button in.
+	 *
+	 * @since 2.14.3
+	 */
+	public const CLICKED_META = 'srfm_bfcm_2026_banner_clicked';
 
 	/**
 	 * Option holding the bar's analytics counts, per action and sale period.
@@ -168,7 +177,8 @@ class Promotion {
 	}
 
 	/**
-	 * REST callback: count a click on the bar's button for analytics.
+	 * REST callback: count a click on the bar's button for analytics. A click
+	 * already counted in this sale period is answered but not counted again.
 	 *
 	 * @since 2.14.3
 	 *
@@ -181,7 +191,10 @@ class Promotion {
 			return $error;
 		}
 
-		if ( ! $this->record_click( get_current_user_id() ) ) {
+		$user_id = get_current_user_id();
+		$now     = time();
+
+		if ( ! $this->should_show( $user_id, $now ) ) {
 			return new WP_Error(
 				'srfm_promotion_hidden',
 				__( 'The promotion is not showing.', 'sureforms' ),
@@ -189,7 +202,7 @@ class Promotion {
 			);
 		}
 
-		return new WP_REST_Response( [ 'counted' => true ], 200 );
+		return new WP_REST_Response( [ 'counted' => $this->record_click( $user_id, $now ) ], 200 );
 	}
 
 	/**
@@ -221,8 +234,8 @@ class Promotion {
 	}
 
 	/**
-	 * Count the bar as shown to a user, once per user, and only while it is
-	 * showing to them.
+	 * Count the bar as shown to a user, once per user per sale period, and
+	 * only while it is showing to them.
 	 *
 	 * @since 2.14.3
 	 *
@@ -231,22 +244,13 @@ class Promotion {
 	 * @return bool Whether it was counted.
 	 */
 	public function record_shown( $user_id, $now = null ) {
-		$now = null === $now ? time() : (int) $now;
-
-		// Two pages loading at the same moment can both count the user; fine
-		// for marketing totals.
-		if ( ! $this->should_show( $user_id, $now ) || get_user_meta( $user_id, self::SEEN_META, true ) ) {
-			return false;
-		}
-
-		update_user_meta( $user_id, self::SEEN_META, '1' );
-
-		return $this->record( 'shown', $now );
+		return $this->record_once( 'shown', self::SEEN_META, $user_id, $now );
 	}
 
 	/**
-	 * Count a click on the bar's button, only while the bar is showing to the
-	 * user.
+	 * Count a click on the bar's button, once per user per sale period, and
+	 * only while the bar is showing to the user. Counted like `shown`, so a
+	 * period's click-through rate stays at or below 100%.
 	 *
 	 * @since 2.14.3
 	 *
@@ -255,13 +259,7 @@ class Promotion {
 	 * @return bool Whether it was counted.
 	 */
 	public function record_click( $user_id, $now = null ) {
-		$now = null === $now ? time() : (int) $now;
-
-		if ( ! $this->should_show( $user_id, $now ) ) {
-			return false;
-		}
-
-		return $this->record( 'click', $now );
+		return $this->record_once( 'click', self::CLICKED_META, $user_id, $now );
 	}
 
 	/**
@@ -378,6 +376,8 @@ class Promotion {
 		return [
 			'id'          => self::ID,
 			'phase'       => $phase,
+			// Already counted as shown in this period, so the bar skips the request.
+			'seen'        => get_user_meta( $user_id, self::SEEN_META, true ) === $phase,
 			'ends_at'     => (int) strtotime( self::ENDS_AT . ' UTC' ),
 			'timer_label' => __( 'Sale ends in', 'sureforms' ),
 			'items'       => $content['items'],
@@ -464,6 +464,33 @@ class Promotion {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Count an action once per user per sale period, only while the bar is
+	 * showing to the user. The user meta holds the period last counted.
+	 *
+	 * @since 2.14.3
+	 *
+	 * @param string   $action  One of self::ACTIONS.
+	 * @param string   $meta    User meta key holding the period last counted.
+	 * @param int      $user_id User ID.
+	 * @param int|null $now     Unix timestamp. Defaults to now.
+	 * @return bool Whether it was counted.
+	 */
+	private function record_once( $action, $meta, $user_id, $now ) {
+		$now   = null === $now ? time() : (int) $now;
+		$phase = $this->get_phase( $now );
+
+		// Two requests at the same moment can both count the user; fine for
+		// marketing totals.
+		if ( '' === $phase || ! $this->should_show( $user_id, $now ) || get_user_meta( $user_id, $meta, true ) === $phase ) {
+			return false;
+		}
+
+		update_user_meta( $user_id, $meta, $phase );
+
+		return $this->record( $action, $now );
 	}
 
 	/**

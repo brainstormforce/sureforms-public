@@ -1538,10 +1538,13 @@ class Analytics {
 	 * Queue the Black Friday sale bar's counts as a `bfcm_2026_banner` event.
 	 *
 	 * One property per action and sale period (`shown_black_friday`,
-	 * `click_cyber_monday`, `dismiss_final_hours`, ...); the value is the total
-	 * clicks. Not queued until the bar has counted something. Forced, so the
-	 * running totals are re-sent every cycle, until Promotion::is_reporting()
-	 * says the reporting window after the sale has closed.
+	 * `click_cyber_monday`, `dismiss_final_hours`, ...), each a count of users:
+	 * a user is counted at most once per action and period. The value is the
+	 * total of the click counts. Not queued until the bar has counted something.
+	 * Forced, so the running totals are re-sent every cycle, until
+	 * Promotion::is_reporting() says the reporting window after the sale has
+	 * closed. Each send carries the site's totals so far, so read the latest
+	 * event per site rather than adding events up.
 	 *
 	 * Temporary: remove with `Promotion` in the first release after the sale.
 	 *
