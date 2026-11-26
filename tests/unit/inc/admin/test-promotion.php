@@ -554,7 +554,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 		$this->assertSame( '', get_user_meta( $this->admin_id, Promotion::SEEN_META, true ), 'Not used up while hidden.' );
 
 		$this->assertTrue( $this->promotion->record_shown( $this->admin_id, $this->during ) );
-		$this->assertFalse( $this->promotion->record_shown( $this->admin_id, $this->during ), 'Once per user.' );
+		$this->assertFalse( $this->promotion->record_shown( $this->admin_id, $this->during ), 'Once per user per period.' );
 		$this->assertSame( 1, $this->promotion->get_stats()['shown']['black-friday'] );
 
 		$other = $this->create_user( 'administrator' );
@@ -575,6 +575,74 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 
 		$this->assertFalse( $this->promotion->record_shown( $this->subscriber_id, $this->during ) );
 		$this->assertSame( 0, $this->promotion->get_stats()['shown']['black-friday'] );
+	}
+
+	/**
+	 * Shown and click are each counted once per user per sale period, so a
+	 * period's click-through rate is unique clickers over unique viewers and
+	 * never goes above 100%.
+	 */
+	public function test_shown_and_click_counted_once_per_user_per_phase() {
+		$this->skip_if_pro();
+		wp_set_current_user( $this->admin_id );
+		$cyber = strtotime( Promotion::PHASES['cyber-monday'] . ' UTC' );
+
+		$this->assertTrue( $this->promotion->record_shown( $this->admin_id, $this->during ) );
+		$this->assertTrue( $this->promotion->record_click( $this->admin_id, $this->during ) );
+		$this->assertFalse( $this->promotion->record_click( $this->admin_id, $this->during ), 'Second click in the same period.' );
+
+		$this->assertTrue( $this->promotion->record_shown( $this->admin_id, $cyber ), 'Counted again in the next period.' );
+		$this->assertFalse( $this->promotion->record_shown( $this->admin_id, $cyber ) );
+		$this->assertTrue( $this->promotion->record_click( $this->admin_id, $cyber ), 'Counted again in the next period.' );
+		$this->assertFalse( $this->promotion->record_click( $this->admin_id, $cyber ) );
+
+		$stats = $this->promotion->get_stats();
+		$this->assertSame( 1, $stats['shown']['black-friday'] );
+		$this->assertSame( 1, $stats['shown']['cyber-monday'] );
+		$this->assertSame( 1, $stats['click']['black-friday'] );
+		$this->assertSame( 1, $stats['click']['cyber-monday'] );
+	}
+
+	/**
+	 * The bar's data says whether the user is already counted as shown in the
+	 * running period, so the bar can skip the request.
+	 */
+	public function test_get_for_current_user_reports_seen_for_the_running_period() {
+		$this->skip_if_pro();
+		wp_set_current_user( $this->admin_id );
+		$cyber = strtotime( Promotion::PHASES['cyber-monday'] . ' UTC' );
+
+		$this->assertFalse( $this->promotion->get_for_current_user( $this->during )['seen'] );
+
+		$this->promotion->record_shown( $this->admin_id, $this->during );
+
+		$this->assertTrue( $this->promotion->get_for_current_user( $this->during )['seen'] );
+		$this->assertFalse( $this->promotion->get_for_current_user( $cyber )['seen'], 'Not yet counted in the next period.' );
+	}
+
+	/**
+	 * A repeat click from a user the bar is showing to is answered, not
+	 * refused, and not counted again. The REST route uses the real clock.
+	 */
+	public function test_rest_click_answers_a_repeat_click() {
+		$this->skip_if_pro();
+		if ( ! $this->promotion->is_live() ) {
+			$this->markTestSkipped( 'The REST route counts against the real clock, outside the sale.' );
+		}
+		wp_set_current_user( $this->admin_id );
+
+		$request = $this->signed_request();
+		$request->set_param( 'id', Promotion::ID );
+
+		$first  = $this->promotion->rest_click( $request );
+		$second = $this->promotion->rest_click( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $first );
+		$this->assertTrue( $first->get_data()['counted'] );
+		$this->assertInstanceOf( WP_REST_Response::class, $second );
+		$this->assertSame( 200, $second->get_status() );
+		$this->assertFalse( $second->get_data()['counted'] );
+		$this->assertSame( 1, array_sum( $this->promotion->get_stats()['click'] ) );
 	}
 
 	/**
@@ -647,6 +715,7 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	private function assert_nothing_stored() {
 		$this->assertSame( '', get_user_meta( $this->admin_id, Promotion::DISMISSED_META, true ) );
 		$this->assertSame( '', get_user_meta( $this->admin_id, Promotion::SEEN_META, true ) );
+		$this->assertSame( '', get_user_meta( $this->admin_id, Promotion::CLICKED_META, true ) );
 		$this->assertSame( 0, array_sum( array_map( 'array_sum', $this->promotion->get_stats() ) ) );
 	}
 

@@ -15,6 +15,7 @@ import PromoBar, {
 	getMarqueeLayout,
 	getTimeLeft,
 	getTimerLabel,
+	pageView,
 } from '../PromoBar';
 
 global.IS_REACT_ACT_ENVIRONMENT = true;
@@ -106,6 +107,8 @@ describe( 'PromoBar', () => {
 		jest.setSystemTime( now );
 		apiFetch.mockReset();
 		apiFetch.mockResolvedValue( {} );
+		pageView.dismissed = false;
+		pageView.shown = false;
 		container = document.createElement( 'div' );
 		document.body.appendChild( container );
 		root = createRoot( container );
@@ -130,6 +133,50 @@ describe( 'PromoBar', () => {
 		);
 
 		render( createElement( PromoBar, { promotion } ) );
+		expect( posted( 'shown' ) ).toBe( 1 );
+	} );
+
+	// Entries and Payments mount a new header, and so a new bar, on every
+	// route change, while `srfm_admin.promotion` keeps its page-load value.
+	const remount = ( element ) => {
+		act( () => root.unmount() );
+		root = createRoot( container );
+		render( element );
+	};
+
+	it( 'counts itself as shown once per page view', () => {
+		render( createElement( PromoBar, { promotion } ) );
+		remount( createElement( PromoBar, { promotion } ) );
+
+		expect( container.querySelector( 'section' ) ).not.toBeNull();
+		expect( posted( 'shown' ) ).toBe( 1 );
+	} );
+
+	it( 'does not post shown when the server already counted it', () => {
+		render(
+			createElement( PromoBar, {
+				promotion: { ...promotion, seen: true },
+			} )
+		);
+
+		expect( container.querySelector( 'section' ) ).not.toBeNull();
+		expect( posted( 'shown' ) ).toBe( 0 );
+	} );
+
+	it( 'stays dismissed when a new bar mounts on the same page', () => {
+		render( createElement( PromoBar, { promotion } ) );
+		act( () => {
+			container
+				.querySelector( 'button[aria-label="Dismiss promotion"]' )
+				.click();
+		} );
+
+		const onHide = jest.fn();
+		remount( createElement( PromoBar, { promotion, onHide } ) );
+
+		expect( container.querySelector( 'section' ) ).toBeNull();
+		expect( onHide ).toHaveBeenCalledTimes( 1 );
+		expect( posted( 'dismiss' ) ).toBe( 1 );
 		expect( posted( 'shown' ) ).toBe( 1 );
 	} );
 
