@@ -26254,7 +26254,7 @@ msgstr "Laatste uren"
 #: inc/admin/promotion.php:536
 #: inc/admin/promotion.php:546
 msgid "up to 50%"
-msgstr "tot %s korting"
+msgstr "tot 50%"
 
 #: inc/admin/promotion.php:539
 msgid "Get the deal before it ends"
