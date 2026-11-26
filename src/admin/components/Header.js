@@ -1,4 +1,9 @@
-import { renderToString, useEffect, useState } from '@wordpress/element';
+import {
+	renderToString,
+	useCallback,
+	useEffect,
+	useState,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
@@ -6,6 +11,7 @@ import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
+import PromoBar from './PromoBar';
 import LogoFull from '@Admin/dashboard/templates/LogoFull';
 import Breadcrumb from './Breadcrumb';
 import Tooltip from './Tooltip';
@@ -15,6 +21,7 @@ const {
 	site_url: siteURL = '',
 	is_pro_active: isProActive = false,
 	hide_promotions: hidePromotions = false,
+	promotion = null,
 	additional_header_nav_items: additionalNavItems = [],
 } = srfm_admin;
 
@@ -121,6 +128,10 @@ const Header = ( { breadCrumb } ) => {
 		srfm_admin?.is_license_active || false
 	);
 	const isFirstFormCreated = srfm_admin?.is_first_form_created || false;
+	// The sale bar takes the place of the upgrade strip while it shows, and
+	// gives it back once it is dismissed or the sale ends.
+	const [ isPromoShowing, setIsPromoShowing ] = useState( !! promotion );
+	const handlePromoHide = useCallback( () => setIsPromoShowing( false ), [] );
 
 	useEffect( () => {
 		const searchParams = new URLSearchParams( window.location.search );
@@ -159,7 +170,9 @@ const Header = ( { breadCrumb } ) => {
 
 	return (
 		<div className="top-8 z-[1]">
-			{ ! isProActive &&
+			<PromoBar promotion={ promotion } onHide={ handlePromoHide } />
+			{ ! isPromoShowing &&
+				! isProActive &&
 				! isLicenseActive &&
 				activePage?.slug === 'sureforms_menu' &&
 				isFirstFormCreated &&
