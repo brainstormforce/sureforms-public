@@ -1540,15 +1540,22 @@ class Analytics {
 	 * One property per action and sale period (`shown_black_friday`,
 	 * `click_cyber_monday`, `dismiss_final_hours`, ...); the value is the total
 	 * clicks. Not queued until the bar has counted something. Forced, so the
-	 * running totals are re-sent every cycle.
+	 * running totals are re-sent every cycle, until Promotion::is_reporting()
+	 * says the reporting window after the sale has closed.
 	 *
 	 * Temporary: remove with `Promotion` in the first release after the sale.
 	 *
 	 * @since x.x.x
+	 * @param int|null $now Unix timestamp. Defaults to now.
 	 * @return void
 	 */
-	private function track_bfcm_banner() {
-		$stats = Promotion::get_instance()->get_stats();
+	private function track_bfcm_banner( $now = null ) {
+		$promotion = Promotion::get_instance();
+		if ( ! $promotion->is_reporting( $now ) ) {
+			return;
+		}
+
+		$stats = $promotion->get_stats();
 
 		$properties = [];
 		foreach ( $stats as $action => $phases ) {

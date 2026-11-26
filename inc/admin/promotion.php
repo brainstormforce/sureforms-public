@@ -12,6 +12,9 @@
  * the `srfm_bfcm_2026_banner_stats` option and `srfm_dismissed_promotion` /
  * `srfm_bfcm_2026_banner_seen` user meta.
  *
+ * On multisite the dismissal and the "shown" flag are user meta, so they hold
+ * across the network, while the counts are kept per site.
+ *
  * @package sureforms
  * @since x.x.x
  */
@@ -87,6 +90,15 @@ class Promotion {
 	public const ACTIONS = [ 'shown', 'click', 'dismiss' ];
 
 	/**
+	 * How long after ENDS_AT the counts keep being reported, in seconds
+	 * (30 days). Long enough for the final totals to go out in a few analytics
+	 * cycles; after that a site that never updates stops re-sending them.
+	 *
+	 * @since x.x.x
+	 */
+	public const REPORTING_GRACE = 2592000;
+
+	/**
 	 * Sale periods from the BFCM banner calendar, each with its UTC start
 	 * (00:00 PT). The last period that has started is the running one.
 	 *
@@ -100,7 +112,7 @@ class Promotion {
 	];
 
 	/**
-	 * Register the dismiss route through the SureForms REST registry.
+	 * Register the routes through the SureForms REST registry.
 	 *
 	 * @since x.x.x
 	 */
@@ -109,7 +121,10 @@ class Promotion {
 	}
 
 	/**
-	 * Append the dismiss route to the SureForms REST registry.
+	 * Append the sale bar's routes to the SureForms REST registry.
+	 *
+	 * The `id` is checked in the callbacks rather than through an `args`
+	 * schema, because core validates `args` before the permission callback.
 	 *
 	 * @since x.x.x
 	 *
@@ -120,21 +135,61 @@ class Promotion {
 		if ( ! is_array( $endpoints ) ) {
 			$endpoints = [];
 		}
-		$can = static function () {
-			return Helper::current_user_can();
-		};
 
-		$endpoints['promotion/dismiss'] = [
-			'methods'             => 'POST',
-			'callback'            => [ $this, 'rest_dismiss' ],
-			'permission_callback' => $can,
-		];
-		$endpoints['promotion/click']   = [
-			'methods'             => 'POST',
-			'callback'            => [ $this, 'rest_click' ],
-			'permission_callback' => $can,
-		];
+		foreach ( self::ACTIONS as $action ) {
+			$endpoints[ 'promotion/' . $action ] = [
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'rest_' . $action ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+			];
+		}
+
 		return $endpoints;
+	}
+
+	/**
+	 * REST callback: count the bar as shown, sent by the bar once it is on
+	 * screen.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_shown( $request ) {
+		$error = $this->validate_request( $request );
+		if ( $error ) {
+			return $error;
+		}
+
+		$this->record_shown( get_current_user_id() );
+
+		return new WP_REST_Response( [ 'success' => true ], 200 );
+	}
+
+	/**
+	 * REST callback: count a click on the bar's button for analytics.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_click( $request ) {
+		$error = $this->validate_request( $request );
+		if ( $error ) {
+			return $error;
+		}
+
+		if ( ! $this->record_click( get_current_user_id() ) ) {
+			return new WP_Error(
+				'srfm_promotion_hidden',
+				__( 'The promotion is not showing.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		return new WP_REST_Response( [ 'counted' => true ], 200 );
 	}
 
 	/**
@@ -154,43 +209,81 @@ class Promotion {
 			return $error;
 		}
 
-		$user_id = get_current_user_id();
-		if ( self::ID !== get_user_meta( $user_id, self::DISMISSED_META, true ) ) {
-			update_user_meta( $user_id, self::DISMISSED_META, self::ID );
-			$this->record( 'dismiss' );
-		}
+		$this->dismiss( get_current_user_id() );
 
 		return new WP_REST_Response( [ 'dismissed' => true ], 200 );
 	}
 
 	/**
-	 * REST callback: count a click on the bar's button for analytics.
-	 *
-	 * Counted only while the bar is showing to the current user, in the sale
-	 * period the server is in.
+	 * Count the bar as shown to a user, once per user, and only while it is
+	 * showing to them.
 	 *
 	 * @since x.x.x
 	 *
-	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
-	 * @return WP_REST_Response|WP_Error
+	 * @param int      $user_id User ID.
+	 * @param int|null $now     Unix timestamp. Defaults to now.
+	 * @return bool Whether it was counted.
 	 */
-	public function rest_click( $request ) {
-		$error = $this->validate_request( $request );
-		if ( $error ) {
-			return $error;
+	public function record_shown( $user_id, $now = null ) {
+		$now = null === $now ? time() : (int) $now;
+
+		if ( ! $this->should_show( $user_id, $now ) || get_user_meta( $user_id, self::SEEN_META, true ) ) {
+			return false;
 		}
 
-		if ( ! $this->should_show( get_current_user_id(), time() ) ) {
-			return new WP_Error(
-				'srfm_promotion_hidden',
-				__( 'The promotion is not showing.', 'sureforms' ),
-				[ 'status' => 400 ]
-			);
+		update_user_meta( $user_id, self::SEEN_META, '1' );
+
+		return $this->record( 'shown', $now );
+	}
+
+	/**
+	 * Count a click on the bar's button, only while the bar is showing to the
+	 * user.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int      $user_id User ID.
+	 * @param int|null $now     Unix timestamp. Defaults to now.
+	 * @return bool Whether it was counted.
+	 */
+	public function record_click( $user_id, $now = null ) {
+		$now = null === $now ? time() : (int) $now;
+
+		if ( ! $this->should_show( $user_id, $now ) ) {
+			return false;
 		}
 
-		$this->record( 'click' );
+		return $this->record( 'click', $now );
+	}
 
-		return new WP_REST_Response( [ 'counted' => true ], 200 );
+	/**
+	 * Hide the running promotion for a user, for good. The first dismissal is
+	 * counted, and only when the bar was showing to the user.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int      $user_id User ID.
+	 * @param int|null $now     Unix timestamp. Defaults to now.
+	 * @return bool Whether the promotion is now dismissed for the user.
+	 */
+	public function dismiss( $user_id, $now = null ) {
+		$now = null === $now ? time() : (int) $now;
+
+		if ( self::ID === get_user_meta( $user_id, self::DISMISSED_META, true ) ) {
+			return true;
+		}
+
+		$was_showing = $this->should_show( $user_id, $now );
+
+		if ( ! update_user_meta( $user_id, self::DISMISSED_META, self::ID ) ) {
+			return false;
+		}
+
+		if ( $was_showing ) {
+			$this->record( 'dismiss', $now );
+		}
+
+		return true;
 	}
 
 	/**
@@ -208,10 +301,10 @@ class Promotion {
 			return false;
 		}
 
-		// ponytail: read-modify-write, so two requests in the same instant can
-		// lose a count; fine for marketing totals.
-		$stats                      = $this->get_stats();
-		$stats[ $action ][ $phase ] = $stats[ $action ][ $phase ] + 1;
+		// Read-modify-write, so two requests in the same instant can lose a
+		// count; fine for marketing totals.
+		$stats                       = $this->get_stats();
+		$stats[ $action ][ $phase ] += 1;
 
 		return update_option( self::STATS_OPTION, $stats, false );
 	}
@@ -236,56 +329,27 @@ class Promotion {
 	}
 
 	/**
-	 * Check the REST nonce and that the request names the running promotion.
+	 * Whether the counts are still reported to analytics: through the sale
+	 * and for REPORTING_GRACE after it ends.
 	 *
 	 * @since x.x.x
 	 *
-	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
-	 * @return WP_Error|null Error to return, or null when the request is valid.
-	 */
-	private function validate_request( $request ) {
-		$nonce = $request->get_header( 'X-WP-Nonce' );
-		if ( ! is_string( $nonce ) || ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return new WP_Error(
-				'srfm_invalid_nonce',
-				__( 'Invalid or missing security token.', 'sureforms' ),
-				[ 'status' => 403 ]
-			);
-		}
-
-		if ( self::ID !== $request->get_param( 'id' ) ) {
-			return new WP_Error(
-				'srfm_invalid_promotion',
-				__( 'Unknown promotion.', 'sureforms' ),
-				[ 'status' => 400 ]
-			);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Whether the bar should show to a user at a given time.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param int $user_id User ID.
-	 * @param int $now     Unix timestamp.
+	 * @param int|null $now Unix timestamp. Defaults to now.
 	 * @return bool
 	 */
-	private function should_show( $user_id, $now ) {
-		return $user_id
-			&& Helper::current_user_can()
-			&& ! Helper::has_pro()
-			&& ! Helper::hide_promotions()
-			&& $this->is_live( $now )
-			&& self::ID !== get_user_meta( $user_id, self::DISMISSED_META, true );
+	public function is_reporting( $now = null ) {
+		$now = null === $now ? time() : (int) $now;
+
+		return $now < strtotime( self::ENDS_AT . ' UTC' ) + self::REPORTING_GRACE;
 	}
 
 	/**
 	 * The promotion for the current user, or null when the sale is not live,
 	 * SureForms Pro is active, promotions are hidden, the user cannot manage
 	 * SureForms, or the user dismissed it.
+	 *
+	 * Read-only: it is built on every admin page, and the bar counts itself as
+	 * shown through the `promotion/shown` route once it is on screen.
 	 *
 	 * @since x.x.x
 	 *
@@ -298,11 +362,6 @@ class Promotion {
 
 		if ( ! $this->should_show( $user_id, $now ) ) {
 			return null;
-		}
-
-		if ( ! get_user_meta( $user_id, self::SEEN_META, true ) ) {
-			update_user_meta( $user_id, self::SEEN_META, '1' );
-			$this->record( 'shown', $now );
 		}
 
 		$phase   = $this->get_phase( $now );
@@ -371,9 +430,57 @@ class Promotion {
 	}
 
 	/**
+	 * Check the REST nonce and that the request names the running promotion.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param WP_REST_Request<array<string,mixed>> $request REST request.
+	 * @return WP_Error|null Error to return, or null when the request is valid.
+	 */
+	private function validate_request( $request ) {
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+		if ( ! is_string( $nonce ) || ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return new WP_Error(
+				'srfm_invalid_nonce',
+				__( 'Invalid or missing security token.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		if ( self::ID !== $request->get_param( 'id' ) ) {
+			return new WP_Error(
+				'srfm_invalid_promotion',
+				__( 'Unknown promotion.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Whether the bar should show to a user at a given time.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int $user_id User ID.
+	 * @param int $now     Unix timestamp.
+	 * @return bool
+	 */
+	private function should_show( $user_id, $now ) {
+		return $user_id
+			&& user_can( $user_id, 'manage_options' )
+			&& ! Helper::has_pro()
+			&& ! Helper::hide_promotions()
+			&& $this->is_live( $now )
+			&& self::ID !== get_user_meta( $user_id, self::DISMISSED_META, true );
+	}
+
+	/**
 	 * Scrolling segments and button label for a sale period, from the BFCM
 	 * banner calendar. Each segment is a list of text parts with a style:
 	 * plain, bold or accent. The entry price always reads "Plans start at $49".
+	 * A price inside a sentence is a placeholder, so translators can move it.
 	 *
 	 * @since x.x.x
 	 *
@@ -388,14 +495,36 @@ class Promotion {
 			];
 		};
 
-		$from_49 = [ $part( __( 'Plans start at', 'sureforms' ) ), $part( '$49', 'accent' ) ];
+		// One translatable sentence with the highlighted value in place of %s,
+		// split into plain text around an accent part.
+		$sentence = static function ( $format, $value ) use ( $part ) {
+			$pieces = explode( '%s', $format, 2 );
+			if ( 2 !== count( $pieces ) ) {
+				$pieces = [ $format, '' ];
+			}
+
+			$parts = [];
+			if ( '' !== trim( $pieces[0] ) ) {
+				$parts[] = $part( trim( $pieces[0] ) );
+			}
+			$parts[] = $part( $value, 'accent' );
+			if ( '' !== trim( $pieces[1] ) ) {
+				$parts[] = $part( trim( $pieces[1] ) );
+			}
+			return $parts;
+		};
+
+		/* translators: %s: lowest plan price, e.g. $49. */
+		$from_49 = $sentence( __( 'Plans start at %s', 'sureforms' ), '$49' );
+		/* translators: %s: discount, e.g. "up to 50%". */
+		$save_50 = __( 'Save %s', 'sureforms' );
 
 		switch ( $phase ) {
 			case 'final-hours':
 				return [
 					'items' => [
 						[ $part( __( 'Final hours', 'sureforms' ), 'bold' ) ],
-						[ $part( __( 'Save', 'sureforms' ) ), $part( __( 'up to 50%', 'sureforms' ), 'accent' ) ],
+						$sentence( $save_50, __( 'up to 50%', 'sureforms' ) ),
 						$from_49,
 					],
 					'cta'   => __( 'Get the deal before it ends', 'sureforms' ),
@@ -404,7 +533,8 @@ class Promotion {
 				return [
 					'items' => [
 						[ $part( __( 'Missed Cyber Monday?', 'sureforms' ), 'bold' ) ],
-						[ $part( __( 'You can still save', 'sureforms' ) ), $part( __( 'up to 50%', 'sureforms' ), 'accent' ) ],
+						/* translators: %s: discount, e.g. "up to 50%". */
+						$sentence( __( 'You can still save %s', 'sureforms' ), __( 'up to 50%', 'sureforms' ) ),
 						$from_49,
 					],
 					'cta'   => __( 'Pick a plan and save', 'sureforms' ),
@@ -424,7 +554,8 @@ class Promotion {
 						[ $part( __( 'Black Friday Sale', 'sureforms' ), 'bold' ) ],
 						[ $part( __( 'Up to 50% off', 'sureforms' ), 'accent' ) ],
 						$from_49,
-						[ $part( __( 'Lifetime plans from', 'sureforms' ) ), $part( '$199', 'accent' ) ],
+						/* translators: %s: lowest lifetime plan price, e.g. $199. */
+						$sentence( __( 'Lifetime plans from %s', 'sureforms' ), '$199' ),
 					],
 					'cta'   => __( 'View Black Friday deals', 'sureforms' ),
 				];

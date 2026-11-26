@@ -2506,28 +2506,24 @@ class Test_Analytics extends TestCase {
 		$this->assertNotNull( $this->manage_features_event( $analytics->add_srfm_analytics_data( [] ) ) );
 	}
 
-	/**
-	 * The `manage_features` entry of a stats payload's events_record, if any.
-	 *
-	 * @param array<mixed> $stats Stats payload.
-	 * @return array<string,mixed>|null
-	 */
 	// ─── bfcm_2026_banner ────────────────────────────────────────
 
 	/**
-	 * Nothing is sent while the sale bar has no counts.
+	 * Nothing is queued while the sale bar has no counts.
 	 */
-	public function test_add_srfm_analytics_data_skips_bfcm_banner_without_counts() {
+	public function test_track_bfcm_banner_skips_without_counts() {
 		delete_option( Promotion::STATS_OPTION );
 
-		$this->assertNull( $this->event_named( Analytics::get_instance()->add_srfm_analytics_data( [] ), 'bfcm_2026_banner' ) );
+		$this->track_bfcm_banner( strtotime( Promotion::STARTS_AT . ' UTC' ) + DAY_IN_SECONDS );
+
+		$this->assertNull( $this->pending_event( 'bfcm_2026_banner' ) );
 	}
 
 	/**
-	 * The counts are sent as one property per action and sale period, the value
-	 * is the total clicks, and the event is re-sent every cycle.
+	 * The counts are queued as one property per action and sale period, the
+	 * value is the total clicks, and the event is queued again after a send.
 	 */
-	public function test_add_srfm_analytics_data_reports_bfcm_banner_counts() {
+	public function test_track_bfcm_banner_reports_counts() {
 		$promotion = Promotion::get_instance();
 		$friday    = strtotime( Promotion::PHASES['black-friday'] . ' UTC' );
 		$cyber     = strtotime( Promotion::PHASES['cyber-monday'] . ' UTC' );
@@ -2537,7 +2533,8 @@ class Test_Analytics extends TestCase {
 		$promotion->record( 'dismiss', $cyber );
 
 		try {
-			$event = $this->event_named( Analytics::get_instance()->add_srfm_analytics_data( [] ), 'bfcm_2026_banner' );
+			$this->track_bfcm_banner( $cyber );
+			$event = $this->pending_event( 'bfcm_2026_banner' );
 
 			$this->assertNotNull( $event );
 			$this->assertSame( '2', $event['event_value'] );
@@ -2546,30 +2543,83 @@ class Test_Analytics extends TestCase {
 			$this->assertSame( 1, $event['properties']['click_cyber_monday'] );
 			$this->assertSame( 1, $event['properties']['dismiss_cyber_monday'] );
 			$this->assertSame( 0, $event['properties']['click_final_hours'] );
+			$this->assertCount( 12, $event['properties'] );
 
-			$again = $this->event_named( Analytics::get_instance()->add_srfm_analytics_data( [] ), 'bfcm_2026_banner' );
-			$this->assertNotNull( $again, 'Re-sent on the next cycle.' );
+			Analytics::events()->flush_pending();
+			$this->assertNull( $this->pending_event( 'bfcm_2026_banner' ), 'Sent.' );
+
+			$this->track_bfcm_banner( $cyber );
+			$this->assertNotNull( $this->pending_event( 'bfcm_2026_banner' ), 'Queued again on the next cycle.' );
 		} finally {
 			delete_option( Promotion::STATS_OPTION );
 		}
 	}
 
 	/**
-	 * Find an event by name in an analytics payload.
-	 *
-	 * @param array  $stats Payload from add_srfm_analytics_data().
-	 * @param string $name  Event name.
-	 * @return array|null
+	 * Once the reporting window after the sale has closed, the frozen totals
+	 * are no longer sent.
 	 */
-	private function event_named( $stats, $name ) {
-		foreach ( $stats['plugin_data']['sureforms']['events_record'] ?? [] as $event ) {
-			if ( $name === ( $event['event_name'] ?? '' ) ) {
-				return $event;
-			}
+	public function test_track_bfcm_banner_stops_after_reporting_window() {
+		$friday = strtotime( Promotion::PHASES['black-friday'] . ' UTC' );
+		Promotion::get_instance()->record( 'click', $friday );
+		$closed = strtotime( Promotion::ENDS_AT . ' UTC' ) + Promotion::REPORTING_GRACE;
+
+		try {
+			$this->track_bfcm_banner( $closed - 1 );
+			$this->assertNotNull( $this->pending_event( 'bfcm_2026_banner' ), 'Still reported on the last day.' );
+
+			Analytics::events()->flush_pending();
+			$this->track_bfcm_banner( $closed );
+			$this->assertNull( $this->pending_event( 'bfcm_2026_banner' ), 'Not reported once the window closed.' );
+		} finally {
+			delete_option( Promotion::STATS_OPTION );
 		}
-		return null;
 	}
 
+	/**
+	 * The stats filter queues the event on its own and sends it in the same
+	 * payload.
+	 */
+	public function test_add_srfm_analytics_data_sends_bfcm_banner_while_reporting() {
+		Promotion::get_instance()->record( 'click', strtotime( Promotion::PHASES['black-friday'] . ' UTC' ) );
+
+		try {
+			$sent = null;
+			foreach ( Analytics::get_instance()->add_srfm_analytics_data( [] )['plugin_data']['sureforms']['events_record'] ?? [] as $event ) {
+				if ( 'bfcm_2026_banner' === ( $event['event_name'] ?? '' ) ) {
+					$sent = $event;
+				}
+			}
+
+			if ( Promotion::get_instance()->is_reporting() ) {
+				$this->assertNotNull( $sent );
+			} else {
+				// The window closes 2027-01-06; the pinned tests above keep
+				// covering the event after that.
+				$this->assertNull( $sent );
+			}
+		} finally {
+			delete_option( Promotion::STATS_OPTION );
+		}
+	}
+
+	/**
+	 * Run Analytics::track_bfcm_banner() at a given time.
+	 *
+	 * @param int $now Unix timestamp.
+	 */
+	private function track_bfcm_banner( $now ) {
+		$track = new \ReflectionMethod( Analytics::class, 'track_bfcm_banner' );
+		$track->setAccessible( true );
+		$track->invoke( Analytics::get_instance(), $now );
+	}
+
+	/**
+	 * The `manage_features` entry of a stats payload's events_record, if any.
+	 *
+	 * @param array<mixed> $stats Stats payload.
+	 * @return array<string,mixed>|null
+	 */
 	private function manage_features_event( $stats ) {
 		foreach ( $stats['plugin_data']['sureforms']['events_record'] ?? [] as $event ) {
 			if ( 'manage_features' === ( $event['event_name'] ?? '' ) ) {

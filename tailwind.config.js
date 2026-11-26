@@ -209,15 +209,27 @@ module.exports = withTW( {
 				'sm-blur-2': '0 1px 2px rgba(0, 0, 0, 0.05)',
 				'md-blur-32': '0px 10px 32px -12px rgba(149,160,178,0.2)',
 			},
-			// Sale bar above the admin header: scrolls by one of its two copies.
+			// Sale bar above the admin header: scrolls by one of its two runs.
 			keyframes: {
 				'srfm-marquee': {
 					from: { transform: 'translateX(0)' },
 					to: { transform: 'translateX(-50%)' },
 				},
+				// RTL pages lay the track out from the right edge, so it slides
+				// the other way. Grunt's rtlcss only covers assets/css, not the
+				// assets/build bundles the admin pages load, so this is the only
+				// RTL handling; if rtlcss ever ran on them it would flip both
+				// keyframes and this pair would need revisiting.
+				'srfm-marquee-rtl': {
+					from: { transform: 'translateX(0)' },
+					to: { transform: 'translateX(50%)' },
+				},
 			},
+			// About 21px/s for the black-friday run until PromoBar has measured
+			// the copy and sets the duration inline (SPEED in PromoBar.js).
 			animation: {
-				'srfm-marquee': 'srfm-marquee 80s linear infinite',
+				'srfm-marquee': 'srfm-marquee 135s linear infinite',
+				'srfm-marquee-rtl': 'srfm-marquee-rtl 135s linear infinite',
 			},
 		},
 	},
