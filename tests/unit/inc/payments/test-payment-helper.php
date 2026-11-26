@@ -389,6 +389,102 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertEquals( 40.00, $result );
 	}
 
+	/**
+	 * Multi-select options priced for the multi-select recompute tests below.
+	 *
+	 * @param string $block_name Block name.
+	 * @return array<string,mixed>
+	 */
+	private function multi_select_price_config( $block_name = 'srfm/dropdown' ) {
+		return [
+			'block_name'       => $block_name,
+			'multi_select'     => true,
+			'single_selection' => false,
+			'options'          => [
+				[ 'label' => 'Basic', 'value' => '10' ],
+				[ 'label' => 'Premium', 'value' => '500' ],
+				[ 'label' => 'Tea &amp; Cake', 'value' => '5' ],
+			],
+		];
+	}
+
+	/**
+	 * A choice that prices to no single configured option is refused with a message
+	 * the visitor can act on, not the site-owner "re-save the form" one. A real
+	 * selection at its price still passes.
+	 */
+	public function test_validate_amount_against_config_invalid_choice_message_is_for_the_visitor() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 0,
+					'variable_amount_field'            => 'plan',
+					'variable_amount_field_block_name' => 'srfm/dropdown',
+				],
+				'drp456' => array_merge( $this->multi_select_price_config(), [ 'block_id' => 'drp456', 'slug' => 'plan' ] ),
+			]
+		);
+		$key = 'srfm-dropdown-drp456-lbl-UGxhbg-plan';
+
+		foreach ( [ 'Basic | Basic', 'Basic | Gold' ] as $value ) {
+			$result = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, [ $key => $value ], 10.0 );
+			$this->assertFalse( $result['valid'], $value );
+			$this->assertSame( 'One or more selected options are not valid. Please check your selection and try again.', $result['message'], $value );
+		}
+
+		$this->assertTrue( Payment_Helper::validate_amount_against_config( 'pay123', $form_id, [ $key => 'Basic | Premium' ], 510.0 )['valid'] );
+	}
+
+	public function test_get_amount_by_config_options_multi_select_unmatched_value_is_null() {
+		foreach ( [ 'srfm/dropdown', 'srfm/multi-choice' ] as $block_name ) {
+			$config = $this->multi_select_price_config( $block_name );
+			foreach ( [ 'Basic | Gold', 'Gold | Premium', 'Basic | ', 'Basic |  | Premium' ] as $value ) {
+				$this->assertNull(
+					$this->call_private_method( null, 'get_amount_by_the_config_options', [ $value, $config ] ),
+					"{$block_name}: '{$value}' holds a value that is no configured option"
+				);
+			}
+		}
+	}
+
+	public function test_get_amount_by_config_options_multi_select_prices_entity_encoded_label() {
+		$config = $this->multi_select_price_config();
+
+		// Field_Rules::check_choices() accepts these as the real options, so the
+		// recompute must price them as those options.
+		$this->assertEquals( 510.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Pr&#101;mium', $config ] ) );
+		$this->assertEquals( 510.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | &#x50;remium', $config ] ) );
+		// A label kses stored encoded matches its decoded submission, and vice versa.
+		$this->assertEquals( 15.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Tea & Cake', $config ] ) );
+		$this->assertEquals( 15.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Tea &amp; Cake', $config ] ) );
+	}
+
+	public function test_get_amount_by_config_options_multi_select_repeated_value_is_null() {
+		$config = $this->multi_select_price_config();
+
+		$this->assertNull( $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Basic', $config ] ) );
+		$this->assertNull( $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Premium | Pr&#101;mium', $config ] ) );
+	}
+
+	public function test_get_amount_by_config_options_multi_select_ambiguous_label_is_null() {
+		$config              = $this->multi_select_price_config();
+		$config['options'][] = [ 'label' => 'Pr&#101;mium', 'value' => '1' ];
+
+		// Two options canonicalise to one label at different prices: the selection
+		// does not say which was picked.
+		$this->assertNull( $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Premium', $config ] ) );
+
+		// The same label repeated at the same price is not ambiguous.
+		$config              = $this->multi_select_price_config();
+		$config['options'][] = [ 'label' => 'Premium', 'value' => '500' ];
+		$this->assertEquals( 510.0, $this->call_private_method( null, 'get_amount_by_the_config_options', [ 'Basic | Premium', $config ] ) );
+	}
+
 	public function test_get_amount_by_config_options_no_match() {
 		$block_config = [
 			'block_name' => 'srfm/dropdown',
@@ -577,6 +673,132 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$result = Payment_Helper::verify_payment_intent( 'block-nonexistent', 'pi_nonexistent', [ 'form-id' => 1 ], 'one-time' );
 		$this->assertIsArray( $result );
 		$this->assertFalse( $result['valid'] );
+	}
+
+	/**
+	 * Create a form whose payment block 'sharedblk' has the given payment_type and a
+	 * fixed price of 100, as a duplicated form would (same block id, same price).
+	 *
+	 * @param string $payment_type 'one-time', 'subscription' or 'both'.
+	 * @return int Form ID.
+	 */
+	private function create_fixed_price_payment_form( $payment_type ) {
+		$form_id = self::factory()->post->create( [ 'post_type' => 'sureforms_form', 'post_content' => '' ] );
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'sharedblk' => [
+					'block_id'     => 'sharedblk',
+					'payment_type' => $payment_type,
+					'amount_type'  => 'fixed',
+					'fixed_amount' => 100.00,
+				],
+			]
+		);
+		return $form_id;
+	}
+
+	/**
+	 * Store intent metadata the way create_payment_intent() does.
+	 *
+	 * @param int   $form_id   Originating form ID.
+	 * @param array $overrides Keys to replace (null removes the key).
+	 */
+	private function store_one_time_intent( $form_id, $overrides = [] ) {
+		$metadata = array_merge(
+			[
+				'form_id'     => $form_id,
+				'block_id'    => 'sharedblk',
+				'amount'      => 100.00,
+				'currency'    => 'usd',
+				'active_type' => 'one-time',
+			],
+			$overrides
+		);
+		Payment_Helper::store_payment_intent_metadata( 'sharedblk', 'pi_bind', array_filter( $metadata, static fn( $v ) => null !== $v ) );
+	}
+
+	public function test_verify_payment_intent_binds_intent_to_originating_form() {
+		$form_a = $this->create_fixed_price_payment_form( 'one-time' );
+		$form_b = $this->create_fixed_price_payment_form( 'subscription' );
+		$form_c = $this->create_fixed_price_payment_form( 'one-time' );
+		$this->store_one_time_intent( $form_a );
+
+		// Same block id, price, currency and type on another form: rejected.
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_c ], 'one-time' )['valid'] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_b ], 'one-time' )['valid'] );
+
+		// The rejected attempts did not consume the intent; the originating form still verifies.
+		$this->assertNotFalse( get_transient( 'srfm_pi_sharedblk_pi_bind' ) );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_a ], 'one-time' )['valid'] );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => (string) $form_a ], 'one-time' )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
+	public function test_verify_payment_intent_rejects_flow_the_form_no_longer_allows() {
+		$form_id = $this->create_fixed_price_payment_form( 'one-time' );
+		$this->store_one_time_intent( $form_id );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'] );
+
+		// Form switched to subscription-only after the intent was created.
+		$config                              = get_post_meta( $form_id, '_srfm_block_config', true );
+		$config['sharedblk']['payment_type'] = 'subscription';
+		update_post_meta( $form_id, '_srfm_block_config', $config );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'] );
+
+		// "both" permits either flow.
+		$config['sharedblk']['payment_type'] = 'both';
+		update_post_meta( $form_id, '_srfm_block_config', $config );
+		$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
+	public function test_verify_payment_intent_rejects_metadata_without_trusted_binding() {
+		$form_id = $this->create_fixed_price_payment_form( 'one-time' );
+		$cases   = [
+			'no form_id'        => [ 'form_id' => null ],
+			'zero form_id'      => [ 'form_id' => 0 ],
+			'non-numeric form'  => [ 'form_id' => 'abc' ],
+			'no block_id'       => [ 'block_id' => null ],
+			'other block_id'    => [ 'block_id' => 'otherblk' ],
+			'other active_type' => [ 'active_type' => 'subscription' ],
+		];
+		foreach ( $cases as $label => $overrides ) {
+			$this->store_one_time_intent( $form_id, $overrides );
+			$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ], 'one-time' )['valid'], $label );
+		}
+
+		// A caller that names no flow cannot verify either.
+		$this->store_one_time_intent( $form_id );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $form_id ] )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
+	}
+
+	public function test_verify_payment_intent_accepts_legacy_metadata_without_active_type() {
+		// Pro <= 2.12.2 PayPal writers stored no active_type; those intents must still verify.
+		$one_time = $this->create_fixed_price_payment_form( 'one-time' );
+		foreach ( [ 'no active_type' => null, 'empty active_type' => '' ] as $label => $stored ) {
+			$this->store_one_time_intent( $one_time, [ 'active_type' => $stored ] );
+			$this->assertTrue( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $one_time ], 'one-time' )['valid'], $label );
+		}
+
+		// The form/block binding and the form's payment_type still apply to legacy metadata.
+		$other = $this->create_fixed_price_payment_form( 'one-time' );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $other ], 'one-time' )['valid'] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $one_time ], 'subscription' )['valid'] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $one_time ] )['valid'] );
+
+		// A stored active_type that disagrees with the caller is still refused, even where
+		// the form's "both" payment_type would permit either flow.
+		$both = $this->create_fixed_price_payment_form( 'both' );
+		$this->store_one_time_intent( $both, [ 'active_type' => 'subscription' ] );
+		$this->assertFalse( Payment_Helper::verify_payment_intent( 'sharedblk', 'pi_bind', [ 'form-id' => $both ], 'one-time' )['valid'] );
+
+		delete_transient( 'srfm_pi_sharedblk_pi_bind' );
 	}
 
 	public function test_get_submitted_value_by_slug() {
@@ -979,21 +1201,21 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertNotContains( 'broken03', $required, 'A block that renders nothing must not be required.' );
 		$this->assertNotContains( 'plain04', $required );
 
-		// An actionable conditional-logic rule can hide the field client-side, so that
-		// block is not required — but only while something is there to evaluate it, and
+		// An actionable conditional-logic rule that hides the field for the submitted
+		// values exempts that block — but only while something is there to apply it, and
 		// only for a rule that carries at least one condition.
 		$actionable = [
 			[
 				'active01' => [
 					'action' => 'show',
-					'logic'  => [ [ [ 'field' => 'email', 'operator' => '===', 'value' => 'yes' ] ] ],
+					'logic'  => [ [ [ 'field' => 'email', 'operator' => '==', 'value' => 'yes' ] ] ],
 				],
 			],
 		];
 
 		// Unregistered meta (no evaluator present) => the rule buys nothing.
 		update_post_meta( $form_id, '_srfm_conditional_logic', $actionable );
-		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id ) );
+		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
 
 		register_post_meta(
 			SRFM_FORMS_POST_TYPE,
@@ -1004,12 +1226,12 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 			]
 		);
 
-		$this->assertNotContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id ) );
-		$this->assertContains( 'nested02', Payment_Helper::get_required_payment_block_ids( $form_id ) );
+		$this->assertNotContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
+		$this->assertContains( 'nested02', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
 
 		// A rule with no conditions can never match, so the block stays required.
 		update_post_meta( $form_id, '_srfm_conditional_logic', [ [ 'active01' => [ 'action' => 'show' ] ] ] );
-		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id ) );
+		$this->assertContains( 'active01', Payment_Helper::get_required_payment_block_ids( $form_id, [] ) );
 
 		unregister_post_meta( SRFM_FORMS_POST_TYPE, '_srfm_conditional_logic' );
 		delete_post_meta( $form_id, '_srfm_conditional_logic' );
@@ -1201,9 +1423,125 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		}
 	}
 
+	/**
+	 * The window is fixed from the first request: a later request counts against it
+	 * without pushing its expiry back, as with the other limiters that share
+	 * Helper::hit_rate_counter().
+	 */
+	public function test_is_payment_rate_limited_keeps_a_fixed_window() {
+		$_SERVER['REMOTE_ADDR'] = '203.0.113.8';
+		$key                    = 'srfm_pay_rl_window_' . md5( '203.0.113.8_123' );
+		delete_transient( $key );
+
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'window' ) );
+
+		// Ten seconds of the window left.
+		$expires = time() + 10;
+		update_option( '_transient_timeout_' . $key, $expires );
+
+		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'window' ) );
+
+		$this->assertSame( 2, (int) get_transient( $key ), 'Both requests are counted in one bucket.' );
+		$this->assertLessThanOrEqual( $expires, (int) get_option( '_transient_timeout_' . $key ), 'A request inside the window must not extend it.' );
+
+		delete_transient( $key );
+	}
+
 	public function test_is_payment_rate_limited_fails_open_without_ip() {
 		unset( $_SERVER['REMOTE_ADDR'] );
 		$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'noip' ), 'no IP must not block checkouts' );
+	}
+
+	public function test_is_payment_rate_limited_buckets_ipv6_by_64_prefix() {
+		$original = $_SERVER['REMOTE_ADDR'] ?? null;
+		add_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+
+		try {
+			// Two hits from one address fill the bucket.
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:1:2::1';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+
+			// Another address in the same /64 shares that bucket.
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:1:2:ffff:ffff:ffff:ffff';
+			$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ), 'same /64 is one bucket' );
+
+			// A different /64 is its own bucket.
+			$_SERVER['REMOTE_ADDR'] = '2001:db8:1:3::1';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ), 'other /64 is unaffected' );
+
+			// IPv4-mapped addresses keep the full IPv4 address, not a shared ::/64.
+			$_SERVER['REMOTE_ADDR'] = '::ffff:192.0.2.1';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ) );
+			$_SERVER['REMOTE_ADDR'] = '::ffff:192.0.2.2';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unit6' ), 'IPv4-mapped clients are not pooled' );
+		} finally {
+			remove_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+			foreach ( [ '2001:db8:1:2::', '2001:db8:1:3::', '2001:db8:1:2::1', '2001:db8:1:2:ffff:ffff:ffff:ffff', '2001:db8:1:3::1', '::', '::ffff:192.0.2.1', '::ffff:192.0.2.2' ] as $bucket ) {
+				delete_transient( 'srfm_pay_rl_unit6_' . md5( $bucket . '_123' ) );
+			}
+			$this->restore_remote_addr( $original );
+		}
+	}
+
+	public function test_is_payment_rate_limited_client_ip_filter_splits_shared_proxy_address() {
+		$original               = $_SERVER['REMOTE_ADDR'] ?? null;
+		$_SERVER['REMOTE_ADDR'] = '198.51.100.10'; // One proxy address for every visitor.
+		$client                 = '203.0.113.1';
+		$client_ip              = static function () use ( &$client ) {
+			return $client;
+		};
+		add_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+		add_filter( 'srfm_payment_client_ip', $client_ip );
+
+		try {
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ), 'the filtered client is throttled' );
+
+			// A second client behind the same proxy address keeps its own allowance.
+			$client = '203.0.113.2';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ), 'another client behind the proxy is not throttled' );
+
+			// An invalid filtered value falls back to REMOTE_ADDR rather than turning throttling off.
+			$client = 'not-an-ip';
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$client = null;
+			$this->assertFalse( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ) );
+			$client = '';
+			$this->assertTrue( Payment_Helper::is_payment_rate_limited( 123, 'unitproxy' ), 'an invalid filtered IP is throttled on REMOTE_ADDR' );
+		} finally {
+			remove_filter( 'srfm_payment_rate_limit_per_minute', [ $this, 'rate_limit_of_two' ] );
+			remove_filter( 'srfm_payment_client_ip', $client_ip );
+			foreach ( [ '198.51.100.10', '203.0.113.1', '203.0.113.2' ] as $bucket ) {
+				delete_transient( 'srfm_pay_rl_unitproxy_' . md5( $bucket . '_123' ) );
+			}
+			$this->restore_remote_addr( $original );
+		}
+	}
+
+	/**
+	 * Rate limit filter callback: two attempts per minute.
+	 *
+	 * @return int
+	 */
+	public function rate_limit_of_two() {
+		return 2;
+	}
+
+	/**
+	 * Restore $_SERVER['REMOTE_ADDR'] to its value before the test.
+	 *
+	 * @param string|null $original Original value, null when it was unset.
+	 * @return void
+	 */
+	private function restore_remote_addr( $original ) {
+		if ( null === $original ) {
+			unset( $_SERVER['REMOTE_ADDR'] );
+		} else {
+			$_SERVER['REMOTE_ADDR'] = $original;
+		}
 	}
 
 	// --- claim_payment_reference (non-atomic intent claim / duplicate paid entries) ---
@@ -1265,6 +1603,34 @@ class Test_Payment_Helper extends SRFM_Unit_Test_Case {
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'wp_user_14' ) );
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( 'guest_abc123' ) );
 		$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( '' ) );
+	}
+
+	public function test_sanitize_stripe_customer_id_drops_non_stripe_formats() {
+		// customer_id is compared with '=' under the table's (normally *_ci) collation,
+		// so any value MySQL folds onto 'wp_user_{id}' / 'guest_...' must be dropped,
+		// not only the exact lowercase spelling.
+		$dropped = [
+			'WP_USER_5',
+			'Wp_User_5',
+			'wp_USER_5',
+			'GUEST_abc123',
+			"\u{FF57}p_user_5", // Fullwidth 'w'.
+			"wp_\u{00FC}ser_5", // 'u' with diaeresis.
+			'5',
+			'cus_',
+			'cus_abc-def',
+			'CUS_abc123',
+			[ 'cus_abc123' ],
+			123,
+			null,
+		];
+		foreach ( $dropped as $value ) {
+			$this->assertSame( '', Payment_Helper::sanitize_stripe_customer_id( $value ), 'Not dropped: ' . wp_json_encode( $value ) );
+		}
+
+		// Genuine Stripe customer ids are preserved, including after whitespace trimming.
+		$this->assertSame( 'cus_T4Apjla33GlYAk', Payment_Helper::sanitize_stripe_customer_id( ' cus_T4Apjla33GlYAk ' ) );
+		$this->assertSame( 'cus_123', Payment_Helper::sanitize_stripe_customer_id( 'cus_123' ) );
 	}
 
 	// --- resolve_stored_subscription_cadence (default-plan cadence tampering) ---

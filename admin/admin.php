@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use Astra_Notices;
+use SRFM\Inc\Admin\Promotion;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Register;
@@ -1901,6 +1902,8 @@ JS;
 			'hide_promotions'              => Helper::hide_promotions(),
 			// Null makes the dashboard's ExtendTab render nothing.
 			'rotating_plugin_banner'       => Helper::hide_promotions() ? null : Helper::get_rotating_plugin_banner(),
+			// Null unless the sale bar should show to this user right now.
+			'promotion'                    => Promotion::get_instance()->get_for_current_user(),
 			'ajax_url'                     => admin_url( 'admin-ajax.php' ),
 			'client_logs_nonce'            => Helper::current_user_can() ? wp_create_nonce( 'srfm_client_logs' ) : '',
 			'action_items'                 => $this->get_action_items(),

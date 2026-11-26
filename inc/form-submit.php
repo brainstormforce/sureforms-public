@@ -38,6 +38,13 @@ class Form_Submit {
 	use Get_Instance;
 
 	/**
+	 * Option listing forms that accepted submissions while set to reCAPTCHA without keys.
+	 *
+	 * @since 2.14.3
+	 */
+	private const RECAPTCHA_UNPROTECTED_OPTION = 'srfm_recaptcha_unprotected_forms';
+
+	/**
 	 * Namespace.
 	 *
 	 * @var string
@@ -45,12 +52,12 @@ class Form_Submit {
 	protected $namespace = 'sureforms/v1';
 
 	/**
-	 * Addresses.
+	 * Compact addresses for the current submission, address block slug => value.
 	 *
-	 * @var string
+	 * @var array<string,string>
 	 * @since 1.6.1
 	 */
-	private $addresses = '';
+	private $addresses = [];
 
 	/**
 	 * Constructor
@@ -76,6 +83,7 @@ class Form_Submit {
 		 * @param string $reason  Short description of what failed.
 		 */
 		add_action( 'srfm_integration_failed', [ $this, 'record_integration_failure' ], 10, 2 );
+		add_action( 'admin_notices', [ $this, 'recaptcha_unprotected_notice' ] );
 		add_action( 'wp_ajax_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		add_action( 'wp_ajax_nopriv_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		// for quick action bar.
@@ -132,7 +140,8 @@ class Form_Submit {
 					'form_title' => $form_id ? Helper::get_string_value( get_the_title( $form_id ) ) : '',
 					'message'    => 'Integration failed. ' . Helper::get_string_value( $reason ),
 				]
-			)
+			),
+			'server'
 		);
 
 		Client_Logger::record_failure(
@@ -213,6 +222,8 @@ class Form_Submit {
 
 		// Cap the batch as well as each entry: a single request must not be able to
 		// consume the whole file and evict the failure someone is trying to capture.
+		// append() holds each line to MAX_LINE_BYTES and these browser-reported lines
+		// to CLIENT_MAX_FILE_SIZE, so that holds in bytes and across requests too.
 		foreach ( array_slice( $entries, 0, 10 ) as $raw ) {
 			if ( ! is_array( $raw ) ) {
 				continue;
@@ -480,22 +491,26 @@ class Form_Submit {
 		}
 
 		if ( 'g-recaptcha' === $security_type ) {
-			switch ( $selected_captcha_type ) {
-				case 'v2-checkbox':
-					$key = 'srfm_v2_checkbox_secret_key';
-					break;
-				case 'v2-invisible':
-					$key = 'srfm_v2_invisible_secret_key';
-					break;
-				case 'v3-reCAPTCHA':
-					$key = 'srfm_v3_secret_key';
-					break;
-				default:
-					$key = '';
-					break;
-			}
+			[ $google_captcha_site_key, $google_captcha_secret_key ] = self::recaptcha_keys( $selected_captcha_type, $global_setting_options );
 
-			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
+			// With a site key the form renders the widget, so a submission must be verified,
+			// and without a secret it cannot be: it stops here, before siteverify, the entry,
+			// payments and emails. With neither key there is no widget for a visitor to
+			// complete, so the form is accepted unverified (as it was before keys were
+			// required) and named in an admin notice instead of refusing every visitor.
+			if ( '' === $google_captcha_secret_key ) {
+				if ( '' !== $google_captcha_site_key ) {
+					$this->recaptcha_error_response(
+						'g-recaptcha',
+						[
+							'success'     => false,
+							'error-codes' => [ 'secret-not-configured' ],
+						]
+					);
+				}
+
+				self::record_recaptcha_unprotected_form( Helper::get_integer_value( $current_form_id ) );
+			}
 		}
 
 		if ( 'cf-turnstile' === $security_type ) {
@@ -685,13 +700,9 @@ class Form_Submit {
 			$do_not_store_entries = $compliance[0]['do_not_store_entries'] ?? '';
 		}
 
-		// Check if the form data contains 'srfm_addresses' and is not empty.
-		if ( ! empty( $form_data['srfm_addresses'] ) ) {
-			// Assign the addresses to the class property for further processing.
-			$this->addresses = $form_data['srfm_addresses'];
-			// Remove the address data from the form data to avoid redundancy.
-			unset( $form_data['srfm_addresses'] );
-		}
+		// Reset on every submission so one form's map never reaches the next on this instance.
+		$this->addresses = self::get_compact_addresses( $form_data['srfm_addresses'] ?? '', $id );
+		unset( $form_data['srfm_addresses'] );
 
 		// A browser posts nothing for an unticked checkbox, so those keys never arrive
 		// and the field is missing from the entry and from notification emails while
@@ -741,7 +752,7 @@ class Form_Submit {
 		// The site-wide Entries switch wins over the form's own setting.
 		if ( ( $gdpr && $do_not_store_entries ) || ! Features::is_enabled( 'entries' ) ) {
 			/** This action is documented below, where the stored-entry path fires it. */
-			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), $form_data );
+			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), self::drop_fields_removed_by_processing( $form_data, $submission_data ) );
 
 			// Same language switch as the stored-entry path below, so the notification,
 			// confirmation and redirect follow the visitor's language here too.
@@ -781,7 +792,8 @@ class Form_Submit {
 			 * @param array $form_data form data related to submission.
 			 */
 			$form_data['form_id'] = $id ? intval( $id ) : '';
-			do_action( 'srfm_after_submission_process', $form_data );
+			// Listeners get the field set that survived processing, as on the stored path.
+			do_action( 'srfm_after_submission_process', self::drop_fields_removed_by_processing( $form_data, $submission_data ) );
 
 			$response = [
 				'success'      => true,
@@ -884,10 +896,12 @@ class Form_Submit {
 			 * @param int          $form_id   Form ID.
 			 * @param array<mixed> $form_data Parsed request data for the submission (JSON or
 			 *                                multipart), including any non-field keys a client
-			 *                                sent alongside the fields.
+			 *                                sent alongside the fields. Fields that
+			 *                                srfm_before_prepare_submission_data removed are
+			 *                                not included.
 			 * @since 2.12.9
 			 */
-			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), $form_data );
+			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), self::drop_fields_removed_by_processing( $form_data, $submission_data ) );
 
 			// Switch the multilingual provider to the entry's language so the
 			// confirmation message, redirect URL, and email notifications render
@@ -1044,17 +1058,10 @@ class Form_Submit {
 			}
 		}
 
-		// If the address is not empty, add it to the submission data.
-		// We are providing this for third-party integrations like Ottokit.
-		// They can use compact addresses such as permanent address, temporary address, etc.
-		// The address will be structured as field 1, field 2, and so on.
-		if ( ! empty( $this->addresses ) ) {
-			// Address will be JSON stringified, so decode it.
-			$address = json_decode( wp_unslash( $this->addresses ), true );
-			if ( ! empty( $address ) && is_array( $address ) ) {
-				$modified_message = array_merge( $modified_message, $address );
-			}
-		}
+		// Compact addresses for third-party integrations like OttoKit (permanent address,
+		// temporary address, etc.), already limited to the form's address blocks by
+		// get_compact_addresses(). Added with `+` so a validated field always keeps its value.
+		$modified_message += $this->addresses;
 
 		return apply_filters( 'srfm_update_prepared_submission_data', $modified_message );
 	}
@@ -1303,7 +1310,8 @@ class Form_Submit {
 											'form_title' => Helper::get_string_value( get_the_title( intval( $id ) ) ),
 											'message'    => 'Email notification failed to send. ' . $reason . ( $entry_saved ? '' : ' The form does not store entries, so this submission was not saved.' ),
 										]
-									)
+									),
+									'server'
 								);
 
 								// Its own category: the submission reached PHP, so this is
@@ -1431,6 +1439,7 @@ class Form_Submit {
 		// Extract and validate field values from POST data.
 		$skip_keys  = [ 'action', 'token', 'id' ];
 		$duplicates = [];
+		$checked    = [];
 
 		foreach ( $_POST as $raw_key => $raw_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verified above.
 			if ( in_array( $raw_key, $skip_keys, true ) ) {
@@ -1455,6 +1464,14 @@ class Form_Submit {
 			if ( '' === $block_id || ! isset( $unique_block_ids[ $block_id ] ) ) {
 				continue;
 			}
+
+			// At most one entries lookup per unique block per request: the form renders
+			// one input per block, so any further key resolving to the same block is
+			// dropped. This bounds the queries to the number of unique fields on the form.
+			if ( isset( $checked[ $block_id ] ) ) {
+				continue;
+			}
+			$checked[ $block_id ] = true;
 
 			// Single optimized query per field instead of loading all entries.
 			if ( Entries::has_duplicate_field_value( $form_id, $field_key, $value ) ) {
@@ -1512,6 +1529,81 @@ class Form_Submit {
 	}
 
 	/**
+	 * Show users who manage options which forms are set to Google reCAPTCHA but have no
+	 * reCAPTCHA keys saved for their version, so their submissions are not spam checked.
+	 *
+	 * Forms are recorded at submission time. Each is checked again here, and one that
+	 * has been fixed, deleted or switched to other spam protection is dropped.
+	 *
+	 * @since 2.14.3
+	 * @return void
+	 */
+	public function recaptcha_unprotected_notice() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$recorded = get_option( self::RECAPTCHA_UNPROTECTED_OPTION );
+		if ( ! is_array( $recorded ) || [] === $recorded ) {
+			return;
+		}
+
+		$options = get_option( 'srfm_security_settings_options' );
+		$forms   = array_values(
+			array_filter(
+				array_map( 'absint', $recorded ),
+				static function ( $form_id ) use ( $options ) {
+					if ( SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) || 'g-recaptcha' !== Helper::get_meta_value( $form_id, '_srfm_captcha_security_type' ) ) {
+						return false;
+					}
+					[ $site_key, $secret_key ] = self::recaptcha_keys( Helper::get_string_value( get_post_meta( $form_id, '_srfm_form_recaptcha', true ) ), $options );
+					return '' === $site_key && '' === $secret_key;
+				}
+			)
+		);
+
+		if ( $forms !== $recorded ) {
+			if ( [] === $forms ) {
+				delete_option( self::RECAPTCHA_UNPROTECTED_OPTION );
+			} else {
+				update_option( self::RECAPTCHA_UNPROTECTED_OPTION, $forms, false );
+			}
+		}
+
+		if ( [] === $forms ) {
+			return;
+		}
+
+		$titles = implode(
+			', ',
+			array_map(
+				static function ( $form_id ) {
+					return '"' . get_the_title( $form_id ) . '"';
+				},
+				$forms
+			)
+		);
+		?>
+		<div class="notice notice-warning">
+			<p>
+				<?php
+				printf(
+					/* translators: 1: comma-separated form titles, 2: link to the Spam Protection settings */
+					esc_html__( 'SureForms: these forms are set to Google reCAPTCHA, but no reCAPTCHA keys are saved for the version they use, so their submissions are not checked for spam: %1$s. Add the keys in %2$s, or change the spam protection in each form\'s settings.', 'sureforms' ),
+					esc_html( $titles ),
+					sprintf(
+						'<a href="%s">%s</a>',
+						esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=security-settings' ) ),
+						esc_html__( 'Settings > Spam Protection', 'sureforms' )
+					)
+				);
+				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Send error response for reCAPTCHA validation failure.
 	 *
 	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
@@ -1565,6 +1657,8 @@ class Form_Submit {
 			'timeout-or-duplicate'    => 'The response is no longer valid: either is too old or has been used previously.',
 			// Set by SureForms, not Google: the v3 score was under srfm_recaptcha_v3_score_threshold.
 			'score-threshold-not-met' => 'The reCAPTCHA v3 score was below the accepted threshold.',
+			// Set by SureForms, not Google: no secret key is saved for the form's reCAPTCHA version.
+			'secret-not-configured'   => 'No secret key is saved for this form\'s reCAPTCHA version. Add it in SureForms > Settings > Spam Protection, or change the form\'s spam protection.',
 		];
 
 		// hCaptcha error codes.
@@ -1729,6 +1823,112 @@ class Form_Submit {
 		// defaults $entry_language to current_language(), so this keeps mis-tagging
 		// to the server's own determination instead of the (cacheable) client value.
 		return $language === $provider->current_language();
+	}
+
+	/**
+	 * The trimmed site key and secret saved for a reCAPTCHA version.
+	 *
+	 * An unknown, empty or 'none' version, a settings option that is not an array, and
+	 * a value that is not a string all read as an empty key.
+	 *
+	 * @param string $version Stored _srfm_form_recaptcha value.
+	 * @param mixed  $options Stored srfm_security_settings_options value.
+	 * @since 2.14.3
+	 * @return array{0: string, 1: string} Site key, secret.
+	 */
+	private static function recaptcha_keys( $version, $options ) {
+		$prefixes = [
+			'v2-checkbox'  => 'srfm_v2_checkbox_',
+			'v2-invisible' => 'srfm_v2_invisible_',
+			'v3-reCAPTCHA' => 'srfm_v3_',
+		];
+
+		if ( ! isset( $prefixes[ $version ] ) || ! is_array( $options ) ) {
+			return [ '', '' ];
+		}
+
+		$read = static function ( $key ) use ( $options ) {
+			return isset( $options[ $key ] ) && is_string( $options[ $key ] ) ? trim( $options[ $key ] ) : '';
+		};
+
+		return [ $read( $prefixes[ $version ] . 'site_key' ), $read( $prefixes[ $version ] . 'secret_key' ) ];
+	}
+
+	/**
+	 * Remember a form that accepted a submission while set to reCAPTCHA without keys,
+	 * for recaptcha_unprotected_notice(). Writes only the first time a form is seen.
+	 *
+	 * @param int $form_id Form ID.
+	 * @since 2.14.3
+	 * @return void
+	 */
+	private static function record_recaptcha_unprotected_form( $form_id ) {
+		$recorded = get_option( self::RECAPTCHA_UNPROTECTED_OPTION );
+		$recorded = is_array( $recorded ) ? array_map( 'absint', $recorded ) : [];
+
+		// Bounded so a site with many such forms cannot grow the option without limit.
+		if ( $form_id <= 0 || in_array( $form_id, $recorded, true ) || count( $recorded ) >= 20 ) {
+			return;
+		}
+
+		$recorded[] = $form_id;
+		update_option( self::RECAPTCHA_UNPROTECTED_OPTION, $recorded, false );
+	}
+
+	/**
+	 * The compact address map the browser sends, limited to the form's address blocks.
+	 *
+	 * Keys are kept only when they are the slug of an `srfm/address` block in the stored
+	 * form, and values only when scalar. Anything else in the map is dropped.
+	 *
+	 * @param mixed      $raw     The submitted `srfm_addresses` value, a slashed JSON object.
+	 * @param int|string $form_id The form being submitted.
+	 * @since 2.14.3
+	 * @return array<string,string> Address block slug => compact address.
+	 */
+	private static function get_compact_addresses( $raw, $form_id ) {
+		$allowed = Field_Validation::get_address_block_slugs( $form_id );
+		if ( empty( $allowed ) || ! is_string( $raw ) || '' === $raw ) {
+			return [];
+		}
+
+		$decoded = json_decode( wp_unslash( $raw ), true );
+		if ( ! is_array( $decoded ) ) {
+			return [];
+		}
+
+		$addresses = [];
+		foreach ( $decoded as $slug => $value ) {
+			if ( isset( $allowed[ $slug ] ) && is_scalar( $value ) ) {
+				$addresses[ (string) $slug ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
+			}
+		}
+
+		return $addresses;
+	}
+
+	/**
+	 * Drop from the request data every field that process_form_fields() left out of the submission data.
+	 *
+	 * A field that a srfm_before_prepare_submission_data callback removes (e.g. a password)
+	 * is then also missing from the returned copy. Keys without -lbl- are not fields and
+	 * are kept. Keys are compared after the same normalisation process_form_fields() applies.
+	 *
+	 * @param array<mixed> $form_data       Request data.
+	 * @param array<mixed> $submission_data Output of process_form_fields() for that request.
+	 * @since 2.14.3
+	 * @return array<mixed> Request data without the removed fields.
+	 */
+	private static function drop_fields_removed_by_processing( $form_data, $submission_data ) {
+		// A non-array from a misbehaving filter means no field survived.
+		$kept = is_array( $submission_data ) ? $submission_data : [];
+		foreach ( array_keys( $form_data ) as $key ) {
+			$key = strval( $key );
+			if ( str_contains( $key, '-lbl-' ) && ! array_key_exists( htmlspecialchars( str_replace( '_', ' ', $key ) ), $kept ) ) {
+				unset( $form_data[ $key ] );
+			}
+		}
+		return $form_data;
 	}
 
 	/**
@@ -1966,8 +2166,7 @@ class Form_Submit {
 	/**
 	 * Check if the current request is rate-limited for unique validation.
 	 *
-	 * Uses transients keyed by IP + form ID to throttle requests.
-	 * Allows 10 requests per 60-second window per IP per form.
+	 * Allows 10 requests per one-minute window per IP per form.
 	 *
 	 * @param int $form_id The form ID being validated.
 	 * @since 2.7.0
@@ -1981,11 +2180,15 @@ class Form_Submit {
 	 * Throttle a public endpoint to 10 requests per minute per IP per form.
 	 *
 	 * Shared by the uniqueness check and the client log route rather than
-	 * duplicated, so a change to the window applies to both.
+	 * duplicated, so a change to the window applies to both. Each prefix and
+	 * form is its own bucket. The count and window come from
+	 * Helper::hit_rate_counter(), which also limits a request that arrives while
+	 * another request holds the same bucket.
 	 *
-	 * @param string $prefix  Transient key prefix, unique per endpoint.
+	 * @param string $prefix  Bucket prefix, unique per endpoint.
 	 * @param int    $form_id The form ID the request relates to.
 	 * @since 2.12.6
+	 * @since 2.14.3 Counts through Helper::hit_rate_counter(); fixed window from the first request.
 	 * @return bool True if rate-limited (should block), false if allowed.
 	 */
 	private function is_rate_limited( $prefix, $form_id ) {
@@ -1995,22 +2198,7 @@ class Form_Submit {
 			return true; // Fail closed if IP cannot be determined.
 		}
 
-		$transient_key = $prefix . md5( $ip . '_' . $form_id );
-		$attempts      = get_transient( $transient_key );
-
-		if ( false === $attempts ) {
-			set_transient( $transient_key, 1, MINUTE_IN_SECONDS );
-			return false;
-		}
-
-		$attempts_count = Helper::get_integer_value( $attempts );
-
-		if ( $attempts_count >= 10 ) {
-			return true;
-		}
-
-		set_transient( $transient_key, $attempts_count + 1, MINUTE_IN_SECONDS );
-		return false;
+		return Helper::hit_rate_counter( $prefix, $ip . '_' . $form_id ) > 10;
 	}
 
 	/**
@@ -2076,7 +2264,9 @@ class Form_Submit {
 				]
 			);
 
-			if ( is_array( $process_field_value ) && ! empty( $process_field_value['is_processed'] ) && ! empty( $process_field_value['value'] ) ) {
+			// Only a result a callback produced counts, so an unfiltered submitted value is never
+			// taken as processed. An empty processed value (e.g. a repeater with no rows) is kept.
+			if ( $process_field_value !== $value && is_array( $process_field_value ) && ! empty( $process_field_value['is_processed'] ) && array_key_exists( 'value', $process_field_value ) ) {
 				$submission_data[ $field_name ] = $process_field_value['value'];
 				continue;
 			}
@@ -2094,13 +2284,14 @@ class Form_Submit {
 			 */
 
 			// If the field is an array, encode the values. This is to add support for multi-upload field.
+			// Only scalar items are kept: nested arrays are dropped.
 			if ( is_array( $value ) ) {
 				$submission_data[ $field_name ] =
 					array_map(
 						static function ( $val ) {
-							return rawurlencode( $val );
+							return rawurlencode( (string) $val );
 						},
-						$value
+						array_filter( $value, 'is_scalar' )
 					);
 			} else {
 				$submission_data[ $field_name ] = is_string( $value ) ? htmlspecialchars( $value ) : $value;
@@ -2141,6 +2332,7 @@ class Form_Submit {
 	 * @param array<mixed>  $form_data Request context passed to smart tag resolution.
 	 * @since 1.6.1
 	 * @since 2.13.1 Added $form_data.
+	 * @since 2.14.3 The resolved From name is reduced to a single line.
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags, $form_data = [] ) {
@@ -2163,7 +2355,13 @@ class Form_Submit {
 			$resolved_from = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) ) ) . ' <' . esc_html( $resolved_from ) . '>' . "\r\n";
+		// The resolved name can carry submitted values (e.g. a textarea {form:} tag), and wp_mail()
+		// splits string headers on "\n". Control characters become spaces and sanitize_text_field()
+		// strips tags and collapses whitespace, so the name is always one header line.
+		$resolved_name = Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data, $form_data ) );
+		$resolved_name = sanitize_text_field( (string) preg_replace( '/[\x00-\x1F\x7F]+/', ' ', $resolved_name ) );
+
+		return 'From: ' . esc_html( $resolved_name ) . ' <' . esc_html( $resolved_from ) . '>' . "\r\n";
 	}
 
 	/**

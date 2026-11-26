@@ -97,21 +97,26 @@ class Submit_Token {
 	/**
 	 * Verify a token submitted with a form.
 	 *
-	 * A token is accepted only when its signature matches (see signature_matches())
-	 * and the form is currently open (see is_form_open()). Tokens outlive the page
-	 * that embedded them, so publication state is re-read on every verification
-	 * rather than trusted from when the token was minted.
+	 * A token is accepted only when its signature matches (see signature_matches()),
+	 * the form is currently open (see is_form_open()), and the current request
+	 * passes the form's WordPress post-password gate (post_password_required()),
+	 * the same gate the renderer applies before it mints a token. Tokens outlive
+	 * the page that embedded them, so publication and password state are re-read
+	 * on every verification rather than trusted from when the token was minted.
 	 *
 	 * @since  2.6.0
 	 * @since  2.12.6 Added the $namespace parameter.
 	 * @since  2.13.1 Returns false unless the form is currently published.
+	 * @since  2.14.3  Returns false while the form's post password is required for this request.
 	 * @param  string $token     Token value received from the client.
 	 * @param  int    $form_id   Form post ID extracted from the request body.
 	 * @param  string $namespace Purpose the token must have been minted for.
-	 * @return bool True if the token is valid for the given, currently published form, false otherwise.
+	 * @return bool True if the token is valid for the given, currently published and accessible form, false otherwise.
 	 */
 	public static function verify( string $token, int $form_id, string $namespace = self::NAMESPACE_SUBMIT ): bool {
-		return self::signature_matches( $token, $form_id, $namespace ) && self::is_form_open( $form_id );
+		return self::signature_matches( $token, $form_id, $namespace )
+			&& self::is_form_open( $form_id )
+			&& ! post_password_required( $form_id );
 	}
 
 	/**

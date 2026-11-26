@@ -277,6 +277,78 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * An array field holding nested arrays keeps its scalar items, encoded, and
+	 * drops the nested ones instead of failing the submission.
+	 */
+	public function test_process_form_fields_drops_nested_array_items() {
+		$form_data = [
+			'srfm-upload-abc123-lbl-files' => [ 'a b.jpg', [ 'nested' ], 'c.pdf' ],
+			'srfm-text-def456-lbl-name'    => [ [ 'x' => [ 'y' ] ] ],
+		];
+
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+
+		$this->assertSame( [ 0 => 'a%20b.jpg', 2 => 'c.pdf' ], $result['srfm-upload-abc123-lbl-files'] );
+		$this->assertSame( [], $result['srfm-text-def456-lbl-name'] );
+	}
+
+	/**
+	 * A value a srfm_process_field_value callback marked processed is stored as
+	 * returned, even when empty (e.g. a repeater with no valid rows).
+	 */
+	public function test_process_form_fields_keeps_empty_processed_value() {
+		$callback = static function ( $value, $args ) {
+			if ( 'srfm-repeater' !== $args['field_block_name'] ) {
+				return $value;
+			}
+			return [
+				'value'        => [],
+				'is_processed' => true,
+			];
+		};
+		add_filter( 'srfm_process_field_value', $callback, 10, 2 );
+
+		$form_data = [
+			// The scalar item would survive the generic array fallback, so [] proves the processed value was kept.
+			'srfm-repeater-abc123-lbl-rows' => [
+				'__INDEX__' => [ 'srfm-input-x' => 'template' ],
+				'stray',
+			],
+		];
+
+		try {
+			$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+		} finally {
+			remove_filter( 'srfm_process_field_value', $callback, 10 );
+		}
+
+		$this->assertSame( [], $result['srfm-repeater-abc123-lbl-rows'] );
+	}
+
+	/**
+	 * A submitted value shaped like a processed result is not one: no callback
+	 * produced it, so it is encoded like any other array value.
+	 */
+	public function test_process_form_fields_ignores_submitted_processed_shape() {
+		$form_data = [
+			'srfm-text-abc123-lbl-name' => [
+				'is_processed' => '1',
+				'value'        => '<b>x</b>',
+			],
+		];
+
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+
+		$this->assertSame(
+			[
+				'is_processed' => '1',
+				'value'        => '%3Cb%3Ex%3C%2Fb%3E',
+			],
+			$result['srfm-text-abc123-lbl-name']
+		);
+	}
+
+	/**
 	 * Test process_form_fields with mixed valid and invalid keys.
 	 */
 	public function test_process_form_fields_mixed_keys() {
@@ -851,6 +923,254 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A form set to Google reCAPTCHA whose stored version has a site key but no usable
+	 * secret renders the widget yet cannot verify it, so it is rejected before
+	 * siteverify and before any entry, with the honeypot field present, absent, or
+	 * filled.
+	 *
+	 * @dataProvider provide_recaptcha_missing_secret_configs
+	 *
+	 * @param mixed $version Stored _srfm_form_recaptcha value.
+	 * @param mixed $options Stored srfm_security_settings_options value, or null to leave it unset.
+	 */
+	public function test_handle_form_submission_recaptcha_missing_secret_rejected( $version, $options ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'reCAPTCHA Missing Secret Form',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
+		if ( null !== $options ) {
+			update_option( 'srfm_security_settings_options', $options );
+		}
+
+		$verified   = false;
+		$siteverify = static function () use ( &$verified ) {
+			$verified = true;
+			return new \WP_Error( 'http_request_failed', 'blocked in test' );
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$entries_before = EntriesTable::get_total_entries_by_status( 'all', $form_id );
+
+		foreach ( [ 'present' => '', 'absent' => null, 'filled' => 'bot' ] as $label => $honeypot ) {
+			$params = [
+				'form-id'              => (string) $form_id,
+				'g-recaptcha-response' => 'visitor-token',
+			];
+			if ( null !== $honeypot ) {
+				$params['srfm-honeypot-field'] = $honeypot;
+			}
+			$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+			$request->set_body_params( $params );
+
+			$data = null;
+			ob_start();
+			try {
+				$this->form_submit->handle_form_submission( $request );
+				ob_end_clean();
+			} catch ( \WPDieException $e ) {
+				$data = json_decode( (string) ob_get_clean(), true );
+			}
+
+			$this->assertIsArray( $data, "Honeypot {$label}: the submission must be stopped." );
+			$this->assertFalse( $data['success'] );
+			$this->assertSame( [ 'secret-not-configured' ], $data['data']['api_response']['error-codes'] ?? null, "Honeypot {$label}: must be rejected as an unconfigured reCAPTCHA." );
+		}
+
+		remove_filter( 'pre_http_request', $siteverify );
+
+		$this->assertFalse( $verified, 'A missing secret must not reach siteverify.' );
+		$this->assertSame( $entries_before, EntriesTable::get_total_entries_by_status( 'all', $form_id ), 'No entry may be stored.' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Stored reCAPTCHA configurations that leave no secret for the form's version.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_recaptcha_missing_secret_configs() {
+		return [
+			'v2 checkbox, empty secret'       => [ 'v2-checkbox', [ 'srfm_v2_checkbox_site_key' => 'site-key', 'srfm_v2_checkbox_secret_key' => '' ] ],
+			'v2 checkbox, secret unset'       => [ 'v2-checkbox', [ 'srfm_v2_checkbox_site_key' => 'site-key' ] ],
+			'v2 invisible, empty secret'      => [ 'v2-invisible', [ 'srfm_v2_invisible_site_key' => 'site-key', 'srfm_v2_invisible_secret_key' => '' ] ],
+			'v3, empty secret'                => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v3_secret_key' => '' ] ],
+			'v3, whitespace secret'           => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v3_secret_key' => '   ' ] ],
+			'v3, array secret'                => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v3_secret_key' => [ 'secret-key' ] ] ],
+			'v3, only another version secret' => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => 'site-key', 'srfm_v2_checkbox_secret_key' => 'secret-key' ] ],
+		];
+	}
+
+	/**
+	 * A form set to Google reCAPTCHA with neither key saved for its stored version shows
+	 * no widget, so there is nothing a visitor could complete. The submission is not
+	 * refused; it is accepted without a CAPTCHA check, as it was before reCAPTCHA keys
+	 * were required, and the form is recorded for the admin notice.
+	 *
+	 * @dataProvider provide_recaptcha_unconfigured_configs
+	 *
+	 * @param mixed $version Stored _srfm_form_recaptcha value.
+	 * @param mixed $options Stored srfm_security_settings_options value, or null to leave it unset.
+	 */
+	public function test_handle_form_submission_recaptcha_without_keys_is_accepted_and_flagged( $version, $options ) {
+		delete_option( 'srfm_recaptcha_unprotected_forms' );
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'reCAPTCHA Without Keys Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"a1b2c3d4","slug":"name","label":"Name"} /-->',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', $version );
+		if ( null === $options ) {
+			delete_option( 'srfm_security_settings_options' );
+		} else {
+			update_option( 'srfm_security_settings_options', $options );
+		}
+
+		$verified   = false;
+		$siteverify = static function () use ( &$verified ) {
+			$verified = true;
+			return new \WP_Error( 'http_request_failed', 'blocked in test' );
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'             => (string) $form_id,
+				'srfm-honeypot-field' => '',
+			]
+		);
+
+		$data = null;
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+			ob_end_clean();
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+		}
+
+		remove_filter( 'pre_http_request', $siteverify );
+
+		$this->assertArrayNotHasKey( 'api_response', is_array( $data ) && is_array( $data['data'] ?? null ) ? $data['data'] : [], 'A form with no reCAPTCHA keys must not get a captcha error.' );
+		$this->assertFalse( $verified, 'There is no secret to verify against.' );
+		$this->assertSame( [ $form_id ], get_option( 'srfm_recaptcha_unprotected_forms' ), 'The form is recorded for the admin notice.' );
+
+		delete_option( 'srfm_recaptcha_unprotected_forms' );
+		delete_option( 'srfm_security_settings_options' );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Stored reCAPTCHA configurations with neither key for the form's version.
+	 *
+	 * @return array<string,array<mixed>>
+	 */
+	public function provide_recaptcha_unconfigured_configs() {
+		$secrets_only = [
+			'srfm_v2_checkbox_secret_key'  => 'secret-key',
+			'srfm_v2_invisible_secret_key' => 'secret-key',
+			'srfm_v3_secret_key'           => 'secret-key',
+		];
+
+		return [
+			'v2 checkbox, option unset'         => [ 'v2-checkbox', null ],
+			'v2 checkbox, option not array'     => [ 'v2-checkbox', 'garbage' ],
+			'v2 checkbox, both keys empty'      => [ 'v2-checkbox', [ 'srfm_v2_checkbox_site_key' => '', 'srfm_v2_checkbox_secret_key' => '' ] ],
+			'v3, whitespace site key, no secret' => [ 'v3-reCAPTCHA', [ 'srfm_v3_site_key' => '  ' ] ],
+			'version empty'                     => [ '', $secrets_only ],
+			'version unknown'                   => [ 'v4', $secrets_only ],
+		];
+	}
+
+	/**
+	 * The admin notice names a recorded form only while it is still set to reCAPTCHA
+	 * without keys, only to users who manage options, and forgets fixed forms.
+	 */
+	public function test_recaptcha_unprotected_notice() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Contact <b>Us</b>',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'g-recaptcha' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', 'v2-checkbox' );
+		delete_option( 'srfm_security_settings_options' );
+		update_option( 'srfm_recaptcha_unprotected_forms', [ $form_id ] );
+
+		$render = function () {
+			ob_start();
+			$this->form_submit->recaptcha_unprotected_notice();
+			return (string) ob_get_clean();
+		};
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$this->assertSame( '', $render(), 'Only users who manage options see it.' );
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$html = $render();
+		$this->assertStringContainsString( 'Contact &lt;b&gt;Us&lt;/b&gt;', $html, 'The form is named, escaped.' );
+		$this->assertStringContainsString( 'tab=security-settings', $html );
+
+		// Keys saved for the form's version: the notice goes away and the record is cleared.
+		update_option( 'srfm_security_settings_options', [ 'srfm_v2_checkbox_site_key' => 'site-key', 'srfm_v2_checkbox_secret_key' => 'secret-key' ] );
+		$this->assertSame( '', $render() );
+		$this->assertFalse( get_option( 'srfm_recaptcha_unprotected_forms' ) );
+
+		wp_set_current_user( 0 );
+		delete_option( 'srfm_security_settings_options' );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Forms that do not use Google reCAPTCHA are not affected by the missing-secret
+	 * guard, even with no reCAPTCHA secret saved anywhere.
+	 */
+	public function test_handle_form_submission_recaptcha_missing_secret_ignores_other_providers() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'No Captcha Form',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'none' );
+		update_post_meta( $form_id, '_srfm_form_recaptcha', 'v2-checkbox' );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'             => (string) $form_id,
+				'srfm-honeypot-field' => '',
+			]
+		);
+
+		$data = null;
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+			ob_end_clean();
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+		}
+
+		wp_delete_post( $form_id, true );
+
+		$this->assertArrayNotHasKey( 'api_response', is_array( $data ) ? (array) $data['data'] : [], 'A form without reCAPTCHA must not get a captcha error.' );
+	}
+
+	/**
 	 * Test parse_email_notification_template returns expected structure.
 	 */
 	public function test_parse_email_notification_template() {
@@ -988,6 +1308,36 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->remove_page_email_tag();
 
 		$this->assertSame( 'From: Site <' . get_option( 'admin_email' ) . ">\r\n", $header );
+	}
+
+	/**
+	 * A From Name resolved from a textarea {form:} tag stays a single header
+	 * line: the submitter's line breaks never start a header of their own once
+	 * wp_mail() splits the header string on "\n".
+	 */
+	public function test_add_from_data_in_header_keeps_textarea_from_name_on_one_line() {
+		$result = Form_Submit::parse_email_notification_template(
+			[ 'srfm-textarea-lbl-TWVzc2FnZQ-message' => htmlspecialchars( "Hello\r\nBcc: bcc@example.test, x\nFrom: Other\x0B" ) ],
+			[
+				'email_to'   => 'admin@example.com',
+				'subject'    => 'S',
+				'email_body' => 'B',
+				'from_name'  => '{form:message}',
+				'from_email' => 'site@example.com',
+			],
+			[ 'form-id' => '1' ]
+		);
+
+		// Split the way wp_mail() does before it reads each header name.
+		$names = [];
+		foreach ( explode( "\n", str_replace( "\r\n", "\n", $result['headers'] ) ) as $line ) {
+			if ( '' !== trim( $line ) ) {
+				$names[] = strtolower( trim( strtok( $line, ':' ) ) );
+			}
+		}
+
+		$this->assertSame( [ 'x-mailer', 'content-type', 'from' ], $names );
+		$this->assertStringContainsString( "From: Hello Bcc: bcc@example.test, x From: Other <site@example.com>\r\n", $result['headers'] );
 	}
 
 	/**
@@ -1631,6 +1981,144 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * Without a stored entry, srfm_after_submission_process gets no field that
+	 * srfm_before_prepare_submission_data removed, the same as the stored path.
+	 *
+	 * The filter stands in for Pro's password strip. Fields it keeps reach the
+	 * listeners unchanged, along with the non-field keys and form_id.
+	 */
+	public function test_handle_form_entry_no_entry_dispatch_drops_fields_removed_by_processing() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'No Store Registration',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+
+		$name_key    = 'srfm-input-11112222-lbl-TmFtZQ-name';
+		$pass_key    = 'srfm-password-33334444-lbl-UGFzc3dvcmQ-password';
+		$confirm_key = 'srfm-password-confirm-33334444-lbl-Q29uZmlybSBQYXNzd29yZA';
+
+		$strip = static function ( $submission_data ) {
+			foreach ( array_keys( $submission_data ) as $key ) {
+				if ( 0 === strpos( (string) $key, 'srfm-password' ) ) {
+					unset( $submission_data[ $key ] );
+				}
+			}
+			return $submission_data;
+		};
+		add_filter( 'srfm_before_prepare_submission_data', $strip );
+
+		$dispatched = null;
+		$listen     = static function ( $data ) use ( &$dispatched ) {
+			$dispatched = $data;
+		};
+		add_action( 'srfm_after_submission_process', $listen, 1 );
+
+		try {
+			$response = $this->form_submit->handle_form_entry(
+				[
+					'form-id'    => (string) $form_id,
+					$name_key    => 'Dummy Name',
+					$pass_key    => 'DummyPw#9',
+					$confirm_key => 'DummyPw#9',
+				]
+			);
+		} finally {
+			remove_filter( 'srfm_before_prepare_submission_data', $strip );
+			remove_action( 'srfm_after_submission_process', $listen, 1 );
+			wp_delete_post( $form_id, true );
+		}
+
+		$this->assertTrue( $response['success'] );
+		$this->assertIsArray( $dispatched );
+		$this->assertArrayNotHasKey( $pass_key, $dispatched );
+		$this->assertArrayNotHasKey( $confirm_key, $dispatched );
+		$this->assertSame( 'Dummy Name', $dispatched[ $name_key ] );
+		$this->assertSame( (string) $form_id, $dispatched['form-id'] );
+		$this->assertSame( $form_id, $dispatched['form_id'] );
+	}
+
+	/**
+	 * srfm_submission_accepted gets no field that srfm_before_prepare_submission_data
+	 * removed, whether or not the entry is stored. Non-field keys still reach it.
+	 */
+	public function test_handle_form_entry_submission_accepted_drops_fields_removed_by_processing() {
+		$name_key = 'srfm-input-11112222-lbl-TmFtZQ-name';
+		$pass_key = 'srfm-password-33334444-lbl-UGFzc3dvcmQ-password';
+
+		$strip = static function ( $submission_data ) {
+			foreach ( array_keys( $submission_data ) as $key ) {
+				if ( 0 === strpos( (string) $key, 'srfm-password' ) ) {
+					unset( $submission_data[ $key ] );
+				}
+			}
+			return $submission_data;
+		};
+		add_filter( 'srfm_before_prepare_submission_data', $strip );
+
+		$accepted = null;
+		$listen   = static function ( $entry_id, $form_id, $data ) use ( &$accepted ) {
+			$accepted = $data;
+		};
+		add_action( 'srfm_submission_accepted', $listen, 1, 3 );
+
+		try {
+			foreach ( [ 'no-store' => false, 'stored' => true ] as $path => $stored ) {
+				$accepted = null;
+				$form_id  = wp_insert_post(
+					[
+						'post_type'   => 'sureforms_form',
+						'post_title'  => 'Accepted ' . $path,
+						'post_status' => 'publish',
+					]
+				);
+				if ( ! $stored ) {
+					update_post_meta(
+						$form_id,
+						'_srfm_compliance',
+						[
+							[
+								'gdpr'                 => true,
+								'do_not_store_entries' => true,
+							],
+						]
+					);
+				}
+
+				$this->form_submit->handle_form_entry(
+					[
+						'form-id'                 => (string) $form_id,
+						'srfm_partial_session_id' => 'session-1',
+						$name_key                 => 'Dummy Name',
+						$pass_key                 => 'DummyPw#9',
+					]
+				);
+				wp_delete_post( $form_id, true );
+
+				$this->assertIsArray( $accepted, $path );
+				$this->assertArrayNotHasKey( $pass_key, $accepted, $path );
+				$this->assertSame( 'Dummy Name', $accepted[ $name_key ], $path );
+				$this->assertSame( 'session-1', $accepted['srfm_partial_session_id'], $path );
+			}
+		} finally {
+			remove_filter( 'srfm_before_prepare_submission_data', $strip );
+			remove_action( 'srfm_submission_accepted', $listen, 1 );
+		}
+	}
+
+	/**
 	 * One recipient succeeding while another fails is still a failure.
 	 *
 	 * This is the case the flag is hoisted out of the loop for, and the one
@@ -2222,6 +2710,74 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * The quick action sidebar toggle saves only for a user who manages options with a
+	 * valid nonce, and stores 'enabled' or 'disabled' and nothing else.
+	 */
+	public function test_srfm_global_sidebar_enabled() {
+		$admin  = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		$editor = self::factory()->user->create( [ 'role' => 'editor' ] );
+
+		$call = function ( $user_id, $post ) {
+			wp_set_current_user( $user_id );
+			$previous_post    = $_POST;
+			$previous_request = $_REQUEST;
+			// check_ajax_referer() reads the nonce from $_REQUEST.
+			$_POST    = $post;
+			$_REQUEST = $post;
+			$die      = static function () {
+				return static function () {
+					throw new \WPDieException( 'ajax die' );
+				};
+			};
+			add_filter( 'wp_doing_ajax', '__return_true' );
+			add_filter( 'wp_die_ajax_handler', $die );
+
+			ob_start();
+			try {
+				$this->form_submit->srfm_global_sidebar_enabled();
+			} catch ( \WPDieException $e ) {
+				unset( $e );
+			}
+			$json = (string) ob_get_clean();
+
+			remove_filter( 'wp_die_ajax_handler', $die );
+			remove_filter( 'wp_doing_ajax', '__return_true' );
+			$_POST    = $previous_post;
+			$_REQUEST = $previous_request;
+
+			return json_decode( $json, true );
+		};
+
+		update_option( 'srfm_enable_quick_action_sidebar', 'unchanged' );
+
+		wp_set_current_user( $admin );
+		$nonce = wp_create_nonce( 'srfm_ajax_nonce' );
+
+		$result = $call( $editor, [ 'security' => $nonce, 'enableQuickActionSidebar' => 'enabled' ] );
+		$this->assertFalse( $result['success'] ?? null, 'A user who cannot manage options is refused.' );
+		$this->assertSame( 'unchanged', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => 'bad-nonce', 'enableQuickActionSidebar' => 'enabled' ] );
+		$this->assertFalse( $result['success'] ?? null, 'An invalid nonce is refused.' );
+		$this->assertSame( 'unchanged', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => $nonce ] );
+		$this->assertFalse( $result['success'] ?? null, 'A request without a value is refused.' );
+		$this->assertSame( 'unchanged', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => $nonce, 'enableQuickActionSidebar' => 'enabled' ] );
+		$this->assertTrue( $result['success'] ?? null );
+		$this->assertSame( 'enabled', get_option( 'srfm_enable_quick_action_sidebar' ) );
+
+		$result = $call( $admin, [ 'security' => $nonce, 'enableQuickActionSidebar' => '<script>' ] );
+		$this->assertTrue( $result['success'] ?? null );
+		$this->assertSame( 'disabled', get_option( 'srfm_enable_quick_action_sidebar' ), 'Any other value is stored as disabled.' );
+
+		wp_set_current_user( 0 );
+		delete_option( 'srfm_enable_quick_action_sidebar' );
+	}
+
+	/**
 	 * Invoke the AJAX uniqueness check and return its decoded response.
 	 *
 	 * wp_send_json() calls die() outright unless the request is an AJAX one, so the
@@ -2304,6 +2860,83 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->assertSame( [], $response['data'] );
 
 		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The uniqueness check runs at most one entries lookup per unique block, however
+	 * many keys in the request resolve to that block, and still one per distinct block.
+	 */
+	public function test_field_unique_validation_one_lookup_per_unique_block() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$email_key = $this->make_field_key( 'uniqa111', 'Email', 'email' );
+		$phone_key = $this->make_field_key( 'uniqb222', 'Phone', 'phone' );
+
+		$form_id = wp_insert_post(
+			[
+				'post_title'   => 'Two Unique Fields Form',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"uniqa111","isUnique":true} /--><!-- wp:srfm/input {"block_id":"uniqb222","isUnique":true} /-->',
+			]
+		);
+
+		EntriesTable::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [
+					$email_key => 'taken@example.com',
+					$phone_key => '5551234567',
+				],
+			]
+		);
+
+		$lookups = 0;
+		$counter = static function ( $query ) use ( &$lookups ) {
+			if ( false !== strpos( $query, 'JSON_EXTRACT(form_data' ) ) {
+				++$lookups;
+			}
+			return $query;
+		};
+		add_filter( 'query', $counter );
+
+		try {
+			$this->assert_unique_lookup_counts( $form_id, $email_key, $phone_key, $lookups );
+		} finally {
+			remove_filter( 'query', $counter );
+			wp_delete_post( $form_id, true );
+		}
+	}
+
+	/**
+	 * Assertions for test_field_unique_validation_one_lookup_per_unique_block().
+	 *
+	 * @param int    $form_id   Form ID.
+	 * @param string $email_key First unique field key.
+	 * @param string $phone_key Second unique field key.
+	 * @param int    $lookups   Lookup counter, incremented by the query filter.
+	 * @return void
+	 */
+	private function assert_unique_lookup_counts( $form_id, $email_key, $phone_key, &$lookups ) {
+		// Twenty keys that all resolve to the same unique block.
+		$fields = [];
+		for ( $i = 0; $i < 20; $i++ ) {
+			$fields[ $this->make_field_key( 'uniqa111', 'Alias ' . $i, 'slug' . $i ) ] = 'taken@example.com';
+		}
+		$this->call_unique_validation( $form_id, $fields );
+		$this->assertSame( 1, $lookups, 'Keys resolving to one block must cost one lookup.' );
+
+		// Two distinct unique blocks are both still checked and both reported.
+		$lookups  = 0;
+		$response = $this->call_unique_validation(
+			$form_id,
+			[
+				$email_key => 'taken@example.com',
+				$phone_key => '5551234567',
+			]
+		);
+		$this->assertSame( 2, $lookups );
+		$this->assertSame( [ [ $email_key => 'not unique' ], [ $phone_key => 'not unique' ] ], $response['data'] );
 	}
 
 	/**
@@ -2753,6 +3386,102 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * Anonymous reports cannot use up the log. However many requests arrive, and
+	 * whatever characters they carry, an integration failure recorded afterwards
+	 * is still written and still reaches the support excerpt.
+	 */
+	public function test_handle_client_error_log_leaves_room_for_a_later_integration_failure() {
+		$this->set_client_logging( true );
+		Client_Logger::clear();
+		delete_option( Client_Logger::FAILURES_OPTION );
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Budget Form',
+				'post_status' => 'publish',
+			]
+		);
+
+		$emoji = str_repeat( "\u{1F600}", Client_Logger::MAX_TEXT_LENGTH );
+		$ascii = str_repeat( 'a', Client_Logger::MAX_TEXT_LENGTH );
+
+		$payloads = [
+			[
+				'type'       => 'network',
+				'message'    => $emoji,
+				'source'     => $emoji,
+				'body'       => $emoji,
+				'field_keys' => array_fill( 0, 100, str_repeat( "\u{1F600}", Client_Logger::MAX_KEY_LENGTH ) ),
+			],
+			[
+				'type'       => 'network',
+				'message'    => $ascii,
+				'source'     => $ascii,
+				'body'       => $ascii,
+				'field_keys' => array_fill( 0, 100, str_repeat( 'k', Client_Logger::MAX_KEY_LENGTH ) ),
+			],
+		];
+
+		// A fresh address per request, as a caller rotating IPs would, so the rate
+		// limit is not what stops the fill.
+		for ( $i = 0; $i < 40; $i++ ) {
+			$_SERVER['REMOTE_ADDR'] = '198.51.100.' . ( $i + 1 );
+
+			$request = new WP_REST_Request( 'POST', '/sureforms/v1/log-client-error' );
+			$request->set_param( 'form_id', $form_id );
+			$request->set_param( 'entries', array_fill( 0, 10, $payloads[ 0 === $i ? 0 : 1 ] ) );
+
+			Form_Submit::get_instance()->handle_client_error_log( $request );
+
+			if ( 0 === $i ) {
+				$this->assertLessThan( Client_Logger::MAX_FILE_SIZE / 4, Client_Logger::get_file_size(), 'One request must not come near the cap.' );
+			}
+		}
+
+		$this->assertFalse( Client_Logger::is_full() );
+		$this->assertSame( [], Client_Logger::get_open_failures(), 'Statusless network lines are not faults.' );
+
+		do_action( 'srfm_integration_failed', $form_id, 'HubSpot 401' );
+
+		$this->assertStringContainsString( 'HubSpot 401', (string) file_get_contents( Client_Logger::get_log_path( false ) ) );
+		$this->assertStringContainsString( 'HubSpot 401', Client_Logger::get_tail( 1200 )['text'] );
+
+		wp_delete_post( $form_id, true );
+		Client_Logger::clear();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		$this->set_client_logging( false );
+		unset( $_SERVER['REMOTE_ADDR'] );
+	}
+
+	/**
+	 * A failed notification is written to the debug log even after browser
+	 * reports have used their whole share of it.
+	 */
+	public function test_send_email_logs_the_failure_after_browser_lines_fill_their_share() {
+		$this->reset_email_delivery_state();
+		$this->set_client_logging( true );
+		Client_Logger::clear();
+
+		$blob = str_repeat( 'a', Client_Logger::MAX_TEXT_LENGTH );
+
+		for ( $i = 0; $i < 5000; $i++ ) {
+			if ( ! Client_Logger::append( [ 'type' => 'network', 'status' => 400, 'message' => $blob ] ) ) {
+				break;
+			}
+		}
+
+		$this->send_one_notification( '__return_false' );
+
+		$this->assertStringContainsString( 'Email notification failed to send', Client_Logger::get_tail( 1200 )['text'] );
+
+		Client_Logger::clear();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		$this->set_client_logging( false );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
 	 * Switch the client log setting on or off.
 	 *
 	 * @param bool $enabled Whether logging should be on.
@@ -2993,7 +3722,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 			public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string {
 				unset( $value, $domain, $language );
-				return '[' . $this->language . '] ' . $name;
+				return strtoupper( $this->language ) . ': ' . $name;
 			}
 
 			public function switch_language( string $language ): void {
@@ -3029,7 +3758,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 			public function translate_package_string( array $package, string $name, string $value ): string {
 				unset( $package, $value );
-				return '[' . $this->language . '] ' . $name;
+				return strtoupper( $this->language ) . ': ' . $name;
 			}
 
 			public function delete_package( array $package ): void {
@@ -3152,9 +3881,9 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		wp_delete_post( $form_id, true );
 
 		$this->assertCount( 1, $mail );
-		$this->assertSame( '[es] notification_1_subject', $mail[0]['subject'] );
-		$this->assertStringContainsString( '[es] notification_1_body', $mail[0]['message'] );
-		$this->assertStringContainsString( 'From: [es] notification_1_from_name <', implode( "\n", (array) $mail[0]['headers'] ) );
+		$this->assertSame( 'ES: notification_1_subject', $mail[0]['subject'] );
+		$this->assertStringContainsString( 'ES: notification_1_body', $mail[0]['message'] );
+		$this->assertStringContainsString( 'From: ES: notification_1_from_name <', implode( "\n", (array) $mail[0]['headers'] ) );
 	}
 
 	/**
@@ -3249,7 +3978,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$this->assertTrue( $response['success'] );
 		$this->assertSame( 'https://example.com/thank-you/es/', $response['redirect_url'] );
-		$this->assertSame( '[es] notification_0_subject', $mail[0]['subject'] );
+		$this->assertSame( 'ES: notification_0_subject', $mail[0]['subject'] );
 		$this->assertSame( 'en', $stub->language, 'The request language must be restored after the submission.' );
 
 		EntriesTable::delete( Helper::get_integer_value( $response['data']['submission_id'] ) );
@@ -3268,7 +3997,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$this->assertTrue( $response['success'] );
 		$this->assertSame( 'https://example.com/thank-you/es/', $response['redirect_url'] );
-		$this->assertSame( '[es] notification_0_subject', $mail[0]['subject'] );
+		$this->assertSame( 'ES: notification_0_subject', $mail[0]['subject'] );
 		$this->assertSame( 'en', $stub->language, 'The request language must be restored after the submission.' );
 
 		wp_delete_post( $form_id, true );
@@ -3290,6 +4019,40 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->assertSame( 'es', $extras['language'] ?? null );
 
 		EntriesTable::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The compact address map reaches srfm_before_submission only for the form's own
+	 * address blocks, as scalars, and never replaces a validated field.
+	 *
+	 * Runs the no-store branch so the response returns without a stored entry; the
+	 * map is applied in prepare_submission_data(), before the store/no-store split.
+	 */
+	public function test_handle_form_entry_limits_compact_addresses_to_address_blocks() {
+		$form_id = $this->make_compact_address_form(
+			'<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference","label":"Reference"} /-->'
+			. '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} -->'
+			. '<!-- wp:srfm/input {"block_id":"line1111","slug":"address-line-1","label":"Line 1"} /-->'
+			. '<!-- /wp:srfm/address -->'
+			. '<!-- wp:srfm/address {"block_id":"addr2222","slug":"work-address"} /-->'
+		);
+
+		$hook_data = $this->submit_with_compact_addresses(
+			$form_id,
+			[
+				'reference'    => 'overridden',
+				'invented'     => 'extra',
+				'home-address' => '1 Main St, Springfield',
+				'work-address' => [ 'nested' => 'value' ],
+			]
+		);
+
+		$this->assertSame( 'original', $hook_data['reference'] ?? null, 'a validated field keeps its submitted value' );
+		$this->assertArrayNotHasKey( 'invented', $hook_data, 'a key that is not an address block is dropped' );
+		$this->assertSame( '1 Main St, Springfield', $hook_data['home-address'] ?? null, 'a real address block keeps its compact string' );
+		$this->assertArrayNotHasKey( 'work-address', $hook_data, 'a non-scalar address value is dropped' );
+
 		wp_delete_post( $form_id, true );
 	}
 
@@ -3335,5 +4098,154 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		EntriesTable::delete( $entry_id );
 		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The stored-entry path hands srfm_form_submit the same limited map: the address
+	 * block's compact value, no invented key, and the validated field untouched.
+	 */
+	public function test_handle_form_entry_limits_compact_addresses_in_stored_entry_submit_data() {
+		$form_id = $this->make_compact_address_form(
+			'<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference","label":"Reference"} /-->'
+			. '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} /-->'
+		);
+		delete_post_meta( $form_id, '_srfm_compliance' );
+
+		$captured = null;
+		$capture  = static function ( $response ) use ( &$captured ) {
+			$captured = $response;
+		};
+		add_action( 'srfm_form_submit', $capture );
+		$response = $this->form_submit->handle_form_entry(
+			[
+				'form-id'                                          => (string) $form_id,
+				$this->make_field_key( 'ref11111', 'Reference', 'reference' ) => 'original',
+				'srfm_addresses'                                   => wp_slash(
+					wp_json_encode(
+						[
+							'reference'    => 'overridden',
+							'invented'     => 'extra',
+							'home-address' => '1 Main St, Springfield',
+						]
+					)
+				),
+			]
+		);
+		remove_action( 'srfm_form_submit', $capture );
+
+		$this->assertNotEmpty( $captured['entry_id'] ?? null, 'Precondition: the entry was stored.' );
+		$this->assertSame(
+			[
+				'reference'    => 'original',
+				'home-address' => '1 Main St, Springfield',
+			],
+			$captured['data']
+		);
+
+		EntriesTable::delete( Helper::get_integer_value( $response['data']['submission_id'] ) );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A form with no address block takes nothing from the compact address map, and the
+	 * map from one submission does not carry into the next on the same instance.
+	 */
+	public function test_handle_form_entry_ignores_compact_addresses_without_address_blocks() {
+		$form_id = $this->make_compact_address_form(
+			'<!-- wp:srfm/input {"block_id":"ref11111","slug":"reference","label":"Reference"} /-->'
+		);
+
+		$hook_data = $this->submit_with_compact_addresses(
+			$form_id,
+			[
+				'reference'    => 'overridden',
+				'home-address' => '1 Main St',
+			]
+		);
+
+		$this->assertSame( [ 'reference' => 'original' ], $hook_data );
+
+		$this->assertSame( [ 'reference' => 'original' ], $this->submit_with_compact_addresses( $form_id, null ), 'nothing carries over from the previous submission' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * get_compact_addresses() fails closed on every malformed input.
+	 */
+	public function test_get_compact_addresses() {
+		$form_id = $this->make_compact_address_form( '<!-- wp:srfm/address {"block_id":"addr1111","slug":"home-address"} /-->' );
+		$get     = function ( $raw, $id = null ) use ( $form_id ) {
+			return $this->call_private_method( $this->form_submit, 'get_compact_addresses', [ $raw, $id ?? $form_id ] );
+		};
+
+		$this->assertSame( [ 'home-address' => '1 Main St' ], $get( wp_slash( '{"home-address":"1 Main St"}' ) ) );
+		$this->assertSame( [ 'home-address' => '7' ], $get( '{"home-address":7}' ), 'a numeric value is kept as a string' );
+		$this->assertSame( [], $get( '' ), 'absent' );
+		$this->assertSame( [], $get( [ 'home-address' => 'x' ] ), 'not a string' );
+		$this->assertSame( [], $get( 'not json' ), 'undecodable' );
+		$this->assertSame( [], $get( '"home-address"' ), 'decodes to a scalar' );
+		$this->assertSame( [], $get( '{"home-address":null}' ), 'null value' );
+		$this->assertSame( [], $get( '{"home-address":"x"}', 0 ), 'no form' );
+		$this->assertSame( [], $get( '{"home-address":"x"}', $form_id + 999 ), 'another form' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A published no-store form with the given block markup.
+	 *
+	 * @param string $content Block markup.
+	 * @return int
+	 */
+	private function make_compact_address_form( $content ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Compact Address Form',
+				'post_content' => $content,
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+
+		return $form_id;
+	}
+
+	/**
+	 * Submit `reference=original` plus an optional compact address map, and return
+	 * the data srfm_before_submission received.
+	 *
+	 * @param int                $form_id   Form id.
+	 * @param array<mixed>|null  $addresses Map to send as srfm_addresses, or null to omit it.
+	 * @return array<mixed>|null
+	 */
+	private function submit_with_compact_addresses( $form_id, $addresses ) {
+		$form_data = [
+			'form-id'                                          => (string) $form_id,
+			$this->make_field_key( 'ref11111', 'Reference', 'reference' ) => 'original',
+		];
+		if ( null !== $addresses ) {
+			$form_data['srfm_addresses'] = wp_slash( wp_json_encode( $addresses ) );
+		}
+
+		$captured = null;
+		$capture  = static function ( $data ) use ( &$captured ) {
+			$captured = $data['data'];
+		};
+		add_action( 'srfm_before_submission', $capture );
+		$this->form_submit->handle_form_entry( $form_data );
+		remove_action( 'srfm_before_submission', $capture );
+
+		return $captured;
 	}
 }

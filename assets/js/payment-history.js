@@ -41,6 +41,7 @@
 		canceled: i18n.status_canceled || 'Cancelled',
 		refunded: i18n.status_refunded || 'Refunded',
 		partially_refunded: i18n.status_partially_refunded || 'Partially Refunded',
+		charged_back: i18n.status_charged_back || 'Charged Back',
 		processing: i18n.status_processing || 'Processing',
 		active: i18n.status_active || 'Active',
 	};
@@ -247,7 +248,9 @@
 				? 'srfm-pd-badge--refunded'
 				: 'succeeded' === t.status || 'active' === t.status
 					? 'srfm-pd-badge--paid'
-					: 'srfm-pd-badge--pending';
+					: 'charged_back' === t.status
+						? 'srfm-pd-badge--cancelled'
+						: 'srfm-pd-badge--pending';
 
 		let html =
 			'<div class="srfm-pd-panel-header">' +

@@ -299,6 +299,16 @@ class Stripe_Webhook {
 				$this->handle_subscription_deleted( $subscription );
 				break;
 
+			case 'charge.dispute.created':
+			case 'charge.dispute.closed':
+				$event_data = isset( $event['data'] ) && is_array( $event['data'] ) ? $event['data'] : [];
+				if ( ! isset( $event_data['object'] ) || ! is_array( $event_data['object'] ) ) {
+					Helper::srfm_log( $event['type'] . ': Invalid webhook event - missing data object.' );
+					return;
+				}
+				$this->handle_dispute( $event_data['object'] );
+				break;
+
 			default:
 				Helper::srfm_log( 'Unhandled event type: ' . $event['type'] . '.' );
 				break;
@@ -640,6 +650,120 @@ class Stripe_Webhook {
 			 * @since 2.12.0
 			 */
 			do_action( 'srfm_subscription_canceled', $canceled_record, Payment_Helper::build_payment_context( $canceled_record ) );
+		}
+	}
+
+	/**
+	 * Handles charge.dispute.created and charge.dispute.closed webhooks.
+	 *
+	 * Records each dispute status change on the matching payment row and fires
+	 * `srfm_payment_disputed`. Only a `lost` dispute changes the payment status
+	 * (to `charged_back`); every other dispute status leaves it unchanged. A
+	 * dispute status already recorded for the same dispute is ignored, so a
+	 * redelivered event does not fire the hook twice.
+	 *
+	 * @param array<string, mixed> $dispute Dispute object from Stripe.
+	 * @since 2.14.3
+	 * @return void
+	 */
+	public function handle_dispute( $dispute ) {
+		$dispute_id     = ! empty( $dispute['id'] ) && is_string( $dispute['id'] ) ? sanitize_text_field( $dispute['id'] ) : '';
+		$dispute_status = ! empty( $dispute['status'] ) && is_string( $dispute['status'] ) ? sanitize_key( $dispute['status'] ) : '';
+		$payment_intent = ! empty( $dispute['payment_intent'] ) && is_string( $dispute['payment_intent'] ) ? sanitize_text_field( $dispute['payment_intent'] ) : '';
+		$charge_id      = ! empty( $dispute['charge'] ) && is_string( $dispute['charge'] ) ? sanitize_text_field( $dispute['charge'] ) : '';
+
+		if ( '' === $dispute_id || '' === $dispute_status ) {
+			Helper::srfm_log( 'Dispute webhook skipped - missing dispute ID or status.' );
+			return;
+		}
+
+		// One-time payments store the payment intent ID; subscription payments store the charge ID.
+		$payment = '' !== $payment_intent ? Payments::get_by_transaction_id( $payment_intent ) : null;
+		if ( ! $payment && '' !== $charge_id ) {
+			$payment = Payments::get_by_transaction_id( $charge_id );
+		}
+
+		$payment_id = is_array( $payment ) && ! empty( $payment['id'] ) && is_numeric( $payment['id'] ) ? intval( $payment['id'] ) : 0;
+		if ( ! $payment_id ) {
+			Helper::srfm_log( 'Dispute webhook skipped - no payment found. Dispute ID: ' . $dispute_id . '.' );
+			return;
+		}
+
+		$disputes = Payments::get_extra_value( $payment_id, 'stripe_disputes', [] );
+		$disputes = is_array( $disputes ) ? $disputes : [];
+		if ( isset( $disputes[ $dispute_id ] ) && $dispute_status === $disputes[ $dispute_id ] ) {
+			Helper::srfm_log( 'Dispute status already recorded. Dispute ID: ' . $dispute_id . ', Status: ' . $dispute_status . '.' );
+			return;
+		}
+		$disputes[ $dispute_id ] = $dispute_status;
+
+		$currency = ! empty( $dispute['currency'] ) && is_string( $dispute['currency'] ) ? sanitize_text_field( strtolower( $dispute['currency'] ) ) : '';
+		$amount   = isset( $dispute['amount'] ) && is_numeric( $dispute['amount'] ) && '' !== $currency ? Stripe_Helper::amount_from_stripe_format( $dispute['amount'], $currency ) . ' ' . strtoupper( $currency ) : '';
+		$reason   = ! empty( $dispute['reason'] ) && is_string( $dispute['reason'] ) ? sanitize_text_field( $dispute['reason'] ) : '';
+
+		$log_messages = [
+			/* translators: %s: Dispute ID */
+			sprintf( __( 'Dispute ID: %s', 'sureforms' ), $dispute_id ),
+			/* translators: %s: Dispute status */
+			sprintf( __( 'Dispute Status: %s', 'sureforms' ), ucfirst( str_replace( '_', ' ', $dispute_status ) ) ),
+		];
+		if ( '' !== $amount ) {
+			/* translators: %s: Disputed amount with currency */
+			$log_messages[] = sprintf( __( 'Disputed Amount: %s', 'sureforms' ), $amount );
+		}
+		if ( '' !== $reason ) {
+			/* translators: %s: Dispute reason */
+			$log_messages[] = sprintf( __( 'Dispute Reason: %s', 'sureforms' ), ucfirst( str_replace( '_', ' ', $reason ) ) );
+		}
+
+		$current_logs   = isset( $payment['log'] ) && is_array( $payment['log'] ) ? $payment['log'] : [];
+		$current_logs[] = [
+			'title'      => 'lost' === $dispute_status ? __( 'Dispute Lost', 'sureforms' ) : __( 'Payment Disputed', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => $log_messages,
+		];
+
+		$extra                    = Payments::get_extra_data( $payment_id );
+		$extra['stripe_disputes'] = $disputes;
+
+		$update_data = [
+			'log'   => $current_logs,
+			'extra' => $extra,
+		];
+		// A lost dispute is final: the funds are returned to the payer.
+		if ( 'lost' === $dispute_status ) {
+			$update_data['status'] = 'charged_back';
+		}
+
+		if ( false === Payments::update( $payment_id, $update_data ) ) {
+			Helper::srfm_log( 'Failed to record dispute. Dispute ID: ' . $dispute_id . ', Payment ID: ' . $payment_id . '.' );
+			return;
+		}
+
+		Helper::srfm_log( 'Dispute recorded. Dispute ID: ' . $dispute_id . ', Status: ' . $dispute_status . ', Payment ID: ' . $payment_id . '.' );
+
+		$disputed_payment = Payments::get( $payment_id );
+		if ( is_array( $disputed_payment ) ) {
+			/**
+			 * Fires when Stripe reports a new status for a dispute (chargeback) on a payment.
+			 *
+			 * `lost` is final: the payment status is now `charged_back` and the funds
+			 * went back to the payer, so treat it like a full refund when revoking
+			 * access granted on `srfm_payment_completed`. Other statuses (for example
+			 * `needs_response`, `under_review`, `won`) leave the payment status as it was.
+			 *
+			 * Delivery is at-least-once: a status already recorded is skipped, but
+			 * overlapping webhook deliveries can fire it more than once for the same
+			 * dispute and status, so listeners must be idempotent.
+			 *
+			 * @param array<string, mixed> $payment        The disputed payment record.
+			 * @param string               $dispute_status Stripe dispute status.
+			 * @param array<string, mixed> $context        Resolved context: form_id, entry_id,
+			 *                                              user_id (0 for guests), customer_email,
+			 *                                              type, gateway, mode.
+			 * @since 2.14.3
+			 */
+			do_action( 'srfm_payment_disputed', $disputed_payment, $dispute_status, Payment_Helper::build_payment_context( $disputed_payment ) );
 		}
 	}
 

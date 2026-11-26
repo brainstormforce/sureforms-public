@@ -13,6 +13,7 @@
 namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Field_Rules;
 use SRFM\Inc\Field_Validation;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
@@ -63,19 +64,58 @@ class Payment_Helper {
 	 *
 	 * The limit (default 30 per minute) is filterable via
 	 * `srfm_payment_rate_limit_per_minute`; a value <= 0 disables throttling. It fails
-	 * open when the client IP cannot be determined, so a proxy that hides the IP never
-	 * blocks a real checkout.
+	 * open when the client IP cannot be determined.
+	 *
+	 * Bucket: the connection's REMOTE_ADDR (filterable via `srfm_payment_client_ip`; a
+	 * filtered value that is not a valid IP is ignored), with an IPv6 address reduced to
+	 * its /64 prefix. Every visitor that reaches the
+	 * site from the same address shares one bucket, so behind a reverse proxy or CDN
+	 * that does not restore the client address, all of them share one allowance.
 	 *
 	 * @param int    $form_id Form id.
 	 * @param string $context Short bucket key (e.g. 'stripe-intent', 'paypal-order').
 	 * @since 2.14.0
+	 * @since 2.14.3 IPv6 is bucketed per /64; client IP is filterable; counted through
+	 *              Helper::hit_rate_counter() in a window fixed from the first request.
 	 * @return bool True when the request should be rejected.
 	 */
 	public static function is_payment_rate_limited( $form_id, $context = 'payment' ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- validated as an IP below.
 		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-		if ( '' === $ip || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+
+		/**
+		 * Filters the client IP that payment rate limits are bucketed on.
+		 *
+		 * Defaults to REMOTE_ADDR, the one value the client cannot set. Behind a reverse
+		 * proxy or CDN that does not restore the client address, REMOTE_ADDR is the
+		 * proxy's address and every visitor shares one bucket. Such a site can return the
+		 * real client address here, but only from a header its own proxy sets and
+		 * overwrites: a value the client can choose gives each request its own bucket.
+		 * A return value that is not a valid IP is ignored and REMOTE_ADDR is used.
+		 *
+		 * @since 2.14.3
+		 * @param string $ip      The connection's REMOTE_ADDR.
+		 * @param int    $form_id Form id.
+		 * @param string $context Bucket key.
+		 */
+		$filtered = apply_filters( 'srfm_payment_client_ip', $ip, (int) $form_id, $context );
+
+		// A filter that returns no valid IP leaves the bucket on REMOTE_ADDR, not unthrottled.
+		if ( is_string( $filtered ) && filter_var( $filtered, FILTER_VALIDATE_IP ) ) {
+			$ip = $filtered;
+		} elseif ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 			return false;
+		}
+
+		// One IPv6 subscriber is normally given a whole /64, so key on that prefix rather
+		// than the address; otherwise each address in it would get its own allowance.
+		// An IPv4-mapped address (::ffff:a.b.c.d) is one IPv4 client and keeps its full
+		// address, or every IPv4 visitor on a dual-stack listener would share ::/64.
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$packed = inet_pton( $ip );
+			if ( false !== $packed && 0 !== strpos( $packed, str_repeat( "\0", 10 ) . "\xff\xff" ) ) {
+				$ip = (string) inet_ntop( substr( $packed, 0, 8 ) . str_repeat( "\0", 8 ) );
+			}
 		}
 
 		$limit = Helper::get_integer_value( apply_filters( 'srfm_payment_rate_limit_per_minute', 30, (int) $form_id, $context ) );
@@ -83,14 +123,9 @@ class Payment_Helper {
 			return false;
 		}
 
-		$transient_key = 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_' . md5( $ip . '_' . (int) $form_id );
-		$attempts      = Helper::get_integer_value( get_transient( $transient_key ) );
-		if ( $attempts >= $limit ) {
-			return true;
-		}
-
-		set_transient( $transient_key, $attempts + 1, MINUTE_IN_SECONDS );
-		return false;
+		// Counted atomically in a window fixed from the first request, so parallel
+		// requests cannot each read the same count and all pass.
+		return Helper::hit_rate_counter( 'srfm_pay_rl_' . sanitize_key( (string) $context ) . '_', $ip . '_' . (int) $form_id ) > $limit;
 	}
 
 	/**
@@ -145,23 +180,23 @@ class Payment_Helper {
 	}
 
 	/**
-	 * Reject a client-supplied Stripe customer id that uses the reserved internal
-	 * ownership-key format (wp_user_{id} / guest_{...}). Payment history attributes
-	 * rows to a user by customer_id, so a submitter who sets customer_id to
-	 * 'wp_user_{victim}' could make a Stripe payment appear in that user's history.
-	 * A genuine Stripe customer id is 'cus_...', so this never affects a real
-	 * customer; it only blocks a reserved value from being stored on a Stripe row.
+	 * Accept a client-supplied Stripe customer id only when it has Stripe's own
+	 * format (cus_ followed by letters and digits). Payment history attributes rows
+	 * to a user by customer_id, compared in SQL under the table's collation (usually
+	 * case- and accent-insensitive), so a value in the reserved internal
+	 * ownership-key format (wp_user_{id} / guest_{...}) in any spelling MySQL folds
+	 * onto it must never be stored on a Stripe row. Anything that is not a Stripe
+	 * customer id is dropped, so the allowlist covers every such spelling.
 	 *
 	 * @param mixed $customer_id Client-supplied customer id.
 	 * @since 2.14.0
-	 * @return string The customer id, or '' if it uses a reserved internal format.
+	 * @return string The customer id, or '' if it is not a Stripe customer id.
 	 */
 	public static function sanitize_stripe_customer_id( $customer_id ) {
 		$customer_id = is_string( $customer_id ) ? sanitize_text_field( $customer_id ) : '';
-		if ( '' === $customer_id ) {
-			return '';
-		}
-		if ( 1 === preg_match( '/^(wp_user_|guest_)/', $customer_id ) ) {
+		// Case-sensitive on purpose: Stripe issues the prefix lowercase, and a denylist
+		// of reserved prefixes misses the variants a *_ci collation treats as equal.
+		if ( 1 !== preg_match( '/^cus_[A-Za-z0-9]+\z/', $customer_id ) ) {
 			return '';
 		}
 		return $customer_id;
@@ -953,16 +988,44 @@ class Payment_Helper {
 			];
 		}
 
-		// Reject when the submit path's active_type does not match the type that
-		// was validated at intent-creation time. Prevents an attacker from passing
-		// a one-time intent_id through the subscription submit path (or vice versa)
-		// to replay a small one-time charge in place of a recurring subscription.
+		// An intent is valid only on the form and block it was created for: duplicated
+		// forms share payment block IDs, so the transient key alone does not identify
+		// the form. Metadata without this binding cannot be trusted and needs a new intent.
+		// The block ID is compared through sanitize_key(), the normalisation the key uses.
+		$stored_form_id  = isset( $metadata['form_id'] ) && is_numeric( $metadata['form_id'] ) ? intval( $metadata['form_id'] ) : 0;
+		$stored_block_id = isset( $metadata['block_id'] ) && is_string( $metadata['block_id'] ) ? sanitize_key( $metadata['block_id'] ) : '';
+		$request_block   = sanitize_key( $block_id );
+		if ( $stored_form_id <= 0 || $stored_form_id !== $form_id || '' === $stored_block_id || $request_block !== $stored_block_id ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+			];
+		}
+
+		// The submit path must name its flow (one-time vs subscription), and that flow must
+		// be the one validated at intent-creation time. Metadata written without an
+		// active_type (SureForms Pro 2.12.2 and earlier PayPal) has no stored flow to compare;
+		// it is still bound by the form/block check above and the payment_type check below.
 		$stored_active_type = isset( $metadata['active_type'] ) && is_string( $metadata['active_type'] ) ? $metadata['active_type'] : '';
-		if ( ! empty( $active_type ) && ! empty( $stored_active_type ) && $active_type !== $stored_active_type ) {
+		if ( empty( $active_type ) || ( '' !== $stored_active_type && $active_type !== $stored_active_type ) ) {
 			return [
 				'valid'   => false,
 				'message' => __( 'Payment verification failed. Payment type mismatch.', 'sureforms' ),
 			];
+		}
+
+		// The form's current payment_type must still permit that flow ("both" permits
+		// either), mirroring validate_payment_amount(). A block missing from the config
+		// is rejected by validate_payment_intent_amount() below.
+		$block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+		if ( is_array( $block_config ) && isset( $block_config[ $block_id ] ) && is_array( $block_config[ $block_id ] ) ) {
+			$payment_type = isset( $block_config[ $block_id ]['payment_type'] ) && is_string( $block_config[ $block_id ]['payment_type'] ) ? $block_config[ $block_id ]['payment_type'] : 'one-time';
+			if ( 'both' !== $payment_type && $active_type !== $payment_type ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'Payment type does not match the form configuration.', 'sureforms' ),
+				];
+			}
 		}
 
 		$payment_amount = isset( $metadata['amount'] ) && ! empty( $metadata['amount'] ) && is_numeric( $metadata['amount'] ) ? floatval( $metadata['amount'] ) : 0;
@@ -1151,16 +1214,20 @@ class Payment_Helper {
 	 * Get the block IDs of payment fields a submission of this form must pay for.
 	 *
 	 * Derived from the stored form, never from what the client submitted. Blocks that
-	 * render nothing (see is_payment_field_active()) and blocks under conditional logic
-	 * are excluded: conditional logic is evaluated on the client, so a hidden payment
-	 * field legitimately submits no payment value and must not be required here.
+	 * render nothing (see is_payment_field_active()) are excluded. A block under
+	 * conditional logic is excluded only when its stored rules, evaluated against
+	 * $form_data, hide it — a hidden payment field submits no payment value. A rule
+	 * that cannot be evaluated here keeps the block required, and so does every
+	 * conditional block when no $form_data is given.
 	 *
-	 * @param int $form_id Form ID.
+	 * @param int               $form_id   Form ID.
+	 * @param array<mixed>|null $form_data Submitted form data the rules are evaluated against.
 	 *
 	 * @since 2.12.3
+	 * @since 2.14.3 Added the `$form_data` parameter.
 	 * @return array<string> Block IDs that require a verified payment.
 	 */
-	public static function get_required_payment_block_ids( $form_id ) {
+	public static function get_required_payment_block_ids( $form_id, $form_data = null ) {
 		// absint(), matching Submit_Token::verify()'s normalisation in
 		// Form_Submit::submit_form_permissions_check(). get_integer_value() would keep a
 		// negative id and bail below, so the guard would resolve a different form from
@@ -1172,15 +1239,23 @@ class Payment_Helper {
 			return [];
 		}
 
-		$block_ids = self::collect_active_payment_block_ids( parse_blocks( $form->post_content ) );
+		$blocks    = parse_blocks( $form->post_content );
+		$block_ids = self::collect_active_payment_block_ids( $blocks );
 
 		if ( empty( $block_ids ) ) {
 			return [];
 		}
 
-		// Drop blocks that conditional logic can hide.
-		foreach ( self::get_conditional_logic_block_ids( $form_id ) as $conditional_id ) {
-			unset( $block_ids[ $conditional_id ] );
+		// Drop blocks that conditional logic hides for this submission.
+		$rules_by_block = is_array( $form_data ) ? self::get_conditional_logic_rules( $form_id ) : [];
+		if ( is_array( $form_data ) && ! empty( $rules_by_block ) ) {
+			$fields = self::collect_conditional_fields( $blocks );
+
+			foreach ( $rules_by_block as $conditional_id => $rules ) {
+				if ( self::is_hidden_by_conditional_rules( $rules, $form_data, $fields ) ) {
+					unset( $block_ids[ $conditional_id ] );
+				}
+			}
 		}
 
 		/**
@@ -1191,11 +1266,13 @@ class Payment_Helper {
 		 * rule is known to have matched.
 		 *
 		 * @since 2.12.3
+		 * @since 2.14.3 Added the `$form_data` parameter.
 		 *
-		 * @param array<string> $block_ids Block IDs requiring a verified payment.
-		 * @param int           $form_id   Form ID.
+		 * @param array<string>     $block_ids Block IDs requiring a verified payment.
+		 * @param int               $form_id   Form ID.
+		 * @param array<mixed>|null $form_data Submitted form data, null when none was given.
 		 */
-		$block_ids = apply_filters( 'srfm_required_payment_block_ids', array_keys( $block_ids ), $form_id );
+		$block_ids = apply_filters( 'srfm_required_payment_block_ids', array_keys( $block_ids ), $form_id, $form_data );
 
 		return is_array( $block_ids ) ? $block_ids : [];
 	}
@@ -1346,20 +1423,21 @@ class Payment_Helper {
 	}
 
 	/**
-	 * Get the block IDs a form has conditional logic rules for.
+	 * Get the actionable conditional logic rules of a form, grouped by block ID.
 	 *
 	 * Field visibility rules live in the `_srfm_conditional_logic` post meta, keyed by
-	 * block ID, and are evaluated on the client. A payment field under such a rule may
-	 * legitimately be hidden at submit time.
+	 * block ID. A payment field under such a rule may legitimately be hidden at submit
+	 * time.
 	 *
 	 * @param int $form_id Form ID.
 	 *
 	 * @since 2.12.3
-	 * @return array<string> Block IDs carrying conditional logic rules.
+	 * @since 2.14.3 Returns the rules, keyed by block ID, instead of the block IDs.
+	 * @return array<string, array<int, array<mixed>>> Actionable rules, keyed by block ID.
 	 */
-	private static function get_conditional_logic_block_ids( $form_id ) {
+	private static function get_conditional_logic_rules( $form_id ) {
 		// Only exempt when conditional logic can actually hide anything. The rules are
-		// evaluated client-side by the add-on that registers this meta; without it
+		// applied in the browser by the add-on that registers this meta; without it
 		// nothing hides, so a stale rule (e.g. written by a form importer on a site that
 		// never had the add-on) must not buy a payment block an exemption.
 		if ( ! registered_meta_key_exists( 'post', '_srfm_conditional_logic', SRFM_FORMS_POST_TYPE ) ) {
@@ -1372,7 +1450,7 @@ class Payment_Helper {
 			return [];
 		}
 
-		$block_ids = [];
+		$rules = [];
 
 		foreach ( $conditional_logic as $item ) {
 			if ( ! is_array( $item ) ) {
@@ -1387,12 +1465,12 @@ class Payment_Helper {
 				// An actionable rule only — a rule with no conditions can never match, so
 				// the field's visibility is never altered and payment stays required.
 				if ( self::has_actionable_conditional_rule( $rule ) ) {
-					$block_ids[] = $block_id;
+					$rules[ $block_id ][] = $rule;
 				}
 			}
 		}
 
-		return $block_ids;
+		return $rules;
 	}
 
 	/**
@@ -1427,6 +1505,581 @@ class Payment_Helper {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Whether a block's conditional-logic rules hide it for the submitted values.
+	 *
+	 * Every rule stored for the block must resolve to hidden. A rule whose outcome
+	 * cannot be determined server-side counts as visible, so the block stays required.
+	 *
+	 * @param array<int, array<mixed>>                                $rules     Actionable rules stored for one block.
+	 * @param array<mixed>                                            $form_data Submitted form data.
+	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
+	 *
+	 * @since 2.14.3
+	 * @return bool True only when every rule resolves to hidden.
+	 */
+	private static function is_hidden_by_conditional_rules( $rules, $form_data, $fields ) {
+		foreach ( $rules as $rule ) {
+			$matched = is_array( $rule['logic'] ) ? self::evaluate_conditional_logic( $rule['logic'], $form_data, $fields ) : null;
+
+			if ( null === $matched ) {
+				return false;
+			}
+
+			// `show` hides the block until the conditions match; `hide` hides it once they do.
+			$hidden = 'show' === $rule['action'] ? ! $matched : ( 'hide' === $rule['action'] && $matched );
+
+			if ( ! $hidden ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Evaluate a rule's condition groups the way SureForms Pro does in the browser.
+	 *
+	 * Groups are OR'ed and the conditions inside a group are AND'ed. A condition that
+	 * cannot be evaluated leaves the outcome unknown unless another condition settles it.
+	 *
+	 * @param array<mixed>                                            $logic     Condition groups.
+	 * @param array<mixed>                                            $form_data Submitted form data.
+	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
+	 *
+	 * @since 2.14.3
+	 * @return bool|null Whether the conditions match, null when that cannot be determined.
+	 */
+	private static function evaluate_conditional_logic( $logic, $form_data, $fields ) {
+		$result = false;
+
+		foreach ( $logic as $group ) {
+			if ( ! is_array( $group ) ) {
+				return null;
+			}
+
+			$group_result = true;
+
+			foreach ( $group as $condition ) {
+				$matched = self::evaluate_conditional_condition( $condition, $form_data, $fields );
+
+				if ( false === $matched ) {
+					$group_result = false;
+					break;
+				}
+
+				if ( null === $matched ) {
+					$group_result = null;
+				}
+			}
+
+			if ( true === $group_result ) {
+				return true;
+			}
+
+			if ( null === $group_result ) {
+				$result = null;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Evaluate one stored condition against the submitted value of its field.
+	 *
+	 * The field's value is read the way the browser reads it (see
+	 * get_conditional_field_value()). When that reading has several candidates and they
+	 * disagree, or an operator or value cannot be evaluated, the result is null, so it
+	 * never exempts a payment block.
+	 *
+	 * @param mixed                                                   $condition Stored condition.
+	 * @param array<mixed>                                            $form_data Submitted form data.
+	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
+	 *
+	 * @since 2.14.3
+	 * @return bool|null Whether the condition holds, null when it cannot be evaluated.
+	 */
+	private static function evaluate_conditional_condition( $condition, $form_data, $fields ) {
+		if ( ! is_array( $condition ) || empty( $condition['field'] ) || ! is_string( $condition['field'] ) || ! isset( $condition['operator'] ) || ! is_string( $condition['operator'] ) ) {
+			return null;
+		}
+
+		$readings = self::get_conditional_field_value( $condition['field'], $form_data, $fields );
+
+		if ( null === $readings ) {
+			return null;
+		}
+
+		$result = null;
+
+		foreach ( $readings as $index => $field ) {
+			$matched = self::match_conditional_value( $condition['operator'], $condition['value'] ?? '', $field, $fields[ $condition['field'] ] ?? null );
+
+			if ( null === $matched || ( 0 !== $index && $matched !== $result ) ) {
+				return null;
+			}
+
+			$result = $matched;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Apply one operator of SureForms Pro's browser evaluator (conditional-logic.js
+	 * `evaluateCondition()`) to a field value.
+	 *
+	 * @param string                                        $operator Stored operator.
+	 * @param mixed                                         $value    Stored condition value.
+	 * @param string                                        $field    The field's value as the browser reads it.
+	 * @param array{name: string, attrs: array<mixed>}|null $block    The field's block, null when the form has none.
+	 *
+	 * @since 2.14.3
+	 * @return bool|null Whether the condition holds, null when it cannot be evaluated.
+	 */
+	private static function match_conditional_value( $operator, $value, $field, $block ) {
+		// Multi-choice and dropdown fields submit several answers joined by " | ".
+		$answers = false !== strpos( $field, ' | ' ) ? array_map( 'trim', explode( ' | ', $field ) ) : [ trim( $field ) ];
+
+		if ( 'in' === $operator || '!in' === $operator ) {
+			if ( ! is_array( $value ) && ! is_string( $value ) ) {
+				return null;
+			}
+
+			$found = false;
+			foreach ( $answers as $answer ) {
+				if ( is_array( $value ) ? in_array( $answer, $value, true ) : ( '' === $answer || false !== strpos( $value, $answer ) ) ) {
+					$found = true;
+					break;
+				}
+			}
+
+			return 'in' === $operator ? $found : ! $found;
+		}
+
+		if ( ! is_scalar( $value ) ) {
+			return null;
+		}
+
+		$value = (string) $value;
+
+		switch ( $operator ) {
+			case '==':
+				return $field === $value || ( count( $answers ) > 1 && in_array( $value, $answers, true ) );
+			case '!=':
+				return $field !== $value && ! ( count( $answers ) > 1 && in_array( $value, $answers, true ) );
+			case 'null':
+				return '' === $field;
+			case '!null':
+				return '' !== $field;
+			case 'includes':
+				return '' === $value || false !== strpos( $field, $value );
+			case '!includes':
+				return '' !== $value && false === strpos( $field, $value );
+			case 'startWith':
+				return 0 === strncmp( $field, $value, strlen( $value ) );
+			case 'endWith':
+				return '' === $value || substr( $field, -strlen( $value ) ) === $value;
+			case 'isChecked':
+				// A checkbox or GDPR field reads as "true" or "false".
+				return 'true' === $field;
+			case '!isChecked':
+				return 'false' === $field;
+			case 'isSelected':
+				return '' !== trim( $field );
+			case '!isSelected':
+				return '' === trim( $field );
+			case 'matchesPattern':
+			case 'doesNotMatchPattern':
+				$matched = self::match_conditional_pattern( $value, $field );
+
+				return null === $matched ? null : ( 'matchesPattern' === $operator ) === $matched;
+			case 'datePickerIs':
+			case 'timePickerIs':
+			case 'isBefore':
+			case 'isAfter':
+			case 'isOnOrBefore':
+			case 'isOnOrAfter':
+				return self::match_conditional_datetime( $operator, $value, $field, $block );
+			case '>':
+			case '>=':
+			case '<':
+			case '<=':
+				$left  = self::to_conditional_number( $field );
+				$right = self::to_conditional_number( $value );
+
+				if ( null === $left || null === $right ) {
+					return null;
+				}
+
+				if ( '>' === $operator ) {
+					return $left > $right;
+				}
+				if ( '>=' === $operator ) {
+					return $left >= $right;
+				}
+
+				return '<' === $operator ? $left < $right : $left <= $right;
+			case 'between':
+				$range = array_map( 'trim', explode( ',', $value ) );
+				$left  = self::to_conditional_number( $field );
+				$min   = self::to_conditional_number( $range[0] );
+				$max   = isset( $range[1] ) ? self::to_conditional_number( $range[1] ) : null;
+
+				if ( 2 !== count( $range ) || null === $left || null === $min || null === $max ) {
+					return null;
+				}
+
+				return $left >= $min && $left <= $max;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Test a value against a stored pattern, as `new RegExp( pattern ).test( value )` does.
+	 *
+	 * `(*UTF)` reads the value as UTF-8 without `u`'s Unicode properties, so `\d` and `\w`
+	 * stay ASCII as in JavaScript, and `D` keeps `$` at the very end of the value. A
+	 * pattern with group syntax JavaScript rejects, a pattern PCRE cannot compile, or a
+	 * match it gives up on, is unknown.
+	 *
+	 * @param string $pattern Stored pattern, without delimiters or flags.
+	 * @param string $field   Field value.
+	 *
+	 * @since 2.14.3
+	 * @return bool|null Whether the value matches, null when that cannot be determined.
+	 */
+	private static function match_conditional_pattern( $pattern, $field ) {
+		if ( false !== strpos( $pattern, "\x01" ) || self::has_non_javascript_group( $pattern ) ) {
+			return null;
+		}
+
+		// An uncompilable stored pattern warns and returns false, which reads as unknown below.
+		set_error_handler( '__return_true' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- scoped to this one call.
+		$matched = preg_match( "\x01(*UTF)" . $pattern . "\x01D", $field );
+		restore_error_handler();
+
+		return false === $matched ? null : 1 === $matched;
+	}
+
+	/**
+	 * Whether a pattern opens a group `new RegExp()` cannot compile but PCRE can.
+	 *
+	 * Outside an escape or a character class, `(*` and any `(?` other than `(?:`, `(?=`,
+	 * `(?!`, `(?<=`, `(?<!` and `(?<name>` (inline options, atomic groups, comments,
+	 * verbs) count, so they never reach PCRE.
+	 *
+	 * @param string $pattern Stored pattern, without delimiters or flags.
+	 *
+	 * @since 2.14.3
+	 * @return bool
+	 */
+	private static function has_non_javascript_group( $pattern ) {
+		$length   = strlen( $pattern );
+		$in_class = false;
+
+		for ( $i = 0; $i < $length; $i++ ) {
+			$char = $pattern[ $i ];
+
+			if ( '\\' === $char ) {
+				++$i;
+			} elseif ( $in_class ) {
+				$in_class = ']' !== $char;
+			} elseif ( '[' === $char ) {
+				$in_class = true;
+			} elseif ( '(' === $char && ( '*' === substr( $pattern, $i + 1, 1 ) || ( '?' === substr( $pattern, $i + 1, 1 ) && 1 !== preg_match( '/\G\?(?:[:=!]|<[=!]|<[A-Za-z_$])/', $pattern, $match, 0, $i + 1 ) ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Compare a date or time field with a stored date or time, as the browser's
+	 * `parseDateTime()` comparisons do.
+	 *
+	 * An empty or unreadable value compares as JavaScript's `undefined` / `NaN` do. A
+	 * time compared with a date is unknown.
+	 *
+	 * @param string                                        $operator Date or time operator.
+	 * @param string                                        $value    Stored date (YYYY-MM-DD) or time.
+	 * @param string                                        $field    Field value.
+	 * @param array{name: string, attrs: array<mixed>}|null $block    The field's block.
+	 *
+	 * @since 2.14.3
+	 * @return bool|null Whether the condition holds, null when it cannot be evaluated.
+	 */
+	private static function match_conditional_datetime( $operator, $value, $field, $block ) {
+		// The browser reads a date in the format of the date picker it finds for the field.
+		$format = '';
+		if ( null !== $block && 'srfm/date-picker' === $block['name'] ) {
+			$format = ! empty( $block['attrs']['dateFormat'] ) && is_string( $block['attrs']['dateFormat'] ) ? $block['attrs']['dateFormat'] : 'dd/mm/yyyy';
+		}
+
+		$left  = self::parse_conditional_datetime( $field, $format );
+		$right = self::parse_conditional_datetime( $value, 'yyyy-mm-dd' );
+		$kinds = [ $left['kind'] ?? '', $right['kind'] ?? '' ];
+
+		if ( 'timePickerIs' === $operator ) {
+			// `.getTime()` on a date (a number in the browser) throws.
+			if ( in_array( 'date', $kinds, true ) ) {
+				return null;
+			}
+
+			return null === $left || null === $right ? $left === $right : $left['value'] === $right['value'];
+		}
+
+		if ( 'datePickerIs' === $operator ) {
+			// Two parsed times are distinct Date objects, never `===`.
+			if ( null === $left || null === $right || in_array( 'time', $kinds, true ) ) {
+				return $left === $right;
+			}
+
+			return $left['value'] === $right['value'];
+		}
+
+		if ( null === $left || null === $right ) {
+			return false;
+		}
+
+		if ( $left['kind'] !== $right['kind'] ) {
+			return null;
+		}
+
+		switch ( $operator ) {
+			case 'isBefore':
+				return $left['value'] < $right['value'];
+			case 'isAfter':
+				return $left['value'] > $right['value'];
+			case 'isOnOrBefore':
+				return $left['value'] <= $right['value'];
+			default:
+				return $left['value'] >= $right['value'];
+		}
+	}
+
+	/**
+	 * Read a date or time the way the browser's `parseDateTime()` does.
+	 *
+	 * A value with a colon is a time, in minutes after midnight. Anything else is a date
+	 * in $format, as a day number. A part that is not a whole number gives NAN, which
+	 * compares false as JavaScript's NaN does.
+	 *
+	 * @param string $input  Value to read.
+	 * @param string $format yyyy-mm-dd, dd/mm/yyyy, mm/dd/yyyy or yyyy/mm/dd; anything else reads no date.
+	 *
+	 * @since 2.14.3
+	 * @return array{kind: string, value: float}|null Null where the browser gets `undefined`.
+	 */
+	private static function parse_conditional_datetime( $input, $format ) {
+		if ( '' === $input ) {
+			return null;
+		}
+
+		if ( false !== strpos( $input, ':' ) ) {
+			$parts   = explode( ':', $input );
+			$hours   = self::to_conditional_integer( $parts[0] );
+			$minutes = self::to_conditional_integer( $parts[1] );
+
+			if ( null === $hours || null === $minutes ) {
+				return [
+					'kind'  => 'time',
+					'value' => NAN,
+				];
+			}
+
+			if ( false !== strpos( $input, 'PM' ) && $hours < 12 ) {
+				$hours += 12;
+			} elseif ( false !== strpos( $input, 'AM' ) && 12 === $hours ) {
+				$hours = 0;
+			}
+
+			return [
+				'kind'  => 'time',
+				'value' => (float) ( $hours * 60 + $minutes ),
+			];
+		}
+
+		$orders = [
+			'yyyy-mm-dd' => [ '-', 0, 1, 2 ],
+			'yyyy/mm/dd' => [ '/', 0, 1, 2 ],
+			'mm/dd/yyyy' => [ '/', 2, 0, 1 ],
+			'dd/mm/yyyy' => [ '/', 2, 1, 0 ],
+		];
+		if ( ! isset( $orders[ $format ] ) ) {
+			return null;
+		}
+
+		[ $separator, $year_at, $month_at, $day_at ] = $orders[ $format ];
+
+		$parts = explode( $separator, $input );
+		$year  = self::to_conditional_integer( $parts[ $year_at ] ?? '' );
+		$month = self::to_conditional_integer( $parts[ $month_at ] ?? '' );
+		$day   = self::to_conditional_integer( $parts[ $day_at ] ?? '' );
+		$time  = null === $year || null === $month || null === $day ? false : gmmktime( 0, 0, 0, $month, $day, $year >= 0 && $year <= 99 ? $year + 1900 : $year );
+
+		return [
+			'kind'  => 'date',
+			'value' => false === $time ? NAN : $time / DAY_IN_SECONDS,
+		];
+	}
+
+	/**
+	 * Read the leading whole number of a value, as JavaScript's parseInt() does.
+	 *
+	 * @param string $value Value.
+	 *
+	 * @since 2.14.3
+	 * @return int|null The number, null where parseInt() gives NaN.
+	 */
+	private static function to_conditional_integer( $value ) {
+		return 1 === preg_match( '/^\s*([+-]?\d+)/', $value, $match ) ? (int) $match[1] : null;
+	}
+
+	/**
+	 * The field's value as the browser's field-value.js reads it, located by block ID.
+	 *
+	 * The form's stored block, never the submitted key, decides how the value is read:
+	 * - a field the form does not have reads as empty, as the browser finds no element;
+	 * - an absent field reads as empty (an unticked checkbox is never submitted);
+	 * - a checkbox or GDPR field reads as "true" or "false";
+	 * - a number field drops the thousands separator of its format, and an EU-format
+	 *   decimal comma becomes a point;
+	 * - a phone field drops spaces and hyphens. The browser reads the number without its
+	 *   dial code, which the submitted international number carries; as the dial code
+	 *   is one to three digits, each of those readings is a candidate;
+	 * - a rich-text textarea reads as its text.
+	 * Two submitted fields for one block ID, or a structured value, make the value unknown.
+	 *
+	 * @param string                                                  $block_id  Block ID the condition reads.
+	 * @param array<mixed>                                            $form_data Submitted form data.
+	 * @param array<string, array{name: string, attrs: array<mixed>}> $fields    The form's blocks, keyed by block ID.
+	 *
+	 * @since 2.14.3
+	 * @return array<int, string>|null Candidate readings, null when the value cannot be determined.
+	 */
+	private static function get_conditional_field_value( $block_id, $form_data, $fields ) {
+		$found = null;
+
+		foreach ( $form_data as $key => $value ) {
+			if ( ! is_string( $key ) || 0 !== strpos( $key, 'srfm-' ) || false === strpos( $key, '-lbl-' ) || Helper::get_block_id_from_key( $key ) !== $block_id ) {
+				continue;
+			}
+
+			if ( null !== $found || ! is_scalar( $value ) ) {
+				return null;
+			}
+
+			$found = (string) $value;
+		}
+
+		if ( ! isset( $fields[ $block_id ] ) ) {
+			return [ '' ];
+		}
+
+		$value = $found ?? '';
+		$attrs = $fields[ $block_id ]['attrs'];
+
+		switch ( $fields[ $block_id ]['name'] ) {
+			case 'srfm/checkbox':
+			case 'srfm/gdpr':
+				return [ '' !== $value ? 'true' : 'false' ];
+			case 'srfm/number':
+				$format = isset( $attrs['formatType'] ) && is_string( $attrs['formatType'] ) && '' !== $attrs['formatType'] ? $attrs['formatType'] : 'us-style';
+				if ( 'eu-style' === $format ) {
+					$value = str_replace( ',', '.', str_replace( '.', '', $value ) );
+				} elseif ( 'us-style' === $format ) {
+					$value = str_replace( ',', '', $value );
+				}
+
+				return [ $value ];
+			case 'srfm/phone':
+				$value = str_replace( [ ' ', '-' ], '', $value );
+				if ( 0 !== strpos( $value, '+' ) ) {
+					return [ $value ];
+				}
+
+				return array_values( array_unique( [ substr( $value, 2 ), substr( $value, 3 ), substr( $value, 4 ) ] ) );
+			case 'srfm/textarea':
+				return [ empty( $attrs['isRichText'] ) ? $value : html_entity_decode( wp_strip_all_tags( $value, false ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ];
+		}
+
+		return [ $value ];
+	}
+
+	/**
+	 * The blocks of a form, keyed by block ID, with the attributes they render with.
+	 *
+	 * Recurses into inner blocks and expands reusable blocks, with a cycle guard. The
+	 * first block with an ID wins, as the browser's `[data-block-id]` lookup does.
+	 *
+	 * @param array<mixed>     $blocks       Parsed blocks.
+	 * @param array<int, true> $visited_refs Reusable-block post IDs already expanded.
+	 *
+	 * @since 2.14.3
+	 * @return array<string, array{name: string, attrs: array<mixed>}>
+	 */
+	private static function collect_conditional_fields( $blocks, &$visited_refs = [] ) {
+		$fields = [];
+
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+
+			$name  = isset( $block['blockName'] ) && is_string( $block['blockName'] ) ? $block['blockName'] : '';
+			$attrs = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
+
+			if ( isset( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) && '' !== $attrs['block_id'] && ! isset( $fields[ $attrs['block_id'] ] ) ) {
+				$block_type                   = \WP_Block_Type_Registry::get_instance()->get_registered( $name );
+				$fields[ $attrs['block_id'] ] = [
+					'name'  => $name,
+					'attrs' => $block_type ? $block_type->prepare_attributes_for_render( $attrs ) : $attrs,
+				];
+			}
+
+			if ( 'core/block' === $name && ! empty( $attrs['ref'] ) && is_scalar( $attrs['ref'] ) ) {
+				$ref = absint( $attrs['ref'] );
+
+				if ( $ref && ! isset( $visited_refs[ $ref ] ) ) {
+					$visited_refs[ $ref ] = true;
+					$ref_post             = get_post( $ref );
+
+					if ( $ref_post instanceof \WP_Post && 'wp_block' === $ref_post->post_type && '' !== $ref_post->post_content ) {
+						$fields += self::collect_conditional_fields( parse_blocks( $ref_post->post_content ), $visited_refs );
+					}
+				}
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$fields += self::collect_conditional_fields( $block['innerBlocks'], $visited_refs );
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Read a condition operand as a number, as the browser's Number() does for plain input.
+	 *
+	 * @param string $value Operand.
+	 *
+	 * @since 2.14.3
+	 * @return float|null The number (empty reads as 0), null when the operand is not numeric.
+	 */
+	private static function to_conditional_number( $value ) {
+		$value = trim( $value );
+
+		if ( '' === $value ) {
+			return 0.0;
+		}
+
+		return is_numeric( $value ) ? (float) $value : null;
 	}
 
 	/**
@@ -1717,11 +2370,12 @@ class Payment_Helper {
 				// Fail safe when the submitted selection doesn't map to a configured
 				// option value: get_amount_by_the_config_options() returns null, and
 				// abs( $payment_amount - null ) would coerce null to 0 — reject explicitly
-				// so the comparison can never be silently weakened by that coercion.
+				// so the comparison can never be silently weakened by that coercion. The
+				// selection is the visitor's, so the message asks them to change it.
 				if ( ! is_numeric( $get_expected_amount ) ) {
 					return [
 						'valid'   => false,
-						'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+						'message' => __( 'One or more selected options are not valid. Please check your selection and try again.', 'sureforms' ),
 					];
 				}
 
@@ -1965,40 +2619,38 @@ class Payment_Helper {
 			$is_multi_select = empty( $block_config['single_selection'] );
 		}
 
-		$expected_amount = null;
-
-		// Handle multi-select case (submitted value format: "value1 | value2").
-		if ( $is_multi_select && false !== strpos( $submitted_field_value, ' | ' ) ) {
-			// Explode the submitted value by " | " delimiter.
-			$submitted_values = explode( ' | ', $submitted_field_value );
-
-			$combine_amount = 0;
-
-			foreach ( $options as $option ) {
-				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
-
-				foreach ( $submitted_values as $submitted_value ) {
-					if ( trim( $submitted_value ) === $option_label ) {
-						$combine_amount += floatval( $option['value'] );
-						break;
-					}
-				}
+		// Price each option under the label check_choices() accepts it by, so the
+		// recompute and the option-membership check agree on what was selected. Two
+		// options sharing a label at different prices make any selection of it
+		// unpriceable.
+		$prices = [];
+		foreach ( $options as $option ) {
+			$label = is_array( $option ) && isset( $option['label'] ) && is_scalar( $option['label'] ) ? Field_Rules::comparable( (string) $option['label'] ) : '';
+			$price = is_array( $option ) && isset( $option['value'] ) && is_scalar( $option['value'] ) ? floatval( $option['value'] ) : 0.0;
+			if ( '' === $label ) {
+				continue;
 			}
-
-			$expected_amount = $combine_amount;
-
-		} else {
-			// Handle single select case (submitted value is a simple string).
-			foreach ( $options as $option ) {
-				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
-				if ( trim( $submitted_field_value ) === $option_label ) {
-					$expected_amount = floatval( $option['value'] );
-					break;
-				}
+			if ( isset( $prices[ $label ] ) && $prices[ $label ] !== $price ) {
+				return null;
 			}
+			$prices[ $label ] = $price;
 		}
 
-		return $expected_amount;
+		// Single select: the whole value is one choice. Multi-select: "value1 | value2".
+		$submitted_values = $is_multi_select && false !== strpos( $submitted_field_value, ' | ' ) ? explode( ' | ', $submitted_field_value ) : [ $submitted_field_value ];
+
+		// Every choice must be exactly one configured option, each at most once;
+		// anything else leaves the amount undeterminable (null), which the caller rejects.
+		$selected = [];
+		foreach ( $submitted_values as $submitted_value ) {
+			$label = Field_Rules::comparable( $submitted_value );
+			if ( ! isset( $prices[ $label ] ) || isset( $selected[ $label ] ) ) {
+				return null;
+			}
+			$selected[ $label ] = $prices[ $label ];
+		}
+
+		return (float) array_sum( $selected );
 	}
 
 	/**

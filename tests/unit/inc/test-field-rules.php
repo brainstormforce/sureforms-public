@@ -570,4 +570,16 @@ class Test_Field_Rules extends SRFM_Unit_Test_Case {
 		$prop->setAccessible( true );
 		$prop->setValue( null, null );
 	}
+
+	/**
+	 * A label matches its submitted choice whether or not it was stored with
+	 * entities: both sides decode, sanitize and trim to the same string.
+	 */
+	public function test_comparable() {
+		$this->assertSame( 'Fish & Chips', Field_Rules::comparable( 'Fish &amp; Chips' ), 'Entity-encoded label decodes.' );
+		$this->assertSame( Field_Rules::comparable( 'Fish & Chips' ), Field_Rules::comparable( 'Fish &amp; Chips' ), 'Encoded and plain forms compare equal.' );
+		$this->assertSame( 'Tom\'s', Field_Rules::comparable( 'Tom&#039;s' ), 'Numeric quote entity decodes.' );
+		$this->assertSame( 'Red', Field_Rules::comparable( "  <b>Red</b>\n " ), 'Tags stripped and whitespace trimmed.' );
+		$this->assertSame( '', Field_Rules::comparable( '' ) );
+	}
 }

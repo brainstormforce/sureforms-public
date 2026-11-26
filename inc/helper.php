@@ -1737,6 +1737,35 @@ class Helper {
 		// Disable parsing of style attributes.
 		return [];
 	}
+
+	/**
+	 * Follow every `{` and `[` in a string with a word joiner (U+2060), so the
+	 * smart tag pass and do_shortcode() read no token in it. A character
+	 * reference that decodes to either one is decoded and treated the same.
+	 * The text reads the same. A word joiner, not a character reference,
+	 * because kses decodes character references (in attribute values, and on
+	 * WordPress 7.2+ in text too). Running it twice changes nothing.
+	 *
+	 * @param string $text Text.
+	 * @since 2.14.3
+	 * @return string
+	 */
+	public static function neutralize_tokens( $text ) {
+		$text = (string) preg_replace_callback(
+			'/&#?[a-z0-9]+;?/i',
+			static function ( $reference ) {
+				$decoded = class_exists( 'WP_HTML_Decoder' )
+					? \WP_HTML_Decoder::decode_text_node( $reference[0] )
+					: html_entity_decode( $reference[0], ENT_QUOTES | ENT_HTML5 );
+				return false !== strpbrk( $decoded, '{[' ) ? $decoded : $reference[0];
+			},
+			self::get_string_value( $text )
+		);
+
+		// Byte pattern, not /u, so invalid UTF-8 cannot make it return nothing.
+		return (string) preg_replace( '/[{\[](?!\xE2\x81\xA0)/', "\$0\u{2060}", $text );
+	}
+
 	/**
 	 * Strips JavaScript attributes from HTML content.
 	 *
@@ -2799,6 +2828,96 @@ class Helper {
 		set_transient( $cache_key, $country, DAY_IN_SECONDS );
 
 		return $country;
+	}
+
+	/**
+	 * Record one hit against a rate-limit bucket and return the bucket's count.
+	 *
+	 * The single counter behind the public rate limits (Form_Submit::is_rate_limited(),
+	 * Form_Views::is_rate_limited()). Callers compare the result to their own ceiling.
+	 *
+	 * Window: fixed, one minute from the bucket's first hit. Later hits never extend it.
+	 *
+	 * Concurrency: with a persistent object cache, wp_cache_add() + wp_cache_incr() make
+	 * the increment atomic. Without one the count lives in a transient, and the
+	 * read-increment-write is serialized per bucket on a MySQL advisory lock taken with
+	 * a zero timeout; a request that finds the lock held is answered as over the limit
+	 * and is not counted. Only a host whose database lacks GET_LOCK() falls back to an
+	 * unserialized read-increment-write.
+	 *
+	 * Failure: a cache increment error returns PHP_INT_MAX, so an unavailable backend
+	 * denies rather than admits.
+	 *
+	 * @param string $prefix Bucket namespace, unique per endpoint. Also the cache group.
+	 * @param string $key    Bucket key within the namespace (e.g. IP and form id).
+	 * @since 2.14.3
+	 * @return int The bucket's count after this hit, or PHP_INT_MAX when the hit is denied.
+	 */
+	public static function hit_rate_counter( $prefix, $key ) {
+		$hash = md5( $key );
+
+		if ( wp_using_ext_object_cache() ) {
+			// add() only succeeds for the first caller, so exactly one request opens the
+			// window and every other one increments atomically.
+			wp_cache_add( $hash, 0, $prefix, MINUTE_IN_SECONDS );
+
+			$count = wp_cache_incr( $hash, 1, $prefix );
+
+			// false = backend error, or the key was evicted between add() and incr().
+			return false === $count ? PHP_INT_MAX : self::get_integer_value( $count );
+		}
+
+		global $wpdb;
+
+		$transient_key = $prefix . $hash;
+		$lock          = substr( $transient_key, 0, 64 );
+		$locked        = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock; nothing to cache.
+
+		// '0' = another request holds this bucket right now. NULL or anything else means
+		// the database does not support GET_LOCK(); continue without the lock rather
+		// than deny every request on such a host.
+		if ( '0' === (string) $locked ) {
+			return PHP_INT_MAX;
+		}
+
+		try {
+			$count = self::get_integer_value( get_transient( $transient_key ) ) + 1;
+			$ttl   = MINUTE_IN_SECONDS;
+
+			if ( $count > 1 ) {
+				$remaining = self::get_integer_value( get_option( '_transient_timeout_' . $transient_key, 0 ) ) - time();
+				$ttl       = max( 1, $remaining );
+			}
+
+			set_transient( $transient_key, $count, $ttl );
+		} finally {
+			if ( '1' === (string) $locked ) {
+				$wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Releasing the advisory lock; nothing to cache.
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Read a hit_rate_counter() bucket's current count without writing anything.
+	 *
+	 * Reads the storage hit_rate_counter() writes for the same $prefix and $key.
+	 * Absent or expired reads as 0.
+	 *
+	 * @param string $prefix Bucket namespace, as passed to hit_rate_counter().
+	 * @param string $key    Bucket key, as passed to hit_rate_counter().
+	 * @since 2.14.3
+	 * @return int The bucket's current count.
+	 */
+	public static function peek_rate_counter( $prefix, $key ) {
+		$hash = md5( $key );
+
+		if ( wp_using_ext_object_cache() ) {
+			return self::get_integer_value( wp_cache_get( $hash, $prefix ) );
+		}
+
+		return self::get_integer_value( get_transient( $prefix . $hash ) );
 	}
 
 	/**

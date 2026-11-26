@@ -1107,11 +1107,7 @@ class Test_Admin extends TestCase {
 	 * @return void
 	 */
 	private function reset_table_cache() {
-		delete_transient( Register::ENTRIES_TABLE_CHECK_TRANSIENT );
-
-		$memo = new ReflectionProperty( Register::class, 'entries_table_present' );
-		$memo->setAccessible( true );
-		$memo->setValue( null, null );
+		Register::flush_entries_table_cache();
 	}
 
 	/**
