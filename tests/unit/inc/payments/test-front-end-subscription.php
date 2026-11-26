@@ -83,6 +83,7 @@ class Test_Front_End_Subscription extends SRFM_Unit_Test_Case {
 				'active_type'     => 'subscription',
 				'subscription_id' => 'sub_x',
 				'form_id'         => $this->form_id,
+				'block_id'        => $this->block,
 			],
 			HOUR_IN_SECONDS
 		);

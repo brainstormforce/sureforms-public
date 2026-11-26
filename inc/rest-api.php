@@ -593,6 +593,40 @@ class Rest_Api {
 	}
 
 	/**
+	 * Validate an explicitly supplied entry selection.
+	 *
+	 * An empty array or empty string is the "no selection" value and is valid.
+	 * Any other value is valid only when every ID in it is a positive integer:
+	 * an int, a digit string, an array of those, or a comma-separated list of
+	 * those. Every other value is invalid, so a selection can never be dropped
+	 * by sanitize_entry_ids() into the empty "no selection" value.
+	 *
+	 * @param mixed $value Value to validate.
+	 * @since 2.14.3
+	 * @return bool
+	 */
+	public function validate_entry_ids( $value ) {
+		if ( [] === $value || '' === $value ) {
+			return true;
+		}
+		if ( is_int( $value ) ) {
+			$value = [ $value ];
+		} elseif ( is_string( $value ) ) {
+			$value = array_map( 'trim', explode( ',', $value ) );
+		} elseif ( ! is_array( $value ) ) {
+			return false;
+		}
+
+		foreach ( $value as $id ) {
+			$id = is_int( $id ) ? (string) $id : $id;
+			if ( ! is_string( $id ) || ! ctype_digit( $id ) || 0 === absint( $id ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Validate read action parameter.
 	 *
 	 * @param string $param Action parameter value.
@@ -1038,6 +1072,13 @@ class Rest_Api {
 		}
 
 		$params = $request->get_params();
+
+		if ( isset( $params['entry_ids'] ) && ! $this->validate_entry_ids( $params['entry_ids'] ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Invalid entry selection.', 'sureforms' ) ],
+				400
+			);
+		}
 
 		$args = [
 			'entry_ids' => isset( $params['entry_ids'] ) ? $this->sanitize_entry_ids( $params['entry_ids'] ) : [],
@@ -1762,6 +1803,7 @@ class Rest_Api {
 					'args'                => [
 						'entry_ids' => [
 							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+							'validate_callback' => [ $this, 'validate_entry_ids' ],
 							'default'           => [],
 						],
 						'form_id'   => [

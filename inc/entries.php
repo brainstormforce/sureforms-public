@@ -332,7 +332,16 @@ class Entries {
 		}
 
 		// Get form IDs from entry IDs.
-		$form_ids       = EntriesTable::get_form_ids_by_entries( $entry_ids );
+		$form_ids = EntriesTable::get_form_ids_by_entries( $entry_ids );
+
+		// Selected IDs that match no stored entry have nothing to export.
+		if ( empty( $form_ids ) ) {
+			return [
+				'success' => false,
+				'error'   => __( 'No entries found to export.', 'sureforms' ),
+			];
+		}
+
 		$is_single_form = count( $form_ids ) === 1;
 
 		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );

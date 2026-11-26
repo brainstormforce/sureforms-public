@@ -398,6 +398,7 @@ class Payment_History_Shortcode {
 			'status_failed'             => __( 'Failed', 'sureforms' ),
 			'status_refunded'           => __( 'Refunded', 'sureforms' ),
 			'status_partially_refunded' => __( 'Partially Refunded', 'sureforms' ),
+			'status_charged_back'       => __( 'Charged Back', 'sureforms' ),
 			'status_processing'         => __( 'Processing', 'sureforms' ),
 		];
 	}
@@ -972,6 +973,7 @@ class Payment_History_Shortcode {
 			'canceled'           => __( 'Cancelled', 'sureforms' ),
 			'refunded'           => __( 'Refunded', 'sureforms' ),
 			'partially_refunded' => __( 'Partially Refunded', 'sureforms' ),
+			'charged_back'       => __( 'Charged Back', 'sureforms' ),
 			'processing'         => __( 'Processing', 'sureforms' ),
 			'active'             => __( 'Active', 'sureforms' ),
 		];
@@ -993,6 +995,7 @@ class Payment_History_Shortcode {
 			'processing'         => 'srfm-pd-badge--pending',
 			'failed'             => 'srfm-pd-badge--cancelled',
 			'canceled'           => 'srfm-pd-badge--cancelled',
+			'charged_back'       => 'srfm-pd-badge--cancelled',
 			'refunded'           => 'srfm-pd-badge--refunded',
 			'partially_refunded' => 'srfm-pd-badge--refunded',
 		];

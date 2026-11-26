@@ -94,6 +94,7 @@ class Payments extends Base {
 		'processing',
 		'refunded',
 		'partially_refunded',
+		'charged_back',
 	];
 
 	/**

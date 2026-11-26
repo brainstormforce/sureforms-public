@@ -30,7 +30,8 @@ abstract class Base {
 	protected $wpdb;
 
 	/**
-	 * Current database table prefix mixed with 'srfm_' as ending.
+	 * Database table prefix mixed with 'srfm_' as ending, as it was when this
+	 * instance was built. Use get_tablename() for the active site's table.
 	 *
 	 * @var string
 	 * @since 0.0.10
@@ -57,14 +58,6 @@ abstract class Base {
 	 * @override
 	 */
 	protected $table_version = 1;
-
-	/**
-	 * Full table name mixed with table prefix and table suffix.
-	 *
-	 * @var string
-	 * @since 0.0.10
-	 */
-	private $table_name;
 
 	/**
 	 * Whether or not the current database table is upgradable.
@@ -102,7 +95,6 @@ abstract class Base {
 
 		$this->wpdb         = $wpdb;
 		$this->table_prefix = $this->wpdb->prefix . 'srfm_';
-		$this->table_name   = $this->table_prefix . $this->table_suffix;
 	}
 
 	/**
@@ -219,13 +211,19 @@ abstract class Base {
 	}
 
 	/**
-	 * Returns full table name.
+	 * Returns full table name for the active site.
+	 *
+	 * Derived from the live `$wpdb->prefix` on every call, so an instance that
+	 * outlives a switch_to_blog() / restore_current_blog() always names the
+	 * current site's table. The query cache keys on the full SQL, which contains
+	 * this name, so cached results stay per site too.
 	 *
 	 * @since 0.0.10
+	 * @since 2.14.3 Resolved from the current prefix instead of the one at construction.
 	 * @return string
 	 */
 	public function get_tablename() {
-		return $this->table_name;
+		return $this->wpdb->prefix . 'srfm_' . $this->table_suffix;
 	}
 
 	/**

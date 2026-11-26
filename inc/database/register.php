@@ -39,12 +39,14 @@ class Register {
 	 *
 	 * The check is consulted from three places in one admin page load (notice
 	 * registration, notice rendering, analytics), and this keeps that to a single
-	 * transient read.
+	 * transient read. Keyed by blog id: the answer belongs to the site that
+	 * computed it and must not survive a switch_to_blog().
 	 *
-	 * @var bool|null
+	 * @var array<int,bool>
 	 * @since 2.12.6
+	 * @since 2.14.3 Keyed by blog id.
 	 */
-	private static $entries_table_present = null;
+	private static $entries_table_present = [];
 
 	/**
 	 * Init database registration.
@@ -109,12 +111,14 @@ class Register {
 	 * @return bool
 	 */
 	public static function is_entries_table_missing( $force = false ) {
-		if ( ! $force && null !== self::$entries_table_present ) {
-			return ! self::$entries_table_present;
+		$blog = get_current_blog_id();
+
+		if ( ! $force && isset( self::$entries_table_present[ $blog ] ) ) {
+			return ! self::$entries_table_present[ $blog ];
 		}
 
 		if ( ! $force && get_transient( self::ENTRIES_TABLE_CHECK_TRANSIENT ) ) {
-			self::$entries_table_present = true;
+			self::$entries_table_present[ $blog ] = true;
 			return false;
 		}
 
@@ -123,7 +127,7 @@ class Register {
 		// No recorded version means this is a fresh install or an upgrade in
 		// progress; init() creates the table this request. Nothing to warn about.
 		if ( empty( $versions['entries'] ) ) {
-			self::$entries_table_present = true;
+			self::$entries_table_present[ $blog ] = true;
 			return false;
 		}
 
@@ -142,7 +146,7 @@ class Register {
 			delete_transient( self::ENTRIES_TABLE_CHECK_TRANSIENT );
 		}
 
-		self::$entries_table_present = $present;
+		self::$entries_table_present[ $blog ] = $present;
 
 		return ! $present;
 	}
@@ -222,7 +226,7 @@ class Register {
 	 * @return void
 	 */
 	public static function flush_entries_table_cache() {
-		self::$entries_table_present = null;
+		self::$entries_table_present = [];
 		delete_transient( self::ENTRIES_TABLE_CHECK_TRANSIENT );
 	}
 

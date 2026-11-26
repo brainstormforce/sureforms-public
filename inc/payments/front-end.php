@@ -1262,7 +1262,7 @@ class Front_End {
 			return $form_data;
 		}
 
-		foreach ( Payment_Helper::get_required_payment_block_ids( $form_id ) as $block_id ) {
+		foreach ( Payment_Helper::get_required_payment_block_ids( $form_id, $form_data ) as $block_id ) {
 			if ( isset( $verified_block_ids[ Helper::get_string_value( $block_id ) ] ) ) {
 				continue;
 			}

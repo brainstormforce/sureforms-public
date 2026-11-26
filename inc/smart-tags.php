@@ -25,6 +25,25 @@ class Smart_Tags {
 	use Get_Instance;
 
 	/**
+	 * Smart tags whose value differs between visitors of the same URL. {get_cookie:*}
+	 * is matched by prefix in smart_tags_callback().
+	 *
+	 * @since 2.14.3
+	 */
+	private const PER_VISITOR_TAGS = [
+		'{ip}',
+		'{http_referer}',
+		'{browser_name}',
+		'{browser_platform}',
+		'{user_id}',
+		'{user_display_name}',
+		'{user_first_name}',
+		'{user_last_name}',
+		'{user_email}',
+		'{user_login}',
+	];
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
@@ -55,9 +74,12 @@ class Smart_Tags {
 		}
 
 		// Form content renders inside the_content, whose do_shortcode() runs after the
-		// blocks, so a resolved value must not carry shortcode brackets: values such as
-		// {get_input:*}, {get_cookie:*} and {http_referer} come from the visitor. Only
-		// the resolved values are encoded; shortcodes written into the form still run.
+		// blocks, and render_block runs this filter again over markup it already resolved
+		// (nested blocks, then the srfm/form block itself). A resolved value therefore must
+		// carry neither shortcode brackets nor smart tag braces: values such as
+		// {get_input:*}, {user_first_name} and {embed_post_title} come from visitors, users
+		// or post authors. Only the resolved values are encoded; shortcodes and tags written
+		// into the form still run.
 		return Helper::get_string_value(
 			self::process_smart_tags( $block_content, null, [ 'form-id' => $form_id ], true )
 		);
@@ -132,11 +154,13 @@ class Smart_Tags {
 	 * @param string            $content Form content.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
-	 * @param bool              $encode_shortcode_brackets Encode `[` and `]` in each resolved value,
-	 *                                                     for content that do_shortcode() runs over next.
+	 * @param bool              $encode_shortcode_brackets Encode `[`, `]`, `{` and `}` in each resolved value,
+	 *                                                     for page content that do_shortcode() and later
+	 *                                                     smart tag passes run over next.
 	 * @since 0.0.1 - return string
 	 * @since 1.11.0 - return array<mixed>
 	 * @since 2.13.0 - $encode_shortcode_brackets
+	 * @since 2.14.3 - $encode_shortcode_brackets also encodes `{` and `}`; tags are replaced in one pass, so a tag inside a resolved value is not expanded
 	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null, $encode_shortcode_brackets = false ) {
@@ -152,8 +176,13 @@ class Smart_Tags {
 		}
 
 		$get_smart_tag_list = self::smart_tag_list();
+		$replacements       = [];
 
 		foreach ( $matches[0] as $tag ) {
+			if ( isset( $replacements[ $tag ] ) ) {
+				continue;
+			}
+
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
 			self::is_request_tag( $tag ) ||
 			0 === strpos( $tag, '{form:' ) ||
@@ -228,10 +257,16 @@ class Smart_Tags {
 
 			$replace = Helper::get_string_value( $smart_tag_value );
 			if ( $encode_shortcode_brackets ) {
-				$replace = str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $replace );
+				// A value resolved for the page is text: no later shortcode or smart tag pass
+				// over the same markup may read a shortcode or a tag inside it.
+				$replace = str_replace( [ '[', ']', '{', '}' ], [ '&#91;', '&#93;', '&#123;', '&#125;' ], $replace );
 			}
-			$content = str_replace( $tag, $replace, $content );
+			$replacements[ $tag ] = $replace;
 		}
+
+		// One pass: strtr() never rescans replaced text, so a tag inside a resolved value
+		// (a visitor's submission, a post title) stays text.
+		$content = strtr( Helper::get_string_value( $content ), $replacements );
 
 		// Replace <p> around block-level elements with <div>.
 		$content = preg_replace(
@@ -256,9 +291,22 @@ class Smart_Tags {
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1
+	 * @since 2.14.3 Marks the page as not cacheable for a per-visitor tag.
 	 * @return mixed
 	 */
 	public static function smart_tags_callback( $tag, $submission_data = null, $form_data = null ) {
+		// These tags resolve from the current visitor's request or session, so a page
+		// that carries one must not be stored in a shared page cache. Signalled before
+		// the filter, so a filtered value is covered too.
+		if ( in_array( $tag, self::PER_VISITOR_TAGS, true ) || 0 === strpos( $tag, '{get_cookie:' ) ) {
+			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+				define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Standard page-cache opt-out constant.
+			}
+			if ( ! headers_sent() ) {
+				nocache_headers();
+			}
+		}
+
 		$parsed_tag = apply_filters( 'srfm_parse_smart_tags', null, compact( 'tag', 'submission_data', 'form_data' ) );
 
 		if ( ! is_null( $parsed_tag ) ) {

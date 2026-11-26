@@ -71,6 +71,36 @@ class Test_Database_Register extends TestCase {
 	}
 
 	/**
+	 * The per-request health memo belongs to the site that computed it. After a
+	 * switch to a site whose entries table is absent, the first site's healthy
+	 * answer must not be reused.
+	 */
+	public function test_is_entries_table_missing_is_memoised_per_site() {
+		global $wpdb, $blog_id;
+
+		$this->record_entries_version( 2 );
+		$this->assertFalse( Register::is_entries_table_missing(), 'Site 1 has its table.' );
+
+		$original_prefix = $wpdb->prefix;
+		$original_blog   = $blog_id;
+
+		try {
+			// What switch_to_blog() changes: the current blog id and $wpdb->prefix.
+			// The scratch prefix has no srfm tables, so the entries table is missing there.
+			$blog_id      = 9; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Simulating switch_to_blog(); restored in finally.
+			$wpdb->prefix = $original_prefix . '9_';
+			delete_transient( Register::ENTRIES_TABLE_CHECK_TRANSIENT );
+
+			$this->assertTrue( Register::is_entries_table_missing(), 'Site 9 must not reuse site 1\'s memo.' );
+		} finally {
+			$blog_id      = $original_blog; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Restoring the simulated switch.
+			$wpdb->prefix = $original_prefix;
+		}
+
+		$this->assertFalse( Register::is_entries_table_missing(), 'Site 1 keeps its own answer after restore.' );
+	}
+
+	/**
 	 * The bug this feature exists for: the version stays recorded, so nothing
 	 * recreates the table and nothing notices it is gone.
 	 */
@@ -465,11 +495,7 @@ class Test_Database_Register extends TestCase {
 	 * Clear both the static memo and the transient.
 	 */
 	private function reset_detection_cache() {
-		delete_transient( Register::ENTRIES_TABLE_CHECK_TRANSIENT );
-
-		$memo = new ReflectionProperty( Register::class, 'entries_table_present' );
-		$memo->setAccessible( true );
-		$memo->setValue( null, null );
+		Register::flush_entries_table_cache();
 	}
 
 	/**
