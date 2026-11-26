@@ -55,11 +55,11 @@ class Promotion {
 	public const STARTS_AT = '2026-11-15 08:00:00';
 
 	/**
-	 * End of the sale, UTC: Dec 7, 00:00 PT, right after Dec 6, 11:59:59 PM PT.
+	 * End of the sale, UTC: Monday Dec 7, 09:30 IST (Dec 6, 8:00 PM PT).
 	 *
 	 * @since 2.14.3
 	 */
-	public const ENDS_AT = '2026-12-07 08:00:00';
+	public const ENDS_AT = '2026-12-07 04:00:00';
 
 	/**
 	 * User meta holding the id of the promotion the user dismissed.
