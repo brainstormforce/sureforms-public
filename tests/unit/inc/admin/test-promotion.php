@@ -237,6 +237,8 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 	 * Every case that should hide the bar returns null.
 	 */
 	public function test_get_for_current_user_hidden_cases() {
+		$this->skip_if_pro();
+
 		wp_set_current_user( 0 );
 		$this->assertNull( $this->promotion->get_for_current_user( $this->during ), 'Logged out.' );
 
@@ -405,6 +407,97 @@ class Test_Promotion extends SRFM_Unit_Test_Case {
 		$this->assertSame( Promotion::ID, get_user_meta( $this->admin_id, Promotion::DISMISSED_META, true ) );
 
 		$this->assertSame( '', get_user_meta( $this->create_user( 'administrator' ), Promotion::DISMISSED_META, true ) );
+	}
+
+	/**
+	 * A translation may number the placeholder; it is still replaced.
+	 */
+	public function test_get_for_current_user_accepts_numbered_placeholder() {
+		$this->skip_if_pro();
+		wp_set_current_user( $this->admin_id );
+
+		$numbered = static function ( $translation, $text ) {
+			return 'Plans start at %s' === $text ? 'Plans start at %1$s' : $translation;
+		};
+		add_filter( 'gettext', $numbered, 10, 2 );
+
+		try {
+			$data = $this->promotion->get_for_current_user( $this->during );
+		} finally {
+			remove_filter( 'gettext', $numbered, 10 );
+		}
+
+		$this->assertContains(
+			[
+				[
+					'text'  => 'Plans start at',
+					'style' => 'plain',
+				],
+				[
+					'text'  => '$49',
+					'style' => 'accent',
+				],
+			],
+			$data['items']
+		);
+	}
+
+	/**
+	 * A valid shown request is answered whether or not it was counted, so
+	 * the bar never has to handle an error for it.
+	 */
+	public function test_rest_shown_accepts_a_valid_request() {
+		wp_set_current_user( $this->admin_id );
+
+		$request = $this->signed_request();
+		$request->set_param( 'id', Promotion::ID );
+
+		$response = $this->promotion->rest_shown( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( 200, $response->get_status() );
+	}
+
+	/**
+	 * A click from a user the bar is not showing to is refused and not
+	 * counted.
+	 */
+	public function test_rest_click_refused_when_not_showing() {
+		wp_set_current_user( $this->admin_id );
+		update_user_meta( $this->admin_id, Promotion::DISMISSED_META, Promotion::ID );
+
+		$request = $this->signed_request();
+		$request->set_param( 'id', Promotion::ID );
+
+		$response = $this->promotion->rest_click( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 400, $response->get_error_data()['status'] );
+		$this->assertSame( 0, array_sum( $this->promotion->get_stats()['click'] ) );
+	}
+
+	/**
+	 * A dismissal that could not be saved is reported as an error, so the
+	 * bar is not told it is gone for good.
+	 */
+	public function test_rest_dismiss_reports_a_failed_save() {
+		wp_set_current_user( $this->admin_id );
+
+		$block = static function ( $check, $object_id, $meta_key ) {
+			return Promotion::DISMISSED_META === $meta_key ? false : $check;
+		};
+		add_filter( 'update_user_metadata', $block, 10, 3 );
+
+		try {
+			$request = $this->signed_request();
+			$request->set_param( 'id', Promotion::ID );
+			$response = $this->promotion->rest_dismiss( $request );
+		} finally {
+			remove_filter( 'update_user_metadata', $block, 10 );
+		}
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 500, $response->get_error_data()['status'] );
 	}
 
 	// ─── Analytics counts ────────────────────────────────────────

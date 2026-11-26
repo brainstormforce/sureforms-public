@@ -209,7 +209,13 @@ class Promotion {
 			return $error;
 		}
 
-		$this->dismiss( get_current_user_id() );
+		if ( ! $this->dismiss( get_current_user_id() ) ) {
+			return new WP_Error(
+				'srfm_promotion_dismiss_failed',
+				__( 'Could not dismiss the promotion. Please try again.', 'sureforms' ),
+				[ 'status' => 500 ]
+			);
+		}
 
 		return new WP_REST_Response( [ 'dismissed' => true ], 200 );
 	}
@@ -227,6 +233,8 @@ class Promotion {
 	public function record_shown( $user_id, $now = null ) {
 		$now = null === $now ? time() : (int) $now;
 
+		// Two pages loading at the same moment can both count the user; fine
+		// for marketing totals.
 		if ( ! $this->should_show( $user_id, $now ) || get_user_meta( $user_id, self::SEEN_META, true ) ) {
 			return false;
 		}
@@ -498,8 +506,9 @@ class Promotion {
 		// One translatable sentence with the highlighted value in place of %s,
 		// split into plain text around an accent part.
 		$sentence = static function ( $format, $value ) use ( $part ) {
-			$pieces = explode( '%s', $format, 2 );
-			if ( 2 !== count( $pieces ) ) {
+			// A translation may number the placeholder (%1$s).
+			$pieces = preg_split( '/%(?:1\$)?s/', $format, 2 );
+			if ( ! is_array( $pieces ) || 2 !== count( $pieces ) ) {
 				$pieces = [ $format, '' ];
 			}
 

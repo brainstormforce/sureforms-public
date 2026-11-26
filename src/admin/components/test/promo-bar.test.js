@@ -133,6 +133,19 @@ describe( 'PromoBar', () => {
 		expect( posted( 'shown' ) ).toBe( 1 );
 	} );
 
+	it( 'tells the header when there is no bar to show', () => {
+		const onHide = jest.fn();
+		render(
+			createElement( PromoBar, {
+				promotion: { ...promotion, ends_at: ( now / 1000 ) - 60 },
+				onHide,
+			} )
+		);
+
+		expect( container.querySelector( 'section' ) ).toBeNull();
+		expect( onHide ).toHaveBeenCalledTimes( 1 );
+	} );
+
 	it( 'counts nothing when there is no bar to show', () => {
 		render( createElement( PromoBar, { promotion: null } ) );
 		render(

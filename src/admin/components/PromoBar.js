@@ -278,13 +278,19 @@ const PromoBar = ( { promotion, onHide = () => {} } ) => {
 	}, [ onHide ] );
 
 	// Counted once the bar is on screen, not when its data is built, so
-	// admin pages without the bar count nothing.
+	// admin pages without the bar count nothing. When there is data but no
+	// bar (the visitor's clock is already past the end), the header is told
+	// so it can show what the bar would have replaced.
 	const isShowingOnMount = useRef( isShowing );
 	useEffect( () => {
 		if ( isShowingOnMount.current ) {
 			post( 'shown' );
+		} else {
+			onHide();
 		}
-	}, [ post ] );
+		// Once per mount: post and onHide may change identity between renders.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [] );
 
 	if ( ! isShowing ) {
 		return null;
