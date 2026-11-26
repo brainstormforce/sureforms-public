@@ -542,8 +542,11 @@ class Promotion {
 				return [
 					'items' => [
 						[ $part( __( 'Missed Cyber Monday?', 'sureforms' ), 'bold' ) ],
-						/* translators: %s: discount, e.g. "up to 50%". */
-						$sentence( __( 'You can still save %s', 'sureforms' ), __( 'up to 50%', 'sureforms' ) ),
+						$sentence(
+							/* translators: %s: discount, e.g. "up to 50%". */
+							__( 'You can still save %s', 'sureforms' ),
+							__( 'up to 50%', 'sureforms' )
+						),
 						$from_49,
 					],
 					'cta'   => __( 'Pick a plan and save', 'sureforms' ),
