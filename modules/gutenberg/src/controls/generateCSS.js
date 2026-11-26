@@ -6,7 +6,7 @@ const UNSAFE_CSS_VALUE = /[{};<\\]|\/\*/;
  *
  * Mirrors Spec_Gb_Helper::sanitize_block_id().
  *
- * @since x.x.x
+ * @since 2.14.1
  * @param {*} blockId Saved block_id attribute.
  * @return {string} Sanitised block id.
  */

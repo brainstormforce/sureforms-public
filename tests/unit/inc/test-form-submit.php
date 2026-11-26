@@ -277,6 +277,78 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * An array field holding nested arrays keeps its scalar items, encoded, and
+	 * drops the nested ones instead of failing the submission.
+	 */
+	public function test_process_form_fields_drops_nested_array_items() {
+		$form_data = [
+			'srfm-upload-abc123-lbl-files' => [ 'a b.jpg', [ 'nested' ], 'c.pdf' ],
+			'srfm-text-def456-lbl-name'    => [ [ 'x' => [ 'y' ] ] ],
+		];
+
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+
+		$this->assertSame( [ 0 => 'a%20b.jpg', 2 => 'c.pdf' ], $result['srfm-upload-abc123-lbl-files'] );
+		$this->assertSame( [], $result['srfm-text-def456-lbl-name'] );
+	}
+
+	/**
+	 * A value a srfm_process_field_value callback marked processed is stored as
+	 * returned, even when empty (e.g. a repeater with no valid rows).
+	 */
+	public function test_process_form_fields_keeps_empty_processed_value() {
+		$callback = static function ( $value, $args ) {
+			if ( 'srfm-repeater' !== $args['field_block_name'] ) {
+				return $value;
+			}
+			return [
+				'value'        => [],
+				'is_processed' => true,
+			];
+		};
+		add_filter( 'srfm_process_field_value', $callback, 10, 2 );
+
+		$form_data = [
+			// The scalar item would survive the generic array fallback, so [] proves the processed value was kept.
+			'srfm-repeater-abc123-lbl-rows' => [
+				'__INDEX__' => [ 'srfm-input-x' => 'template' ],
+				'stray',
+			],
+		];
+
+		try {
+			$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+		} finally {
+			remove_filter( 'srfm_process_field_value', $callback, 10 );
+		}
+
+		$this->assertSame( [], $result['srfm-repeater-abc123-lbl-rows'] );
+	}
+
+	/**
+	 * A submitted value shaped like a processed result is not one: no callback
+	 * produced it, so it is encoded like any other array value.
+	 */
+	public function test_process_form_fields_ignores_submitted_processed_shape() {
+		$form_data = [
+			'srfm-text-abc123-lbl-name' => [
+				'is_processed' => '1',
+				'value'        => '<b>x</b>',
+			],
+		];
+
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+
+		$this->assertSame(
+			[
+				'is_processed' => '1',
+				'value'        => '%3Cb%3Ex%3C%2Fb%3E',
+			],
+			$result['srfm-text-abc123-lbl-name']
+		);
+	}
+
+	/**
 	 * Test process_form_fields with mixed valid and invalid keys.
 	 */
 	public function test_process_form_fields_mixed_keys() {

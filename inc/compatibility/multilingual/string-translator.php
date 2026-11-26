@@ -443,7 +443,7 @@ class String_Translator {
 	 * no multilingual plugin is active or the filter returns nothing usable.
 	 *
 	 * @param string $url Stored page URL.
-	 * @since x.x.x
+	 * @since 2.14.1
 	 * @return string URL of the page in the current language.
 	 */
 	public function translate_page_url( string $url ): string {

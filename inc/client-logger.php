@@ -317,13 +317,18 @@ class Client_Logger {
 	}
 
 	/**
-	 * Mark one category as reported.
+	 * Mark one category as reported, or as seen.
+	 *
+	 * Both hide the notice until the next failure. Only a report stamps
+	 * `acked_at`, which the support email prints as "Previously reported".
 	 *
 	 * @param string $category One of self::CATEGORIES.
+	 * @param bool   $reported False when the notice was only closed, not reported.
 	 * @since 2.12.6
+	 * @since 2.14.3 Added $reported.
 	 * @return void
 	 */
-	public static function acknowledge_category( $category ) {
+	public static function acknowledge_category( $category, $reported = true ) {
 		$failures = self::get_failures();
 
 		if ( ! isset( $failures[ $category ] ) ) {
@@ -340,7 +345,9 @@ class Client_Logger {
 		// the same second as the acknowledgement compares equal and gets swallowed.
 		// That is the one moment it matters most, because a fault arriving as
 		// someone reports the last one is a fault still happening.
-		$failures[ $category ]['acked_at'] = time();
+		if ( $reported ) {
+			$failures[ $category ]['acked_at'] = time();
+		}
 
 		update_option( self::FAILURES_OPTION, $failures, false );
 	}
@@ -525,7 +532,7 @@ class Client_Logger {
 			// fires srfm_after_submission_process, which is where integrations and
 			// webhooks hook in. Calling that a submission failure told the site owner
 			// "their entries were not saved" about entries that were -- the wrong
-			// message on the one notice that cannot be dismissed. The category is
+			// message on the notice that matters most. The category is
 			// derived here rather than taken from the entry: the client names what
 			// happened, the server decides what it means.
 			self::record_failure(

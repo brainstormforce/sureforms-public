@@ -299,8 +299,12 @@ module.exports = function ( grunt ) {
 					'src/**/*.js',
 					'inc/**/*.js',
 					'assets/js/**/*.js',
+					// Module JS sources (e.g. modules/gutenberg/src). Compiled bundles under
+					// `build/` are excluded for the same reason as compiled CSS above.
+					'modules/**/*.js',
+					'!modules/**/build/**',
 					'sass/**/*.scss',
-					'!node_modules/**',
+					'!**/node_modules/**',
 					'!php-tests/**',
 					'!bin/**',
 					'!vendor/**',

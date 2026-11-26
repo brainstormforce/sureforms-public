@@ -865,7 +865,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 * cannot add its own property names.
 		 *
 		 * @param mixed $value Declaration value.
-		 * @since x.x.x
+		 * @since 2.14.1
 		 * @return bool
 		 */
 		private static function is_safe_css_value( $value ) {
@@ -879,7 +879,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 * printed class and the selector always match.
 		 *
 		 * @param mixed $block_id Saved block_id attribute.
-		 * @since x.x.x
+		 * @since 2.14.1
 		 * @return string Empty for a non-scalar value.
 		 */
 		public static function sanitize_block_id( $block_id ) {

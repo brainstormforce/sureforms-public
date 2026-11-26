@@ -827,6 +827,10 @@ class Test_Admin extends TestCase {
 
 		$this->assertSame( 'warning', $notice['variant'], 'This is routine maintenance, not an error.' );
 		$this->assertSame( 'repair-entries-table', $notice['actions'][0]['action'] );
+		$this->assertFalse(
+			$notice['dismissible'],
+			'Submissions cannot be saved until the table is repaired, so the notice must not offer a close button.'
+		);
 	}
 
 	/**
@@ -1181,8 +1185,8 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
-	 * A run of faults produces a non-dismissible item, because it is a fault and
-	 * clears itself when a submission succeeds.
+	 * A run of failed submissions produces an item that can be closed. Closing
+	 * marks it seen, and a new failure brings it back.
 	 */
 	public function test_get_action_items() {
 		wp_set_current_user( $this->make_user( 'administrator' ) );
@@ -1196,7 +1200,7 @@ class Test_Admin extends TestCase {
 
 		foreach ( $items as $item ) {
 			if ( 'form_submission_error' === $item['id'] ) {
-				$this->assertFalse( $item['dismissible'] );
+				$this->assertTrue( $item['dismissible'] );
 			}
 		}
 	}
@@ -1679,9 +1683,9 @@ class Test_Admin extends TestCase {
 			'A healthy site ships none of this.'
 		);
 
-		// One fault still ships nothing: notice-response.js bails below two cards,
-		// so these rules would have no consumer.
-		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		// One fault that cannot be closed still ships nothing: notice-response.js
+		// bails below two cards, so these rules would have no consumer.
+		Client_Logger::record_failure( 'integration', 42, 'Contact Form' );
 		Admin::reset_action_items_cache();
 
 		Admin::get_instance()->enqueue_action_item_styles();
@@ -1708,6 +1712,21 @@ class Test_Admin extends TestCase {
 		$this->assertStringContainsString( 'padding-inline-end', $css );
 		// The dialog it used to style is gone, and so are its rules.
 		$this->assertStringNotContainsString( 'srfm-details', $css );
+
+		// One notification failure: no carousel, but its close cross needs placing.
+		wp_dequeue_style( 'srfm-action-items' );
+		wp_deregister_style( 'srfm-action-items' );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		Admin::reset_action_items_cache();
+
+		Admin::get_instance()->enqueue_action_item_styles();
+
+		$this->assertTrue( wp_style_is( 'srfm-action-items', 'enqueued' ), 'A lone closable notice still needs its cross placed.' );
+		$this->assertStringContainsString(
+			'srfm-action-item-closable',
+			implode( "\n", (array) wp_styles()->get_data( 'srfm-action-items', 'after' ) )
+		);
 
 		wp_dequeue_style( 'srfm-action-items' );
 		wp_deregister_style( 'srfm-action-items' );
@@ -1938,8 +1957,8 @@ class Test_Admin extends TestCase {
 
 		// Escaped after the filter, so neither renderer has to trust what came
 		// back -- but never down to ''. Contact Support is the only action that
-		// retires these notices and they are dismissible => false, so an empty
-		// destination is an undismissable notice with nothing on it that works.
+		// retires the integration notice, which is dismissible => false, so an
+		// empty destination is an undismissable notice with nothing on it that works.
 		// The unfiltered URL is built here rather than supplied, so it always
 		// escapes.
 		foreach ( [ 'javascript:alert(1)', 'data:text/html,x', '', '   ' ] as $rejected ) {
@@ -2061,8 +2080,8 @@ class Test_Admin extends TestCase {
 	/**
 	 * Contact Support retires the failure it reports.
 	 *
-	 * These notices are dismissible => false, so this click is the only thing that
-	 * stands one down. A different button, or a different notice, must not.
+	 * A report, not just a close: it also stamps the "Previously reported" date.
+	 * A different button, or a different notice, must not retire it.
 	 */
 	public function test_handle_notice_response_contact_support_retires_the_category() {
 		delete_option( Client_Logger::FAILURES_OPTION );
@@ -2080,6 +2099,88 @@ class Test_Admin extends TestCase {
 		$this->assertArrayHasKey( 'integration', $open, 'Only the one reported.' );
 
 		delete_option( Client_Logger::FAILURES_OPTION );
+	}
+
+	/**
+	 * Closing a notification or submission failure keeps it closed until a new
+	 * one fails.
+	 *
+	 * Through either door: srfm_dismiss_action_item (the classic notice and the
+	 * dashboard panel) and srfm_notice_response (the Forms page notice). The
+	 * other faults still cannot be closed.
+	 */
+	public function test_closing_a_fault_notice_lasts_until_the_next_one() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		Client_Logger::record_failure( 'integration', 42, 'Contact Form' );
+
+		$this->assertStringContainsString( '"success":true', $this->post_dismiss( 'notification_error' ) );
+
+		$open = Client_Logger::get_open_failures();
+		$this->assertArrayNotHasKey( 'notification', $open, 'A closed notice must not come back on the next page.' );
+		$this->assertArrayHasKey( 'integration', $open, 'Only the one closed.' );
+
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		$this->assertArrayHasKey( 'notification', Client_Logger::get_open_failures(), 'A new failure shows again.' );
+
+		$this->assertTrue( $this->post_notice_response( 'notification_error', 'dismissed' ) );
+		$this->assertArrayNotHasKey( 'notification', Client_Logger::get_open_failures(), 'The Forms page cross closes it the same way.' );
+
+		// A failed submission closes the same way, and comes back with the next.
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		$this->assertStringContainsString( '"success":true', $this->post_dismiss( 'form_submission_error' ) );
+		$this->assertArrayNotHasKey( 'submission', Client_Logger::get_open_failures(), 'A closed submission notice must not come back on the next page.' );
+
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		$this->assertArrayHasKey( 'submission', Client_Logger::get_open_failures(), 'A new failed submission shows again.' );
+
+		$this->assertTrue( $this->post_notice_response( 'form_submission_error', 'dismissed' ) );
+		$this->assertArrayNotHasKey( 'submission', Client_Logger::get_open_failures() );
+
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		$this->assertStringContainsString( '"success":false', $this->post_dismiss( 'integration_error' ) );
+		$this->assertTrue( $this->post_notice_response( 'integration_error', 'dismissed' ) );
+		$this->assertArrayHasKey( 'integration', Client_Logger::get_open_failures(), 'An integration failure cannot be closed.' );
+
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Admin::reset_action_items_cache();
+	}
+
+	/**
+	 * Closing a notice is not a report. The support email says "Previously
+	 * reported" only after Contact Support, never after the close cross.
+	 */
+	public function test_closing_a_fault_notice_is_not_a_report() {
+		$message = new ReflectionMethod( Admin::class, 'get_support_message' );
+		$message->setAccessible( true );
+
+		foreach ( [ 'notification_error' => 'notification', 'form_submission_error' => 'submission' ] as $item_id => $category ) {
+			wp_set_current_user( $this->make_user( 'administrator' ) );
+			delete_option( Client_Logger::FAILURES_OPTION );
+			Client_Logger::record_failure( $category, 42, 'Contact Form' );
+
+			$this->assertStringContainsString( '"success":true', $this->post_dismiss( $item_id ) );
+			$this->assertArrayNotHasKey( $category, Client_Logger::get_open_failures(), 'The close still hides it.' );
+
+			Client_Logger::record_failure( $category, 42, 'Contact Form' );
+			$this->assertStringNotContainsString(
+				'Previously reported',
+				$message->invoke( Admin::get_instance(), $category, 'Contact Form' ),
+				"Closing the {$category} notice must not read as a report to support."
+			);
+
+			// Contact Support is still a report.
+			$this->assertTrue( $this->post_notice_response( $item_id, 'contact_support' ) );
+			$this->assertStringContainsString(
+				'Previously reported',
+				$message->invoke( Admin::get_instance(), $category, 'Contact Form' )
+			);
+		}
+
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Admin::reset_action_items_cache();
 	}
 
 	/**
@@ -2494,10 +2595,10 @@ class Test_Admin extends TestCase {
 		Helper::update_srfm_option( 'dismissed_action_items', [] );
 
 		$this->assertStringContainsString( '"success":true', $this->post_dismiss( 'caching_plugin' ) );
-		$this->assertStringContainsString( '"success":false', $this->post_dismiss( 'form_submission_error' ) );
+		$this->assertStringContainsString( '"success":false', $this->post_dismiss( 'integration_error' ) );
 
 		$dismissed = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
-		$this->assertNotContains( 'form_submission_error', $dismissed );
+		$this->assertNotContains( 'integration_error', $dismissed );
 
 		Helper::update_srfm_option( 'dismissed_action_items', [] );
 	}
@@ -2562,14 +2663,14 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
-	 * A fault must not be dismissible. Otherwise a crafted request could silence
-	 * the one message that matters while the form is still broken.
+	 * An integration failure must not be dismissible. Otherwise a crafted request
+	 * could silence it while the connection is still broken.
 	 */
 	public function test_dismiss_action_item_refuses_a_fault() {
 		$method = new ReflectionMethod( Admin::class, 'dismiss_action_item' );
 		$method->setAccessible( true );
 
-		$this->assertFalse( $method->invoke( Admin::get_instance(), 'form_submission_error' ) );
+		$this->assertFalse( $method->invoke( Admin::get_instance(), 'integration_error' ) );
 		$this->assertFalse( $method->invoke( Admin::get_instance(), 'anything_else' ) );
 		$this->assertTrue( $method->invoke( Admin::get_instance(), 'caching_plugin' ) );
 
@@ -2630,6 +2731,178 @@ class Test_Admin extends TestCase {
 		unset( $_GET['page'], $_REQUEST['page'] );
 
 		$this->assertSame( '', $output );
+	}
+
+	/**
+	 * A notification failure reaches the Forms listing through the React notice bar,
+	 * and only from get_action_items(): has_action_item_warnings() backs show_if
+	 * callbacks and must not register anything.
+	 */
+	public function test_notification_failure_registers_react_notice_on_forms_page_only() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+
+		$_GET['page']     = 'sureforms_forms';
+		$_REQUEST['page'] = 'sureforms_forms';
+
+		$this->assertTrue( Admin::get_instance()->has_action_item_warnings() );
+		$after_check = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+
+		Admin::reset_action_items_cache();
+		Admin::get_instance()->get_action_items();
+		$on_forms = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		$_GET['page']     = 'sureforms_menu';
+		$_REQUEST['page'] = 'sureforms_menu';
+		Admin::reset_action_items_cache();
+		Admin::get_instance()->get_action_items();
+		$on_dashboard = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+
+		unset( $_GET['page'], $_REQUEST['page'] );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+
+		$this->assertNotContains( 'notification_error', $after_check );
+		$this->assertContains( 'notification_error', $on_forms );
+		$this->assertNotContains( 'notification_error', $on_dashboard );
+	}
+
+	/**
+	 * The Forms page notice is built from the filtered, normalised action items.
+	 *
+	 * React assigns href and window.open() URLs verbatim, so an esc_url()'d
+	 * `&#038;` would turn every later UTM parameter into a fragment. A mailto: must
+	 * open in place, and every action names the srfm_notice_response button that
+	 * retires the fault and records the click.
+	 */
+	public function test_get_action_items_registers_normalised_forms_page_notice() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		// A second item, so the filter below returns a non-empty list.
+		// apply_filters_as_array() treats an empty one as "no answer" and keeps
+		// the default.
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+
+		$_GET['page']     = 'sureforms_forms';
+		$_REQUEST['page'] = 'sureforms_forms';
+
+		Admin::get_instance()->get_action_items();
+
+		$notice = null;
+		foreach ( \SRFM\Admin\Notice_Manager::get_notices() as $candidate ) {
+			if ( 'notification_error' === $candidate['id'] ) {
+				$notice = $candidate;
+			}
+		}
+
+		// A filter that drops the item must drop the React notice with it.
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+		$drop = static function ( $items ) {
+			return array_values(
+				array_filter(
+					$items,
+					static function ( $item ) {
+						return 'notification_error' !== ( $item['id'] ?? '' );
+					}
+				)
+			);
+		};
+		add_filter( 'srfm_action_items', $drop );
+		Admin::get_instance()->get_action_items();
+		$filtered = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'id' );
+		remove_filter( 'srfm_action_items', $drop );
+
+		unset( $_GET['page'], $_REQUEST['page'] );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		Admin::reset_action_items_cache();
+
+		$this->assertNotNull( $notice, 'The notification failure must reach the Forms page.' );
+		$this->assertSame( 'error', $notice['variant'], 'The React notice must match the item status.' );
+		// Closable, and the close is recorded, so it stays closed.
+		$this->assertTrue( $notice['dismissible'] );
+		$this->assertSame( 'dismissed', $notice['dismiss_response'] ?? '' );
+		$this->assertNotContains( 'notification_error', $filtered );
+
+		$allowed = [ 'connect_surecontact', 'help_me_fix', 'view_logs', 'contact_support' ];
+
+		foreach ( $notice['actions'] as $action ) {
+			$this->assertStringNotContainsString( '&#038;', $action['url'], $action['label'] . ' URL must not carry HTML entities.' );
+			$this->assertContains( $action['response'] ?? '', $allowed, $action['label'] . ' must name a srfm_notice_response button.' );
+
+			if ( 0 === stripos( $action['url'], 'mailto:' ) ) {
+				$this->assertSame( '_self', $action['target'], 'A mailto: must not open a blank tab.' );
+			}
+		}
+
+		$responses = wp_list_pluck( $notice['actions'], 'response' );
+		$this->assertContains( 'contact_support', $responses, 'Contact Support is the action that retires the fault.' );
+	}
+
+	/**
+	 * The classic action-item notice prints its own close cross.
+	 *
+	 * Core's is-dismissible would put a close button on faults that are
+	 * dismissible => false.
+	 */
+	public function test_render_action_item_notices_does_not_use_core_dismiss() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		Admin::reset_action_items_cache();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+
+		global $pagenow;
+		$previous_pagenow = $pagenow;
+		$pagenow          = 'plugins.php';
+
+		ob_start();
+		Admin::get_instance()->render_action_item_notices();
+		$html = (string) ob_get_clean();
+
+		$pagenow = $previous_pagenow;
+		Admin::reset_action_items_cache();
+
+		$this->assertGreaterThanOrEqual( 2, substr_count( $html, 'srfm-action-item-notice' ), 'Both faults must render.' );
+		$this->assertStringNotContainsString( 'is-dismissible', $html );
+	}
+
+	/**
+	 * The close cross goes on the notification and submission failures, not on an
+	 * integration failure, and works without JavaScript.
+	 */
+	public function test_render_action_item_notices_closes_only_closable_faults() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		Admin::reset_action_items_cache();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		Client_Logger::record_failure( 'integration', 42, 'Contact Form' );
+
+		global $pagenow;
+		$previous_pagenow = $pagenow;
+		$pagenow = 'plugins.php';
+
+		ob_start();
+		Admin::get_instance()->render_action_item_notices();
+		$html = (string) ob_get_clean();
+
+		$pagenow = $previous_pagenow;
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Admin::reset_action_items_cache();
+
+		$this->assertSame( 2, substr_count( $html, 'srfm-action-item-close' ), 'A cross on each of the two faults that can be closed.' );
+		$this->assertStringContainsString( 'data-srfm-dismiss-item="notification_error"', $html );
+		$this->assertStringContainsString( 'data-srfm-dismiss-item="form_submission_error"', $html );
+		$this->assertStringContainsString( 'action=srfm_dismiss_action_item_link', $html, 'Without JavaScript the cross is the nonced dismiss link.' );
+		$this->assertStringNotContainsString( 'data-srfm-dismiss-item="integration_error"', $html, 'An integration failure cannot be closed.' );
+		$this->assertStringNotContainsString( 'is-dismissible', $html );
 	}
 
 	/**

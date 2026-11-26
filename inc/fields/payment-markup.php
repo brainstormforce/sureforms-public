@@ -911,7 +911,7 @@ class Payment_Markup extends Base {
 	 * (including an empty custom count) is 0.
 	 *
 	 * @return string|int 'ongoing' or the number of billing cycles.
-	 * @since x.x.x
+	 * @since 2.14.2
 	 */
 	private function get_billing_cycles() {
 		$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;

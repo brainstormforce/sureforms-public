@@ -71,6 +71,97 @@
 		}
 	} );
 
+	// Set once the carousel builds. A card closed inside it has to leave through
+	// the carousel, which keeps its own list of cards.
+	let carousel = null;
+
+	/**
+	 * Take a closed card off the page.
+	 *
+	 * @param {HTMLElement} card Notice being closed.
+	 */
+	function removeCard( card ) {
+		if ( carousel ) {
+			carousel.remove( card );
+		} else if ( card.parentNode ) {
+			card.parentNode.removeChild( card );
+		}
+	}
+
+	// When the last close happened. The next card's cross lands under the
+	// pointer as soon as a card leaves, so the second click of a double click
+	// would close a card nobody has read.
+	let closedAt = 0;
+
+	// The close cross on a notice that can be put away. Recorded on the server,
+	// so it stays closed on the next page too. The cross is the nonced admin-post
+	// link; this only saves the round trip through it.
+	document.addEventListener( 'click', function ( e ) {
+		const cross = e.target.closest( '.srfm-action-item-close' );
+		if ( ! cross ) {
+			return;
+		}
+
+		if ( Date.now() - closedAt < 500 ) {
+			e.preventDefault();
+			return;
+		}
+
+		const card = cross.closest( '.srfm-action-item-notice' );
+		const itemId = cross.getAttribute( 'data-srfm-dismiss-item' );
+
+		// No card, no id or no nonce: let the link do it.
+		if (
+			! card ||
+			! itemId ||
+			typeof srfmNoticeResponse === 'undefined' ||
+			! srfmNoticeResponse.dismiss
+		) {
+			return;
+		}
+
+		e.preventDefault();
+
+		const body = new FormData();
+		body.append( 'action', 'srfm_dismiss_action_item' );
+		body.append( 'nonce', srfmNoticeResponse.dismiss );
+		body.append( 'item_id', itemId );
+
+		// A 403 is an expired nonce or session. The link carries a nonce of the
+		// same age and would only reach core's "link has expired" page, so reload
+		// instead: the close was not recorded, and the card comes back honestly.
+		let refused = false;
+
+		fetch( srfmNoticeResponse.ajaxurl, {
+			method: 'POST',
+			credentials: 'same-origin',
+			keepalive: true,
+			body,
+		} )
+			.then( function ( response ) {
+				refused = 403 === response.status;
+				return response.json();
+			} )
+			.then( function ( result ) {
+				if ( ! result || ! result.success ) {
+					throw new Error( 'Not dismissed' );
+				}
+			} )
+			.catch( function () {
+				if ( refused ) {
+					window.location.reload();
+					return;
+				}
+
+				// Not recorded, so the card would be back on the next page. Fall
+				// back to the link, which records it and comes back here.
+				window.location.href = cross.href;
+			} );
+
+		closedAt = Date.now();
+		removeCard( card );
+	} );
+
 	Object.keys( notices ).forEach( function ( noticeId ) {
 		const container = document.getElementById( noticeId );
 		if ( ! container ) {
@@ -229,6 +320,16 @@
 		function render() {
 			adopt();
 
+			// Room for the close cross beside the arrows while any card has one.
+			wrap.classList.toggle(
+				'srfm-action-item-carousel--closable',
+				cards.some( function ( notice ) {
+					return notice.classList.contains(
+						'srfm-action-item-closable'
+					);
+				} )
+			);
+
 			cards.forEach( function ( notice, i ) {
 				notice.hidden = i !== index;
 			} );
@@ -264,6 +365,86 @@
 			}
 		}
 
+		let observer = null;
+
+		/**
+		 * Back to plain notices once fewer than two are left: no arrows, no
+		 * counter, nothing hidden.
+		 */
+		function teardown() {
+			if ( observer ) {
+				observer.disconnect();
+			}
+
+			carousel = null;
+
+			cards.forEach( function ( notice ) {
+				notice.hidden = false;
+
+				if ( wrap.parentNode ) {
+					wrap.parentNode.insertBefore( notice, wrap );
+				}
+			} );
+
+			if ( wrap.parentNode ) {
+				wrap.parentNode.removeChild( wrap );
+			}
+		}
+
+		/**
+		 * Take one card out after its close cross was used.
+		 *
+		 * Through here rather than by removing the node: a card gone from the page
+		 * but not from `cards` leaves the counter counting it and, when it was the
+		 * one on screen, every remaining card hidden.
+		 *
+		 * @param {HTMLElement} card Notice being closed.
+		 */
+		function remove( card ) {
+			const at = cards.indexOf( card );
+
+			if ( -1 === at ) {
+				return;
+			}
+
+			cards.splice( at, 1 );
+
+			if ( card.parentNode ) {
+				card.parentNode.removeChild( card );
+			}
+
+			if ( cards.length < 2 ) {
+				const remaining = cards[ 0 ];
+
+				teardown();
+
+				// The arrows left with the carousel, so the card that is left
+				// takes focus rather than the top of the page.
+				if ( remaining ) {
+					remaining.setAttribute( 'tabindex', '-1' );
+					remaining.focus();
+				}
+				return;
+			}
+
+			// Stay at the same position, which is now the card that followed.
+			// Closing the last one steps back to the one before it.
+			if ( at < index ) {
+				index -= 1;
+			}
+
+			if ( index >= cards.length ) {
+				index = cards.length - 1;
+			}
+
+			render();
+			measure();
+
+			// The cross that had focus left with its card. Keep a keyboard user in
+			// the notices rather than back at the top of the page.
+			next.focus();
+		}
+
 		prev.addEventListener( 'click', step( -1 ) );
 		next.addEventListener( 'click', step( 1 ) );
 
@@ -288,11 +469,14 @@
 		// and adopt() driven only from a click cannot recover from that -- the
 		// click it needs is the thing the move breaks.
 		if ( window.MutationObserver ) {
-			new window.MutationObserver( function () {
+			observer = new window.MutationObserver( function () {
 				adopt();
 				measure();
-			} ).observe( document.body, { childList: true, subtree: true } );
+			} );
+			observer.observe( document.body, { childList: true, subtree: true } );
 		}
+
+		carousel = { remove };
 	}
 
 	if ( document.readyState === 'loading' ) {
