@@ -2264,7 +2264,9 @@ class Form_Submit {
 				]
 			);
 
-			if ( is_array( $process_field_value ) && ! empty( $process_field_value['is_processed'] ) && ! empty( $process_field_value['value'] ) ) {
+			// Only a result a callback produced counts, so an unfiltered submitted value is never
+			// taken as processed. An empty processed value (e.g. a repeater with no rows) is kept.
+			if ( $process_field_value !== $value && is_array( $process_field_value ) && ! empty( $process_field_value['is_processed'] ) && array_key_exists( 'value', $process_field_value ) ) {
 				$submission_data[ $field_name ] = $process_field_value['value'];
 				continue;
 			}
@@ -2282,13 +2284,14 @@ class Form_Submit {
 			 */
 
 			// If the field is an array, encode the values. This is to add support for multi-upload field.
+			// Only scalar items are kept: nested arrays are dropped.
 			if ( is_array( $value ) ) {
 				$submission_data[ $field_name ] =
 					array_map(
 						static function ( $val ) {
-							return rawurlencode( $val );
+							return rawurlencode( (string) $val );
 						},
-						$value
+						array_filter( $value, 'is_scalar' )
 					);
 			} else {
 				$submission_data[ $field_name ] = is_string( $value ) ? htmlspecialchars( $value ) : $value;
