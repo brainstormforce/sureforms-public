@@ -972,6 +972,143 @@ class Test_Rest_Api extends TestCase {
 	}
 
 	/**
+	 * Create a published form holding one entry whose single field is $value.
+	 *
+	 * @param string $value Field value written to the entry.
+	 * @return array{0: int, 1: int} Form ID and entry ID.
+	 */
+	private function make_export_entry( $value ) {
+		$form_id  = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+				'post_title'  => 'Export selection',
+			]
+		);
+		$entry_id = (int) \SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [ 'srfm-input-abc12345-lbl-' . rtrim( base64_encode( 'Name' ), '=' ) . '-input' => $value ],
+			]
+		);
+		return [ (int) $form_id, $entry_id ];
+	}
+
+	/**
+	 * Call export_entries() as an administrator with a valid REST nonce.
+	 *
+	 * @param array<string, mixed> $params Request params.
+	 * @return \WP_REST_Response
+	 */
+	private function call_export_entries( $params ) {
+		wp_set_current_user( $this->create_test_admin() );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/entries/export' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		foreach ( $params as $key => $value ) {
+			$request->set_param( $key, $value );
+		}
+		$response = $this->rest_api->export_entries( $request );
+		wp_set_current_user( 0 );
+		$data = $response->get_data();
+		if ( ! empty( $data['filepath'] ) ) {
+			wp_delete_file( $data['filepath'] );
+		}
+		return $response;
+	}
+
+	public function test_validate_entry_ids() {
+		$valid = [ [], '', [ 1, 2 ], [ '7', 8 ], 42, '42', '1,2,3', '1, 2' ];
+		foreach ( $valid as $value ) {
+			$this->assertTrue( $this->rest_api->validate_entry_ids( $value ), 'Expected valid: ' . wp_json_encode( $value ) );
+		}
+
+		$invalid = [ 'not-an-id', [ 'abc' ], [ 0 ], 0, '0', [ 1, 'abc' ], '1,abc', '1,,2', [ -5 ], '-5', [ '1.5' ], 1.5, true, false, [ [ 1 ] ], new \stdClass() ];
+		foreach ( $invalid as $value ) {
+			$this->assertFalse( $this->rest_api->validate_entry_ids( $value ), 'Expected invalid: ' . wp_json_encode( $value ) );
+		}
+	}
+
+	public function test_export_entries_rejects_invalid_entry_selection() {
+		[ $form_id ] = $this->make_export_entry( 'MARKER_INVALID' );
+
+		foreach ( [ 'not-an-id', [ 'abc' ], [ 0 ], '0', '1,abc' ] as $entry_ids ) {
+			$response = $this->call_export_entries(
+				[
+					'entry_ids' => $entry_ids,
+					'form_id'   => $form_id,
+				]
+			);
+			$this->assertSame( 400, $response->get_status(), 'Selection must be rejected: ' . wp_json_encode( $entry_ids ) );
+			$this->assertArrayNotHasKey( 'filepath', $response->get_data() );
+		}
+	}
+
+	public function test_export_entries_exports_only_selected_or_all_when_empty() {
+		[ $form_id, $entry_a ] = $this->make_export_entry( 'MARKER_A' );
+		\SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id'   => $form_id,
+				'form_data' => [ 'srfm-input-abc12345-lbl-' . rtrim( base64_encode( 'Name' ), '=' ) . '-input' => 'MARKER_B' ],
+			]
+		);
+
+		wp_set_current_user( $this->create_test_admin() );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/entries/export' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_param( 'entry_ids', [ $entry_a ] );
+		$selected = $this->rest_api->export_entries( $request );
+
+		$request->set_param( 'entry_ids', [] );
+		$request->set_param( 'form_id', $form_id );
+		$all = $this->rest_api->export_entries( $request );
+		wp_set_current_user( 0 );
+
+		$this->assertSame( 200, $selected->get_status() );
+		$selected_csv = (string) file_get_contents( $selected->get_data()['filepath'] );
+		$this->assertStringContainsString( 'MARKER_A', $selected_csv );
+		$this->assertStringNotContainsString( 'MARKER_B', $selected_csv );
+
+		$this->assertSame( 200, $all->get_status() );
+		$all_csv = (string) file_get_contents( $all->get_data()['filepath'] );
+		$this->assertStringContainsString( 'MARKER_A', $all_csv );
+		$this->assertStringContainsString( 'MARKER_B', $all_csv );
+
+		wp_delete_file( $selected->get_data()['filepath'] );
+		wp_delete_file( $all->get_data()['filepath'] );
+	}
+
+	public function test_export_entries_nonexistent_selection_finds_no_entries() {
+		$response = $this->call_export_entries( [ 'entry_ids' => [ 999999999 ] ] );
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'No entries found to export.', $response->get_data()['error'] );
+	}
+
+	public function test_entries_export_route_rejects_invalid_entry_ids() {
+		[ $form_id ] = $this->make_export_entry( 'MARKER_ROUTE' );
+
+		wp_set_current_user( $this->create_test_admin() );
+		do_action( 'rest_api_init' );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/entries/export' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_body_params(
+			[
+				'entry_ids' => 'not-an-id',
+				'form_id'   => $form_id,
+			]
+		);
+		$response = rest_get_server()->dispatch( $request );
+		wp_set_current_user( 0 );
+
+		$data = $response->get_data();
+		if ( ! empty( $data['filepath'] ) ) {
+			wp_delete_file( $data['filepath'] );
+		}
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'rest_invalid_param', $data['code'] ?? '' );
+	}
+
+	/**
 	 * Test manage_form_lifecycle is callable.
 	 */
 	public function test_manage_form_lifecycle() {

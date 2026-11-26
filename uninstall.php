@@ -172,6 +172,8 @@ if ( [] === $srfm_options ) {
 delete_option( 'srfm_form_start_funnel' );
 delete_option( 'srfm_form_template_usage' );
 delete_option( 'srfm_form_template_demand' );
+// The sale bar's counts (Promotion::STATS_OPTION).
+delete_option( 'srfm_bfcm_2026_banner_stats' );
 
 /*
  * Evict the cached copies as well.

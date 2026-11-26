@@ -97,6 +97,10 @@ class Test_Payments_Table extends TestCase {
 		$this->assertTrue( Payments::is_valid_status( 'succeeded' ) );
 	}
 
+	public function test_is_valid_status_charged_back() {
+		$this->assertTrue( Payments::is_valid_status( 'charged_back' ) );
+	}
+
 	public function test_is_valid_status_failed() {
 		$this->assertTrue( Payments::is_valid_status( 'failed' ) );
 	}

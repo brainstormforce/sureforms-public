@@ -881,6 +881,23 @@ class Test_Helper extends TestCase {
         }
     }
     /**
+     * Every `{` and `[`, literal or as a character reference, gets a word joiner
+     * that kses keeps, so no smart tag or shortcode is left to run.
+     */
+    public function test_neutralize_tokens() {
+        $wj = "\u{2060}";
+
+        $this->assertSame( "{{$wj}admin_email} [{$wj}x] }]", Helper::neutralize_tokens( '{admin_email} [x] }]' ) );
+        $this->assertSame( "{{$wj}a} [{$wj}b] [{$wj}c] {{$wj}d}", Helper::neutralize_tokens( '&#123;a} &#x5B;b] &#91c] &lbrace;d}' ) );
+        $this->assertSame( '&#913; &amp; &lt; &#125;', Helper::neutralize_tokens( '&#913; &amp; &lt; &#125;' ), 'References to other characters are left as they are.' );
+        $this->assertSame( "{{$wj}a}", Helper::neutralize_tokens( Helper::neutralize_tokens( '{a}' ) ), 'Running it twice changes nothing.' );
+        $this->assertSame( "\xFF{{$wj}a}", Helper::neutralize_tokens( "\xFF{a}" ), 'Invalid UTF-8 is not emptied.' );
+
+        $out = wp_kses_post( '<p title="' . esc_attr( Helper::neutralize_tokens( '&#123;admin_email&#125;' ) ) . '">' . Helper::neutralize_tokens( '&#123;admin_email&#125; &#91;srfm_show_entries]' ) . '</p>' );
+        $this->assertDoesNotMatchRegularExpression( '/[{\[](?!\x{2060})/u', $out, 'kses brings no token back.' );
+    }
+
+    /**
      * Test the strip_js_attributes method with various inputs.
      */
     public function test_strip_js_attributes() {
@@ -3371,6 +3388,24 @@ class Test_Helper extends TestCase {
         remove_filter( 'srfm_pro_tier', $unknown );
     }
 
+    /**
+     * Reading a counter reports its running total and never writes one.
+     */
+    public function test_peek_rate_counter() {
+        $key       = 'srfm_peek_' . wp_rand();
+        $transient = 'srfm_view_' . md5( $key );
+
+        $this->assertSame( 0, Helper::peek_rate_counter( 'srfm_view_', $key ), 'An unopened window reads as zero.' );
+        $this->assertFalse( get_transient( $transient ), 'Reading must not open a window.' );
+
+        Helper::hit_rate_counter( 'srfm_view_', $key );
+        Helper::hit_rate_counter( 'srfm_view_', $key );
+        $this->assertSame( 2, Helper::peek_rate_counter( 'srfm_view_', $key ), 'Reads the running total.' );
+        $this->assertSame( 2, Helper::peek_rate_counter( 'srfm_view_', $key ), 'Reading does not increment.' );
+
+        delete_transient( $transient );
+    }
+
     public function test_tier_from_product_maps_each_build_name() {
         $this->assertSame( 'business', Helper::tier_from_product( 'SureForms Business' ), 'The single 2.13.1 build is Business.' );
         $this->assertSame( 'pro', Helper::tier_from_product( 'SureForms Pro' ) );
@@ -3399,6 +3434,79 @@ class Test_Helper extends TestCase {
         $this->assertFalse( Helper::has_tier( 'business' ) );
 
         remove_filter( 'srfm_pro_tier', $tier );
+    }
+
+    /**
+     * Each hit increments its own bucket; buckets never share a count.
+     */
+    public function test_hit_rate_counter() {
+        $key = 'srfm_test_' . wp_rand();
+
+        $this->assertSame( 1, Helper::hit_rate_counter( 'srfm_t1_', $key ), 'First hit opens the window at 1.' );
+        $this->assertSame( 2, Helper::hit_rate_counter( 'srfm_t1_', $key ) );
+        $this->assertSame( 3, Helper::hit_rate_counter( 'srfm_t1_', $key ) );
+
+        $this->assertSame( 1, Helper::hit_rate_counter( 'srfm_t1_', $key . '_other' ), 'A different key starts its own count.' );
+        $this->assertSame( 1, Helper::hit_rate_counter( 'srfm_t2_', $key ), 'A different prefix starts its own count.' );
+    }
+
+    /**
+     * The window is fixed from the first hit: later hits never push its expiry out.
+     */
+    public function test_hit_rate_counter_keeps_a_fixed_window() {
+        $key       = 'srfm_test_' . wp_rand();
+        $transient = 'srfm_t3_' . md5( $key );
+
+        Helper::hit_rate_counter( 'srfm_t3_', $key );
+
+        // Pull the open window's expiry 30s closer; a sliding window would reset it.
+        $expires = time() + 30;
+        update_option( '_transient_timeout_' . $transient, $expires );
+
+        Helper::hit_rate_counter( 'srfm_t3_', $key );
+
+        $this->assertLessThanOrEqual( $expires, (int) get_option( '_transient_timeout_' . $transient ), 'A later hit must not extend the window.' );
+    }
+
+    /**
+     * With a persistent object cache the counter is wp_cache_add() + wp_cache_incr().
+     */
+    public function test_hit_rate_counter_with_object_cache() {
+        wp_using_ext_object_cache( true );
+
+        try {
+            $key = 'srfm_test_' . wp_rand();
+
+            $this->assertSame( 1, Helper::hit_rate_counter( 'srfm_t4_', $key ) );
+            $this->assertSame( 2, Helper::hit_rate_counter( 'srfm_t4_', $key ) );
+            $this->assertFalse( get_transient( 'srfm_t4_' . md5( $key ) ), 'The cache path must not fall back to a transient.' );
+        } finally {
+            wp_using_ext_object_cache( false );
+        }
+    }
+
+    /**
+     * A concurrent holder of the bucket's lock means the hit is denied, never admitted
+     * on a stale read.
+     */
+    public function test_hit_rate_counter_denies_while_bucket_is_locked() {
+        $key  = 'srfm_test_' . wp_rand();
+        $lock = substr( 'srfm_t5_' . md5( $key ), 0, 64 );
+
+        // A second connection, so its lock is held by "another request" for the test's $wpdb.
+        $other = new \wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
+        $other->suppress_errors( true );
+
+        $this->assertSame( '1', (string) $other->get_var( $other->prepare( 'SELECT GET_LOCK(%s, 0)', $lock ) ), 'Fixture: the second connection must hold the lock.' );
+
+        try {
+            $this->assertSame( PHP_INT_MAX, Helper::hit_rate_counter( 'srfm_t5_', $key ) );
+        } finally {
+            $other->query( $other->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
+            $other->close();
+        }
+
+        $this->assertSame( 1, Helper::hit_rate_counter( 'srfm_t5_', $key ), 'Once released, the bucket counts normally and the denied hit was not stored.' );
     }
 
 }

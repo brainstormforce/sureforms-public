@@ -14,9 +14,9 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:1253
 #: admin/admin.php:1254
-#: admin/admin.php:3239
+#: admin/admin.php:1255
+#: admin/admin.php:3254
 #: inc/abilities/abilities-registrar.php:140
 #: inc/gutenberg-hooks.php:110
 #: inc/page-builders/bricks/elements/form-widget.php:67
@@ -44,8 +44,8 @@ msgstr "Uma maneira simples, mas poderosa, de criar formulários modernos para o
 msgid "https://sureforms.com/"
 msgstr "https://sureforms.com/"
 
-#: admin/admin.php:1266
 #: admin/admin.php:1267
+#: admin/admin.php:1268
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -60,9 +60,9 @@ msgstr "https://sureforms.com/"
 msgid "Dashboard"
 msgstr "Painel de Controle"
 
-#: admin/admin.php:1284
 #: admin/admin.php:1285
-#: admin/admin.php:1745
+#: admin/admin.php:1286
+#: admin/admin.php:1746
 #: inc/compatibility/multilingual/string-collector.php:236
 #: inc/compatibility/multilingual/string-collector.php:245
 #: inc/compatibility/multilingual/string-collector.php:319
@@ -80,15 +80,15 @@ msgstr "Painel de Controle"
 msgid "Settings"
 msgstr "Configurações"
 
-#: admin/admin.php:1579
 #: admin/admin.php:1580
+#: admin/admin.php:1581
 #: inc/post-types.php:270
 msgid "New Form"
 msgstr "Novo Formulário"
 
-#: admin/admin.php:1588
 #: admin/admin.php:1589
-#: admin/admin.php:3558
+#: admin/admin.php:1590
+#: admin/admin.php:3573
 #: inc/features.php:516
 #: inc/generate-form-markup.php:236
 #: inc/generate-form-markup.php:249
@@ -107,7 +107,7 @@ msgid "Entries"
 msgstr "Entradas"
 
 #. Translators: Post Title.
-#: admin/admin.php:1833
+#: admin/admin.php:1834
 #, php-format
 msgid "Edit %1$s"
 msgstr "Editar %1$s"
@@ -128,25 +128,25 @@ msgid "Nonce verification failed."
 msgstr "A verificação do nonce falhou."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Business plugin name.
-#: admin/admin.php:2727
+#: admin/admin.php:2730
 #, php-format
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Por favor, %1$sative%2$s sua cópia do %3$s para obter novos recursos, acessar suporte, receber notificações de atualizações e muito mais."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Business plugin name, %3$s: SureForms Business version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:2745
+#: admin/admin.php:2748
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "O SureForms %1$s requer um mínimo de %2$s %3$s para funcionar corretamente. Por favor, atualize para a versão mais recente %4$saqui%5$s."
 
-#: admin/admin.php:3557
+#: admin/admin.php:3572
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
 msgid "Form Name"
 msgstr "Nome do Formulário"
 
-#: inc/entries.php:904
+#: inc/entries.php:913
 #: inc/payments/payment-history-shortcode.php:383
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -210,7 +210,7 @@ msgstr "Lixo"
 msgid "Published"
 msgstr "Publicado"
 
-#: admin/admin.php:3549
+#: admin/admin.php:3564
 msgid "View"
 msgstr "Visualizar"
 
@@ -237,8 +237,8 @@ msgstr "Todas as entradas do formulário"
 #. Translators: %d is the form ID.
 #. translators: %d is the form ID.
 #: inc/abilities/entries/entry-parser.php:72
-#: inc/compatibility/multilingual/string-translator.php:225
-#: inc/rest-api.php:900
+#: inc/compatibility/multilingual/string-translator.php:226
+#: inc/rest-api.php:934
 #, php-format
 msgid "SureForms Form #%d"
 msgstr "Formulário SureForms nº %d"
@@ -302,11 +302,11 @@ msgstr "Nenhum plugin especificado"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin ativado com sucesso"
 
-#: admin/admin.php:1911
+#: admin/admin.php:1914
 msgid "Activating..."
 msgstr "Ativando..."
 
-#: admin/admin.php:1912
+#: admin/admin.php:1915
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -322,17 +322,17 @@ msgstr "Ativando..."
 msgid "Activated"
 msgstr "Ativado"
 
-#: admin/admin.php:1913
+#: admin/admin.php:1916
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Ativar"
 
-#: admin/admin.php:1914
+#: admin/admin.php:1917
 msgid "Installing..."
 msgstr "Instalando..."
 
-#: admin/admin.php:1915
+#: admin/admin.php:1918
 msgid "Installed"
 msgstr "Instalado"
 
@@ -340,13 +340,13 @@ msgstr "Instalado"
 msgid "You do not have permission to access this page."
 msgstr "Você não tem permissão para acessar esta página."
 
-#: admin/admin.php:2949
-#: admin/admin.php:3122
-#: admin/admin.php:3161
-#: admin/admin.php:3182
-#: admin/admin.php:3512
-#: admin/admin.php:4037
-#: admin/analytics.php:220
+#: admin/admin.php:2955
+#: admin/admin.php:3137
+#: admin/admin.php:3176
+#: admin/admin.php:3197
+#: admin/admin.php:3527
+#: admin/admin.php:4077
+#: admin/analytics.php:221
 #: inc/admin-ajax.php:259
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/stripe/admin-stripe-handler.php:80
@@ -359,7 +359,7 @@ msgid "Form ID is required."
 msgstr "O ID do formulário é obrigatório."
 
 #: inc/admin-ajax.php:279
-#: inc/form-submit.php:1412
+#: inc/form-submit.php:1419
 msgid "Invalid form ID."
 msgstr "ID de formulário inválido."
 
@@ -523,13 +523,13 @@ msgstr "SureForms Formulário criado com sucesso."
 msgid "New form submission"
 msgstr "Nova submissão de formulário"
 
-#: inc/compatibility/multilingual/string-translator.php:179
+#: inc/compatibility/multilingual/string-translator.php:180
 #: inc/fields/address-markup.php:29
 #: assets/build/settings.js:172
 msgid "Address"
 msgstr "Endereço"
 
-#: inc/compatibility/multilingual/string-translator.php:182
+#: inc/compatibility/multilingual/string-translator.php:183
 #: inc/fields/checkbox-markup.php:29
 #: assets/build/settings.js:172
 msgid "Checkbox"
@@ -539,7 +539,7 @@ msgstr "Caixa de seleção"
 msgid "Required"
 msgstr "Obrigatório"
 
-#: inc/compatibility/multilingual/string-translator.php:180
+#: inc/compatibility/multilingual/string-translator.php:181
 #: inc/fields/dropdown-markup.php:85
 #: assets/build/settings.js:172
 msgid "Dropdown"
@@ -551,7 +551,7 @@ msgstr "Menu suspenso"
 msgid "Select an option"
 msgstr "Selecione uma opção"
 
-#: inc/compatibility/multilingual/string-translator.php:174
+#: inc/compatibility/multilingual/string-translator.php:175
 #: inc/fields/email-markup.php:79
 #: inc/form-templates/catalog.php:234
 #: inc/form-templates/catalog/calculators.php:403
@@ -582,13 +582,13 @@ msgstr "Por favor, verifique se você não é um robô."
 msgid "Multi Choice"
 msgstr "Escolha Múltipla"
 
-#: inc/compatibility/multilingual/string-translator.php:176
+#: inc/compatibility/multilingual/string-translator.php:177
 #: inc/fields/number-markup.php:111
 #: assets/build/settings.js:172
 msgid "Number"
 msgstr "Número"
 
-#: inc/compatibility/multilingual/string-translator.php:175
+#: inc/compatibility/multilingual/string-translator.php:176
 #: inc/fields/phone-markup.php:79
 #: inc/form-templates/catalog.php:235
 #: inc/form-templates/catalog/support.php:116
@@ -597,30 +597,30 @@ msgstr "Número"
 msgid "Phone"
 msgstr "Telefone"
 
-#: inc/compatibility/multilingual/string-translator.php:178
+#: inc/compatibility/multilingual/string-translator.php:179
 #: inc/fields/textarea-markup.php:111
 #: assets/build/settings.js:172
 msgid "Textarea"
 msgstr "Área de texto"
 
-#: inc/form-submit.php:297
+#: inc/form-submit.php:308
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr "A chave secreta do Cloudflare Turnstile é inválida."
 
-#: inc/form-submit.php:304
+#: inc/form-submit.php:315
 msgid "Cloudflare Turnstile response is missing."
 msgstr "Resposta do Cloudflare Turnstile está faltando."
 
-#: inc/form-submit.php:348
+#: inc/form-submit.php:359
 msgid "hCaptcha secret key is invalid."
 msgstr "A chave secreta do hCaptcha é inválida."
 
-#: inc/form-submit.php:355
+#: inc/form-submit.php:366
 msgid "hCaptcha response is missing."
 msgstr "Falta a resposta do hCaptcha."
 
-#: inc/form-submit.php:397
-#: inc/form-submit.php:670
+#: inc/form-submit.php:408
+#: inc/form-submit.php:685
 msgid "Form data is not found."
 msgstr "Os dados do formulário não foram encontrados."
 
@@ -665,7 +665,7 @@ msgstr "Campos Gerais"
 msgid "Advanced Fields"
 msgstr "Campos Avançados"
 
-#: inc/field-rules.php:584
+#: inc/field-rules.php:589
 #: inc/helper.php:73
 msgid "This field is required."
 msgstr "Este campo é obrigatório."
@@ -678,7 +678,7 @@ msgstr "O valor precisa ser único."
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Desculpe, você não tem permissão para realizar esta ação."
 
-#: admin/admin.php:2794
+#: admin/admin.php:2797
 msgid "Rate SureForms"
 msgstr "Avalie SureForms"
 
@@ -707,7 +707,7 @@ msgid "Select the form that you wish to add here."
 msgstr "Selecione o formulário que deseja adicionar aqui."
 
 #: inc/page-builders/elementor/form-widget.php:318
-#: inc/smart-tags.php:94
+#: inc/smart-tags.php:116
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Form Title"
@@ -739,7 +739,7 @@ msgstr "Editar Formulário"
 msgid "Edit"
 msgstr "Editar"
 
-#: admin/admin.php:3290
+#: admin/admin.php:3305
 #: inc/page-builders/elementor/form-widget.php:346
 #: assets/build/dashboard.js:2
 msgid "Create New Form"
@@ -777,8 +777,8 @@ msgstr "Ver Formulário"
 msgid "View Forms"
 msgstr "Ver Formulários"
 
-#: admin/admin.php:1568
 #: admin/admin.php:1569
+#: admin/admin.php:1570
 #: inc/post-types.php:274
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -835,81 +835,81 @@ msgstr "Nova Submissão de Formulário - %s"
 msgid "Shortcode"
 msgstr "Código curto"
 
-#: inc/smart-tags.php:90
+#: inc/smart-tags.php:112
 msgid "Site URL"
 msgstr "URL do site"
 
-#: inc/smart-tags.php:92
-#: inc/smart-tags.php:124
+#: inc/smart-tags.php:114
+#: inc/smart-tags.php:146
 msgid "Admin Email"
 msgstr "Email do Administrador"
 
-#: inc/smart-tags.php:93
+#: inc/smart-tags.php:115
 msgid "Site Title"
 msgstr "Título do Site"
 
-#: inc/smart-tags.php:95
+#: inc/smart-tags.php:117
 msgid "IP Address"
 msgstr "Endereço IP"
 
-#: inc/smart-tags.php:96
+#: inc/smart-tags.php:118
 msgid "HTTP Referer URL"
 msgstr "URL do Referenciador HTTP"
 
-#: inc/smart-tags.php:97
+#: inc/smart-tags.php:119
 msgid "Date (mm/dd/yyyy)"
 msgstr "Data (mm/dd/aaaa)"
 
-#: inc/smart-tags.php:98
+#: inc/smart-tags.php:120
 msgid "Date (dd/mm/yyyy)"
 msgstr "Data (dd/mm/yyyy)"
 
-#: inc/smart-tags.php:99
+#: inc/smart-tags.php:121
 msgid "User ID"
 msgstr "ID do Usuário"
 
-#: inc/smart-tags.php:100
+#: inc/smart-tags.php:122
 msgid "User Display Name"
 msgstr "Nome de Exibição do Usuário"
 
-#: inc/smart-tags.php:101
+#: inc/smart-tags.php:123
 msgid "User First Name"
 msgstr "Nome do Usuário"
 
-#: inc/smart-tags.php:102
+#: inc/smart-tags.php:124
 msgid "User Last Name"
 msgstr "Sobrenome do Usuário"
 
-#: inc/smart-tags.php:103
 #: inc/smart-tags.php:125
+#: inc/smart-tags.php:147
 msgid "User Email"
 msgstr "Email do Usuário"
 
-#: inc/smart-tags.php:104
+#: inc/smart-tags.php:126
 msgid "User Username"
 msgstr "Usuário Username"
 
-#: inc/smart-tags.php:105
+#: inc/smart-tags.php:127
 msgid "Browser Name"
 msgstr "Nome do Navegador"
 
-#: inc/smart-tags.php:106
+#: inc/smart-tags.php:128
 msgid "Browser Platform"
 msgstr "Plataforma do Navegador"
 
-#: inc/smart-tags.php:107
+#: inc/smart-tags.php:129
 msgid "Embedded Post/Page ID"
 msgstr "ID de Postagem/Página Incorporada"
 
-#: inc/smart-tags.php:108
+#: inc/smart-tags.php:130
 msgid "Embedded Post/Page Title"
 msgstr "Título do Post/Página Incorporado"
 
-#: inc/smart-tags.php:110
+#: inc/smart-tags.php:132
 msgid "Populate by GET Param"
 msgstr "Preencher por parâmetro GET"
 
-#: inc/smart-tags.php:111
+#: inc/smart-tags.php:133
 msgid "Cookie Value"
 msgstr "Valor do Cookie"
 
@@ -7077,7 +7077,7 @@ msgstr "Vista da Rua"
 msgid "Strikethrough"
 msgstr "Riscado"
 
-#: inc/payments/payment-helper.php:1088
+#: inc/payments/payment-helper.php:1151
 #: modules/gutenberg/icons/icons-v6-3.php:1812
 #: assets/build/payments.js:172
 msgid "Stripe"
@@ -8310,7 +8310,7 @@ msgstr "Social"
 msgid "Travel"
 msgstr "Viagem"
 
-#: inc/helper.php:2465
+#: inc/helper.php:2494
 msgid "Blank Form"
 msgstr "Formulário em Branco"
 
@@ -8438,7 +8438,7 @@ msgstr "Selecionar Códigos Curtos"
 msgid "Page Break Label"
 msgstr "Rótulo de Quebra de Página"
 
-#: inc/payments/payment-history-shortcode.php:599
+#: inc/payments/payment-history-shortcode.php:600
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -8930,9 +8930,9 @@ msgstr "Adicionar blocos à Barra de Ação Rápida"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Reorganizar bloco dentro da Barra de Ação Rápida"
 
-#: admin/admin.php:1337
 #: admin/admin.php:1338
-#: admin/admin.php:5101
+#: admin/admin.php:1339
+#: admin/admin.php:5159
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -9327,7 +9327,7 @@ msgstr "Centro"
 msgid "Right"
 msgstr "Certo"
 
-#: inc/form-submit.php:1605
+#: inc/form-submit.php:1698
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9337,7 +9337,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1609
+#: inc/form-submit.php:1702
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9391,7 +9391,7 @@ msgstr "Personalize com SureForms"
 msgid "Page break"
 msgstr "Quebra de página"
 
-#: inc/payments/payment-history-shortcode.php:594
+#: inc/payments/payment-history-shortcode.php:595
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:172
@@ -9468,7 +9468,7 @@ msgstr "Usar banner como fundo de página"
 msgid "Form Width"
 msgstr "Largura do Formulário"
 
-#: inc/compatibility/multilingual/string-translator.php:177
+#: inc/compatibility/multilingual/string-translator.php:178
 #: inc/fields/url-markup.php:38
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -9637,7 +9637,7 @@ msgstr "Chave do Site"
 msgid "Secret Key"
 msgstr "Chave Secreta"
 
-#: inc/form-submit.php:1613
+#: inc/form-submit.php:1706
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -9662,7 +9662,7 @@ msgstr "Conectar agora"
 msgid "Authentication Failed"
 msgstr "Falha na autenticação"
 
-#: admin/admin.php:4231
+#: admin/admin.php:4286
 #: assets/build/templatePicker.js:172
 msgid "Contact Support"
 msgstr "Contactar Suporte"
@@ -9839,7 +9839,7 @@ msgstr "Folhas"
 msgid "Add Element"
 msgstr "Adicionar Elemento"
 
-#: inc/compatibility/multilingual/string-translator.php:173
+#: inc/compatibility/multilingual/string-translator.php:174
 #: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Text"
@@ -10629,18 +10629,18 @@ msgstr "Enviar Nota"
 msgid "Unlock Add Note"
 msgstr "Desbloquear Adicionar Nota"
 
-#: inc/form-submit.php:1162
+#: inc/form-submit.php:1169
 msgid "Email notification passed to the sending server"
 msgstr "Notificação por email enviada para o servidor de envio"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:1269
+#: inc/form-submit.php:1276
 #, php-format
 msgid "Email notification recipient: %s"
 msgstr "Destinatário da notificação por e-mail: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:1283
+#: inc/form-submit.php:1290
 #, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "O servidor de e-mail não conseguiu enviar a notificação por e-mail. Destinatário: %1$s. Motivo: %2$s"
@@ -10763,7 +10763,7 @@ msgstr "Repita-y"
 msgid "PX"
 msgstr "PX"
 
-#: inc/compatibility/multilingual/string-translator.php:184
+#: inc/compatibility/multilingual/string-translator.php:185
 #: inc/page-builders/bricks/elements/form-widget.php:109
 #: inc/page-builders/elementor/form-widget.php:699
 #: assets/build/blocks.js:172
@@ -10771,7 +10771,7 @@ msgstr "PX"
 msgid "Button"
 msgstr "Botão"
 
-#: inc/helper.php:1940
+#: inc/helper.php:1969
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
@@ -10886,24 +10886,24 @@ msgstr "Selecionar Gradiente"
 msgid "reCAPTCHA"
 msgstr "reCAPTCHA"
 
-#: inc/form-submit.php:1547
+#: inc/form-submit.php:1638
 msgid "Captcha validation failed. No error code provided."
 msgstr "A validação do Captcha falhou. Nenhum código de erro fornecido."
 
-#: inc/form-submit.php:1548
+#: inc/form-submit.php:1639
 msgid "Captcha validation failed."
 msgstr "Falha na validação do captcha."
 
-#: inc/form-submit.php:1617
+#: inc/form-submit.php:1710
 msgid "Unknown Captcha"
 msgstr "Captcha Desconhecido"
 
-#: inc/form-submit.php:1618
+#: inc/form-submit.php:1711
 msgid "Invalid captcha type."
 msgstr "Tipo de captcha inválido."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1631
+#: inc/form-submit.php:1724
 #, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "A verificação de %s falhou. Por favor, entre em contato com o administrador do seu site."
@@ -10926,12 +10926,12 @@ msgstr "A verificação do sitekey do HCaptcha falhou. Por favor, entre em conta
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "O sitekey %s está faltando. Por favor, entre em contato com o administrador do seu site."
 
-#: inc/helper.php:1931
+#: inc/helper.php:1960
 #: assets/build/suremail.js:172
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1952
+#: inc/helper.php:1981
 msgid "Starter Templates"
 msgstr "Modelos Iniciais"
 
@@ -11298,8 +11298,8 @@ msgstr "Descreva o formulário que você deseja criar"
 msgid "We are building your form…"
 msgstr "Estamos construindo seu formulário…"
 
-#: admin/admin.php:1455
 #: admin/admin.php:1456
+#: admin/admin.php:1457
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11325,7 +11325,7 @@ msgstr "Editor de Texto Rico"
 msgid "All Forms"
 msgstr "Todas as Formas"
 
-#: inc/smart-tags.php:91
+#: inc/smart-tags.php:113
 msgid "Current Page URL"
 msgstr "URL da Página Atual"
 
@@ -11355,31 +11355,30 @@ msgstr "Ativar Notificação de Administrador"
 msgid "Admin notifications keep you informed about new form entries since your last visit."
 msgstr "As notificações de administrador mantêm você informado sobre novas entradas de formulário desde sua última visita."
 
-#: admin/admin.php:2954
-#: admin/admin.php:3118
-#: admin/admin.php:3157
-#: admin/admin.php:3178
-#: admin/admin.php:3516
-#: admin/admin.php:4032
+#: admin/admin.php:2960
+#: admin/admin.php:3133
+#: admin/admin.php:3172
+#: admin/admin.php:3193
+#: admin/admin.php:3531
+#: admin/admin.php:4072
 msgid "Unauthorized user."
 msgstr "Usuário não autorizado."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:3127
+#: admin/admin.php:3142
 #, php-format
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sComece por %2$scriar o seu primeiro formulário%3$s.%4$s%5$sExperimente o poder do nosso intuitivo Criador de Formulários com IA%6$s"
 
-#: admin/admin.php:3138
+#: admin/admin.php:3153
 msgid "SureForms is waiting for you!"
 msgstr "SureForms está esperando por você!"
 
-#: admin/admin.php:3140
+#: admin/admin.php:3155
 msgid "Build My First Form"
 msgstr "Construir Meu Primeiro Formulário"
 
-#: admin/admin.php:3141
-#: admin/admin.php:3725
+#: admin/admin.php:3156
 msgid "Dismiss"
 msgstr "Dispensar"
 
@@ -11399,51 +11398,51 @@ msgstr "Entrar"
 msgid "Register"
 msgstr "Registrar"
 
-#: admin/admin.php:3545
+#: admin/admin.php:3560
 msgid "Recent Entries"
 msgstr "Entradas Recentes"
 
-#: admin/admin.php:3546
+#: admin/admin.php:3561
 msgid "( Last 7 days )"
 msgstr "( Últimos 7 dias )"
 
-#: admin/admin.php:5042
+#: admin/admin.php:5100
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Use lógica condicional para mostrar apenas o que importa"
 
-#: admin/admin.php:5043
+#: admin/admin.php:5101
 msgid "Split your form into steps to keep it easy"
 msgstr "Divida seu formulário em etapas para mantê-lo simples"
 
-#: admin/admin.php:5044
+#: admin/admin.php:5102
 msgid "Let people upload files directly to your form"
 msgstr "Permita que as pessoas enviem arquivos diretamente para o seu formulário"
 
-#: admin/admin.php:5045
+#: admin/admin.php:5103
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Transforme as respostas em PDFs baixáveis automaticamente"
 
-#: admin/admin.php:5046
+#: admin/admin.php:5104
 msgid "Let users sign with a simple signature field"
 msgstr "Permita que os usuários assinem com um campo de assinatura simples"
 
-#: admin/admin.php:5047
+#: admin/admin.php:5105
 msgid "Connect your form to other tools using webhooks"
 msgstr "Conecte seu formulário a outras ferramentas usando webhooks"
 
-#: admin/admin.php:5048
+#: admin/admin.php:5106
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Use Formulários de Conversa para uma experiência semelhante a um chat"
 
-#: admin/admin.php:5049
+#: admin/admin.php:5107
 msgid "Let users register or log in through your form"
 msgstr "Permita que os usuários se registrem ou façam login através do seu formulário"
 
-#: admin/admin.php:5050
+#: admin/admin.php:5108
 msgid "Build forms that create WordPress user accounts"
 msgstr "Crie formulários que criem contas de usuário no WordPress"
 
-#: admin/admin.php:5051
+#: admin/admin.php:5109
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Adicione cálculos para totalizar automaticamente pontuações ou preços"
 
@@ -11513,21 +11512,21 @@ msgstr "Toques Finais Que Fazem a Diferença:"
 msgid "Build Your First Form"
 msgstr "Crie Seu Primeiro Formulário"
 
-#: inc/helper.php:2272
+#: inc/helper.php:2301
 msgid "Invalid nonce action or name."
 msgstr "Ação ou nome de nonce inválido."
 
 #: inc/admin/editor-nudge.php:237
-#: inc/helper.php:2282
-#: inc/helper.php:2290
+#: inc/helper.php:2311
+#: inc/helper.php:2319
 msgid "Invalid security token."
 msgstr "Token de segurança inválido."
 
-#: inc/helper.php:2297
+#: inc/helper.php:2326
 msgid "Invalid request type."
 msgstr "Tipo de solicitação inválido."
 
-#: inc/helper.php:2305
+#: inc/helper.php:2334
 msgid "You do not have permission to perform this action."
 msgstr "Você não tem permissão para realizar esta ação."
 
@@ -11586,7 +11585,7 @@ msgstr "Construa Melhores Formulários com SureForms"
 msgid "Add advanced fields, conversational layouts, and smart logic to create forms that engage users and capture better data."
 msgstr "Adicione campos avançados, layouts conversacionais e lógica inteligente para criar formulários que envolvam os usuários e capturem dados melhores."
 
-#: inc/entries.php:904
+#: inc/entries.php:913
 #: assets/build/formEditor.js:172
 msgid "Date"
 msgstr "Data"
@@ -11637,7 +11636,7 @@ msgstr "Olá,"
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "Resumo do e-mail da sua última semana - %1$s a %2$s"
 
-#: inc/helper.php:1966
+#: inc/helper.php:1995
 msgid "Ultimate Addons for Elementor"
 msgstr "Complementos Definitivos para Elementor"
 
@@ -11699,9 +11698,9 @@ msgstr "Explore o SureDash"
 msgid "Something went wrong. We have logged the error for further investigation"
 msgstr "Algo deu errado. Registramos o erro para investigação posterior"
 
-#: inc/field-rules.php:229
-#: inc/field-rules.php:605
-#: inc/field-validation.php:541
+#: inc/field-rules.php:250
+#: inc/field-rules.php:610
+#: inc/field-validation.php:558
 msgid "Field is not valid."
 msgstr "O campo não é válido."
 
@@ -11771,8 +11770,8 @@ msgstr "Miniatura de Vídeo do SureForms"
 msgid "Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>"
 msgstr "Formato esperado para e-mails - email@sureforms.com ou John Doe <email@sureforms.com>"
 
-#: admin/admin.php:1599
 #: admin/admin.php:1600
+#: admin/admin.php:1601
 #: inc/features.php:529
 #: inc/form-templates.php:2859
 #: assets/build/dashboard.js:172
@@ -11836,24 +11835,25 @@ msgid "Failed to delete entry #%d."
 msgstr "Falha ao excluir a entrada #%d."
 
 #: inc/entries.php:330
+#: inc/entries.php:341
 msgid "No entries found to export."
 msgstr "Nenhuma entrada encontrada para exportar."
 
-#: inc/entries.php:344
+#: inc/entries.php:353
 msgid "Temporary directory is not writable."
 msgstr "O diretório temporário não é gravável."
 
-#: inc/entries.php:359
+#: inc/entries.php:368
 msgid "ZipArchive class is not available."
 msgstr "A classe ZipArchive não está disponível."
 
-#: inc/entries.php:369
-#: inc/entries.php:435
+#: inc/entries.php:378
+#: inc/entries.php:444
 msgid "Unable to create ZIP file."
 msgstr "Não foi possível criar o arquivo ZIP."
 
-#: inc/entries.php:904
-#: inc/smart-tags.php:109
+#: inc/entries.php:913
+#: inc/smart-tags.php:131
 #: assets/build/entries.js:172
 msgid "Entry ID"
 msgstr "ID de entrada"
@@ -11871,7 +11871,7 @@ msgid "Invalid form data structure provided."
 msgstr "Estrutura de dados do formulário inválida fornecida."
 
 #: inc/fields/payment-markup.php:351
-#: inc/payments/payment-helper.php:736
+#: inc/payments/payment-helper.php:771
 msgid "Subscription Plan"
 msgstr "Plano de Assinatura"
 
@@ -11950,52 +11950,52 @@ msgstr "O modo de teste está ativado:"
 msgid "Click here to enable live mode and accept payment"
 msgstr "Clique aqui para ativar o modo ao vivo e aceitar pagamento"
 
-#: inc/helper.php:1932
+#: inc/helper.php:1961
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "Aumente a Entregabilidade do Seu Email Instantaneamente!"
 
-#: inc/helper.php:1933
+#: inc/helper.php:1962
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Acesse um serviço de entrega de e-mails poderoso e fácil de usar que garante que seus e-mails cheguem nas caixas de entrada, e não nas pastas de spam. Automatize seus fluxos de trabalho de e-mail do WordPress com confiança usando o SureMail."
 
-#: inc/helper.php:1941
+#: inc/helper.php:1970
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatize seus fluxos de trabalho do WordPress sem esforço."
 
-#: inc/helper.php:1942
+#: inc/helper.php:1971
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Conecte seus plugins do WordPress e aplicativos favoritos, automatize tarefas e sincronize dados sem esforço usando o construtor de fluxo de trabalho visual e limpo do OttoKit — sem necessidade de codificação ou configuração complexa."
 
-#: inc/helper.php:1953
+#: inc/helper.php:1982
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "Lance belos sites em minutos!"
 
-#: inc/helper.php:1954
+#: inc/helper.php:1983
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Escolha entre modelos projetados profissionalmente, importe com um clique e personalize sem esforço para combinar com sua marca."
 
-#: inc/helper.php:1967
+#: inc/helper.php:1996
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "Potencie o Elementor para criar sites impressionantes mais rapidamente!"
 
-#: inc/helper.php:1968
+#: inc/helper.php:1997
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Melhore o Elementor com widgets e modelos poderosos. Construa sites impressionantes e de alto desempenho mais rapidamente com elementos de design criativos e personalização perfeita."
 
-#: inc/helper.php:1976
+#: inc/helper.php:2005
 msgid "SureRank"
 msgstr "SureRank"
 
-#: inc/helper.php:1977
+#: inc/helper.php:2006
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "Eleve seu SEO e suba nos rankings de busca sem esforço!"
 
-#: inc/helper.php:1978
+#: inc/helper.php:2007
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Aumente a visibilidade do seu site com automação inteligente de SEO. Otimize o conteúdo, acompanhe o desempenho das palavras-chave e obtenha insights acionáveis, tudo dentro do WordPress."
 
-#: inc/form-submit.php:179
-#: inc/form-views.php:205
+#: inc/form-submit.php:188
+#: inc/form-views.php:201
 #: inc/payments/admin/admin-handler.php:99
 #: inc/payments/admin/admin-handler.php:183
 #: inc/payments/admin/admin-handler.php:224
@@ -12119,8 +12119,8 @@ msgstr "Falha ao excluir pagamentos. Por favor, tente novamente."
 
 #: inc/payments/admin/admin-handler.php:954
 #: inc/payments/admin/admin-handler.php:956
-#: inc/payments/payment-history-shortcode.php:854
-#: inc/payments/payment-history-shortcode.php:861
+#: inc/payments/payment-history-shortcode.php:855
+#: inc/payments/payment-history-shortcode.php:862
 #: assets/build/payments.js:172
 msgid "Unknown Form"
 msgstr "Formulário Desconhecido"
@@ -12311,8 +12311,8 @@ msgstr "Verificação de Assinatura"
 #: inc/payments/front-end.php:974
 #: inc/payments/stripe/admin-stripe-handler.php:185
 #: inc/payments/stripe/admin-stripe-handler.php:487
-#: inc/payments/stripe/stripe-webhook.php:572
-#: inc/payments/stripe/stripe-webhook.php:1170
+#: inc/payments/stripe/stripe-webhook.php:582
+#: inc/payments/stripe/stripe-webhook.php:1294
 #, php-format
 msgid "Subscription ID: %s"
 msgstr "ID de Assinatura: %s"
@@ -12329,10 +12329,10 @@ msgstr "ID de Assinatura: %s"
 #: inc/payments/stripe/admin-stripe-handler.php:492
 #: inc/payments/stripe/admin-stripe-handler.php:667
 #: inc/payments/stripe/admin-stripe-handler.php:1191
-#: inc/payments/stripe/stripe-webhook.php:574
-#: inc/payments/stripe/stripe-webhook.php:732
-#: inc/payments/stripe/stripe-webhook.php:914
-#: inc/payments/stripe/stripe-webhook.php:1164
+#: inc/payments/stripe/stripe-webhook.php:584
+#: inc/payments/stripe/stripe-webhook.php:856
+#: inc/payments/stripe/stripe-webhook.php:1038
+#: inc/payments/stripe/stripe-webhook.php:1288
 #, php-format
 msgid "Payment Gateway: %s"
 msgstr "Gateway de Pagamento: %s"
@@ -12345,7 +12345,7 @@ msgstr "ID da Intenção de Pagamento: %s"
 
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:980
-#: inc/payments/stripe/stripe-webhook.php:1084
+#: inc/payments/stripe/stripe-webhook.php:1208
 #, php-format
 msgid "Charge ID: %s"
 msgstr "ID de Cobrança: %s"
@@ -12361,7 +12361,7 @@ msgstr "Status da Assinatura: %s"
 
 #. translators: %s: Customer ID
 #: inc/payments/front-end.php:984
-#: inc/payments/stripe/stripe-webhook.php:1174
+#: inc/payments/stripe/stripe-webhook.php:1298
 #, php-format
 msgid "Customer ID: %s"
 msgstr "ID do Cliente: %s"
@@ -12370,8 +12370,8 @@ msgstr "ID do Cliente: %s"
 #. translators: %1$s: amount, %2$s: currency.
 #: inc/payments/front-end.php:986
 #: inc/payments/front-end.php:1430
-#: inc/payments/stripe/stripe-webhook.php:1089
-#: inc/payments/stripe/stripe-webhook.php:1166
+#: inc/payments/stripe/stripe-webhook.php:1213
+#: inc/payments/stripe/stripe-webhook.php:1290
 #, php-format
 msgid "Amount: %1$s %2$s"
 msgstr "Quantia: %1$s %2$s"
@@ -12406,7 +12406,7 @@ msgstr "Verificação de Pagamento"
 #. translators: %s: Stripe transaction ID
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:1426
-#: inc/payments/stripe/stripe-webhook.php:1162
+#: inc/payments/stripe/stripe-webhook.php:1286
 #, php-format
 msgid "Transaction ID: %s"
 msgstr "ID da Transação: %s"
@@ -12414,8 +12414,8 @@ msgstr "ID da Transação: %s"
 #. translators: %s: payment status
 #. translators: %s: Status
 #: inc/payments/front-end.php:1432
-#: inc/payments/stripe/stripe-webhook.php:576
-#: inc/payments/stripe/stripe-webhook.php:1168
+#: inc/payments/stripe/stripe-webhook.php:586
+#: inc/payments/stripe/stripe-webhook.php:1292
 #, php-format
 msgid "Status: %s"
 msgstr "Status: %s"
@@ -12428,357 +12428,357 @@ msgstr "Falha ao criar cliente Stripe."
 msgid "Failed to create Stripe guest customer."
 msgstr "Falha ao criar cliente convidado do Stripe."
 
-#: inc/payments/payment-helper.php:381
+#: inc/payments/payment-helper.php:416
 msgid "US Dollar"
 msgstr "Dólar dos EUA"
 
-#: inc/payments/payment-helper.php:386
+#: inc/payments/payment-helper.php:421
 msgid "Euro"
 msgstr "Euro"
 
-#: inc/payments/payment-helper.php:391
+#: inc/payments/payment-helper.php:426
 msgid "British Pound"
 msgstr "Libra Esterlina"
 
-#: inc/payments/payment-helper.php:396
+#: inc/payments/payment-helper.php:431
 msgid "Japanese Yen"
 msgstr "Iene japonês"
 
-#: inc/payments/payment-helper.php:401
+#: inc/payments/payment-helper.php:436
 msgid "Australian Dollar"
 msgstr "Dólar Australiano"
 
-#: inc/payments/payment-helper.php:406
+#: inc/payments/payment-helper.php:441
 msgid "Canadian Dollar"
 msgstr "Dólar Canadense"
 
-#: inc/payments/payment-helper.php:411
+#: inc/payments/payment-helper.php:446
 msgid "Swiss Franc"
 msgstr "Franco Suíço"
 
-#: inc/payments/payment-helper.php:416
+#: inc/payments/payment-helper.php:451
 msgid "Chinese Yuan"
 msgstr "Yuan Chinês"
 
-#: inc/payments/payment-helper.php:421
+#: inc/payments/payment-helper.php:456
 msgid "Swedish Krona"
 msgstr "Coroa Sueca"
 
-#: inc/payments/payment-helper.php:426
+#: inc/payments/payment-helper.php:461
 msgid "New Zealand Dollar"
 msgstr "Dólar da Nova Zelândia"
 
-#: inc/payments/payment-helper.php:431
+#: inc/payments/payment-helper.php:466
 msgid "Mexican Peso"
 msgstr "Peso Mexicano"
 
-#: inc/payments/payment-helper.php:436
+#: inc/payments/payment-helper.php:471
 msgid "Singapore Dollar"
 msgstr "Dólar de Singapura"
 
-#: inc/payments/payment-helper.php:441
+#: inc/payments/payment-helper.php:476
 msgid "Hong Kong Dollar"
 msgstr "Dólar de Hong Kong"
 
-#: inc/payments/payment-helper.php:446
+#: inc/payments/payment-helper.php:481
 msgid "Norwegian Krone"
 msgstr "Coroa Norueguesa"
 
-#: inc/payments/payment-helper.php:456
+#: inc/payments/payment-helper.php:491
 msgid "South Korean Won"
 msgstr "Won sul-coreano"
 
-#: inc/payments/payment-helper.php:461
+#: inc/payments/payment-helper.php:496
 msgid "Turkish Lira"
 msgstr "Lira Turca"
 
-#: inc/payments/payment-helper.php:466
+#: inc/payments/payment-helper.php:501
 msgid "Russian Ruble"
 msgstr "Rublo Russo"
 
-#: inc/payments/payment-helper.php:471
+#: inc/payments/payment-helper.php:506
 msgid "Indian Rupee"
 msgstr "Rupia Indiana"
 
-#: inc/payments/payment-helper.php:476
+#: inc/payments/payment-helper.php:511
 msgid "Brazilian Real"
 msgstr "Real Brasileiro"
 
-#: inc/payments/payment-helper.php:481
+#: inc/payments/payment-helper.php:516
 msgid "South African Rand"
 msgstr "Rand sul-africano"
 
-#: inc/payments/payment-helper.php:486
+#: inc/payments/payment-helper.php:521
 msgid "UAE Dirham"
 msgstr "Dirham dos EAU"
 
-#: inc/payments/payment-helper.php:491
+#: inc/payments/payment-helper.php:526
 msgid "Philippine Peso"
 msgstr "Peso Filipino"
 
-#: inc/payments/payment-helper.php:496
+#: inc/payments/payment-helper.php:531
 msgid "Indonesian Rupiah"
 msgstr "Rupia Indonésia"
 
-#: inc/payments/payment-helper.php:501
+#: inc/payments/payment-helper.php:536
 msgid "Malaysian Ringgit"
 msgstr "Ringgit Malaio"
 
-#: inc/payments/payment-helper.php:506
+#: inc/payments/payment-helper.php:541
 msgid "Thai Baht"
 msgstr "Baht Tailandês"
 
-#: inc/payments/payment-helper.php:511
+#: inc/payments/payment-helper.php:546
 msgid "Burundian Franc"
 msgstr "Franco Burundiano"
 
-#: inc/payments/payment-helper.php:516
+#: inc/payments/payment-helper.php:551
 msgid "Chilean Peso"
 msgstr "Peso Chileno"
 
-#: inc/payments/payment-helper.php:521
+#: inc/payments/payment-helper.php:556
 msgid "Djiboutian Franc"
 msgstr "Franco do Djibuti"
 
-#: inc/payments/payment-helper.php:526
+#: inc/payments/payment-helper.php:561
 msgid "Guinean Franc"
 msgstr "Franco Guineense"
 
-#: inc/payments/payment-helper.php:531
+#: inc/payments/payment-helper.php:566
 msgid "Comorian Franc"
 msgstr "Franco Comorense"
 
-#: inc/payments/payment-helper.php:536
+#: inc/payments/payment-helper.php:571
 msgid "Malagasy Ariary"
 msgstr "Ariary Malgaxe"
 
-#: inc/payments/payment-helper.php:541
+#: inc/payments/payment-helper.php:576
 msgid "Paraguayan Guaraní"
 msgstr "Guarani Paraguaio"
 
-#: inc/payments/payment-helper.php:546
+#: inc/payments/payment-helper.php:581
 msgid "Rwandan Franc"
 msgstr "Franco Ruandês"
 
-#: inc/payments/payment-helper.php:551
+#: inc/payments/payment-helper.php:586
 msgid "Ugandan Shilling"
 msgstr "Xelim Ugandês"
 
-#: inc/payments/payment-helper.php:556
+#: inc/payments/payment-helper.php:591
 msgid "Vietnamese Đồng"
 msgstr "Dong Vietnamita"
 
-#: inc/payments/payment-helper.php:561
+#: inc/payments/payment-helper.php:596
 msgid "Vanuatu Vatu"
 msgstr "Vatu de Vanuatu"
 
-#: inc/payments/payment-helper.php:566
+#: inc/payments/payment-helper.php:601
 msgid "Central African CFA Franc"
 msgstr "Franco CFA da África Central"
 
-#: inc/payments/payment-helper.php:571
+#: inc/payments/payment-helper.php:606
 msgid "West African CFA Franc"
 msgstr "Franco CFA da África Ocidental"
 
-#: inc/payments/payment-helper.php:576
+#: inc/payments/payment-helper.php:611
 msgid "CFP Franc"
 msgstr "Franco CFP"
 
-#: inc/payments/payment-helper.php:672
+#: inc/payments/payment-helper.php:707
 msgid "An unknown error occurred. Please try again or contact the site administrator."
 msgstr "Ocorreu um erro desconhecido. Por favor, tente novamente ou entre em contato com o administrador do site."
 
-#: inc/payments/payment-helper.php:674
+#: inc/payments/payment-helper.php:709
 msgid "Payment is currently unavailable. Please contact the site administrator."
 msgstr "O pagamento está atualmente indisponível. Por favor, entre em contato com o administrador do site."
 
-#: inc/payments/payment-helper.php:675
+#: inc/payments/payment-helper.php:710
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the payment amount."
 msgstr "O pagamento está atualmente indisponível. Por favor, entre em contato com o administrador do site para configurar o valor do pagamento."
 
-#: inc/payments/payment-helper.php:676
+#: inc/payments/payment-helper.php:711
 msgid "Invalid payment amount"
 msgstr "Valor de pagamento inválido"
 
-#: inc/payments/payment-helper.php:677
+#: inc/payments/payment-helper.php:712
 msgid "Payment amount must be at least {symbol}{amount}."
 msgstr "O valor do pagamento deve ser pelo menos {symbol}{amount}."
 
-#: inc/payments/payment-helper.php:681
+#: inc/payments/payment-helper.php:716
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the customer name field."
 msgstr "O pagamento está atualmente indisponível. Por favor, entre em contato com o administrador do site para configurar o campo do nome do cliente."
 
-#: inc/payments/payment-helper.php:682
+#: inc/payments/payment-helper.php:717
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the customer email field."
 msgstr "O pagamento está atualmente indisponível. Por favor, entre em contato com o administrador do site para configurar o campo de e-mail do cliente."
 
-#: inc/payments/payment-helper.php:683
+#: inc/payments/payment-helper.php:718
 msgid "Please enter your name."
 msgstr "Por favor, insira seu nome."
 
-#: inc/payments/payment-helper.php:684
+#: inc/payments/payment-helper.php:719
 msgid "Please enter your email."
 msgstr "Por favor, insira seu e-mail."
 
-#: inc/payments/payment-helper.php:687
+#: inc/payments/payment-helper.php:722
 msgid "Payment failed"
 msgstr "Pagamento falhou"
 
-#: inc/payments/payment-helper.php:688
+#: inc/payments/payment-helper.php:723
 msgid "Payment successful"
 msgstr "Pagamento bem-sucedido"
 
-#: inc/payments/payment-helper.php:692
-#: inc/payments/payment-helper.php:693
+#: inc/payments/payment-helper.php:727
+#: inc/payments/payment-helper.php:728
 msgid "Your card was declined. Please try a different payment method or contact your bank."
 msgstr "Seu cartão foi recusado. Por favor, tente um método de pagamento diferente ou entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:694
+#: inc/payments/payment-helper.php:729
 msgid "Your card has insufficient funds. Please use a different payment method."
 msgstr "Seu cartão não tem fundos suficientes. Por favor, use um método de pagamento diferente."
 
-#: inc/payments/payment-helper.php:695
+#: inc/payments/payment-helper.php:730
 msgid "Your card was declined because it has been reported as lost. Please contact your bank."
 msgstr "Seu cartão foi recusado porque foi relatado como perdido. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:696
+#: inc/payments/payment-helper.php:731
 msgid "Your card was declined because it has been reported as stolen. Please contact your bank."
 msgstr "Seu cartão foi recusado porque foi relatado como roubado. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:697
+#: inc/payments/payment-helper.php:732
 msgid "Your card has expired. Please use a different payment method."
 msgstr "Seu cartão expirou. Por favor, use um método de pagamento diferente."
 
-#: inc/payments/payment-helper.php:698
-#: inc/payments/payment-helper.php:719
+#: inc/payments/payment-helper.php:733
+#: inc/payments/payment-helper.php:754
 msgid "Your card was declined. Please contact your bank for more information."
 msgstr "Seu cartão foi recusado. Por favor, entre em contato com seu banco para mais informações."
 
-#: inc/payments/payment-helper.php:699
+#: inc/payments/payment-helper.php:734
 msgid "Your card was declined due to restrictions. Please contact your bank."
 msgstr "Seu cartão foi recusado devido a restrições. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:700
+#: inc/payments/payment-helper.php:735
 msgid "Your card was declined due to a security violation. Please contact your bank."
 msgstr "Seu cartão foi recusado devido a uma violação de segurança. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:701
+#: inc/payments/payment-helper.php:736
 msgid "Your card does not support this type of purchase. Please use a different payment method."
 msgstr "Seu cartão não suporta este tipo de compra. Por favor, use um método de pagamento diferente."
 
-#: inc/payments/payment-helper.php:702
+#: inc/payments/payment-helper.php:737
 msgid "A stop payment order has been placed on this card. Please contact your bank."
 msgstr "Foi emitida uma ordem de suspensão de pagamento para este cartão. Por favor, entre em contato com o seu banco."
 
-#: inc/payments/payment-helper.php:703
+#: inc/payments/payment-helper.php:738
 msgid "A test card was used in a live environment. Please use a real card."
 msgstr "Um cartão de teste foi usado em um ambiente ao vivo. Por favor, use um cartão real."
 
-#: inc/payments/payment-helper.php:704
+#: inc/payments/payment-helper.php:739
 msgid "Your card has exceeded its withdrawal limit. Please contact your bank."
 msgstr "O seu cartão excedeu o limite de saque. Por favor, entre em contato com o seu banco."
 
-#: inc/payments/payment-helper.php:705
+#: inc/payments/payment-helper.php:740
 msgid "Your card's security code is incorrect. Please check and try again."
 msgstr "O código de segurança do seu cartão está incorreto. Por favor, verifique e tente novamente."
 
-#: inc/payments/payment-helper.php:706
+#: inc/payments/payment-helper.php:741
 msgid "Your card number is incorrect. Please check and try again."
 msgstr "O número do seu cartão está incorreto. Por favor, verifique e tente novamente."
 
-#: inc/payments/payment-helper.php:707
+#: inc/payments/payment-helper.php:742
 msgid "Your card's security code is invalid. Please check and try again."
 msgstr "O código de segurança do seu cartão é inválido. Por favor, verifique e tente novamente."
 
-#: inc/payments/payment-helper.php:708
+#: inc/payments/payment-helper.php:743
 msgid "Your card's expiration month is invalid. Please check and try again."
 msgstr "O mês de validade do seu cartão é inválido. Por favor, verifique e tente novamente."
 
-#: inc/payments/payment-helper.php:709
+#: inc/payments/payment-helper.php:744
 msgid "Your card's expiration year is invalid. Please check and try again."
 msgstr "O ano de validade do seu cartão é inválido. Por favor, verifique e tente novamente."
 
-#: inc/payments/payment-helper.php:710
+#: inc/payments/payment-helper.php:745
 msgid "Your card number is invalid. Please check and try again."
 msgstr "O número do seu cartão é inválido. Por favor, verifique e tente novamente."
 
-#: inc/payments/payment-helper.php:713
+#: inc/payments/payment-helper.php:748
 msgid "Your card is not supported for this transaction. Please use a different payment method."
 msgstr "Seu cartão não é aceito para esta transação. Por favor, use um método de pagamento diferente."
 
-#: inc/payments/payment-helper.php:714
+#: inc/payments/payment-helper.php:749
 msgid "Your card does not support the currency used for this transaction. Please use a different payment method."
 msgstr "O seu cartão não suporta a moeda utilizada para esta transação. Por favor, use um método de pagamento diferente."
 
-#: inc/payments/payment-helper.php:715
+#: inc/payments/payment-helper.php:750
 msgid "A transaction with identical details was submitted recently. Please wait a moment and try again."
 msgstr "Uma transação com detalhes idênticos foi enviada recentemente. Por favor, aguarde um momento e tente novamente."
 
-#: inc/payments/payment-helper.php:716
+#: inc/payments/payment-helper.php:751
 msgid "The account associated with your card is invalid. Please contact your bank."
 msgstr "A conta associada ao seu cartão é inválida. Por favor, entre em contato com o seu banco."
 
-#: inc/payments/payment-helper.php:717
+#: inc/payments/payment-helper.php:752
 msgid "The payment amount is invalid. Please contact the site administrator."
 msgstr "O valor do pagamento é inválido. Por favor, entre em contato com o administrador do site."
 
-#: inc/payments/payment-helper.php:720
+#: inc/payments/payment-helper.php:755
 msgid "Your card information needs to be updated. Please contact your bank."
 msgstr "As informações do seu cartão precisam ser atualizadas. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:721
+#: inc/payments/payment-helper.php:756
 msgid "The card cannot be used for this transaction. Please contact your bank."
 msgstr "O cartão não pode ser usado para esta transação. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:722
+#: inc/payments/payment-helper.php:757
 msgid "The transaction is not permitted. Please contact your bank."
 msgstr "A transação não é permitida. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:723
+#: inc/payments/payment-helper.php:758
 msgid "Your card requires offline PIN authentication. Please try again."
 msgstr "Seu cartão requer autenticação de PIN offline. Por favor, tente novamente."
 
-#: inc/payments/payment-helper.php:724
+#: inc/payments/payment-helper.php:759
 msgid "Your card requires PIN authentication. Please try again."
 msgstr "Seu cartão requer autenticação por PIN. Por favor, tente novamente."
 
-#: inc/payments/payment-helper.php:725
+#: inc/payments/payment-helper.php:760
 msgid "You have exceeded the maximum number of PIN attempts. Please contact your bank."
 msgstr "Você excedeu o número máximo de tentativas de PIN. Por favor, entre em contato com o seu banco."
 
-#: inc/payments/payment-helper.php:726
+#: inc/payments/payment-helper.php:761
 msgid "All authorizations for this card have been revoked. Please contact your bank."
 msgstr "Todas as autorizações para este cartão foram revogadas. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:727
+#: inc/payments/payment-helper.php:762
 msgid "The authorization for this transaction has been revoked. Please try again."
 msgstr "A autorização para esta transação foi revogada. Por favor, tente novamente."
 
-#: inc/payments/payment-helper.php:728
+#: inc/payments/payment-helper.php:763
 msgid "This transaction is not allowed. Please contact your bank."
 msgstr "Esta transação não é permitida. Por favor, entre em contato com seu banco."
 
-#: inc/payments/payment-helper.php:730
+#: inc/payments/payment-helper.php:765
 msgid "Your card was declined. Your request was in live mode, but used a known test card."
 msgstr "Seu cartão foi recusado. Sua solicitação estava em modo ao vivo, mas usou um cartão de teste conhecido."
 
-#: inc/payments/payment-helper.php:731
+#: inc/payments/payment-helper.php:766
 msgid "Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing."
 msgstr "Seu cartão foi recusado. Sua solicitação estava em modo de teste, mas usou um cartão não teste. Para uma lista de cartões de teste válidos, visite: https://stripe.com/docs/testing."
 
-#: inc/payments/payment-helper.php:734
+#: inc/payments/payment-helper.php:769
 msgid "SureForms Subscription"
 msgstr "Assinatura SureForms"
 
-#: inc/payments/payment-helper.php:735
+#: inc/payments/payment-helper.php:770
 msgid "SureForms Payment"
 msgstr "Pagamento SureForms"
 
-#: inc/payments/payment-helper.php:737
+#: inc/payments/payment-helper.php:772
 msgid "SureForms Customer"
 msgstr "Cliente SureForms"
 
-#: inc/payments/payment-helper.php:757
+#: inc/payments/payment-helper.php:792
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
@@ -12853,13 +12853,13 @@ msgstr "Falha na pausa da assinatura."
 
 #: inc/payments/stripe/admin-stripe-handler.php:656
 #: inc/payments/stripe/admin-stripe-handler.php:1180
-#: inc/payments/stripe/stripe-webhook.php:723
+#: inc/payments/stripe/stripe-webhook.php:847
 msgid "Full"
 msgstr "Cheio"
 
 #: inc/payments/stripe/admin-stripe-handler.php:656
 #: inc/payments/stripe/admin-stripe-handler.php:1180
-#: inc/payments/stripe/stripe-webhook.php:723
+#: inc/payments/stripe/stripe-webhook.php:847
 msgid "Partial"
 msgstr "Parcial"
 
@@ -12867,8 +12867,8 @@ msgstr "Parcial"
 #. translators: %s: Refund ID.
 #: inc/payments/stripe/admin-stripe-handler.php:662
 #: inc/payments/stripe/admin-stripe-handler.php:1186
-#: inc/payments/stripe/stripe-webhook.php:730
-#: inc/payments/stripe/stripe-webhook.php:912
+#: inc/payments/stripe/stripe-webhook.php:854
+#: inc/payments/stripe/stripe-webhook.php:1036
 #, php-format
 msgid "Refund ID: %s"
 msgstr "ID de Reembolso: %s"
@@ -12878,7 +12878,7 @@ msgstr "ID de Reembolso: %s"
 #. translators: 1: Refund amount, 2: Currency.
 #: inc/payments/stripe/admin-stripe-handler.php:672
 #: inc/payments/stripe/admin-stripe-handler.php:1196
-#: inc/payments/stripe/stripe-webhook.php:734
+#: inc/payments/stripe/stripe-webhook.php:858
 #, php-format
 msgid "Refund Amount: %1$s %2$s"
 msgstr "Montante do Reembolso: %1$s %2$s"
@@ -12888,7 +12888,7 @@ msgstr "Montante do Reembolso: %1$s %2$s"
 #. translators: 1: Total refunded amount, 2: Currency, 3: Original amount, 4: Currency
 #: inc/payments/stripe/admin-stripe-handler.php:678
 #: inc/payments/stripe/admin-stripe-handler.php:1202
-#: inc/payments/stripe/stripe-webhook.php:737
+#: inc/payments/stripe/stripe-webhook.php:861
 #, php-format
 msgid "Total Refunded: %1$s %2$s of %3$s %4$s"
 msgstr "Total reembolsado: %1$s %2$s de %3$s %4$s"
@@ -12898,7 +12898,7 @@ msgstr "Total reembolsado: %1$s %2$s de %3$s %4$s"
 #. translators: %s: Refund status (e.g., succeeded, failed).
 #: inc/payments/stripe/admin-stripe-handler.php:686
 #: inc/payments/stripe/admin-stripe-handler.php:1210
-#: inc/payments/stripe/stripe-webhook.php:744
+#: inc/payments/stripe/stripe-webhook.php:868
 #, php-format
 msgid "Refund Status: %s"
 msgstr "Status do Reembolso: %s"
@@ -12909,8 +12909,8 @@ msgstr "Status do Reembolso: %s"
 #. translators: %s: Payment status (e.g., succeeded, partially refunded).
 #: inc/payments/stripe/admin-stripe-handler.php:691
 #: inc/payments/stripe/admin-stripe-handler.php:1215
-#: inc/payments/stripe/stripe-webhook.php:746
-#: inc/payments/stripe/stripe-webhook.php:928
+#: inc/payments/stripe/stripe-webhook.php:870
+#: inc/payments/stripe/stripe-webhook.php:1052
 #, php-format
 msgid "Payment Status: %s"
 msgstr "Status do Pagamento: %s"
@@ -12920,7 +12920,7 @@ msgstr "Status do Pagamento: %s"
 #. translators: %s: Refunded by method (e.g., Webhook).
 #: inc/payments/stripe/admin-stripe-handler.php:696
 #: inc/payments/stripe/admin-stripe-handler.php:1220
-#: inc/payments/stripe/stripe-webhook.php:748
+#: inc/payments/stripe/stripe-webhook.php:872
 #, php-format
 msgid "Refunded by: %s"
 msgstr "Reembolsado por: %s"
@@ -12935,7 +12935,7 @@ msgstr "Notas de Reembolso: %s"
 #. translators: %s: refund type (Full or Partial)
 #. translators: %s: Refund type (e.g., Full, Partial).
 #: inc/payments/stripe/admin-stripe-handler.php:714
-#: inc/payments/stripe/stripe-webhook.php:726
+#: inc/payments/stripe/stripe-webhook.php:850
 #, php-format
 msgid "%s Payment Refund"
 msgstr "Reembolso de Pagamento %s"
@@ -13185,50 +13185,50 @@ msgid "Invalid response format from Stripe API."
 msgstr "Formato de resposta inválido da API do Stripe."
 
 #. translators: %s: Canceled date
-#: inc/payments/stripe/stripe-webhook.php:578
+#: inc/payments/stripe/stripe-webhook.php:588
 #, php-format
 msgid "Canceled at: %s"
 msgstr "Cancelado em: %s"
 
 #. translators: %s: Cancellation reason
 #. translators: %s: Failure reason.
-#: inc/payments/stripe/stripe-webhook.php:584
-#: inc/payments/stripe/stripe-webhook.php:926
+#: inc/payments/stripe/stripe-webhook.php:594
+#: inc/payments/stripe/stripe-webhook.php:1050
 #, php-format
 msgid "Cancellation Reason: %s"
 msgstr "Motivo do Cancelamento: %s"
 
 #. translators: %s: Cancellation feedback
-#: inc/payments/stripe/stripe-webhook.php:592
+#: inc/payments/stripe/stripe-webhook.php:602
 #, php-format
 msgid "Feedback: %s"
 msgstr "Feedback: %s"
 
 #: inc/payments/stripe/admin-stripe-handler.php:206
-#: inc/payments/stripe/stripe-webhook.php:598
+#: inc/payments/stripe/stripe-webhook.php:608
 msgid "Subscription Canceled"
 msgstr "Assinatura Cancelada"
 
 #. translators: %s: Refunded by method (e.g., Webhook).
 #. translators: %s: Canceled by method (e.g., Webhook).
-#: inc/payments/stripe/stripe-webhook.php:748
-#: inc/payments/stripe/stripe-webhook.php:930
+#: inc/payments/stripe/stripe-webhook.php:872
+#: inc/payments/stripe/stripe-webhook.php:1054
 #: assets/build/settings.js:172
 msgid "Webhook"
 msgstr "Webhook"
 
-#: inc/payments/stripe/stripe-webhook.php:908
+#: inc/payments/stripe/stripe-webhook.php:1032
 msgid "Refund Canceled"
 msgstr "Reembolso Cancelado"
 
 #. translators: 1: Canceled amount, 2: Currency.
-#: inc/payments/stripe/stripe-webhook.php:916
+#: inc/payments/stripe/stripe-webhook.php:1040
 #, php-format
 msgid "Canceled Refund Amount: %1$s %2$s"
 msgstr "Montante de Reembolso Cancelado: %1$s %2$s"
 
 #. translators: 1: Remaining refunded amount, 2: Currency, 3: Original amount, 4: Currency
-#: inc/payments/stripe/stripe-webhook.php:919
+#: inc/payments/stripe/stripe-webhook.php:1043
 #, php-format
 msgid "Remaining Refunded: %1$s %2$s of %3$s %4$s"
 msgstr "Reembolso Restante: %1$s %2$s de %3$s %4$s"
@@ -13236,52 +13236,52 @@ msgstr "Reembolso Restante: %1$s %2$s de %3$s %4$s"
 #. translators: %s: user display name
 #. translators: %s: Canceled by method (e.g., Webhook).
 #: inc/payments/stripe/admin-stripe-handler.php:200
-#: inc/payments/stripe/stripe-webhook.php:930
+#: inc/payments/stripe/stripe-webhook.php:1054
 #, php-format
 msgid "Canceled by: %s"
 msgstr "Cancelado por: %s"
 
-#: inc/payments/stripe/stripe-webhook.php:1080
+#: inc/payments/stripe/stripe-webhook.php:1204
 msgid "Initial Subscription Payment Succeeded"
 msgstr "Pagamento inicial da assinatura bem-sucedido"
 
 #. translators: %s: Invoice ID
-#: inc/payments/stripe/stripe-webhook.php:1086
-#: inc/payments/stripe/stripe-webhook.php:1172
+#: inc/payments/stripe/stripe-webhook.php:1210
+#: inc/payments/stripe/stripe-webhook.php:1296
 #, php-format
 msgid "Invoice ID: %s"
 msgstr "ID da Fatura: %s"
 
-#: inc/payments/stripe/stripe-webhook.php:1093
+#: inc/payments/stripe/stripe-webhook.php:1217
 msgid "Payment Status: Succeeded"
 msgstr "Status do Pagamento: Bem-sucedido"
 
-#: inc/payments/stripe/stripe-webhook.php:1094
+#: inc/payments/stripe/stripe-webhook.php:1218
 msgid "Subscription Status: Active"
 msgstr "Status da Assinatura: Ativa"
 
-#: inc/payments/stripe/stripe-webhook.php:1158
+#: inc/payments/stripe/stripe-webhook.php:1282
 msgid "Subscription Charge Payment"
 msgstr "Pagamento da Cobrança de Assinatura"
 
 #. translators: %s: Status
-#: inc/payments/stripe/stripe-webhook.php:1168
+#: inc/payments/stripe/stripe-webhook.php:1292
 msgid "Succeeded"
 msgstr "Concluído"
 
 #. translators: %s: Customer Email
-#: inc/payments/stripe/stripe-webhook.php:1176
+#: inc/payments/stripe/stripe-webhook.php:1300
 #, php-format
 msgid "Customer Email: %s"
 msgstr "Email do Cliente: %s"
 
 #. translators: %s: Customer Name
-#: inc/payments/stripe/stripe-webhook.php:1178
+#: inc/payments/stripe/stripe-webhook.php:1302
 #, php-format
 msgid "Customer Name: %s"
 msgstr "Nome do Cliente: %s"
 
-#: inc/payments/stripe/stripe-webhook.php:1179
+#: inc/payments/stripe/stripe-webhook.php:1303
 msgid "Created via subscription billing cycle"
 msgstr "Criado através do ciclo de faturamento por assinatura"
 
@@ -13295,15 +13295,15 @@ msgstr "Edite este formulário"
 msgid "Your form has been submitted successfully. We'll review your details and get back to you soon."
 msgstr "Seu formulário foi enviado com sucesso. Analisaremos seus dados e entraremos em contato em breve."
 
-#: inc/rest-api.php:814
-#: inc/rest-api.php:963
+#: inc/rest-api.php:848
+#: inc/rest-api.php:997
 msgid "Entry ID is required."
 msgstr "É necessário o ID de entrada."
 
 #: inc/abilities/entries/bulk-get-entries.php:172
 #: inc/abilities/entries/get-entry.php:121
-#: inc/rest-api.php:823
-#: inc/rest-api.php:972
+#: inc/rest-api.php:857
+#: inc/rest-api.php:1006
 msgid "Entry not found."
 msgstr "Entrada não encontrada."
 
@@ -13775,7 +13775,7 @@ msgstr "Carregando logs…"
 msgid "No logs available."
 msgstr "Sem registros disponíveis."
 
-#: inc/compatibility/multilingual/string-translator.php:185
+#: inc/compatibility/multilingual/string-translator.php:186
 #: inc/form-templates/catalog/agreements.php:71
 #: inc/form-templates/catalog/payments.php:352
 #: inc/form-templates/catalog/payments.php:432
@@ -14143,38 +14143,38 @@ msgid "USD - US Dollar"
 msgstr "USD - Dólar dos EUA"
 
 #: inc/payments/payment-history-shortcode.php:396
-#: inc/payments/payment-history-shortcode.php:969
+#: inc/payments/payment-history-shortcode.php:970
 #: assets/build/payments.js:2
 msgid "Paid"
 msgstr "Pago"
 
 #: inc/payments/payment-history-shortcode.php:400
-#: inc/payments/payment-history-shortcode.php:974
+#: inc/payments/payment-history-shortcode.php:975
 #: assets/build/payments.js:2
 msgid "Partially Refunded"
 msgstr "Parcialmente Reembolsado"
 
 #: inc/payments/payment-history-shortcode.php:397
-#: inc/payments/payment-history-shortcode.php:970
+#: inc/payments/payment-history-shortcode.php:971
 #: assets/build/payments.js:2
 msgid "Pending"
 msgstr "Pendente"
 
 #: inc/payments/payment-history-shortcode.php:398
-#: inc/payments/payment-history-shortcode.php:971
+#: inc/payments/payment-history-shortcode.php:972
 #: assets/build/payments.js:2
 msgid "Failed"
 msgstr "Falhou"
 
 #: inc/payments/payment-history-shortcode.php:399
-#: inc/payments/payment-history-shortcode.php:973
+#: inc/payments/payment-history-shortcode.php:974
 #: assets/build/payments.js:2
 msgid "Refunded"
 msgstr "Reembolsado"
 
 #: inc/payments/payment-history-shortcode.php:391
-#: inc/payments/payment-history-shortcode.php:951
-#: inc/payments/payment-history-shortcode.php:976
+#: inc/payments/payment-history-shortcode.php:952
+#: inc/payments/payment-history-shortcode.php:978
 #: assets/build/payments.js:2
 msgid "Active"
 msgstr "Ativo"
@@ -14834,7 +14834,7 @@ msgid "Canceled"
 msgstr "Cancelado"
 
 #: inc/payments/payment-history-shortcode.php:395
-#: inc/payments/payment-history-shortcode.php:955
+#: inc/payments/payment-history-shortcode.php:956
 #: inc/payments/stripe/admin-stripe-handler.php:498
 #: assets/build/payments.js:2
 msgid "Paused"
@@ -14913,82 +14913,83 @@ msgstr "Falha ao criar formulário duplicado."
 
 #: inc/payments/front-end.php:105
 #: inc/payments/front-end.php:319
-#: inc/payments/payment-helper.php:788
+#: inc/payments/payment-helper.php:823
 msgid "Invalid form configuration."
 msgstr "Configuração de formulário inválida."
 
-#: inc/payments/payment-helper.php:796
+#: inc/payments/payment-helper.php:831
 msgid "Payment configuration not found for this form."
 msgstr "Configuração de pagamento não encontrada para este formulário."
 
 #. translators: 1: expected currency, 2: received currency
-#: inc/payments/payment-helper.php:807
+#: inc/payments/payment-helper.php:842
 #, php-format
 msgid "Currency mismatch: expected %1$s, received %2$s."
 msgstr "Incompatibilidade de moeda: esperado %1$s, recebido %2$s."
 
 #. translators: 1: expected amount with currency
-#: inc/payments/payment-helper.php:853
+#: inc/payments/payment-helper.php:888
 #, php-format
 msgid "Payment amount must be exactly %1$s."
 msgstr "O valor do pagamento deve ser exatamente %1$s."
 
 #. translators: 1: minimum amount with currency
-#: inc/payments/payment-helper.php:864
+#: inc/payments/payment-helper.php:899
 #, php-format
 msgid "Payment amount must be at least %1$s."
 msgstr "O valor do pagamento deve ser pelo menos %1$s."
 
-#: inc/payments/payment-helper.php:941
+#: inc/payments/payment-helper.php:976
 msgid "Invalid payment verification parameters."
 msgstr "Parâmetros de verificação de pagamento inválidos."
 
-#: inc/payments/payment-helper.php:952
+#: inc/payments/payment-helper.php:987
+#: inc/payments/payment-helper.php:1001
 msgid "Payment verification failed. Invalid payment intent."
 msgstr "Falha na verificação do pagamento. Intenção de pagamento inválida."
 
-#: inc/payments/payment-helper.php:1512
-#: inc/payments/payment-helper.php:1709
-#: inc/payments/payment-helper.php:1746
+#: inc/payments/payment-helper.php:2165
+#: inc/payments/payment-helper.php:2362
+#: inc/payments/payment-helper.php:2400
 msgid "Variable amount field configuration not found."
 msgstr "Configuração do campo de quantidade variável não encontrada."
 
-#: inc/payments/payment-helper.php:1533
+#: inc/payments/payment-helper.php:2186
 msgid "No payment options are configured for this field."
 msgstr "Nenhuma opção de pagamento está configurada para este campo."
 
 #. translators: %s: currency code
-#: inc/payments/payment-helper.php:1559
+#: inc/payments/payment-helper.php:2212
 msgid "Invalid payment amount. Please select a valid amount from the available options."
 msgstr "Quantia de pagamento inválida. Por favor, selecione uma quantia válida entre as opções disponíveis."
 
 #. translators: %1$s: expected amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1595
+#: inc/payments/payment-helper.php:2248
 msgid "Payment configuration not found."
 msgstr "Configuração de pagamento não encontrada."
 
 #. translators: %1$s: expected amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1622
-#: inc/payments/payment-helper.php:1733
-#: inc/payments/payment-helper.php:1759
-#: inc/payments/payment-helper.php:1794
+#: inc/payments/payment-helper.php:2275
+#: inc/payments/payment-helper.php:2387
+#: inc/payments/payment-helper.php:2413
+#: inc/payments/payment-helper.php:2448
 #, php-format
 msgid "Payment amount mismatch. Expected %1$s, received %2$s."
 msgstr "Diferença no valor do pagamento. Esperado %1$s, recebido %2$s."
 
-#: inc/payments/payment-helper.php:1698
-#: inc/payments/payment-helper.php:1786
+#: inc/payments/payment-helper.php:2351
+#: inc/payments/payment-helper.php:2440
 msgid "Variable amount field value is required."
 msgstr "É necessário o valor do campo de quantidade variável."
 
 #. translators: %1$s: minimum amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1674
-#: inc/payments/payment-helper.php:1834
+#: inc/payments/payment-helper.php:2327
+#: inc/payments/payment-helper.php:2488
 #, php-format
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr "Valor do pagamento abaixo do mínimo. Mínimo: %1$s, recebido %2$s."
 
-#: inc/rest-api.php:1972
+#: inc/rest-api.php:2014
 msgid " (Copy)"
 msgstr "(Cópia)"
 
@@ -15046,7 +15047,7 @@ msgstr "Ocorreu um erro ao duplicar o formulário."
 msgid "This will create a copy of \"%s\" with all its settings."
 msgstr "Isso criará uma cópia de \"%s\" com todas as suas configurações."
 
-#: inc/payments/payment-helper.php:1089
+#: inc/payments/payment-helper.php:1152
 msgid "Pay with credit or debit card"
 msgstr "Pague com cartão de crédito ou débito"
 
@@ -15187,26 +15188,26 @@ msgid "Stripe Settings"
 msgstr "Configurações do Stripe"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Business plugin name, %3$s: SureForms Business version.
-#: admin/admin.php:2433
+#: admin/admin.php:2436
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr "O SureForms %1$s requer o mínimo %2$s %3$s para funcionar corretamente. Por favor, atualize para a versão mais recente."
 
-#: admin/admin.php:2446
+#: admin/admin.php:2449
 msgid "Update Now"
 msgstr "Atualizar agora"
 
-#: inc/helper.php:1922
+#: inc/helper.php:1951
 #: assets/build/dashboard.js:172
 #: assets/build/suremail.js:172
 msgid "SureContact"
 msgstr "SureContact"
 
-#: inc/helper.php:1923
+#: inc/helper.php:1952
 msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
 msgstr "Transforme e-mails em receita com um CRM feito para o seu site!"
 
-#: inc/helper.php:1924
+#: inc/helper.php:1953
 msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
 msgstr "Envie newsletters, execute campanhas, configure automações, gerencie contatos e veja exatamente quanto de receita seus e-mails geram, tudo em um só lugar."
 
@@ -15242,8 +15243,8 @@ msgstr "Posição do Sinal de Moeda"
 msgid "Select the position of the currency symbol relative to the amount."
 msgstr "Selecione a posição do símbolo da moeda em relação ao valor."
 
-#: admin/admin.php:1539
 #: admin/admin.php:1540
+#: admin/admin.php:1541
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -15257,41 +15258,41 @@ msgstr "Selecione a posição do símbolo da moeda em relação ao valor."
 msgid "Learn"
 msgstr "Aprender"
 
-#: admin/admin.php:2790
+#: admin/admin.php:2793
 msgid "Amazing! SureForms is powering your forms and submissions - let's keep growing together!"
 msgstr "Incrível! SureForms está alimentando seus formulários e submissões - vamos continuar crescendo juntos!"
 
-#: admin/admin.php:2791
+#: admin/admin.php:2794
 msgid "If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?"
 msgstr "Se o SureForms foi útil, você se importaria de deixar um comentário de 5 estrelas no WordPress.org?"
 
-#: admin/admin.php:2802
-#: admin/admin.php:2866
+#: admin/admin.php:2805
+#: admin/admin.php:2869
 msgid "Maybe later"
 msgstr "Talvez mais tarde"
 
-#: admin/admin.php:2808
+#: admin/admin.php:2811
 msgid "I already did"
 msgstr "Eu já fiz"
 
-#: admin/admin.php:2857
+#: admin/admin.php:2860
 msgid "SureForms is ready to power your forms — explore what's possible!"
 msgstr "SureForms está pronto para potencializar seus formulários — explore o que é possível!"
 
-#: admin/admin.php:2858
+#: admin/admin.php:2861
 msgid "Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard."
 msgstr "Gerencie seus formulários, acompanhe as submissões e descubra recursos como o Construtor de Formulários com IA, integrações de pagamento e muito mais no painel do SureForms."
 
-#: admin/admin.php:2861
+#: admin/admin.php:2864
 msgid "Go to Dashboard"
 msgstr "Ir para o Painel"
 
-#: admin/admin.php:2872
+#: admin/admin.php:2875
 msgid "I already know"
 msgstr "Eu já sei"
 
-#: admin/admin.php:3025
-#: admin/admin.php:4044
+#: admin/admin.php:3031
+#: admin/admin.php:4084
 msgid "Invalid parameters."
 msgstr "Parâmetros inválidos."
 
@@ -15645,7 +15646,7 @@ msgstr "Não foi possível verificar o referenciador. Por favor, verifique seu r
 msgid "Domain Verification Failed on current site. Please try again on another website."
 msgstr "Falha na Verificação de Domínio no site atual. Por favor, tente novamente em outro site."
 
-#: inc/entries.php:449
+#: inc/entries.php:458
 msgid "Unable to generate export file."
 msgstr "Não foi possível gerar o arquivo de exportação."
 
@@ -15675,10 +15676,10 @@ msgid "This form is not yet available. Check back after the scheduled start time
 msgstr "Este formulário ainda não está disponível. Verifique novamente após o horário de início programado."
 
 #: inc/admin/html-form-detector.php:268
-#: inc/form-submit.php:263
-#: inc/form-submit.php:574
-#: inc/form-submit.php:624
-#: inc/form-submit.php:1408
+#: inc/form-submit.php:274
+#: inc/form-submit.php:589
+#: inc/form-submit.php:639
+#: inc/form-submit.php:1415
 #: inc/migrator/bootstrap.php:357
 #: inc/payments/front-end.php:79
 #: inc/payments/front-end.php:272
@@ -15688,49 +15689,49 @@ msgstr "Este formulário ainda não está disponível. Verifique novamente após
 #: inc/rest-api.php:397
 #: inc/rest-api.php:419
 #: inc/rest-api.php:538
-#: inc/rest-api.php:629
-#: inc/rest-api.php:674
-#: inc/rest-api.php:723
-#: inc/rest-api.php:772
-#: inc/rest-api.php:805
-#: inc/rest-api.php:950
-#: inc/rest-api.php:1035
-#: inc/rest-api.php:1095
-#: inc/rest-api.php:1470
+#: inc/rest-api.php:663
+#: inc/rest-api.php:708
+#: inc/rest-api.php:757
+#: inc/rest-api.php:806
+#: inc/rest-api.php:839
+#: inc/rest-api.php:984
+#: inc/rest-api.php:1069
+#: inc/rest-api.php:1136
+#: inc/rest-api.php:1511
 #: inc/single-form-settings/form-settings-api.php:89
 msgid "Security verification failed. Please refresh the page and try again."
 msgstr "A verificação de segurança falhou. Por favor, atualize a página e tente novamente."
 
-#: inc/form-submit.php:663
+#: inc/form-submit.php:678
 msgid "Form data was not found."
 msgstr "Os dados do formulário não foram encontrados."
 
-#: inc/form-submit.php:403
+#: inc/form-submit.php:414
 msgid "Form ID is missing."
 msgstr "O ID do formulário está ausente."
 
-#: inc/form-submit.php:279
+#: inc/form-submit.php:290
 msgid "Sorry, you do not have permission to access this resource."
 msgstr "Desculpe, você não tem permissão para acessar este recurso."
 
-#: inc/form-submit.php:439
+#: inc/form-submit.php:450
 msgid "You do not have permission to submit this form."
 msgstr "Você não tem permissão para enviar este formulário."
 
-#: inc/form-submit.php:449
+#: inc/form-submit.php:460
 msgid "This form is no longer available."
 msgstr "Este formulário não está mais disponível."
 
-#: inc/form-submit.php:467
+#: inc/form-submit.php:478
 msgid "Please check the form for errors."
 msgstr "Por favor, verifique o formulário em busca de erros."
 
-#: inc/form-submit.php:599
-#: inc/form-submit.php:645
+#: inc/form-submit.php:614
+#: inc/form-submit.php:660
 msgid "Your submission was flagged as spam. Please try again."
 msgstr "Sua submissão foi marcada como spam. Por favor, tente novamente."
 
-#: inc/form-submit.php:972
+#: inc/form-submit.php:986
 msgid "Unable to submit form. Please try again."
 msgstr "Não foi possível enviar o formulário. Por favor, tente novamente."
 
@@ -15738,7 +15739,7 @@ msgstr "Não foi possível enviar o formulário. Por favor, tente novamente."
 msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
 msgstr "Nenhum plugin SMTP detectado. Por favor, configure um plugin SMTP para habilitar o envio de e-mails."
 
-#: inc/form-submit.php:1341
+#: inc/form-submit.php:1349
 msgid "No emails were sent."
 msgstr "Nenhum e-mail foi enviado."
 
@@ -15887,31 +15888,31 @@ msgstr "Não foi possível excluir os pagamentos. Por favor, tente novamente."
 msgid "Unable to process refund. Please try again."
 msgstr "Não foi possível processar o reembolso. Por favor, tente novamente."
 
-#: inc/payments/payment-helper.php:689
+#: inc/payments/payment-helper.php:724
 msgid "Unable to complete payment. Please try again or contact support."
 msgstr "Não foi possível concluir o pagamento. Por favor, tente novamente ou entre em contato com o suporte."
 
-#: inc/payments/payment-helper.php:711
+#: inc/payments/payment-helper.php:746
 msgid "Unable to process card. Please try again."
 msgstr "Não foi possível processar o cartão. Por favor, tente novamente."
 
-#: inc/payments/payment-helper.php:712
+#: inc/payments/payment-helper.php:747
 msgid "Unable to process transaction. Please try again."
 msgstr "Não foi possível processar a transação. Por favor, tente novamente."
 
-#: inc/payments/payment-helper.php:718
+#: inc/payments/payment-helper.php:753
 msgid "Unable to reach card issuer. Please try again later."
 msgstr "Não foi possível contatar o emissor do cartão. Por favor, tente novamente mais tarde."
 
-#: inc/payments/payment-helper.php:729
+#: inc/payments/payment-helper.php:764
 msgid "Unable to process transaction. Please try again later."
 msgstr "Não foi possível processar a transação. Por favor, tente novamente mais tarde."
 
-#: inc/payments/payment-helper.php:739
+#: inc/payments/payment-helper.php:774
 msgid "Complete the form to view the amount."
 msgstr "Preencha o formulário para ver o valor."
 
-#: inc/payments/payment-helper.php:740
+#: inc/payments/payment-helper.php:775
 msgid "Unable to create payment. Please contact support."
 msgstr "Não foi possível criar o pagamento. Por favor, entre em contato com o suporte."
 
@@ -15968,47 +15969,47 @@ msgstr "É necessário o identificador do plugin."
 msgid "Integration not found."
 msgstr "Integração não encontrada."
 
-#: inc/rest-api.php:684
-#: inc/rest-api.php:733
-#: inc/rest-api.php:781
+#: inc/rest-api.php:718
+#: inc/rest-api.php:767
+#: inc/rest-api.php:815
 msgid "Select at least one entry."
 msgstr "Selecione pelo menos uma entrada."
 
-#: inc/rest-api.php:691
-#: inc/rest-api.php:740
+#: inc/rest-api.php:725
+#: inc/rest-api.php:774
 msgid "Action is required."
 msgstr "Ação é necessária."
 
-#: inc/rest-api.php:699
+#: inc/rest-api.php:733
 msgid "Invalid action. Use \"read\" or \"unread\"."
 msgstr "Ação inválida. Use \"ler\" ou \"não lida\"."
 
-#: inc/rest-api.php:748
+#: inc/rest-api.php:782
 msgid "Invalid action. Use \"trash\" or \"restore\"."
 msgstr "Ação inválida. Use \"trash\" ou \"restore\"."
 
-#: inc/rest-api.php:1109
+#: inc/rest-api.php:1150
 msgid "Select at least one form and specify an action."
 msgstr "Selecione pelo menos um formulário e especifique uma ação."
 
-#: inc/rest-api.php:1124
+#: inc/rest-api.php:1165
 msgid "Form not found or is not a valid form type."
 msgstr "Formulário não encontrado ou não é um tipo de formulário válido."
 
-#: inc/rest-api.php:1136
+#: inc/rest-api.php:1177
 msgid "This form is already in the trash."
 msgstr "Este formulário já está na lixeira."
 
-#: inc/rest-api.php:1147
+#: inc/rest-api.php:1188
 msgid "This form is not in the trash."
 msgstr "Este formulário não está na lixeira."
 
-#: inc/rest-api.php:1183
+#: inc/rest-api.php:1224
 msgid "Invalid action."
 msgstr "Ação inválida."
 
 #. translators: %s: action name
-#: inc/rest-api.php:1198
+#: inc/rest-api.php:1239
 #, php-format
 msgid "Failed to %s this form. Please try again."
 msgstr "Falha ao %s este formulário. Por favor, tente novamente."
@@ -16605,13 +16606,13 @@ msgstr "Segredo do webhook não configurado."
 msgid "Invalid webhook signature."
 msgstr "Assinatura de webhook inválida."
 
-#: admin/admin.php:1358
-#: admin/admin.php:1987
+#: admin/admin.php:1359
+#: admin/admin.php:1990
 #: assets/build/formEditor.js:172
 msgid "Quizzes"
 msgstr "Questionários"
 
-#: admin/admin.php:1357
+#: admin/admin.php:1358
 msgid "Quiz Entries"
 msgstr "Entradas do Quiz"
 
@@ -16619,11 +16620,11 @@ msgstr "Entradas do Quiz"
 msgid "New"
 msgstr "Novo"
 
-#: inc/form-submit.php:1417
+#: inc/form-submit.php:1424
 msgid "Invalid form."
 msgstr "Formulário inválido."
 
-#: inc/form-submit.php:1422
+#: inc/form-submit.php:1429
 msgid "Too many requests. Please try again shortly."
 msgstr "Solicitações demais. Por favor, tente novamente em breve."
 
@@ -17088,9 +17089,9 @@ msgstr "Perfeito para educação, treinamento e curiosidades divertidas"
 msgid "Select this to create a quiz with scored questions and graded results."
 msgstr "Selecione isto para criar um questionário com perguntas pontuadas e resultados avaliados."
 
-#: admin/admin.php:1391
 #: admin/admin.php:1392
-#: admin/admin.php:1992
+#: admin/admin.php:1393
+#: admin/admin.php:1995
 msgid "Survey Reports"
 msgstr "Relatórios de Pesquisa"
 
@@ -17223,28 +17224,28 @@ msgid "The subscription has been cancelled successfully."
 msgstr "A assinatura foi cancelada com sucesso."
 
 #: inc/payments/payment-history-shortcode.php:392
-#: inc/payments/payment-history-shortcode.php:952
+#: inc/payments/payment-history-shortcode.php:953
 msgid "Trialing"
 msgstr "Testando"
 
 #: inc/payments/payment-history-shortcode.php:393
-#: inc/payments/payment-history-shortcode.php:953
-#: inc/payments/payment-history-shortcode.php:972
+#: inc/payments/payment-history-shortcode.php:954
+#: inc/payments/payment-history-shortcode.php:973
 msgid "Cancelled"
 msgstr "Cancelado"
 
 #: inc/payments/payment-history-shortcode.php:394
-#: inc/payments/payment-history-shortcode.php:954
+#: inc/payments/payment-history-shortcode.php:955
 msgid "Past Due"
 msgstr "Vencido"
 
-#: inc/payments/payment-history-shortcode.php:401
-#: inc/payments/payment-history-shortcode.php:975
+#: inc/payments/payment-history-shortcode.php:402
+#: inc/payments/payment-history-shortcode.php:977
 msgid "Processing"
 msgstr "Processando"
 
 #. translators: %d: number of active subscriptions
-#: inc/payments/payment-history-shortcode.php:474
+#: inc/payments/payment-history-shortcode.php:475
 #, php-format
 msgid "%d active"
 msgid_plural "%d active"
@@ -17252,25 +17253,25 @@ msgstr[0] "%d ativo"
 msgstr[1] ""
 
 #. translators: %d: number of cancelled subscriptions
-#: inc/payments/payment-history-shortcode.php:478
+#: inc/payments/payment-history-shortcode.php:479
 #, php-format
 msgid "%d cancelled"
 msgid_plural "%d cancelled"
 msgstr[0] "%d cancelados"
 msgstr[1] ""
 
-#: inc/payments/payment-history-shortcode.php:484
+#: inc/payments/payment-history-shortcode.php:485
 msgid "Subscriptions"
 msgstr "Assinaturas"
 
 #. translators: %s: next payment date
-#: inc/payments/payment-history-shortcode.php:520
+#: inc/payments/payment-history-shortcode.php:521
 #, php-format
 msgid "Next: %s"
 msgstr "Próximo: %s"
 
 #. translators: %s: cancellation date
-#: inc/payments/payment-history-shortcode.php:523
+#: inc/payments/payment-history-shortcode.php:524
 #, php-format
 msgid "Cancelled %s"
 msgstr "Cancelado %s"
@@ -17278,12 +17279,12 @@ msgstr "Cancelado %s"
 #: inc/page-builders/bricks/elements/payment-history-widget.php:51
 #: inc/page-builders/elementor/payment-history-widget.php:42
 #: inc/page-builders/elementor/payment-history-widget.php:106
-#: inc/payments/payment-history-shortcode.php:564
+#: inc/payments/payment-history-shortcode.php:565
 msgid "Payment History"
 msgstr "Histórico de Pagamentos"
 
 #. translators: %d: total number of transactions
-#: inc/payments/payment-history-shortcode.php:568
+#: inc/payments/payment-history-shortcode.php:569
 #, php-format
 msgid "%d transaction"
 msgid_plural "%d transactions"
@@ -17291,24 +17292,24 @@ msgstr[0] "%d transação"
 msgstr[1] ""
 
 #. translators: 1: start number, 2: end number, 3: total number
-#: inc/payments/payment-history-shortcode.php:584
+#: inc/payments/payment-history-shortcode.php:585
 #, php-format
 msgid "Showing %1$d–%2$d of %3$d transactions"
 msgstr "Mostrando %1$d–%2$d de %3$d transações"
 
-#: inc/payments/payment-history-shortcode.php:1129
+#: inc/payments/payment-history-shortcode.php:1132
 msgid "Please"
 msgstr "Por favor"
 
-#: inc/payments/payment-history-shortcode.php:1131
+#: inc/payments/payment-history-shortcode.php:1134
 msgid "log in"
 msgstr "iniciar sessão"
 
-#: inc/payments/payment-history-shortcode.php:1132
+#: inc/payments/payment-history-shortcode.php:1135
 msgid "to view your payment dashboard."
 msgstr "para ver o seu painel de pagamentos."
 
-#: inc/payments/payment-history-shortcode.php:1152
+#: inc/payments/payment-history-shortcode.php:1155
 msgid "No payments found."
 msgstr "Nenhum pagamento encontrado."
 
@@ -17440,7 +17441,7 @@ msgstr "Mostrar resultados ao vivo aos respondentes"
 msgid "Perfect for feedback, polls, and research"
 msgstr "Perfeito para feedback, pesquisas e sondagens"
 
-#: inc/payments/payment-helper.php:451
+#: inc/payments/payment-helper.php:486
 msgid "Polish Złoty"
 msgstr "Złoty polonês"
 
@@ -17496,7 +17497,7 @@ msgid "Error creating SureForms Form."
 msgstr "Erro ao criar o formulário SureForms."
 
 #. translators: %s represents the minimum number of characters required
-#: inc/field-validation.php:554
+#: inc/field-validation.php:571
 #: inc/translatable.php:94
 #, php-format
 msgid "Please enter at least %s characters."
@@ -17514,11 +17515,12 @@ msgstr "Escolha o tipo de pagamento"
 msgid "Billing interval does not match the form configuration."
 msgstr "O intervalo de faturamento não corresponde à configuração do formulário."
 
-#: inc/payments/payment-helper.php:820
+#: inc/payments/payment-helper.php:855
+#: inc/payments/payment-helper.php:1026
 msgid "Payment type does not match the form configuration."
 msgstr "O tipo de pagamento não corresponde à configuração do formulário."
 
-#: inc/payments/payment-helper.php:964
+#: inc/payments/payment-helper.php:1013
 msgid "Payment verification failed. Payment type mismatch."
 msgstr "Falha na verificação do pagamento. Tipo de pagamento incompatível."
 
@@ -17654,9 +17656,9 @@ msgstr "A resposta da IA estava vazia. Por favor, refine seu prompt e tente nova
 msgid "Unable to build form fields from the AI response."
 msgstr "Não foi possível criar campos de formulário a partir da resposta da IA."
 
-#: admin/admin.php:1425
 #: admin/admin.php:1426
-#: admin/admin.php:1997
+#: admin/admin.php:1427
+#: admin/admin.php:2000
 msgid "Partial Entries"
 msgstr "Entradas Parciais"
 
@@ -17676,11 +17678,11 @@ msgstr "Aba de configurações inválida."
 msgid "Thank you for contacting us! We will be in touch with you shortly."
 msgstr "Obrigado por nos contatar! Entraremos em contato com você em breve."
 
-#: inc/rest-api.php:1163
+#: inc/rest-api.php:1204
 msgid "Use the restore action to recover a trashed form before switching it to draft."
 msgstr "Use a ação de restauração para recuperar um formulário descartado antes de alterá-lo para rascunho."
 
-#: inc/rest-api.php:1168
+#: inc/rest-api.php:1209
 msgid "This form is already a draft."
 msgstr "Este formulário já é um rascunho."
 
@@ -18105,15 +18107,15 @@ msgstr "Etiqueta única"
 msgid "Subscription label"
 msgstr "Etiqueta de assinatura"
 
-#: inc/compatibility/multilingual/string-translator.php:181
+#: inc/compatibility/multilingual/string-translator.php:182
 msgid "Multiple Choice"
 msgstr "Múltipla Escolha"
 
-#: inc/compatibility/multilingual/string-translator.php:183
+#: inc/compatibility/multilingual/string-translator.php:184
 msgid "GDPR"
 msgstr "GDPR"
 
-#: inc/compatibility/multilingual/string-translator.php:205
+#: inc/compatibility/multilingual/string-translator.php:206
 msgid "Field"
 msgstr "Campo"
 
@@ -18189,6 +18191,7 @@ msgstr "Notificações adicionais por e-mail (apenas a primeira foi importada)"
 msgid "Additional confirmations (only the first was imported)"
 msgstr "Confirmações adicionais (apenas a primeira foi importada)"
 
+#: inc/admin/promotion.php:453
 #: inc/onboarding.php:97
 msgid "Invalid or missing security token."
 msgstr "Token de segurança inválido ou ausente."
@@ -18496,22 +18499,21 @@ msgstr "Múltipla escolha"
 msgid "Consent"
 msgstr "Consentimento"
 
-#: inc/helper.php:1913
+#: inc/helper.php:1942
 msgid "SureDonation"
 msgstr "SureDonation"
 
-#: inc/helper.php:1914
+#: inc/helper.php:1943
 msgid "Start Collecting Donations Today"
 msgstr "Comece a Coletar Doações Hoje"
 
-#: inc/helper.php:1915
+#: inc/helper.php:1944
 msgid "Want to accept donations too? SureDonation makes it easy to collect contributions right on your WordPress site."
 msgstr "Quer aceitar doações também? O SureDonation facilita a coleta de contribuições diretamente no seu site WordPress."
 
-#: inc/payments/payment-helper.php:1686
-#: inc/payments/payment-helper.php:1724
-#: inc/payments/payment-helper.php:1773
-#: inc/payments/payment-helper.php:1819
+#: inc/payments/payment-helper.php:2339
+#: inc/payments/payment-helper.php:2427
+#: inc/payments/payment-helper.php:2473
 msgid "Payment amount could not be verified for this form. Please edit and re-save the form, then try again."
 msgstr "O valor do pagamento não pôde ser verificado para este formulário. Por favor, edite e salve o formulário novamente, depois tente novamente."
 
@@ -18519,24 +18521,24 @@ msgstr "O valor do pagamento não pôde ser verificado para este formulário. Po
 msgid "Cancellation is not supported for this payment gateway."
 msgstr "O cancelamento não é suportado para este gateway de pagamento."
 
-#: admin/admin.php:3257
+#: admin/admin.php:3272
 msgid "SureForms AI Quick Draft"
 msgstr "SureForms AI Rascunho Rápido"
 
-#: admin/admin.php:3276
+#: admin/admin.php:3291
 msgid "Describe the form and let SureForms AI generate it for you."
 msgstr "Descreva o formulário e deixe o SureForms AI gerá-lo para você."
 
-#: admin/admin.php:3279
+#: admin/admin.php:3294
 #: assets/build/templatePicker.js:172
 msgid "Describe your form"
 msgstr "Descreva seu formulário"
 
-#: admin/admin.php:3286
+#: admin/admin.php:3301
 msgid "Example: Create a contact form with name, email, phone, and message fields."
 msgstr "Exemplo: Crie um formulário de contato com campos de nome, email, telefone e mensagem."
 
-#: admin/admin.php:3327
+#: admin/admin.php:3342
 msgid "Redirecting..."
 msgstr "Redirecionando..."
 
@@ -18549,14 +18551,14 @@ msgid "The prompt is too long. Please shorten it and try again."
 msgstr "O prompt é muito longo. Por favor, encurte-o e tente novamente."
 
 #. translators: %s: maximum characters allowed before the @ symbol.
-#: inc/field-validation.php:576
+#: inc/field-validation.php:593
 #: inc/translatable.php:97
 #, php-format
 msgid "The part before @ may not exceed %s characters."
 msgstr "A parte antes do @ não pode exceder %s caracteres."
 
 #. translators: %s: maximum characters allowed after the @ symbol.
-#: inc/field-validation.php:582
+#: inc/field-validation.php:599
 #: inc/translatable.php:100
 #, php-format
 msgid "The part after @ may not exceed %s characters."
@@ -18639,78 +18641,78 @@ msgstr "Nenhum formulário foi encontrado com o ID fornecido."
 msgid "Sorry, you are not allowed to render this form."
 msgstr "Desculpe, você não tem permissão para renderizar este formulário."
 
-#: inc/payments/payment-helper.php:678
+#: inc/payments/payment-helper.php:713
 msgid "This form requires a payment. Please complete the payment and submit again."
 msgstr "Este formulário requer um pagamento. Por favor, complete o pagamento e envie novamente."
 
-#: admin/admin.php:624
+#: admin/admin.php:625
 msgid "You are not allowed to update this prompt."
 msgstr "Você não tem permissão para atualizar este prompt."
 
-#: admin/admin.php:668
+#: admin/admin.php:669
 msgid "Finish setting up your form"
 msgstr "Conclua a configuração do seu formulário"
 
-#: admin/admin.php:700
+#: admin/admin.php:701
 msgid "Review or edit your form"
 msgstr "Revise ou edite seu formulário"
 
-#: admin/admin.php:701
-#: admin/admin.php:4879
+#: admin/admin.php:702
+#: admin/admin.php:4937
 msgid "Edit form"
 msgstr "Editar formulário"
 
-#: admin/admin.php:706
+#: admin/admin.php:707
 msgid "Personalize the Thank You message"
 msgstr "Personalize a mensagem de agradecimento"
 
-#: admin/admin.php:707
+#: admin/admin.php:708
 msgid "Edit message"
 msgstr "Editar mensagem"
 
-#: admin/admin.php:712
+#: admin/admin.php:713
 msgid "Choose who gets notified of new replies"
 msgstr "Escolha quem será notificado sobre novas respostas"
 
-#: admin/admin.php:713
+#: admin/admin.php:714
 msgid "Set up email"
 msgstr "Configurar e-mail"
 
-#: admin/admin.php:747
+#: admin/admin.php:748
 msgid "your form"
 msgstr "seu formulário"
 
 #. translators: %s: form title.
-#: admin/admin.php:750
+#: admin/admin.php:751
 #, php-format
 msgid "Finish setting up %s"
 msgstr "Conclua a configuração de %s"
 
 #. translators: %s: form title.
-#: admin/admin.php:758
+#: admin/admin.php:759
 #, php-format
 msgid "View %s (opens in a new tab)"
 msgstr "Visualizar %s (abre em uma nova aba)"
 
-#: admin/admin.php:763
+#: admin/admin.php:764
 msgid "Customize your form to get it ready for real submissions:"
 msgstr "Personalize seu formulário para deixá-lo pronto para envios reais:"
 
-#: admin/admin.php:4868
+#: admin/admin.php:4926
 msgid "We’ve already created this form for you. Finish customising it so it’s ready to collect real submissions."
 msgstr "Já criamos este formulário para você. Termine de personalizá-lo para que esteja pronto para coletar envios reais."
 
 #. translators: %s: form name.
-#: admin/admin.php:4873
+#: admin/admin.php:4931
 #, php-format
 msgid "Finish setting up “%s”"
 msgstr "Conclua a configuração de “%s”"
 
-#: admin/admin.php:4886
+#: admin/admin.php:4944
 msgid "Edit the Thank You message"
 msgstr "Edite a mensagem de agradecimento"
 
-#: admin/admin.php:4892
+#: admin/admin.php:4950
 msgid "Set where replies go"
 msgstr "Defina para onde vão as respostas"
 
@@ -18740,62 +18742,62 @@ msgstr "Por favor, escolha um arquivo de imagem."
 msgid "This form could not be submitted. Please refresh the page and try again."
 msgstr "Este formulário não pôde ser enviado. Por favor, atualize a página e tente novamente."
 
-#: admin/admin.php:2493
-#: admin/admin.php:2585
+#: admin/admin.php:2496
+#: admin/admin.php:2588
 msgid "Your SureForms database is up to date. New form entries will be saved as usual."
 msgstr "Seu banco de dados SureForms está atualizado. Novas entradas de formulário serão salvas como de costume."
 
-#: admin/admin.php:2507
-#: admin/admin.php:2594
-#: inc/rest-api.php:1481
+#: admin/admin.php:2510
+#: admin/admin.php:2597
+#: inc/rest-api.php:1522
 msgid "SureForms could not finish updating the database. Your hosting may not allow SureForms to create database tables — please contact your hosting provider or SureForms support."
 msgstr "SureForms não conseguiu concluir a atualização do banco de dados. Sua hospedagem pode não permitir que o SureForms crie tabelas de banco de dados — por favor, entre em contato com seu provedor de hospedagem ou com o suporte do SureForms."
 
-#: admin/admin.php:2510
+#: admin/admin.php:2513
 msgid "Contact support"
 msgstr "Contatar suporte"
 
-#: admin/admin.php:2530
+#: admin/admin.php:2533
 msgid "Database update needed"
 msgstr "Atualização do banco de dados necessária"
 
-#: admin/admin.php:2536
+#: admin/admin.php:2539
 msgid "Fix now"
 msgstr "Corrigir agora"
 
-#: admin/admin.php:2608
+#: admin/admin.php:2611
 msgid "SureForms — database update needed"
 msgstr "SureForms — atualização do banco de dados necessária"
 
-#: admin/admin.php:2613
+#: admin/admin.php:2616
 msgid "Update database"
 msgstr "Atualizar banco de dados"
 
-#: admin/admin.php:2633
+#: admin/admin.php:2636
 msgid "You do not have permission to update the database."
 msgstr "Você não tem permissão para atualizar o banco de dados."
 
-#: admin/admin.php:3744
+#: admin/admin.php:3781
 msgid "You do not have permission to do this."
 msgstr "Você não tem permissão para fazer isso."
 
 #. translators: %s: caching plugin name.
-#: admin/admin.php:4271
+#: admin/admin.php:4329
 #, php-format
 msgid "%s may interfere with your forms."
 msgstr "%s pode interferir com seus formulários."
 
-#: admin/admin.php:4241
-#: admin/admin.php:4275
-#: admin/admin.php:5646
+#: admin/admin.php:4299
+#: admin/admin.php:4333
+#: admin/admin.php:5704
 msgid "Help Me Fix"
 msgstr "Ajude-me a corrigir"
 
-#: admin/admin.php:4622
+#: admin/admin.php:4680
 msgid "SureForms found your form entries stored under a different database table prefix. Reconnecting them takes a moment, and your existing entries will be kept."
 msgstr "SureForms encontrou suas entradas de formulário armazenadas sob um prefixo de tabela de banco de dados diferente. Reconectá-las leva um momento, e suas entradas existentes serão mantidas."
 
-#: admin/admin.php:4625
+#: admin/admin.php:4683
 msgid "SureForms needs to update your database before it can save new form entries. This only takes a moment and will not change your forms or existing content. Entries submitted before now cannot be recovered from here."
 msgstr "SureForms precisa atualizar seu banco de dados antes que possa salvar novas entradas de formulário. Isso leva apenas um momento e não alterará seus formulários ou conteúdo existente. Entradas enviadas antes de agora não podem ser recuperadas daqui."
 
@@ -18803,7 +18805,7 @@ msgstr "SureForms precisa atualizar seu banco de dados antes que possa salvar no
 msgid "No form submission failures have been recorded."
 msgstr "Nenhuma falha de envio de formulário foi registrada."
 
-#: inc/form-submit.php:168
+#: inc/form-submit.php:177
 msgid "Not found."
 msgstr "Não encontrado."
 
@@ -18884,63 +18886,63 @@ msgstr "Visualizações e Conversão de Formulários"
 msgid "Logs"
 msgstr "Logs"
 
-#: admin/admin.php:2929
+#: admin/admin.php:2935
 msgid "Previous notice"
 msgstr "Aviso anterior"
 
-#: admin/admin.php:2930
+#: admin/admin.php:2936
 msgid "Next notice"
 msgstr "Próximo aviso"
 
 #. translators: 1: current position, 2: total notices.
-#: admin/admin.php:2932
+#: admin/admin.php:2938
 #, php-format
 msgid "%1$d of %2$d"
 msgstr "%1$d de %2$d"
 
 #. translators: %s: form title.
-#: admin/admin.php:4150
+#: admin/admin.php:4205
 #, php-format
 msgid "We noticed a form submission failure on %s."
 msgstr "Notamos uma falha de envio de formulário em %s."
 
-#: admin/admin.php:4151
+#: admin/admin.php:4206
 msgid "We noticed a form submission failure."
 msgstr "Notamos uma falha de envio de formulário."
 
-#: admin/admin.php:4152
+#: admin/admin.php:4207
 msgid "Visitors may not be able to reach you, and their entries were not saved."
 msgstr "Os visitantes podem não conseguir entrar em contato com você, e suas entradas não foram salvas."
 
 #. translators: %s: form title.
-#: admin/admin.php:4157
+#: admin/admin.php:4212
 #, php-format
 msgid "We noticed a notification failure on %s."
 msgstr "Notamos uma falha de notificação em %s."
 
-#: admin/admin.php:4158
+#: admin/admin.php:4213
 msgid "We noticed a notification failure."
 msgstr "Notamos uma falha de notificação."
 
-#: admin/admin.php:4159
+#: admin/admin.php:4214
 msgid "The entry was saved, but we could not send the email about it. New entries may be coming in without you knowing."
 msgstr "A entrada foi salva, mas não conseguimos enviar o e-mail sobre ela. Novas entradas podem estar chegando sem que você saiba."
 
 #. translators: %s: form title.
-#: admin/admin.php:4174
+#: admin/admin.php:4229
 #, php-format
 msgid "We noticed an integration failure on %s."
 msgstr "Notamos uma falha de integração em %s."
 
-#: admin/admin.php:4175
+#: admin/admin.php:4230
 msgid "We noticed an integration failure."
 msgstr "Notamos uma falha de integração."
 
-#: admin/admin.php:4176
+#: admin/admin.php:4231
 msgid "The entry was saved, but we could not send it to a connected service."
 msgstr "A entrada foi salva, mas não conseguimos enviá-la para um serviço conectado."
 
-#: admin/admin.php:4274
+#: admin/admin.php:4332
 msgid "Caching can show visitors an old copy of your form, or load its scripts in the wrong order."
 msgstr "O cache pode mostrar aos visitantes uma cópia antiga do seu formulário ou carregar seus scripts na ordem errada."
 
@@ -18977,104 +18979,104 @@ msgstr "Capture os dados do formulário em andamento no momento em que os visita
 msgid "Receive a scheduled digest of form submissions straight to your inbox."
 msgstr "Receba um resumo agendado das submissões de formulários diretamente na sua caixa de entrada."
 
-#: admin/admin.php:734
+#: admin/admin.php:735
 #: inc/email-delivery/status.php:585
 msgid "Set up email delivery"
 msgstr "Configurar entrega de email"
 
-#: admin/admin.php:4184
+#: admin/admin.php:4239
 msgid "View SureMail Logs"
 msgstr "Ver Logs do SureMail"
 
 #. translators: %s: form title.
-#: admin/admin.php:4193
+#: admin/admin.php:4248
 #, php-format
 msgid "A notification failed on %s, and the submission was not stored."
 msgstr "Uma notificação falhou em %s, e a submissão não foi armazenada."
 
-#: admin/admin.php:4194
+#: admin/admin.php:4249
 msgid "A notification failed, and the submission was not stored."
 msgstr "Uma notificação falhou, e a submissão não foi armazenada."
 
-#: admin/admin.php:4196
+#: admin/admin.php:4251
 msgid "This form is set to never store entries, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn off \"Never store entry data after form submission\" for this form, so submissions are not lost."
 msgstr "Este formulário está configurado para nunca armazenar entradas, então o email era a única cópia dessa submissão e não pôde ser enviado. Configure a entrega de email ou desative \"Nunca armazenar dados de entrada após a submissão do formulário\" para este formulário, para que as submissões não sejam perdidas."
 
-#: admin/admin.php:4327
+#: admin/admin.php:4385
 #: assets/build/dashboard.js:172
 msgid "Connect SureContact"
 msgstr "Conectar SureContact"
 
-#: admin/admin.php:4387
+#: admin/admin.php:4445
 #: inc/email-delivery/status.php:673
 msgid "Email delivery is not set up"
 msgstr "A entrega de email não está configurada"
 
-#: admin/admin.php:4388
+#: admin/admin.php:4446
 msgid "Form notifications have no email service behind them, which is why they can fail. Set up email delivery so new entries reach your inbox."
 msgstr "As notificações do formulário não têm um serviço de email por trás delas, por isso podem falhar. Configure a entrega de email para que novas entradas cheguem à sua caixa de entrada."
 
-#: admin/admin.php:4390
+#: admin/admin.php:4448
 #: inc/email-delivery/status.php:680
 msgid "SureMail needs a sending connection"
 msgstr "SureMail precisa de uma conexão de envio"
 
-#: admin/admin.php:4391
+#: admin/admin.php:4449
 msgid "SureMail has no working connection, so form notifications are not handed to an email service."
 msgstr "SureMail não tem uma conexão funcional, então as notificações do formulário não são entregues a um serviço de email."
 
-#: admin/admin.php:4482
+#: admin/admin.php:4540
 msgid "Your SureContact emails have run out"
 msgstr "Seus emails do SureContact acabaram"
 
 #. translators: %s: number of emails in the SureContact plan.
-#: admin/admin.php:4486
+#: admin/admin.php:4544
 #, php-format
 msgid "All %s emails for this month are used, so form notifications are not being sent until next month. Upgrade in SureMail to keep sending."
 msgstr "Todos os %s emails deste mês foram usados, então as notificações do formulário não estão sendo enviadas até o próximo mês. Faça um upgrade no SureMail para continuar enviando."
 
 #. translators: %s: number of emails in the SureContact plan.
-#: admin/admin.php:4491
+#: admin/admin.php:4549
 #, php-format
 msgid "All %s emails are used, so form notifications are not being sent. Upgrade in SureMail to keep sending."
 msgstr "Todos os %s emails foram usados, então as notificações do formulário não estão sendo enviadas. Faça um upgrade no SureMail para continuar enviando."
 
-#: admin/admin.php:4496
+#: admin/admin.php:4554
 msgid "Your free SureContact emails are almost used up"
 msgstr "Seus emails gratuitos do SureContact estão quase acabando"
 
-#: admin/admin.php:4497
+#: admin/admin.php:4555
 msgid "Your SureContact emails are almost used up"
 msgstr "Seus emails do SureContact estão quase acabando"
 
 #. translators: 1: emails used, 2: emails in the plan.
-#: admin/admin.php:4501
+#: admin/admin.php:4559
 #, php-format
 msgid "%1$s of %2$s emails used this month. When they run out, form notifications stop being sent until next month, unless you upgrade."
 msgstr "%1$s de %2$s emails usados este mês. Quando acabarem, as notificações do formulário param de ser enviadas até o próximo mês, a menos que você faça um upgrade."
 
 #. translators: 1: emails used, 2: emails in the plan.
-#: admin/admin.php:4507
+#: admin/admin.php:4565
 #, php-format
 msgid "%1$s of %2$s emails used. When they run out, form notifications stop being sent until you upgrade."
 msgstr "%1$s de %2$s emails usados. Quando acabarem, as notificações do formulário param de ser enviadas até que você faça um upgrade."
 
-#: admin/admin.php:4519
+#: admin/admin.php:4577
 msgid "Upgrade in SureMail"
 msgstr "Faça um upgrade no SureMail"
 
-#: admin/admin.php:5629
+#: admin/admin.php:5687
 msgid "These forms are set to never store entries, and no email notification for them could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn off \"Never store entry data after form submission\" on these forms."
 msgstr "Estes formulários estão configurados para nunca armazenar entradas, e nenhuma notificação de email para eles pôde ser enviada, então as submissões não foram salvas em lugar algum. Configure a entrega de email ou desative \"Nunca armazenar dados de entrada após a submissão do formulário\" nesses formulários."
 
 #. translators: %s: comma-separated form titles.
-#: admin/admin.php:5633
+#: admin/admin.php:5691
 #, php-format
 msgid "Forms: %s."
 msgstr "Formulários: %s."
 
 #. translators: %s: number of lost submissions.
-#: admin/admin.php:5642
+#: admin/admin.php:5700
 #, php-format
 msgid "%s form submission was lost"
 msgid_plural "%s form submissions were lost"
@@ -19923,7 +19925,17 @@ msgstr "Ambos são gratuitos. Não é necessário cartão. Cerca de 10 segundos.
 msgid "Watch how it works"
 msgstr "Veja como funciona"
 
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
 #: assets/build/suremail.js:172
+#: assets/build/surveyEmptyState.js:172
 #, js-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -20058,11 +20070,11 @@ msgstr "Seu prompt anterior foi substituído."
 msgid "Undo"
 msgstr "Desfazer"
 
-#: admin/analytics.php:188
+#: admin/analytics.php:189
 msgid "Check this to remove the usage data SureForms has collected when you delete the plugin. Note: your forms, entries and settings are never deleted."
 msgstr "Marque isto para remover os dados de uso que o SureForms coletou quando você excluir o plugin. Nota: seus formulários, entradas e configurações nunca são excluídos."
 
-#: admin/analytics.php:224
+#: admin/analytics.php:225
 msgid "You do not have permission to change this setting."
 msgstr "Você não tem permissão para alterar esta configuração."
 
@@ -25915,7 +25927,7 @@ msgstr "Prefere construir você mesmo? <link>Comece do zero</link>"
 msgid "Choose a Template"
 msgstr "Escolha um Modelo"
 
-#: admin/admin.php:1176
+#: admin/admin.php:1177
 msgid "Get SureForms Business"
 msgstr "Obtenha SureForms Business"
 
@@ -25928,20 +25940,20 @@ msgid "description"
 msgstr "descrição"
 
 #. translators: %s: maximum number of characters.
-#: inc/field-rules.php:306
+#: inc/field-rules.php:327
 #, php-format
 msgid "Please enter no more than %s characters."
 msgstr "Por favor, insira no máximo %s caracteres."
 
-#: inc/field-rules.php:363
+#: inc/field-rules.php:384
 msgid "Enter a valid number."
 msgstr "Insira um número válido."
 
-#: inc/field-rules.php:450
+#: inc/field-rules.php:471
 msgid "Select a valid option."
 msgstr "Selecione uma opção válida."
 
-#: inc/form-submit.php:256
+#: inc/form-submit.php:267
 msgid "This form is currently unavailable."
 msgstr "Este formulário está atualmente indisponível."
 
@@ -25949,8 +25961,8 @@ msgstr "Este formulário está atualmente indisponível."
 msgid "Submissions are disabled until this form is published."
 msgstr "As submissões estão desativadas até que este formulário seja publicado."
 
-#: inc/payments/payment-helper.php:839
-#: inc/payments/payment-helper.php:1609
+#: inc/payments/payment-helper.php:874
+#: inc/payments/payment-helper.php:2262
 msgid "Unsupported payment amount type."
 msgstr "Tipo de valor de pagamento não suportado."
 
@@ -26049,11 +26061,11 @@ msgstr "O desafio é executado quando um visitante interage pela primeira vez co
 msgid "Upgrade to SureForms Business to add Google-powered address autocomplete with interactive map preview to your forms."
 msgstr "Faça upgrade para SureForms Business para adicionar preenchimento automático de endereço com tecnologia Google e visualização de mapa interativa aos seus formulários."
 
-#: admin/admin.php:4197
+#: admin/admin.php:4252
 msgid "The Entries feature is turned off, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn Entries back on in Settings → Features, so submissions are not lost."
 msgstr "O recurso de Entradas está desativado, então o e-mail era a única cópia dessa submissão e não pôde ser enviado. Configure a entrega de e-mails ou ative as Entradas em Configurações → Recursos, para que as submissões não sejam perdidas."
 
-#: admin/admin.php:5630
+#: admin/admin.php:5688
 msgid "The Entries feature is turned off, and no email notification for these forms could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn Entries back on in Settings → Features."
 msgstr "O recurso de Entradas está desativado, e nenhuma notificação por e-mail para esses formulários pôde ser enviada, então as submissões não foram salvas em nenhum lugar. Configure a entrega de e-mails ou ative as Entradas em Configurações → Recursos."
 
@@ -26201,6 +26213,245 @@ msgstr "Dispensar aviso"
 #: assets/build/entries.js:172
 msgid "Invalid entry ID."
 msgstr "ID de entrada inválido."
+
+#: admin/admin.php:3763
+msgid "Dismiss this notice."
+msgstr "Dispensar este aviso."
+
+#: inc/admin/promotion.php:187
+msgid "The promotion is not showing."
+msgstr "A promoção não está aparecendo."
+
+#: inc/admin/promotion.php:215
+msgid "Could not dismiss the promotion. Please try again."
+msgstr "Não foi possível dispensar a promoção. Por favor, tente novamente."
+
+#: inc/admin/promotion.php:382
+msgid "Sale ends in"
+msgstr "A venda termina em"
+
+#: inc/admin/promotion.php:461
+msgid "Unknown promotion."
+msgstr "Promoção desconhecida."
+
+#. translators: %s: lowest plan price, e.g. $49.
+#: inc/admin/promotion.php:527
+#, php-format
+msgid "Plans start at %s"
+msgstr "Planos a partir de %s"
+
+#. translators: %s: discount, e.g. "up to 50%".
+#: inc/admin/promotion.php:529
+#, php-format
+msgid "Save %s"
+msgstr "Economize %s"
+
+#: inc/admin/promotion.php:535
+msgid "Final hours"
+msgstr "Horas finais"
+
+#. translators: %s: discount, e.g. "up to 50%".
+#: inc/admin/promotion.php:536
+#: inc/admin/promotion.php:546
+msgid "up to 50%"
+msgstr "até 50%"
+
+#: inc/admin/promotion.php:539
+msgid "Get the deal before it ends"
+msgstr "Aproveite a oferta antes que termine"
+
+#: inc/admin/promotion.php:544
+msgid "Missed Cyber Monday?"
+msgstr "Perdeu a Cyber Monday?"
+
+#. translators: %s: discount, e.g. "up to 50%".
+#: inc/admin/promotion.php:546
+#, php-format
+msgid "You can still save %s"
+msgstr "Você ainda pode economizar %s"
+
+#: inc/admin/promotion.php:549
+msgid "Pick a plan and save"
+msgstr "Escolha um plano e economize"
+
+#: inc/admin/promotion.php:554
+msgid "Cyber Monday Sale"
+msgstr "Promoção de Cyber Monday"
+
+#: inc/admin/promotion.php:555
+msgid "Pay yearly or pay once."
+msgstr "Pague anualmente ou pague uma vez."
+
+#: inc/admin/promotion.php:555
+msgid "Save up to 50%"
+msgstr "Economize até 50%"
+
+#: inc/admin/promotion.php:556
+msgid "Save up to $500"
+msgstr "Economize até $500"
+
+#: inc/admin/promotion.php:558
+msgid "View Cyber Monday deals"
+msgstr "Ver ofertas de Cyber Monday"
+
+#: inc/admin/promotion.php:563
+msgid "Black Friday Sale"
+msgstr "Promoção de Black Friday"
+
+#: inc/admin/promotion.php:564
+msgid "Up to 50% off"
+msgstr "Até 50% de desconto"
+
+#. translators: %s: lowest lifetime plan price, e.g. $199.
+#: inc/admin/promotion.php:567
+#, php-format
+msgid "Lifetime plans from %s"
+msgstr "Planos vitalícios a partir de %s"
+
+#: inc/admin/promotion.php:569
+msgid "View Black Friday deals"
+msgstr "Ver ofertas de Black Friday"
+
+#. translators: 1: comma-separated form titles, 2: link to the Spam Protection settings
+#: inc/form-submit.php:1592
+#, php-format
+msgid "SureForms: these forms are set to Google reCAPTCHA, but no reCAPTCHA keys are saved for the version they use, so their submissions are not checked for spam: %1$s. Add the keys in %2$s, or change the spam protection in each form's settings."
+msgstr "SureForms: estes formulários estão configurados para Google reCAPTCHA, mas nenhuma chave reCAPTCHA está salva para a versão que eles usam, então suas submissões não são verificadas quanto a spam: %1$s. Adicione as chaves em %2$s, ou altere a proteção contra spam nas configurações de cada formulário."
+
+#: inc/form-submit.php:1597
+msgid "Settings > Spam Protection"
+msgstr "Configurações > Proteção contra Spam"
+
+#: inc/payments/payment-helper.php:2378
+msgid "One or more selected options are not valid. Please check your selection and try again."
+msgstr "Uma ou mais opções selecionadas não são válidas. Por favor, verifique sua seleção e tente novamente."
+
+#: inc/payments/payment-history-shortcode.php:401
+#: inc/payments/payment-history-shortcode.php:976
+#: assets/build/payments.js:2
+msgid "Charged Back"
+msgstr "Estornado"
+
+#. translators: %s: Dispute ID
+#: inc/payments/stripe/stripe-webhook.php:706
+#, php-format
+msgid "Dispute ID: %s"
+msgstr "ID da Disputa: %s"
+
+#. translators: %s: Dispute status
+#: inc/payments/stripe/stripe-webhook.php:708
+#, php-format
+msgid "Dispute Status: %s"
+msgstr "Status da Disputa: %s"
+
+#. translators: %s: Disputed amount with currency
+#: inc/payments/stripe/stripe-webhook.php:712
+#, php-format
+msgid "Disputed Amount: %s"
+msgstr "Valor Disputado: %s"
+
+#. translators: %s: Dispute reason
+#: inc/payments/stripe/stripe-webhook.php:716
+#, php-format
+msgid "Dispute Reason: %s"
+msgstr "Motivo da Disputa: %s"
+
+#: inc/payments/stripe/stripe-webhook.php:721
+msgid "Dispute Lost"
+msgstr "Disputa Perdida"
+
+#: inc/payments/stripe/stripe-webhook.php:721
+msgid "Payment Disputed"
+msgstr "Pagamento Disputado"
+
+#: inc/rest-api.php:1078
+msgid "Invalid entry selection."
+msgstr "Seleção de entrada inválida."
+
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
+#: assets/build/surveyEmptyState.js:172
+#, js-format
+msgid "%1$s %2$s, %3$s, %4$s"
+msgstr "%1$s %2$s, %3$s, %4$s"
+
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
+#: assets/build/surveyEmptyState.js:172
+#, js-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d dia"
+msgstr[1] ""
+
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
+#: assets/build/surveyEmptyState.js:172
+#, js-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d hora"
+msgstr[1] ""
+
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
+#: assets/build/surveyEmptyState.js:172
+msgid "Promotion"
+msgstr "Promoção"
+
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
+#: assets/build/surveyEmptyState.js:172
+msgid "Sale details"
+msgstr "Detalhes da venda"
+
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/partialEntriesEmptyState.js:172
+#: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
+#: assets/build/surveyEmptyState.js:172
+msgid "Dismiss promotion"
+msgstr "Dispensar promoção"
 
 #: inc/post-types.php:265
 msgctxt "post type general name"
@@ -26658,22 +26909,22 @@ msgctxt "Quill link tooltip action"
 msgid "Remove"
 msgstr "Remover"
 
-#: inc/payments/payment-history-shortcode.php:908
+#: inc/payments/payment-history-shortcode.php:909
 msgctxt "billing interval"
 msgid "day"
 msgstr "dia"
 
-#: inc/payments/payment-history-shortcode.php:909
+#: inc/payments/payment-history-shortcode.php:910
 msgctxt "billing interval"
 msgid "wk"
 msgstr "wk"
 
-#: inc/payments/payment-history-shortcode.php:910
+#: inc/payments/payment-history-shortcode.php:911
 msgctxt "billing interval"
 msgid "mo"
 msgstr "mo"
 
-#: inc/payments/payment-history-shortcode.php:911
+#: inc/payments/payment-history-shortcode.php:912
 msgctxt "billing interval"
 msgid "yr"
 msgstr "ano"

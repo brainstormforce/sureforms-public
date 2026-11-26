@@ -186,6 +186,7 @@ export const getStatusVariant = ( status ) => {
 		case 'partially_refunded':
 			return 'yellow';
 		case 'failed':
+		case 'charged_back':
 			return 'red';
 		case 'refunded':
 			return 'blue';
@@ -359,6 +360,7 @@ export const getStatusLabel = ( status ) => {
 		pending: __( 'Pending', 'sureforms' ),
 		failed: __( 'Failed', 'sureforms' ),
 		refunded: __( 'Refunded', 'sureforms' ),
+		charged_back: __( 'Charged Back', 'sureforms' ),
 		canceled: __( 'Canceled', 'sureforms' ),
 		active: __( 'Active', 'sureforms' ),
 		paused: __( 'Paused', 'sureforms' ),

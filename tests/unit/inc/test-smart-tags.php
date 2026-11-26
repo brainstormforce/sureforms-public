@@ -740,4 +740,150 @@ class Test_Smart_Tags extends TestCase {
 
 		$this->assertSame( 'see [1]', $this->smart_tags->process_smart_tags( '{get_input:msg}', null, [] ) );
 	}
+
+	/**
+	 * Tags that resolve from the visitor's own request or session mark the page as
+	 * not cacheable, so a shared page cache never serves one visitor's value to another.
+	 *
+	 * @dataProvider per_visitor_tag_provider
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 *
+	 * @param string $tag Smart tag.
+	 */
+	public function test_smart_tags_callback_marks_page_uncacheable_for_per_visitor_tag( $tag ) {
+		$this->assertFalse( defined( 'DONOTCACHEPAGE' ), 'Precondition: a fresh process has no cache opt-out.' );
+
+		Smart_Tags::smart_tags_callback( $tag );
+
+		$this->assertTrue( defined( 'DONOTCACHEPAGE' ) && DONOTCACHEPAGE, "{$tag} must opt the page out of page caching." );
+	}
+
+	/**
+	 * Per-visitor smart tags.
+	 *
+	 * @return array<string, array<string>>
+	 */
+	public function per_visitor_tag_provider() {
+		return [
+			'ip'                => [ '{ip}' ],
+			'http_referer'      => [ '{http_referer}' ],
+			'get_cookie'        => [ '{get_cookie:ref}' ],
+			'browser_name'      => [ '{browser_name}' ],
+			'browser_platform'  => [ '{browser_platform}' ],
+			'user_id'           => [ '{user_id}' ],
+			'user_display_name' => [ '{user_display_name}' ],
+			'user_first_name'   => [ '{user_first_name}' ],
+			'user_last_name'    => [ '{user_last_name}' ],
+			'user_email'        => [ '{user_email}' ],
+			'user_login'        => [ '{user_login}' ],
+		];
+	}
+
+	/**
+	 * The opt-out holds on the front-end render path, where the value is written
+	 * into the form markup, and when a filter supplies the value.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_render_form_marks_page_uncacheable_for_cookie_tag_even_when_filtered() {
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->set_rendering_form_id( $form_id );
+		$_COOKIE['ref'] = 'campaign';
+		add_filter( 'srfm_parse_smart_tags', static fn() => 'filtered' );
+
+		$html = '<input value="{get_cookie:ref}" />';
+		$this->assertSame( '<input value="filtered" />', $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) ) );
+		$this->assertTrue( defined( 'DONOTCACHEPAGE' ) && DONOTCACHEPAGE );
+	}
+
+	/**
+	 * Tags whose value is the same for every visitor of a URL keep the page cacheable.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_smart_tags_callback_keeps_page_cacheable_for_shared_tags() {
+		$_SERVER['QUERY_STRING'] = 'u=hello';
+
+		foreach ( [ '{site_url}', '{site_title}', '{form_title}', '{date_mdy}', '{embed_post_id}', '{get_input:u}', '{current_page_url}' ] as $tag ) {
+			Smart_Tags::smart_tags_callback( $tag );
+		}
+
+		$this->assertFalse( defined( 'DONOTCACHEPAGE' ) );
+	}
+
+	/**
+	 * A value resolved while a form renders is inert to every later smart tag pass
+	 * (nested blocks, then the srfm/form block's own render_block pass), and still
+	 * reads as the original text once the browser decodes it.
+	 */
+	public function test_render_form_resolved_value_is_not_resolved_again() {
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->make_current_post( 'page' );
+		$GLOBALS['post']->post_title = 'Hi {admin_email} [x]';
+		$this->set_rendering_form_id( $form_id );
+
+		$html  = '<p>{embed_post_title}</p>';
+		$first = $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) );
+
+		$this->set_rendering_form_id( 0 );
+		$form_block = [
+			'blockName' => 'srfm/form',
+			'attrs'     => [ 'id' => $form_id ],
+		];
+		$second     = $this->smart_tags->render_form( $first, $form_block );
+
+		$this->assertSame( $first, $second );
+		$this->assertStringNotContainsString( '{', $second );
+		$this->assertStringNotContainsString( get_option( 'admin_email' ), $second );
+		$this->assertSame( '<p>Hi {admin_email} [x]</p>', html_entity_decode( $second, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+	}
+
+	/**
+	 * End to end: a form embedded on a page whose field default is {embed_post_title}.
+	 * The page title reaches the field as text, never as another smart tag.
+	 */
+	public function test_embedded_form_does_not_resolve_a_tag_from_the_post_title() {
+		$form_id          = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Prefill',
+				'post_content' => '<!-- wp:srfm/textarea {"block_id":"ta654321","slug":"message","label":"Message","defaultValue":"{embed_post_title}"} /-->',
+			]
+		);
+		$this->post_ids[] = $form_id;
+		$this->make_current_post( 'page' );
+		$GLOBALS['post']->post_title = 'T {admin_email}';
+
+		$output = apply_filters( 'the_content', '<!-- wp:srfm/form {"id":' . $form_id . '} /-->' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core hook.
+
+		$this->assertStringContainsString( 'T &#123;admin_email&#125;', $output, 'the title still renders as text' );
+		$this->assertStringNotContainsString( get_option( 'admin_email' ), $output );
+	}
+
+	/**
+	 * A tag inside a resolved value stays text: a submitted value that contains a tag the
+	 * template also uses is not expanded, whatever order the tags appear in.
+	 */
+	public function test_process_smart_tags_does_not_expand_tags_inside_resolved_values() {
+		$submission = [ 'srfm-textarea-a1b2c3d4-lbl-Tm90ZQ-note' => '{site_title}{admin_email}' ];
+
+		$value_first = $this->smart_tags->process_smart_tags( 'Note: {form:note} | {site_title} {admin_email}', $submission );
+		$this->assertSame(
+			'Note: {site_title}{admin_email} | ' . get_option( 'blogname' ) . ' ' . get_option( 'admin_email' ),
+			$value_first
+		);
+
+		$tag_first = $this->smart_tags->process_smart_tags( '{site_title} | {form:note}', $submission );
+		$this->assertSame( get_option( 'blogname' ) . ' | {site_title}{admin_email}', $tag_first );
+
+		// The same tag written twice in the template still resolves everywhere.
+		$this->assertSame(
+			get_option( 'blogname' ) . ' ' . get_option( 'blogname' ),
+			$this->smart_tags->process_smart_tags( '{site_title} {site_title}' )
+		);
+	}
 }
