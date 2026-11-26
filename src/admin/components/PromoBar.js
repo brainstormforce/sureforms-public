@@ -28,7 +28,7 @@ export const SPEED = 21;
 /**
  * Days, hours, minutes and seconds left until `endsAt`, never below zero.
  *
- * @since x.x.x
+ * @since 2.14.3
  * @param {number} endsAt End time in milliseconds.
  * @param {number} now    Current time in milliseconds.
  * @return {Array<number>} [ days, hours, minutes, seconds ].
@@ -48,7 +48,7 @@ export const getTimeLeft = ( endsAt, now ) => {
  * slide by one run. The marquee slides by one run, so a run narrower than the
  * visible area shows a blank stretch before the loop restarts.
  *
- * @since x.x.x
+ * @since 2.14.3
  * @param {number} copyWidth     Width of one copy of the segments, in px.
  * @param {number} viewportWidth Width of the visible area, in px.
  * @return {{repeat: number, duration: number}|null} Null until both are measured.
@@ -64,7 +64,7 @@ export const getMarqueeLayout = ( copyWidth, viewportWidth ) => {
 /**
  * Screen reader label for the countdown, with plural forms.
  *
- * @since x.x.x
+ * @since 2.14.3
  * @param {string} label   Label such as "Sale ends in".
  * @param {number} days    Days left.
  * @param {number} hours   Hours left.
@@ -89,7 +89,7 @@ export const getTimerLabel = ( label, days, hours, minutes ) =>
  * the end time is reached. It stays mounted on narrow screens, where it is
  * only hidden with CSS, so `onEnd` fires there too.
  *
- * @since x.x.x
+ * @since 2.14.3
  * @param {Object}   props        Component props.
  * @param {number}   props.endsAt End time in milliseconds.
  * @param {string}   props.label  Screen reader label, e.g. "Sale ends in".
@@ -133,7 +133,7 @@ export const Countdown = ( { endsAt, label, onEnd } ) => {
  * set of the first run is read by assistive tech. With reduced motion the
  * repeats are dropped and the single set scrolls by hand instead.
  *
- * @since x.x.x
+ * @since 2.14.3
  * @param {Object}  props         Component props.
  * @param {Array}   props.items   Segments, each a list of `{ text, style }` parts.
  * @param {number}  props.repeat  Copies of the segments in the run.
@@ -187,7 +187,7 @@ const Run = ( { items, repeat, copyRef, hidden = false } ) => (
  * marquee layout in step when either changes size (fonts loading, window
  * resizing).
  *
- * @since x.x.x
+ * @since 2.14.3
  * @return {Object} Refs for the visible area and the first copy, and the layout.
  */
 const useMarqueeLayout = () => {
@@ -237,7 +237,7 @@ const useMarqueeLayout = () => {
  * screen, and in a tab left open past the end of the sale it goes away the
  * moment the countdown reaches zero.
  *
- * @since x.x.x
+ * @since 2.14.3
  * @param {Object}   props           Component props.
  * @param {Object}   props.promotion Promotion data from `srfm_admin.promotion`.
  * @param {Function} props.onHide    Called once the bar hides, after a dismissal or the end of the sale.

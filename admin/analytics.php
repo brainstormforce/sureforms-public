@@ -1545,7 +1545,7 @@ class Analytics {
 	 *
 	 * Temporary: remove with `Promotion` in the first release after the sale.
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @param int|null $now Unix timestamp. Defaults to now.
 	 * @return void
 	 */

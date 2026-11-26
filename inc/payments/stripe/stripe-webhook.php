@@ -663,7 +663,7 @@ class Stripe_Webhook {
 	 * redelivered event does not fire the hook twice.
 	 *
 	 * @param array<string, mixed> $dispute Dispute object from Stripe.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return void
 	 */
 	public function handle_dispute( $dispute ) {
@@ -761,7 +761,7 @@ class Stripe_Webhook {
 			 * @param array<string, mixed> $context        Resolved context: form_id, entry_id,
 			 *                                              user_id (0 for guests), customer_email,
 			 *                                              type, gateway, mode.
-			 * @since x.x.x
+			 * @since 2.14.3
 			 */
 			do_action( 'srfm_payment_disputed', $disputed_payment, $dispute_status, Payment_Helper::build_payment_context( $disputed_payment ) );
 		}

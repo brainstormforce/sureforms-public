@@ -28,7 +28,7 @@ class Smart_Tags {
 	 * Smart tags whose value differs between visitors of the same URL. {get_cookie:*}
 	 * is matched by prefix in smart_tags_callback().
 	 *
-	 * @since x.x.x
+	 * @since 2.14.3
 	 */
 	private const PER_VISITOR_TAGS = [
 		'{ip}',
@@ -160,7 +160,7 @@ class Smart_Tags {
 	 * @since 0.0.1 - return string
 	 * @since 1.11.0 - return array<mixed>
 	 * @since 2.13.0 - $encode_shortcode_brackets
-	 * @since x.x.x - $encode_shortcode_brackets also encodes `{` and `}`; tags are replaced in one pass, so a tag inside a resolved value is not expanded
+	 * @since 2.14.3 - $encode_shortcode_brackets also encodes `{` and `}`; tags are replaced in one pass, so a tag inside a resolved value is not expanded
 	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null, $encode_shortcode_brackets = false ) {
@@ -291,7 +291,7 @@ class Smart_Tags {
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1
-	 * @since x.x.x Marks the page as not cacheable for a per-visitor tag.
+	 * @since 2.14.3 Marks the page as not cacheable for a per-visitor tag.
 	 * @return mixed
 	 */
 	public static function smart_tags_callback( $tag, $submission_data = null, $form_data = null ) {

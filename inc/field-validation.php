@@ -384,7 +384,7 @@ class Field_Validation {
 	 * the request. Empty when the form has no address block.
 	 *
 	 * @param int|mixed $form_id The form post id.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array<string,true>
 	 */
 	public static function get_address_block_slugs( $form_id ) {
@@ -678,7 +678,7 @@ class Field_Validation {
 	 * follow their address block, keeping document order.
 	 *
 	 * @param array<mixed> $blocks Top-level parsed blocks.
-	 * @since x.x.x
+	 * @since 2.14.3
 	 * @return array<mixed> The blocks with address children inserted after their parent.
 	 */
 	private static function with_address_children( $blocks ) {
@@ -1269,7 +1269,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $block_config Stored block config.
 	 * @since 2.13.1
-	 * @since x.x.x A payment config without address_fields_stored is stale.
+	 * @since 2.14.3 A payment config without address_fields_stored is stale.
 	 * @return bool
 	 */
 	private static function has_stale_config( $block_config ) {
